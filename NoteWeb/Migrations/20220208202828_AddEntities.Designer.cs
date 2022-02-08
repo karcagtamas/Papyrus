@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using NoteWeb.DataAccess;
 
@@ -10,9 +11,10 @@ using NoteWeb.DataAccess;
 namespace NoteWeb.Migrations
 {
     [DbContext(typeof(NoteWebContext))]
-    partial class NoteWebContextModelSnapshot : ModelSnapshot
+    [Migration("20220208202828_AddEntities")]
+    partial class AddEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

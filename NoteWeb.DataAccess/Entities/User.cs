@@ -15,5 +15,8 @@ public class User : IdentityUser<string>, IEntity<string>
     [Required]
     public DateTime LastLogin { get; set; }
 
-    public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
+    public virtual ICollection<RefreshToken> RefreshTokens { get; set; }
+    public virtual ICollection<Group> CreatedGroups { get; set; }
+    public virtual ICollection<GroupMember> Groups { get; set; }
+    public virtual ICollection<Note> Notes { get; set; }
 }
