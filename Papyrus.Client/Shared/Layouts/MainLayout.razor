@@ -1,0 +1,68 @@
+@using Papyrus.Client.Shared
+@using Papyrus.Shared.DTOs
+@using Papyrus.Client.Services.Interfaces
+@inherits LayoutComponentBase
+@inject IUserService userService
+@inject IAuthService auth
+
+<MudThemeProvider Theme="@NoteWebTheme.GetTheme()" />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout Class="flex-box">
+    <MudAppBar Elevation="1" Dense="true" Color="Color.Primary">
+        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+            OnClick="@((_) => DrawerToggle())" />
+        Osiris
+        <MudSpacer></MudSpacer>
+        <AuthorizeView>
+            <Authorized>
+                @if (User is not null)
+                {
+                    <MudText Typo="Typo.caption">@User.UserName</MudText>
+                }
+            </Authorized>
+        </AuthorizeView>
+    </MudAppBar>
+    <MudDrawer @bind-Open="@drawerOpen" Elevation="2" ClipMode="DrawerClipMode.Always" Class="drawer">
+        <NavMenu />
+    </MudDrawer>
+    <MudMainContent Class="flex-box">
+        <AuthorizeView>
+            <Authorized>
+                @Body
+            </Authorized>
+            <NotAuthorized>
+                @if (!context.User?.Identity?.IsAuthenticated ?? true)
+                {
+                    <NotAuthorized />
+                }
+                else
+                {
+                    <p>You do not have access for the resource</p>
+                }
+            </NotAuthorized>
+        </AuthorizeView>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; } = null!;
+
+    private UserDTO? User { get; set; }
+    bool drawerOpen = true;
+
+    void DrawerToggle()
+    {
+        drawerOpen = !drawerOpen;
+    }
+
+    protected override async void OnInitialized()
+    {
+        User = await userService.Current(await authenticationStateTask);
+
+        await base.OnInitializedAsync();
+    }
+
+}

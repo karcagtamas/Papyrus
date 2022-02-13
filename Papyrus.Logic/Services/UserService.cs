@@ -36,6 +36,11 @@ public class UserService : MapperRepository<User, string>, IUserService
         return Mapper.Map<T>(GetByName(userName));
     }
 
+    public T GetCurrent<T>()
+    {
+        return GetMapped<T>(Utils.GetCurrentUserId<string>());
+    }
+
     public bool IsExist(string userName, string email)
     {
         return userManager.Users.Any(user => user.Email == email || user.UserName == userName);

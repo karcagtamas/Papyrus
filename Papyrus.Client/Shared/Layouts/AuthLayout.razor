@@ -1,0 +1,16 @@
+@inherits LayoutComponentBase
+
+<MudThemeProvider Theme="@NoteWebTheme.GetTheme()" />
+<MudSnackbarProvider />
+
+<div class="page">
+    <AuthorizeView>
+        <NotAuthorized>
+            @Body
+        </NotAuthorized>
+    </AuthorizeView>
+</div>
+
+@code {
+
+}

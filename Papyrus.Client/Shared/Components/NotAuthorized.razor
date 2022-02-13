@@ -1,0 +1,9 @@
+@using Papyrus.Client.Services.Interfaces
+@inject IAuthService authService
+
+@code {
+    protected override void OnInitialized()
+    {
+        authService.NotAuthorized();
+    }
+}

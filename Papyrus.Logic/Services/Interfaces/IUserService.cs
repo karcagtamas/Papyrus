@@ -9,5 +9,6 @@ public interface IUserService : IMapperRepository<User, string>
     T GetMappedByName<T>(string userName);
     User GetByEmail(string email);
     User GetByRefreshToken(string token, string clientId);
+    T GetCurrent<T>();
     bool IsExist(string userName, string email);
 }

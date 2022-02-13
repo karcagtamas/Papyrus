@@ -1,0 +1,97 @@
+@page "/login"
+@using Papyrus.Shared.Models
+@using Services.Interfaces
+@using Microsoft.AspNetCore.WebUtilities
+@layout AuthLayout
+@inject NavigationManager navigationManager
+@inject IAuthService authService
+
+<PageTitle>Login</PageTitle>
+
+<div id="panel">
+    <MudPaper Class="p-4" Elevation="4">
+        <MudText Typo="Typo.h4" Color="Color.Primary">Login</MudText>
+
+        <!--
+        <div id="image">
+            <img src="assets/images/main.png" alt="Main image" />
+        </div>
+        -->
+
+        <MudForm @ref="form" Model="Model">
+            <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+                For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
+            </MudTextField>
+            <MudTextField T="string" Label="Password" Variant="Variant.Text" InputType="@passwordInput"
+                Adornment="Adornment.End" AdornmentIcon="@passwordInputIcon" OnAdornmentClick="SwitchPasswordVisibility"
+                Required="true" For="@(() => Model.Password)" @bind-Value="Model.Password" FullWidth="true">
+            </MudTextField>
+            <div class="text-center mt-3 mb-3">
+                <MudButton Color="Color.Primary" Class="mt-3" Variant="Variant.Filled" OnClick="Submit"
+                    StartIcon="@Icons.Filled.Login">
+                    Sign In
+                </MudButton>
+            </div>
+        </MudForm>
+    </MudPaper>
+</div>
+
+@code {
+    MudForm form = null!;
+
+    private LoginModel Model { get; set; } = new();
+
+    private bool isShow;
+    private string passwordInputIcon = Icons.Filled.VisibilityOff;
+    private InputType passwordInput = InputType.Password;
+    private string redirectUri = "";
+
+    protected override void OnInitialized()
+    {
+        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+
+        var queryStrings = QueryHelpers.ParseQuery(uri.Query);
+
+        if (queryStrings.TryGetValue("redirectUri", out var rUri))
+        {
+            redirectUri = rUri;
+        }
+
+        base.OnInitialized();
+    }
+
+    private async void Submit()
+    {
+        await form.Validate();
+        if (!form.IsValid) return;
+        var res = await authService.Login(Model);
+        if (!string.IsNullOrEmpty(res))
+        {
+            if (string.IsNullOrEmpty(redirectUri))
+            {
+
+                navigationManager.NavigateTo("/dashboard");
+            }
+            else
+            {
+                navigationManager.NavigateTo(redirectUri);
+            }
+        }
+    }
+
+    private void SwitchPasswordVisibility()
+    {
+        if (isShow)
+        {
+            isShow = false;
+            passwordInputIcon = Icons.Filled.VisibilityOff;
+            passwordInput = InputType.Password;
+        }
+        else
+        {
+            isShow = true;
+            passwordInputIcon = Icons.Filled.Visibility;
+            passwordInput = InputType.Text;
+        }
+    }
+}

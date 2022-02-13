@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Configurations;
+using Papyrus.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -142,5 +143,7 @@ if (app.Environment.IsDevelopment() || Boolean.TrueString.Equals(builder.Configu
 {
     app.Migrate<NoteWebContext>();
 }
+
+app.SeedRoles();
 
 app.Run();
