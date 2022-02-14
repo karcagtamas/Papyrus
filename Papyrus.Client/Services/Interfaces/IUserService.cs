@@ -7,7 +7,7 @@ namespace Papyrus.Client.Services.Interfaces;
 
 public interface IUserService : IHttpCall<string>
 {
-    Task<UserDTO?> Current(AuthenticationState state);
+    Task<UserDTO> Current();
     Task<bool> Exists(string userName, string email);
     Task<bool> SetDisableStatus(List<string> ids, bool status);
     Task<bool> UpdateImage(byte[] image);

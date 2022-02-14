@@ -13,19 +13,9 @@ public class UserService : HttpCall<string>, IUserService
     {
     }
 
-    public async Task<UserDTO?> Current(AuthenticationState state)
+    public async Task<UserDTO> Current()
     {
-        var user = state.User;
-
-        if (user.Identity?.Name is null)
-        {
-            return null;
-        }
-
-        var queryParams = new HttpQueryParameters();
-        queryParams.Add("user", user.Identity.Name);
-
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Current")).AddQueryParams(queryParams);
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Current"));
 
         return await Http.Get<UserDTO>(settings);
     }

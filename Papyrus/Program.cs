@@ -1,6 +1,7 @@
 using System.Text;
 using AutoMapper;
 using Karcags.Common.Middlewares;
+using Karcags.Common.Tools;
 using Karcags.Common.Tools.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -10,25 +11,29 @@ using Microsoft.OpenApi.Models;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Configurations;
+using Papyrus.Logic.Mappers;
+using Papyrus.Logic.Services;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Config
 builder.Services.Configure<JWTConfiguration>(builder.Configuration.GetSection("Jwt"));
+builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Utils"));
 
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUtilsService, UtilsService<NoteWebContext>>();
 builder.Services.AddScoped<ILoggerService, LoggerService>();
-//builder.Services.AddScoped<ITokenService, TokenService>();
-//builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Add AutoMapper
 var mapperConfig = new MapperConfiguration(conf =>
 {
-    //conf.AddProfile<UserMapper>();
+    conf.AddProfile<UserMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 

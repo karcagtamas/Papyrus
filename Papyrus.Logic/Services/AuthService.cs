@@ -32,12 +32,10 @@ public class AuthService : IAuthService
             throw new ArgumentException("User not found");
         }
 
-        /*
         if (user.Disabled)
         {
             throw new ArgumentException("User is disabled");
         }
-        */
 
         if (!await userManager.CheckPasswordAsync(user, model.Password))
             throw new ArgumentException("Incorrect username or password");

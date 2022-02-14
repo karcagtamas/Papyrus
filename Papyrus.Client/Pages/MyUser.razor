@@ -72,10 +72,6 @@
 </div>
 
 @code {
-
-    [CascadingParameter]
-    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
-
     private UserDTO? User { get; set; }
     private string? Image { get; set; }
 
@@ -87,7 +83,7 @@
 
     private async void GetUser()
     {
-        User = await userService.Current(await AuthenticationStateTask);
+        User = await userService.Current();
         if (User is not null && User.ImageData.Length != 0)
         {
             string b64 = Convert.ToBase64String(User.ImageData);

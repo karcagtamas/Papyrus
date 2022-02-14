@@ -2,17 +2,19 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Papyrus.DataAccess;
+using NoteWeb.DataAccess;
 
 #nullable disable
 
-namespace Papyrus.Migrations
+namespace NoteWeb.Migrations
 {
     [DbContext(typeof(NoteWebContext))]
-    partial class NoteWebContextModelSnapshot : ModelSnapshot
+    [Migration("20220214121526_UserExtend")]
+    partial class UserExtend
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,7 +123,7 @@ namespace Papyrus.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Group", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Group", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -145,7 +147,7 @@ namespace Papyrus.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.GroupActionLog", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.GroupActionLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -161,7 +163,7 @@ namespace Papyrus.Migrations
                     b.ToTable("GroupActionLogs");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.GroupMember", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.GroupMember", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -188,7 +190,7 @@ namespace Papyrus.Migrations
                     b.ToTable("GroupMembers");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.GroupRole", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.GroupRole", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -256,7 +258,7 @@ namespace Papyrus.Migrations
                     b.ToTable("GroupRoles");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Note", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Note", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -284,7 +286,7 @@ namespace Papyrus.Migrations
                     b.ToTable("Notes");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.NoteActionLog", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.NoteActionLog", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -300,7 +302,7 @@ namespace Papyrus.Migrations
                     b.ToTable("NoteActionLogs");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.RefreshToken", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.RefreshToken", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -336,7 +338,7 @@ namespace Papyrus.Migrations
                     b.ToTable("RefreshTokens");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Role", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Role", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -362,7 +364,7 @@ namespace Papyrus.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Tag", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Tag", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -394,7 +396,7 @@ namespace Papyrus.Migrations
                     b.ToTable("Tags");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.User", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.User", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
@@ -491,7 +493,7 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Role", null)
+                    b.HasOne("NoteWeb.DataAccess.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -500,7 +502,7 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.User", null)
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -509,7 +511,7 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.User", null)
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -518,13 +520,13 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Role", null)
+                    b.HasOne("NoteWeb.DataAccess.Entities.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Papyrus.DataAccess.Entities.User", null)
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -533,16 +535,16 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.User", null)
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Group", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Group", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.User", "Owner")
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", "Owner")
                         .WithMany("CreatedGroups")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.ClientCascade)
@@ -551,9 +553,9 @@ namespace Papyrus.Migrations
                     b.Navigation("Owner");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.GroupActionLog", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.GroupActionLog", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Group", "Group")
+                    b.HasOne("NoteWeb.DataAccess.Entities.Group", "Group")
                         .WithMany("ActionLogs")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.ClientCascade)
@@ -562,21 +564,21 @@ namespace Papyrus.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.GroupMember", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.GroupMember", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Group", "Group")
+                    b.HasOne("NoteWeb.DataAccess.Entities.Group", "Group")
                         .WithMany("Members")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("Papyrus.DataAccess.Entities.GroupRole", "Role")
+                    b.HasOne("NoteWeb.DataAccess.Entities.GroupRole", "Role")
                         .WithMany("Members")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.ClientCascade)
                         .IsRequired();
 
-                    b.HasOne("Papyrus.DataAccess.Entities.User", "User")
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", "User")
                         .WithMany("Groups")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.ClientCascade)
@@ -589,9 +591,9 @@ namespace Papyrus.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.GroupRole", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.GroupRole", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Group", "Group")
+                    b.HasOne("NoteWeb.DataAccess.Entities.Group", "Group")
                         .WithMany("Roles")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.ClientCascade)
@@ -600,14 +602,14 @@ namespace Papyrus.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Note", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Note", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Group", "Group")
+                    b.HasOne("NoteWeb.DataAccess.Entities.Group", "Group")
                         .WithMany("Notes")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.ClientCascade);
 
-                    b.HasOne("Papyrus.DataAccess.Entities.User", "User")
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", "User")
                         .WithMany("Notes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.ClientCascade);
@@ -617,9 +619,9 @@ namespace Papyrus.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.NoteActionLog", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.NoteActionLog", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Note", "Note")
+                    b.HasOne("NoteWeb.DataAccess.Entities.Note", "Note")
                         .WithMany("ActionLogs")
                         .HasForeignKey("NoteId")
                         .OnDelete(DeleteBehavior.ClientCascade)
@@ -628,9 +630,9 @@ namespace Papyrus.Migrations
                     b.Navigation("Note");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.RefreshToken", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.RefreshToken", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.User", "User")
+                    b.HasOne("NoteWeb.DataAccess.Entities.User", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.ClientCascade)
@@ -639,14 +641,14 @@ namespace Papyrus.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Tag", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Tag", b =>
                 {
-                    b.HasOne("Papyrus.DataAccess.Entities.Group", "Group")
+                    b.HasOne("NoteWeb.DataAccess.Entities.Group", "Group")
                         .WithMany("Tags")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.ClientCascade);
 
-                    b.HasOne("Papyrus.DataAccess.Entities.Tag", "Parent")
+                    b.HasOne("NoteWeb.DataAccess.Entities.Tag", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.ClientCascade);
@@ -656,7 +658,7 @@ namespace Papyrus.Migrations
                     b.Navigation("Parent");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Group", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Group", b =>
                 {
                     b.Navigation("ActionLogs");
 
@@ -669,22 +671,22 @@ namespace Papyrus.Migrations
                     b.Navigation("Tags");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.GroupRole", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.GroupRole", b =>
                 {
                     b.Navigation("Members");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Note", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Note", b =>
                 {
                     b.Navigation("ActionLogs");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Tag", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.Tag", b =>
                 {
                     b.Navigation("Children");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.User", b =>
+            modelBuilder.Entity("NoteWeb.DataAccess.Entities.User", b =>
                 {
                     b.Navigation("CreatedGroups");
 
