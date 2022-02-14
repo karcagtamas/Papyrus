@@ -3,7 +3,7 @@ using Karcags.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components.Authorization;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
-using static System.Net.WebRequestMethods;
+using Papyrus.Shared.Models;
 
 namespace Papyrus.Client.Services;
 
@@ -39,5 +39,32 @@ public class UserService : HttpCall<string>, IUserService
         var settings = new HttpSettings(Http.BuildUrl(Url, "Exists")).AddQueryParams(queryParams);
 
         return await Http.GetBool(settings);
+    }
+
+    public async Task<bool> SetDisableStatus(List<string> ids, bool status)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Disable")).AddToaster("Disable");
+
+        var body = new HttpBody<UserDisableStatusModel>(new UserDisableStatusModel { Ids = ids, Status = status });
+
+        return await Http.Post(settings, body);
+    }
+
+    public async Task<bool> UpdateImage(byte[] image)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Image")).AddToaster("Image Update");
+
+        var body = new HttpBody<byte[]>(image);
+
+        return await Http.Put(settings, body);
+    }
+
+    public async Task<bool> UpdatePassword(UserPasswordModel model)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Password")).AddToaster("Password Update");
+
+        var body = new HttpBody<UserPasswordModel>(model);
+
+        return await Http.Put(settings, body);
     }
 }

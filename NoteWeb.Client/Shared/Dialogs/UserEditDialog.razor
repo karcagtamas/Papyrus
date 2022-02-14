@@ -1,0 +1,91 @@
+@using NoteWeb.Shared.DTOs
+@using NoteWeb.Shared.Models
+@using Services.Interfaces
+<MudDialog>
+    <DialogContent>
+        <div>
+            <MudForm @ref="Form">
+                <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+                              For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
+                </MudTextField>
+                <MudTextField T="string" Label="Full Name" Variant="Variant.Text"
+                              For="@(() => Model.FullName)" @bind-Value="Model.FullName" FullWidth="true">
+                </MudTextField>
+                <MudTextField T="string" Label="Email" Variant="Variant.Text" InputType="InputType.Email" Required="true"
+                              For="@(() => Model.Email)" @bind-Value="Model.Email" FullWidth="true">
+                </MudTextField>
+                <MudTextField T="string" Label="Country" Variant="Variant.Text"
+                              For="@(() => Model.Country)" @bind-Value="Model.Country" FullWidth="true">
+                </MudTextField>
+                <MudTextField T="string" Label="Bio" Variant="Variant.Text" Lines="5"
+                              For="@(() => Model.Bio)" @bind-Value="Model.Bio" FullWidth="true">
+                </MudTextField>
+                <MudDatePicker Label="Birth Day" Variant="Variant.Text"
+                               For="@(() => Model.BirthDay)" @bind-Date="Model.BirthDay">
+                </MudDatePicker>
+            </MudForm>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code {
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Parameter]
+    public string UserId { get; set; } = "";
+
+    [Inject]
+    private IUserService UserService { get; set; } = null!;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = null!;
+
+    private UserModel Model { get; set; } = new();
+    private MudForm Form { get; set; } = null!;
+
+    protected override async void OnInitialized()
+    {
+        await GetUser();
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task GetUser()
+    {
+        if (!string.IsNullOrEmpty(UserId))
+        {
+            Model = new UserModel(await UserService.Get<UserDTO>(UserId));
+            StateHasChanged();
+        }
+    }
+
+    private async void Save()
+    {
+        await Form.Validate();
+        if (!Form.IsValid || string.IsNullOrEmpty(UserId)) return;
+
+        if (await UserService.Exists(Model.UserName, Model.Email))
+        {
+            Snackbar.Add($"User is already exists with this user name [{Model.UserName}] or e-mail address [{Model.Email}]", Severity.Error);
+            return;
+        }
+
+        if (await UserService.Update(UserId, Model))
+        {
+            Dialog.Close(DialogResult.Ok(true));
+        }
+    }
+
+    private void Cancel()
+    {
+        Dialog.Cancel();
+    }
+
+}

@@ -26,6 +26,12 @@ public class AuthController : ControllerBase
         return await authService.Login(model);
     }
 
+    [HttpPost("Register")]
+    public async Task Register([FromBody] RegistrationModel model)
+    {
+        await authService.Register(model);
+    }
+
     [AllowAnonymous]
     [HttpGet("Refresh")]
     public async Task<TokenDTO> Refresh([FromQuery] string refreshToken, [FromQuery] string clientId)

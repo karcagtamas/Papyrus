@@ -44,6 +44,16 @@ public class AuthService : IAuthService
         return user.UserId;
     }
 
+    public async Task<bool> Register(RegistrationModel model)
+    {
+        var settings = new HttpSettings(httpService.BuildUrl(Url, "Register"))
+            .AddToaster("Registration");
+
+        var body = new HttpBody<RegistrationModel>(model);
+
+        return await httpService.Post(settings, body);
+    }
+
     public bool IsLoggedIn()
     {
         return tokenService.UserInStore();

@@ -47,4 +47,22 @@ public class UserController : ControllerBase
     {
         return userService.IsExist(userName, email);
     }
+
+    [HttpPost("Disable")]
+    public void DisableUsers([FromBody] UserDisableStatusModel statusModel)
+    {
+        userService.SetDisableStatus(statusModel);
+    }
+
+    [HttpPut("Image")]
+    public void UpdateImage([FromBody] byte[] image)
+    {
+        userService.UpdateImage(image);
+    }
+
+    [HttpPut("Password")]
+    public void UpdatePassword([FromBody] UserPasswordModel model)
+    {
+        userService.UpdatePassword(model);
+    }
 }

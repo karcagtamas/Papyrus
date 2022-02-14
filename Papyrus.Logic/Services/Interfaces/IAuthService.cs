@@ -6,5 +6,6 @@ namespace Papyrus.Logic.Services.Interfaces;
 public interface IAuthService
 {
     Task<TokenDTO> Login(LoginModel model);
+    Task Register(RegistrationModel model);
     void Logout(string userName, string clientId);
 }

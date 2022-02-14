@@ -49,6 +49,29 @@ public class AuthService : IAuthService
         return await CreateTokensAndSave(user, Guid.NewGuid().ToString());
     }
 
+    public async Task Register(RegistrationModel model)
+    {
+        if (userService.IsExist(model.UserName, model.Email))
+        {
+            throw new ArgumentException("User already created");
+        }
+
+        var user = new User
+        {
+            Id = Guid.NewGuid().ToString(),
+            UserName = model.UserName,
+            FullName = model.FullName,
+            Email = model.Email,
+            LastLogin = DateTime.Now,
+            Registration = DateTime.Now,
+            Disabled = false
+        };
+
+        var result = await userManager.CreateAsync(user, model.Password);
+
+        await AddDefaultRoleByResult(result, user);
+    }
+
     public void Logout(string userName, string clientId)
     {
         if (string.IsNullOrEmpty(userName))

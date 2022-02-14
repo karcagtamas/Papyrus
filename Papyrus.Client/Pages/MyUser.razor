@@ -1,0 +1,135 @@
+@page "/my"
+@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Client.Shared.Dialogs
+@using Papyrus.Shared.DTOs
+@using Papyrus.Shared.Helpers
+@using Karcags.Blazor.Common.Services
+@attribute [Authorize]
+@inject IUserService userService
+@inject IDialogService dialogService
+@inject IImageUploaderService imageUploaderService
+
+<PageTitle>My User</PageTitle>
+
+<div class="page-div">
+
+    @if (User is not null)
+    {
+
+        <div class="mb-3">
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">Edit</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ChangeImage">Change Image</MudButton>
+            <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="ChangePassword">Change Password</MudButton>
+        </div>
+        @if (User.ImageData.Length != 0 && Image is not null)
+        {
+            <div class="p-2 text-center">
+                <img src="@Image" alt="@User.ImageTitle" height="360" width="360" />
+            </div>
+        }
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>User Name:</b>
+            </MudText> @User.UserName
+        </div>
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>E-mail address:</b>
+            </MudText> @User.Email
+        </div>
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>Full Name:</b>
+            </MudText> @WriteHelper.WriteEmptyableField(User.FullName)
+        </div>
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>Last Login:</b>
+            </MudText> @DateHelper.DateToString(User.LastLogin)
+        </div>
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>Registration:</b>
+            </MudText> @DateHelper.DateToString(User.Registration)
+        </div>
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>Birthday:</b>
+            </MudText> @DateHelper.DateToString(User.BirthDay)
+        </div>
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>Country:</b>
+            </MudText> @WriteHelper.WriteEmptyableField(User.Country)
+        </div>
+        <div>
+            <MudText Typo="Typo.body1" Color="Color.Primary">
+                <b>Bio:</b>
+            </MudText> @WriteHelper.WriteEmptyableField(User.Bio)
+        </div>
+    }
+
+</div>
+
+@code {
+
+    [CascadingParameter]
+    private Task<AuthenticationState> AuthenticationStateTask { get; set; } = null!;
+
+    private UserDTO? User { get; set; }
+    private string? Image { get; set; }
+
+    protected override async void OnInitialized()
+    {
+        GetUser();
+        await base.OnInitializedAsync();
+    }
+
+    private async void GetUser()
+    {
+        User = await userService.Current(await AuthenticationStateTask);
+        if (User is not null && User.ImageData.Length != 0)
+        {
+            string b64 = Convert.ToBase64String(User.ImageData);
+            Image = $"data:image/gif;base64,{b64}";
+        }
+        StateHasChanged();
+    }
+
+    private async void Edit()
+    {
+        var parameters = new DialogParameters { { "UserId", User?.Id ?? "" } };
+        var dialog = dialogService.Show<UserEditDialog>("Edit User", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            GetUser();
+        }
+    }
+
+    private async void ChangeImage()
+    {
+        if (await imageUploaderService.Open(new ImageUploaderDialogInput
+        {
+            ImageUpload = async data => await userService.UpdateImage(data)
+        },
+        "Change Profile Image"))
+        {
+            GetUser();
+        }
+    }
+
+    private async void ChangePassword()
+    {
+        var parameters = new DialogParameters { };
+        var dialog = dialogService.Show<ChangePasswordDialog>("Change Password", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            GetUser();
+        }
+    }
+
+}

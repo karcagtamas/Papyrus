@@ -1,0 +1,12 @@
+#panel {
+  width: 320px;
+}
+
+#image {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+#image img {
+  width: 240px;
+}

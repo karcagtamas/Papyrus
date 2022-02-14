@@ -1,0 +1,84 @@
+@page "/users"
+@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.DTOs
+@using Papyrus.Shared.Helpers
+@using Microsoft.IdentityModel.Tokens
+@attribute [Authorize]
+@inject IUserService userService
+
+<PageTitle>Users</PageTitle>
+<div class="page-div">
+    <div class="mb-3">
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => SetDisableStatus(true)"
+            Disabled="SelectedItems.IsNullOrEmpty()">Disable</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="() => SetDisableStatus(false)"
+            Disabled="SelectedItems.IsNullOrEmpty()">Enable</MudButton>
+    </div>
+    <MudTable @bind-SelectedItems="SelectedItems" Items="UserList" Loading="Loading" Dense="true" Elevation="2"
+        MultiSelection="true" FixedHeader="true">
+        <HeaderContent>
+            <MudTh>
+                <MudText Color="Color.Primary">Id</MudText>
+            </MudTh>
+            <MudTh>
+                <MudText Color="Color.Primary">User Name</MudText>
+            </MudTh>
+            <MudTh>
+                <MudText Color="Color.Primary">E-mail</MudText>
+            </MudTh>
+            <MudTh>
+                <MudText Color="Color.Primary">Full Name</MudText>
+            </MudTh>
+            <MudTh>
+                <MudText Color="Color.Primary">Last Login</MudText>
+            </MudTh>
+            <MudTh>
+                <MudText Color="Color.Primary">Registration</MudText>
+            </MudTh>
+            <MudTh>
+                <MudText Color="Color.Primary">Disabled</MudText>
+            </MudTh>
+        </HeaderContent>
+
+        <RowTemplate>
+            <MudTd DataLabel="Id">@context.Id</MudTd>
+            <MudTd DataLabel="User Name">@context.UserName</MudTd>
+            <MudTd DataLabel="E-mail">@context.Email</MudTd>
+            <MudTd DataLabel="Full Name">@context.FullName</MudTd>
+            <MudTd DataLabel="Last Login">@DateHelper.DateToString(context.LastLogin)</MudTd>
+            <MudTd DataLabel="Registration">@DateHelper.DateToString(context.Registration)</MudTd>
+            <MudTd DataLabel="Disabled">@(context.Disabled ? "Yes" : "No")</MudTd>
+        </RowTemplate>
+    </MudTable>
+</div>
+
+
+@code {
+
+    private List<UserListDTO> UserList { get; set; } = new();
+    private bool Loading { get; set; } = true;
+
+    private HashSet<UserListDTO> SelectedItems { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetUsers();
+    }
+
+    private async Task GetUsers()
+    {
+        UserList = await userService.GetAll<UserListDTO>("UserName");
+        Loading = false;
+    }
+
+    private async Task SetDisableStatus(bool status)
+    {
+        if (await userService.SetDisableStatus(SelectedItems.Where(x => x.Disabled != status).Select(x => x.Id).ToList(),
+        status))
+        {
+            SelectedItems = new HashSet<UserListDTO>();
+            await GetUsers();
+        }
+    }
+
+}
