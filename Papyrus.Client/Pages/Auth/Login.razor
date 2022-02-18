@@ -20,15 +20,15 @@
 
         <MudForm @ref="form" Model="Model">
             <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
-                For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
+                          For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
             </MudTextField>
             <MudTextField T="string" Label="Password" Variant="Variant.Text" InputType="@passwordInput"
-                Adornment="Adornment.End" AdornmentIcon="@passwordInputIcon" OnAdornmentClick="SwitchPasswordVisibility"
-                Required="true" For="@(() => Model.Password)" @bind-Value="Model.Password" FullWidth="true">
+                          Adornment="Adornment.End" AdornmentIcon="@passwordInputIcon" OnAdornmentClick="SwitchPasswordVisibility"
+                          Required="true" For="@(() => Model.Password)" @bind-Value="Model.Password" FullWidth="true">
             </MudTextField>
             <div class="text-center mt-3 mb-3">
                 <MudButton Color="Color.Primary" Class="mt-3" Variant="Variant.Filled" OnClick="Submit"
-                    StartIcon="@Icons.Filled.Login">
+                           StartIcon="@Icons.Filled.Login">
                     Sign In
                 </MudButton>
             </div>

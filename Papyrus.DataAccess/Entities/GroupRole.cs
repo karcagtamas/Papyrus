@@ -10,7 +10,7 @@ public class GroupRole : IEntity<int>
     public int Id { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = default!;
 
     [Required]
     public int GroupId { get; set; }
@@ -63,6 +63,6 @@ public class GroupRole : IEntity<int>
     [Required]
     public bool ReadOnly { get; set; }
 
-    public virtual Group Group { get; set; }
-    public virtual ICollection<GroupMember> Members { get; set; }
+    public virtual Group Group { get; set; } = default!;
+    public virtual ICollection<GroupMember> Members { get; set; } = default!;
 }

@@ -18,6 +18,14 @@ public class NoteWebContext : IdentityDbContext<User, Role, string>
 
     public NoteWebContext(DbContextOptions<NoteWebContext> options) : base(options)
     {
+        RefreshTokens = default!;
+        Groups = default!;
+        GroupActionLogs = default!;
+        GroupMembers = default!;
+        GroupRoles = default!;
+        Notes = default!;
+        NoteActionLogs = default!;
+        Tags = default!;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

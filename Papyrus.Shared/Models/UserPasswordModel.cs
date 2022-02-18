@@ -5,8 +5,9 @@ namespace Papyrus.Shared.Models;
 public class UserPasswordModel
 {
     [Required(ErrorMessage = "Field is required")]
-    public string OldPassword { get; set; }
+    public string OldPassword { get; set; } = default!;
+
 
     [Required(ErrorMessage = "Field is required")]
-    public string NewPassword { get; set; }
+    public string NewPassword { get; set; } = default!;
 }

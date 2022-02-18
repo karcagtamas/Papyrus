@@ -8,7 +8,7 @@ public class RefreshToken
     public int Id { get; set; }
 
     [Required]
-    public string Token { get; set; }
+    public string Token { get; set; } = default!;
 
     [Required]
     public DateTime Expires { get; set; }
@@ -19,10 +19,10 @@ public class RefreshToken
     public DateTime? Revoked { get; set; }
 
     [Required]
-    public string UserId { get; set; }
-    public string ClientId { get; set; }
+    public string UserId { get; set; } = default!;
+    public string ClientId { get; set; } = default!;
 
-    public virtual User User { get; set; }
+    public virtual User User { get; set; } = default!;
 
 
     public bool IsExpired => DateTime.UtcNow >= Expires;

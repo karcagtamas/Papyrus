@@ -10,7 +10,7 @@ public class GroupMember : IEntity<int>
     public int Id { get; set; }
 
     [Required]
-    public string UserId { get; set; }
+    public string UserId { get; set; } = default!;
 
     [Required]
     public int GroupId { get; set; }
@@ -18,7 +18,7 @@ public class GroupMember : IEntity<int>
     [Required]
     public int RoleId { get; set; }
 
-    public virtual User User { get; set; }
-    public virtual Group Group { get; set; }
-    public virtual GroupRole Role { get; set; }
+    public virtual User User { get; set; } = default!;
+    public virtual Group Group { get; set; } = default!;
+    public virtual GroupRole Role { get; set; } = default!;
 }

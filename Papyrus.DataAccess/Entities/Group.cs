@@ -11,18 +11,18 @@ public class Group : IEntity<int>
     public int Id { get; set; }
 
     [Required]
-    public string Name { get; set; }
+    public string Name { get; set; } = default!;
 
     public DateTime Creation { get; set; }
 
     [User]
     [Required]
-    public string OwnerId { get; set; }
+    public string OwnerId { get; set; } = default!;
 
-    public virtual User Owner { get; set; }
-    public virtual ICollection<GroupMember> Members { get; set; }
-    public virtual ICollection<GroupRole> Roles { get; set; }
-    public virtual ICollection<GroupActionLog> ActionLogs { get; set; }
-    public virtual ICollection<Note> Notes { get; set; }
-    public virtual ICollection<Tag> Tags { get; set; }
+    public virtual User Owner { get; set; } = default!;
+    public virtual ICollection<GroupMember> Members { get; set; } = default!;
+    public virtual ICollection<GroupRole> Roles { get; set; } = default!;
+    public virtual ICollection<GroupActionLog> ActionLogs { get; set; } = default!;
+    public virtual ICollection<Note> Notes { get; set; } = default!;
+    public virtual ICollection<Tag> Tags { get; set; } = default!;
 }

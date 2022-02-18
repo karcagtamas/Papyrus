@@ -12,5 +12,5 @@ public class NoteActionLog : IEntity<int>
     [Required]
     public int NoteId { get; set; }
 
-    public virtual Note Note { get; set; }
+    public virtual Note Note { get; set; } = default!;
 }

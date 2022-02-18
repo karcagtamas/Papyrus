@@ -5,20 +5,30 @@ namespace Papyrus.Shared.Models;
 
 public class UserModel
 {
-    [Required(ErrorMessage = "Field is required")] public string UserName { get; set; }
+    [Required(ErrorMessage = "Field is required")]
+    public string UserName { get; set; }
 
-    [Required(ErrorMessage = "Field is required")] public string Email { get; set; }
+    [Required(ErrorMessage = "Field is required")]
+    public string Email { get; set; }
 
-    [MaxLength(100, ErrorMessage = "Max length is 100")] public string FullName { get; set; }
+    [MaxLength(100, ErrorMessage = "Max length is 100")]
+    public string FullName { get; set; }
 
     public DateTime? BirthDay { get; set; }
 
-    [MaxLength(60, ErrorMessage = "Max length is 60")] public string Country { get; set; }
+    [MaxLength(60, ErrorMessage = "Max length is 60")]
+    public string Country { get; set; }
 
-    [MaxLength(2000, ErrorMessage = "Max length is 2000")] public string Bio { get; set; }
+    [MaxLength(2000, ErrorMessage = "Max length is 2000")]
+    public string Bio { get; set; }
 
     public UserModel()
     {
+        UserName = default!;
+        Email = default!;
+        FullName = default!;
+        Country = default!;
+        Bio = default!;
     }
 
     public UserModel(UserDTO dto)

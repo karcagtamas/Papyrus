@@ -10,12 +10,12 @@
 <div class="page-div">
     <div class="mb-3">
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => SetDisableStatus(true)"
-            Disabled="SelectedItems.IsNullOrEmpty()">Disable</MudButton>
+                   Disabled="SelectedItems.IsNullOrEmpty()">Disable</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="() => SetDisableStatus(false)"
-            Disabled="SelectedItems.IsNullOrEmpty()">Enable</MudButton>
+                   Disabled="SelectedItems.IsNullOrEmpty()">Enable</MudButton>
     </div>
     <MudTable @bind-SelectedItems="SelectedItems" Items="UserList" Loading="Loading" Dense="true" Elevation="2"
-        MultiSelection="true" FixedHeader="true">
+              MultiSelection="true" FixedHeader="true">
         <HeaderContent>
             <MudTh>
                 <MudText Color="Color.Primary">Id</MudText>

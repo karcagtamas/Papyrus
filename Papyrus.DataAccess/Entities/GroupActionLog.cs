@@ -12,5 +12,5 @@ public class GroupActionLog : IEntity<int>
     [Required]
     public int GroupId { get; set; }
 
-    public virtual Group Group { get; set; }
+    public virtual Group Group { get; set; } = default!;
 }

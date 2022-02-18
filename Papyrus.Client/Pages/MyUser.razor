@@ -107,9 +107,9 @@
     private async void ChangeImage()
     {
         if (await imageUploaderService.Open(new ImageUploaderDialogInput
-        {
-            ImageUpload = async data => await userService.UpdateImage(data)
-        },
+            {
+                ImageUpload = async data => await userService.UpdateImage(data)
+            },
         "Change Profile Image"))
         {
             GetUser();
