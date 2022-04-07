@@ -44,11 +44,11 @@ services:
     networks:
       - app
 
-    adminer:
-      image: adminer
-      depends_on:
-        - database
-      ports:
-        - 0.0.0.0:6767:8080
-      networks:
-        - app
+  adminer:
+    image: adminer
+    depends_on:
+      - database
+    ports:
+      - 0.0.0.0:6767:8080
+    networks:
+      - app
