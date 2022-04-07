@@ -1,0 +1,54 @@
+version: '3.4'
+
+volumes:
+  db:
+
+networks:
+  app:
+
+services:
+  database:
+    image: mariadb
+    ports:
+      - "0.0.0.0:3307:3306"
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: papyrus
+      MYSQL_PASSWORD: papyrus
+      MYSQL_DATABASE: papyrus
+    networks:
+      - app
+    container_name: papyrus-database
+  
+  client:
+    image: karcagtamas/papyrus_client
+    networks:
+      - app
+    container_name: papyrus-client
+    ports:
+      - "0.0.0.0:9840:80"
+
+  backend:
+    image: karcagtamas/papyrus
+    container_name: papyrus
+    depends_on:
+      - database
+      - client
+    ports:
+      - "0.0.0.0:9888:7282"
+      - "0.0.0.0:9889:5282"
+    environment:
+      - DBHOST=database
+    networks:
+      - app
+
+    adminer:
+      image: adminer
+      depends_on:
+        - database
+      ports:
+        - 0.0.0.0:6767:8080
+      networks:
+        - app

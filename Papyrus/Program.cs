@@ -125,7 +125,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseMiddleware<ExceptionHandler>();
 
-app.UseHttpsRedirection();
+if (Boolean.TrueString.Equals(builder.Configuration["HttpsRedirect"]))
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseCors("Policy");
 
@@ -135,7 +138,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || Boolean.TrueString.Equals(builder.Configuration["Migration"]))
 {
     app.Migrate<NoteWebContext>();
 }
