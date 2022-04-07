@@ -1,13 +1,13 @@
 @page "/my"
 @using Papyrus.Client.Services.Interfaces
-@using Papyrus.Client.Shared.Dialogs
 @using Papyrus.Shared.DTOs
-@using Papyrus.Shared.Helpers
 @using Karcags.Blazor.Common.Services
+@using Papyrus.Client.Shared.Dialogs
+@using Papyrus.Shared.Helpers
 @attribute [Authorize]
-@inject IUserService userService
-@inject IDialogService dialogService
-@inject IImageUploaderService imageUploaderService
+@inject IUserService _userService
+@inject IDialogService _dialogService
+@inject IImageUploaderService _imageUploaderService
 
 <PageTitle>My User</PageTitle>
 
@@ -83,7 +83,7 @@
 
     private async void GetUser()
     {
-        User = await userService.Current();
+        User = await _userService.Current();
         if (User is not null && User.ImageData.Length != 0)
         {
             string b64 = Convert.ToBase64String(User.ImageData);
@@ -95,7 +95,7 @@
     private async void Edit()
     {
         var parameters = new DialogParameters { { "UserId", User?.Id ?? "" } };
-        var dialog = dialogService.Show<UserEditDialog>("Edit User", parameters);
+        var dialog = _dialogService.Show<UserEditDialog>("Edit User", parameters);
         var result = await dialog.Result;
 
         if (!result.Cancelled)
@@ -106,9 +106,9 @@
 
     private async void ChangeImage()
     {
-        if (await imageUploaderService.Open(new ImageUploaderDialogInput
+        if (await _imageUploaderService.Open(new ImageUploaderDialogInput
             {
-                ImageUpload = async data => await userService.UpdateImage(data)
+                ImageUpload = async data => await _userService.UpdateImage(data)
             },
         "Change Profile Image"))
         {
@@ -119,7 +119,7 @@
     private async void ChangePassword()
     {
         var parameters = new DialogParameters { };
-        var dialog = dialogService.Show<ChangePasswordDialog>("Change Password", parameters);
+        var dialog = _dialogService.Show<ChangePasswordDialog>("Change Password", parameters);
         var result = await dialog.Result;
 
         if (!result.Cancelled)

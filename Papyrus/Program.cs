@@ -31,10 +31,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 // Add AutoMapper
-var mapperConfig = new MapperConfiguration(conf =>
-{
-    conf.AddProfile<UserMapper>();
-});
+var mapperConfig = new MapperConfiguration(conf => { conf.AddProfile<UserMapper>(); });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
 // Cors
@@ -43,28 +40,30 @@ builder.Services.AddCors(opt =>
     opt.AddPolicy("Policy", cb =>
     {
         cb.AllowAnyHeader()
-        .AllowAnyMethod()
-        .AllowCredentials()
-        .WithOrigins(builder.Configuration["Client:Secure"], builder.Configuration["Client:Basic"]);
+            .AllowAnyMethod()
+            .AllowCredentials()
+            .WithOrigins(builder.Configuration["Client:Secure"], builder.Configuration["Client:Basic"]);
     });
 });
 
 // Add EF Core
 var connString = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContextPool<NoteWebContext>(opt => opt.UseLazyLoadingProxies().UseMySql(connString, ServerVersion.AutoDetect(connString), builder => builder.MigrationsAssembly("Papyrus")));
+builder.Services.AddDbContextPool<NoteWebContext>(opt =>
+    opt.UseLazyLoadingProxies()
+        .UseMySql(connString, ServerVersion.AutoDetect(connString), b => b.MigrationsAssembly("Papyrus")));
 
 // Add Identity
 builder.Services.AddIdentity<User, Role>(options =>
-{
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireUppercase = true;
-    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1d);
-    options.Lockout.MaxFailedAccessAttempts = 5;
-})
-.AddRoles<Role>()
-.AddEntityFrameworkStores<NoteWebContext>()
-.AddDefaultTokenProviders();
+    {
+        options.Password.RequiredLength = 8;
+        options.Password.RequireNonAlphanumeric = true;
+        options.Password.RequireUppercase = true;
+        options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1d);
+        options.Lockout.MaxFailedAccessAttempts = 5;
+    })
+    .AddRoles<Role>()
+    .AddEntityFrameworkStores<NoteWebContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
 

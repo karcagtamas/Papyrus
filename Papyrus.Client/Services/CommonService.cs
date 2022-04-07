@@ -1,6 +1,6 @@
-using NoteWeb.Client.Services.Interfaces;
+using Papyrus.Client.Services.Interfaces;
 
-namespace NoteWeb.Client.Services;
+namespace Papyrus.Client.Services;
 
 public class CommonService : ICommonService
 {

@@ -8,7 +8,7 @@ using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.Models;
 
-namespace NoteWeb.Logic.Services;
+namespace Papyrus.Logic.Services;
 
 public class UserService : MapperRepository<User, string>, IUserService
 {

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using NoteWeb.Logic.Services.Interfaces;
-using NoteWeb.Shared.DTOs;
-using NoteWeb.Shared.Models;
+using Papyrus.Logic.Services.Interfaces;
+using Papyrus.Shared.DTOs;
+using Papyrus.Shared.Models;
 
-namespace NoteWeb.Controllers;
+namespace Papyrus.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
