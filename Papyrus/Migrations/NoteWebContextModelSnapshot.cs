@@ -267,12 +267,14 @@ namespace Papyrus.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<int?>("GroupId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("Public")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
@@ -307,6 +309,7 @@ namespace Papyrus.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ClientId")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("Created")
@@ -377,12 +380,15 @@ namespace Papyrus.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<int?>("GroupId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int?>("ParentId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -420,6 +426,7 @@ namespace Papyrus.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("FullName")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
@@ -447,6 +454,7 @@ namespace Papyrus.Migrations
                         .HasColumnType("varchar(256)");
 
                     b.Property<string>("OsirisId")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("PasswordHash")
@@ -605,12 +613,14 @@ namespace Papyrus.Migrations
                     b.HasOne("Papyrus.DataAccess.Entities.Group", "Group")
                         .WithMany("Notes")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
 
                     b.HasOne("Papyrus.DataAccess.Entities.User", "User")
                         .WithMany("Notes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
 
                     b.Navigation("Group");
 
@@ -644,12 +654,14 @@ namespace Papyrus.Migrations
                     b.HasOne("Papyrus.DataAccess.Entities.Group", "Group")
                         .WithMany("Tags")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
 
                     b.HasOne("Papyrus.DataAccess.Entities.Tag", "Parent")
                         .WithMany("Children")
                         .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.ClientCascade);
+                        .OnDelete(DeleteBehavior.ClientCascade)
+                        .IsRequired();
 
                     b.Navigation("Group");
 

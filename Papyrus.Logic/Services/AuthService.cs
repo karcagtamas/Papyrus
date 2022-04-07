@@ -62,7 +62,8 @@ public class AuthService : IAuthService
             Email = model.Email,
             LastLogin = DateTime.Now,
             Registration = DateTime.Now,
-            Disabled = false
+            Disabled = false,
+            OsirisId = "ALMA"
         };
 
         var result = await userManager.CreateAsync(user, model.Password);
@@ -124,7 +125,8 @@ public class AuthService : IAuthService
 
         return new TokenDTO
         {
-            AccessToken = tokenService.BuildAccessToken(userService.GetMapped<UserTokenDTO>(user.Id), await userManager.GetRolesAsync(user)),
+            AccessToken = tokenService.BuildAccessToken(userService.GetMapped<UserTokenDTO>(user.Id),
+                await userManager.GetRolesAsync(user)),
             RefreshToken = refreshToken.Token,
             ClientId = clientId,
             UserId = user.Id
