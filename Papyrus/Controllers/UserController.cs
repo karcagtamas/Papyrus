@@ -33,7 +33,7 @@ public class UserController : ControllerBase
     [HttpPut("{id}")]
     public void Update(string id, [FromBody] UserModel model)
     {
-        userService.UpdateByModel(id, model);
+        userService.Update(id, model);
     }
 
     [HttpGet("Current")]
@@ -45,7 +45,7 @@ public class UserController : ControllerBase
     [HttpGet("Exists")]
     public bool Exists([FromQuery] string userName, [FromQuery] string email)
     {
-        return userService.IsExist(userName, email);
+        return userService.IsExist(userName, email, true);
     }
 
     [HttpPost("Disable")]
@@ -61,8 +61,8 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("Password")]
-    public void UpdatePassword([FromBody] UserPasswordModel model)
+    public async Task UpdatePassword([FromBody] UserPasswordModel model)
     {
-        userService.UpdatePassword(model);
+        await userService.UpdatePassword(model);
     }
 }

@@ -31,7 +31,7 @@ public static class WriteHelper
     /// </summary>
     /// <param name="val">Text value</param>
     /// <returns>Not empty text or N/A string</returns>
-    public static string WriteEmptyableField(string val)
+    public static string WriteEmptyableField(string? val)
     {
         return string.IsNullOrEmpty(val) ? "N/A" : val;
     }

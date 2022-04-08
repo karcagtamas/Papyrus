@@ -49,7 +49,7 @@ public class AuthService : IAuthService
 
     public async Task Register(RegistrationModel model)
     {
-        if (userService.IsExist(model.UserName, model.Email))
+        if (userService.IsExist(model.UserName, model.Email, false))
         {
             throw new ArgumentException("User already created");
         }

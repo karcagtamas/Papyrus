@@ -12,23 +12,15 @@ public class UserModel
     public string Email { get; set; }
 
     [MaxLength(100, ErrorMessage = "Max length is 100")]
-    public string FullName { get; set; }
+    public string? FullName { get; set; }
 
     public DateTime? BirthDay { get; set; }
-
-    [MaxLength(60, ErrorMessage = "Max length is 60")]
-    public string Country { get; set; }
-
-    [MaxLength(2000, ErrorMessage = "Max length is 2000")]
-    public string Bio { get; set; }
 
     public UserModel()
     {
         UserName = default!;
         Email = default!;
         FullName = default!;
-        Country = default!;
-        Bio = default!;
     }
 
     public UserModel(UserDTO dto)
@@ -37,7 +29,5 @@ public class UserModel
         Email = dto.Email;
         FullName = dto.FullName;
         BirthDay = dto.BirthDay;
-        Country = dto.Country;
-        Bio = dto.Bio;
     }
 }

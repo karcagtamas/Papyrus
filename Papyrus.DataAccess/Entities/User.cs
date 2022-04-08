@@ -15,7 +15,7 @@ public class User : IdentityUser<string>, IEntity<string>
     public DateTime LastLogin { get; set; }
 
     [MaxLength(100)]
-    public string FullName { get; set; } = default!;
+    public string? FullName { get; set; } = default!;
 
     public DateTime? BirthDay { get; set; }
 

@@ -39,7 +39,7 @@ public class AuthService : IAuthService
 
         await tokenService.SetUser(user);
 
-        ((NoteWebAuthStateProvider)authenticationStateProvider).MarkUserAsAuthenticated();
+        ((PapyrusAuthStateProvider)authenticationStateProvider).MarkUserAsAuthenticated();
 
         return user.UserId;
     }
@@ -63,7 +63,7 @@ public class AuthService : IAuthService
     {
         await tokenService.ClearUser();
 
-        ((NoteWebAuthStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
+        ((PapyrusAuthStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
     }
 
     public void NotAuthorized()

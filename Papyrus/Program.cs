@@ -24,7 +24,7 @@ builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Util
 
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IUtilsService, UtilsService<NoteWebContext>>();
+builder.Services.AddScoped<IUtilsService, UtilsService<PapyrusContext>>();
 builder.Services.AddScoped<ILoggerService, LoggerService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -48,7 +48,7 @@ builder.Services.AddCors(opt =>
 
 // Add EF Core
 var connString = builder.Configuration.GetConnectionString("Default");
-builder.Services.AddDbContextPool<NoteWebContext>(opt =>
+builder.Services.AddDbContextPool<PapyrusContext>(opt =>
     opt.UseLazyLoadingProxies()
         .UseMySql(connString, ServerVersion.AutoDetect(connString), b => b.MigrationsAssembly("Papyrus")));
 
@@ -62,7 +62,7 @@ builder.Services.AddIdentity<User, Role>(options =>
         options.Lockout.MaxFailedAccessAttempts = 5;
     })
     .AddRoles<Role>()
-    .AddEntityFrameworkStores<NoteWebContext>()
+    .AddEntityFrameworkStores<PapyrusContext>()
     .AddDefaultTokenProviders();
 
 builder.Services.AddControllers();
@@ -145,7 +145,7 @@ app.MapControllers();
 
 if (app.Environment.IsDevelopment() || Boolean.TrueString.Equals(builder.Configuration["Migration"]))
 {
-    app.Migrate<NoteWebContext>();
+    app.Migrate<PapyrusContext>();
 }
 
 app.SeedRoles();

@@ -5,11 +5,11 @@ using Papyrus.Client.Services.Interfaces;
 
 namespace Papyrus.Client;
 
-public class NoteWebAuthStateProvider : AuthenticationStateProvider
+public class PapyrusAuthStateProvider : AuthenticationStateProvider
 {
     private readonly ITokenService tokenService;
 
-    public NoteWebAuthStateProvider(ITokenService tokenService)
+    public PapyrusAuthStateProvider(ITokenService tokenService)
     {
         this.tokenService = tokenService;
     }

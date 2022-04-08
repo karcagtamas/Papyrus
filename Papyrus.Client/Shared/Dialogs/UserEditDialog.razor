@@ -14,12 +14,6 @@
                 <MudTextField T="string" Label="Email" Variant="Variant.Text" InputType="InputType.Email" Required="true"
                               For="@(() => Model.Email)" @bind-Value="Model.Email" FullWidth="true">
                 </MudTextField>
-                <MudTextField T="string" Label="Country" Variant="Variant.Text"
-                              For="@(() => Model.Country)" @bind-Value="Model.Country" FullWidth="true">
-                </MudTextField>
-                <MudTextField T="string" Label="Bio" Variant="Variant.Text" Lines="5"
-                              For="@(() => Model.Bio)" @bind-Value="Model.Bio" FullWidth="true">
-                </MudTextField>
                 <MudDatePicker Label="Birth Day" Variant="Variant.Text"
                                For="@(() => Model.BirthDay)" @bind-Date="Model.BirthDay">
                 </MudDatePicker>
@@ -47,6 +41,7 @@
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
 
+    private UserDTO DTO { get; set; }
     private UserModel Model { get; set; } = new();
     private MudForm Form { get; set; } = null!;
 
@@ -61,7 +56,8 @@
     {
         if (!string.IsNullOrEmpty(UserId))
         {
-            Model = new UserModel(await UserService.Get<UserDTO>(UserId));
+            DTO = await UserService.Get<UserDTO>(UserId);
+            Model = new UserModel(DTO);
             StateHasChanged();
         }
     }
@@ -71,7 +67,7 @@
         await Form.Validate();
         if (!Form.IsValid || string.IsNullOrEmpty(UserId)) return;
 
-        if (await UserService.Exists(Model.UserName, Model.Email))
+        if (UserNameOrEmailChanged() && await UserService.Exists(Model.UserName, Model.Email))
         {
             Snackbar.Add($"User is already exists with this user name [{Model.UserName}] or e-mail address [{Model.Email}]", Severity.Error);
             return;
@@ -86,6 +82,11 @@
     private void Cancel()
     {
         Dialog.Cancel();
+    }
+
+    private bool UserNameOrEmailChanged()
+    {
+        return Model.UserName != DTO.UserName || Model.Email != DTO.Email;
     }
 
 }

@@ -9,7 +9,7 @@ using Papyrus.DataAccess;
 
 namespace Papyrus.Migrations
 {
-    [DbContext(typeof(NoteWebContext))]
+    [DbContext(typeof(PapyrusContext))]
     partial class NoteWebContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

@@ -5,7 +5,7 @@ using Papyrus.DataAccess.Entities;
 
 namespace Papyrus.DataAccess;
 
-public class NoteWebContext : IdentityDbContext<User, Role, string>
+public class PapyrusContext : IdentityDbContext<User, Role, string>
 {
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Group> Groups { get; set; }
@@ -16,7 +16,7 @@ public class NoteWebContext : IdentityDbContext<User, Role, string>
     public DbSet<NoteActionLog> NoteActionLogs { get; set; }
     public DbSet<Tag> Tags { get; set; }
 
-    public NoteWebContext(DbContextOptions<NoteWebContext> options) : base(options)
+    public PapyrusContext(DbContextOptions<PapyrusContext> options) : base(options)
     {
         RefreshTokens = default!;
         Groups = default!;

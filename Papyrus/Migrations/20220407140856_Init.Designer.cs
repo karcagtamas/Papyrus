@@ -10,7 +10,7 @@ using Papyrus.DataAccess;
 
 namespace Papyrus.Migrations
 {
-    [DbContext(typeof(NoteWebContext))]
+    [DbContext(typeof(PapyrusContext))]
     [Migration("20220407140856_Init")]
     partial class Init
     {
