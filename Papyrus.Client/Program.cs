@@ -1,10 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
-using Karcags.Blazor.Common.Http;
-using Karcags.Blazor.Common.Models;
-using Karcags.Blazor.Common.Services;
-using Karcags.Blazor.Common.Store;
+using KarcagS.Blazor.Common.Http;
+using KarcagS.Blazor.Common.Models;
+using KarcagS.Blazor.Common.Services;
+using KarcagS.Blazor.Common.Store;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -24,7 +24,7 @@ builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, PapyrusAuthStateProvider>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-builder.Services.AddHttpService<ServerExceptionDTO, ValidationErrorDTO>(config =>
+builder.Services.AddHttpService(config =>
 {
     config.IsTokenBearer = true;
     config.UnauthorizedPath = "/logout";
@@ -45,16 +45,7 @@ builder.Services.AddStoreService(async (storeService, localStorage) =>
         storeService.Add("user", user);
     }
 });
-builder.Services.AddBlazoredLocalStorage(config =>
-{
-    config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
-    config.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    config.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
-    config.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    config.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
-    config.JsonSerializerOptions.WriteIndented = false;
-});
+
 builder.Services.AddScoped<ICommonService, CommonService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IHelperService, HelperService>();
@@ -75,6 +66,17 @@ builder.Services.AddMudServices(config =>
     config.SnackbarConfiguration.HideTransitionDuration = 500;
     config.SnackbarConfiguration.ShowTransitionDuration = 500;
     config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+});
+
+builder.Services.AddBlazoredLocalStorage(config =>
+{
+    config.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+    config.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+    config.JsonSerializerOptions.IgnoreReadOnlyProperties = true;
+    config.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    config.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    config.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip;
+    config.JsonSerializerOptions.WriteIndented = false;
 });
 
 ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;

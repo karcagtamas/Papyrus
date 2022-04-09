@@ -1,4 +1,4 @@
-using Karcags.Common.Tools.Repository;
+using KarcagS.Common.Tools.Repository;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Shared.Models;
 

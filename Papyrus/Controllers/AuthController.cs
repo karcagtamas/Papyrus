@@ -32,6 +32,12 @@ public class AuthController : ControllerBase
         await authService.Register(model);
     }
 
+    [HttpPut("Logout")]
+    public void Logout([FromBody] string clientId)
+    {
+        authService.Logout(clientId);
+    }
+
     [AllowAnonymous]
     [HttpGet("Refresh")]
     public async Task<TokenDTO> Refresh([FromQuery] string refreshToken, [FromQuery] string clientId)

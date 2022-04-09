@@ -1,5 +1,5 @@
-﻿using Karcags.Blazor.Common.Components.ImageUploader;
-using Karcags.Blazor.Common.Services;
+﻿using KarcagS.Blazor.Common.Components.ImageUploader;
+using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Interfaces;

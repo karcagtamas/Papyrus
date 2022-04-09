@@ -1,4 +1,4 @@
-using Karcags.Common.Tools.Entities;
+using KarcagS.Common.Tools.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess.Entities;

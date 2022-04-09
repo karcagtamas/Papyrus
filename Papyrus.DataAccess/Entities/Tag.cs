@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-using Karcags.Common.Tools.Entities;
+using KarcagS.Common.Tools.Entities;
 
 namespace Papyrus.DataAccess.Entities;
 

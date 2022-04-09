@@ -1,7 +1,8 @@
 using System.Globalization;
 using AutoMapper;
-using Karcags.Common.Tools.Repository;
-using Karcags.Common.Tools.Services;
+using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Common.Tools.Repository;
+using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
@@ -10,11 +11,11 @@ using Papyrus.Shared.Models;
 
 namespace Papyrus.Logic.Services;
 
-public class UserService : MapperRepository<User, string>, IUserService
+public class UserService : MapperRepository<User, string, string>, IUserService
 {
     private readonly UserManager<User> userManager;
 
-    public UserService(PapyrusContext context, ILoggerService logger, IUtilsService utils, IMapper mapper, UserManager<User> userManager) : base(context, logger, utils, mapper, "User")
+    public UserService(PapyrusContext context, ILoggerService logger, IUtilsService<string> utils, IMapper mapper, UserManager<User> userManager) : base(context, logger, utils, mapper, "User")
     {
         this.userManager = userManager;
     }
@@ -41,13 +42,13 @@ public class UserService : MapperRepository<User, string>, IUserService
 
     public T GetCurrent<T>()
     {
-        return GetMapped<T>(Utils.GetCurrentUserId<string>());
+        return GetMapped<T>(Utils.GetCurrentUserId() ?? "");
     }
 
     public bool IsExist(string userName, string email, bool ignoreCurrent)
     {
         return userManager.Users
-            .Where(user => ignoreCurrent && user.Id != Utils.GetCurrentUserId<string>())
+            .Where(user => ignoreCurrent && user.Id != Utils.GetCurrentUserId())
             .Any(user => user.Email == email || user.UserName == userName);
     }
 
@@ -66,7 +67,7 @@ public class UserService : MapperRepository<User, string>, IUserService
 
     public void UpdateImage(byte[] image)
     {
-        var user = Utils.GetCurrentUser<User, string>();
+        var user = Utils.GetCurrentUser<User>();
         user.ImageData = image;
         user.ImageTitle = DateTime.Now.ToString(CultureInfo.InvariantCulture);
         Update(user);
@@ -75,23 +76,23 @@ public class UserService : MapperRepository<User, string>, IUserService
 
     public async Task UpdatePassword(UserPasswordModel model)
     {
-        var user = Utils.GetCurrentUser<User, string>();
+        var user = Utils.GetCurrentUser<User>();
         if (await userManager.CheckPasswordAsync(user, model.OldPassword))
         {
             if (model.NewPassword == model.OldPassword)
             {
-                throw new ArgumentException("Passwords must be different");
+                throw new ServerException("Passwords must be different");
             }
 
             var result = await userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword);
             if (!result.Succeeded)
             {
-                throw new ArgumentException("Invalid password");
+                throw new ServerException("Invalid password");
             }
         }
         else
         {
-            throw new ArgumentException("Invalid old password");
+            throw new ServerException("Invalid old password");
         }
     }
 
@@ -101,17 +102,17 @@ public class UserService : MapperRepository<User, string>, IUserService
 
         if (user is null)
         {
-            throw new ArgumentException($"User not found");
+            throw new ServerException($"User not found");
         }
 
         if (user.UserName != model.UserName && GetByName(user.UserName) is not null)
         {
-            throw new ArgumentException($"User already exists with this name: {model.UserName}");
+            throw new ServerException($"User already exists with this name: {model.UserName}");
         }
 
         if (user.Email != model.Email && GetByEmail(model.Email) is not null) 
         {
-            throw new ArgumentException($"User already exists with this e-mail address: {model.Email}");
+            throw new ServerException($"User already exists with this e-mail address: {model.Email}");
         }
 
         UpdateByModel(id, model);

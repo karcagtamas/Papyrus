@@ -1,5 +1,5 @@
 using Blazored.LocalStorage;
-using Karcags.Blazor.Common.Store;
+using KarcagS.Blazor.Common.Store;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
 
@@ -80,6 +80,11 @@ public class TokenService : ITokenService
         return storeService.IsExists(UserKey);
     }
 
+    public async Task<string> GetClientId()
+    {
+        return await localStorageService.GetItemAsync<string>(ClientIdKey);
+    }
+
     private async Task<string> GetAccessToken()
     {
         return await localStorageService.GetItemAsync<string>(AccessTokenKey);
@@ -88,10 +93,5 @@ public class TokenService : ITokenService
     private async Task<string> GetRefreshToken()
     {
         return await localStorageService.GetItemAsync<string>(RefreshTokenKey);
-    }
-
-    private async Task<string> GetClientId()
-    {
-        return await localStorageService.GetItemAsync<string>(ClientIdKey);
     }
 }

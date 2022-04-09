@@ -9,4 +9,5 @@ public interface ITokenService
     Task SetUser(TokenDTO dto);
     Task ClearUser();
     bool UserInStore();
+    Task<string> GetClientId();
 }

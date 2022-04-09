@@ -1,3 +1,5 @@
+using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Enums;
@@ -13,14 +15,16 @@ public class AuthService : IAuthService
     private readonly RoleManager<Role> roleManager;
     private readonly IUserService userService;
     private readonly ITokenService tokenService;
+    private readonly IUtilsService<string> utils;
 
     public AuthService(UserManager<User> userManager, RoleManager<Role> roleManager, IUserService userService,
-        ITokenService tokenService)
+        ITokenService tokenService, IUtilsService<string> utils)
     {
         this.userManager = userManager;
         this.roleManager = roleManager;
         this.userService = userService;
         this.tokenService = tokenService;
+        this.utils = utils;
     }
 
     public async Task<TokenDTO> Login(LoginModel model)
@@ -29,16 +33,16 @@ public class AuthService : IAuthService
 
         if (user is null)
         {
-            throw new ArgumentException("User not found");
+            throw new ServerException("User not found");
         }
 
         if (user.Disabled)
         {
-            throw new ArgumentException("User is disabled");
+            throw new ServerException("User is disabled");
         }
 
         if (!await userManager.CheckPasswordAsync(user, model.Password))
-            throw new ArgumentException("Incorrect username or password");
+            throw new ServerException("Incorrect username or password");
 
         user.LastLogin = DateTime.Now;
         userService.Update(user);
@@ -51,7 +55,7 @@ public class AuthService : IAuthService
     {
         if (userService.IsExist(model.UserName, model.Email, false))
         {
-            throw new ArgumentException("User already created");
+            throw new ServerException("User already created");
         }
 
         var user = new User
@@ -71,18 +75,13 @@ public class AuthService : IAuthService
         await AddDefaultRoleByResult(result, user);
     }
 
-    public void Logout(string userName, string clientId)
+    public void Logout(string clientId)
     {
-        if (string.IsNullOrEmpty(userName))
-        {
-            throw new ArgumentException("User is not logged in");
-        }
-
-        var user = userService.GetByName(userName);
+        var user = utils.GetCurrentUser<User>();
 
         if (user is null)
         {
-            throw new ArgumentException("User does not exist");
+            throw new ServerException("User does not exist");
         }
 
         foreach (var token in user.RefreshTokens)

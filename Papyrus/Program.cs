@@ -1,8 +1,9 @@
 using System.Text;
 using AutoMapper;
-using Karcags.Common.Middlewares;
-using Karcags.Common.Tools;
-using Karcags.Common.Tools.Services;
+using KarcagS.Common.Middlewares;
+using KarcagS.Common.Tools;
+using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -24,8 +25,8 @@ builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Util
 
 // Add services to the container.
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-builder.Services.AddScoped<IUtilsService, UtilsService<PapyrusContext>>();
-builder.Services.AddScoped<ILoggerService, LoggerService>();
+builder.Services.AddScoped<IUtilsService<string>, UtilsService<PapyrusContext, string>>();
+builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -65,7 +66,7 @@ builder.Services.AddIdentity<User, Role>(options =>
     .AddEntityFrameworkStores<PapyrusContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddControllers();
+builder.Services.AddModelValidatedControllers();
 
 // Auth
 builder.Services
@@ -128,9 +129,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseMiddleware<ExceptionHandler>();
+app.UseHttpInterceptor();
 
-if (Boolean.TrueString.Equals(builder.Configuration["HttpsRedirect"]))
+if (bool.TrueString.Equals(builder.Configuration["HttpsRedirect"]))
 {
     app.UseHttpsRedirection();
 }
@@ -143,7 +144,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-if (app.Environment.IsDevelopment() || Boolean.TrueString.Equals(builder.Configuration["Migration"]))
+if (app.Environment.IsDevelopment() || bool.TrueString.Equals(builder.Configuration["Migration"]))
 {
     app.Migrate<PapyrusContext>();
 }

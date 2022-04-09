@@ -1,6 +1,5 @@
-using Karcags.Blazor.Common.Http;
-using Karcags.Blazor.Common.Models;
-using Microsoft.AspNetCore.Components.Authorization;
+using KarcagS.Blazor.Common.Http;
+using KarcagS.Blazor.Common.Models;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
@@ -13,11 +12,11 @@ public class UserService : HttpCall<string>, IUserService
     {
     }
 
-    public async Task<UserDTO> Current()
+    public async Task<UserDTO?> Current()
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Current"));
 
-        return await Http.Get<UserDTO>(settings);
+        return await Http.Get<UserDTO>(settings).ExecuteWithResult();
     }
 
     public async Task<bool> Exists(string userName, string email)
@@ -28,7 +27,7 @@ public class UserService : HttpCall<string>, IUserService
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "Exists")).AddQueryParams(queryParams);
 
-        return await Http.GetBool(settings);
+        return await Http.GetBool(settings).ExecuteWithResult();
     }
 
     public async Task<bool> SetDisableStatus(List<string> ids, bool status)
@@ -37,7 +36,7 @@ public class UserService : HttpCall<string>, IUserService
 
         var body = new HttpBody<UserDisableStatusModel>(new UserDisableStatusModel { Ids = ids, Status = status });
 
-        return await Http.Post(settings, body);
+        return await Http.Post(settings, body).Execute();
     }
 
     public async Task<bool> UpdateImage(byte[] image)
@@ -46,7 +45,7 @@ public class UserService : HttpCall<string>, IUserService
 
         var body = new HttpBody<byte[]>(image);
 
-        return await Http.Put(settings, body);
+        return await Http.Put(settings, body).Execute();
     }
 
     public async Task<bool> UpdatePassword(UserPasswordModel model)
@@ -55,6 +54,6 @@ public class UserService : HttpCall<string>, IUserService
 
         var body = new HttpBody<UserPasswordModel>(model);
 
-        return await Http.Put(settings, body);
+        return await Http.Put(settings, body).Execute();
     }
 }

@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using KarcagS.Common.Tools.HttpInterceptor;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -72,7 +73,7 @@ public class TokenService : ITokenService
 
         if (user is null)
         {
-            throw new ArgumentException("The refresh token is invalid");
+            throw new ServerException("The refresh token is invalid");
         }
 
         /*
@@ -86,7 +87,7 @@ public class TokenService : ITokenService
 
         if (!oldRefreshToken.IsActive)
         {
-            throw new ArgumentException("The refresh token is expired");
+            throw new ServerException("The refresh token is expired");
         }
 
         oldRefreshToken.Revoked = DateTime.Now;

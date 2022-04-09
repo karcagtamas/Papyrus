@@ -1,5 +1,5 @@
-using Karcags.Blazor.Common.Http;
-using Karcags.Blazor.Common.Models;
+using KarcagS.Blazor.Common.Http;
+using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
@@ -33,7 +33,7 @@ public class AuthService : IAuthService
 
         var body = new HttpBody<LoginModel>(model);
 
-        var user = await httpService.PostWithResult<TokenDTO, LoginModel>(settings, body);
+        var user = await httpService.PostWithResult<TokenDTO, LoginModel>(settings, body).ExecuteWithResult();
 
         if (user == null) return null;
 
@@ -51,7 +51,7 @@ public class AuthService : IAuthService
 
         var body = new HttpBody<RegistrationModel>(model);
 
-        return await httpService.Post(settings, body);
+        return await httpService.Post(settings, body).Execute();
     }
 
     public bool IsLoggedIn()
@@ -61,6 +61,11 @@ public class AuthService : IAuthService
 
     public async void Logout()
     {
+        var settings = new HttpSettings(httpService.BuildUrl(Url, "Logout"));
+        var body = new HttpBody<string>(await tokenService.GetClientId());
+
+        await httpService.Put(settings, body).Execute();
+
         await tokenService.ClearUser();
 
         ((PapyrusAuthStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
