@@ -6,7 +6,8 @@
 @attribute [Authorize]
 @inject IUserService _userService
 
-<PageTitle>Users</PageTitle>
+<ApplicationPageTitle PageName="Users"></ApplicationPageTitle>
+
 <div class="page-div">
     <div class="mb-3">
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => SetDisableStatus(true)"

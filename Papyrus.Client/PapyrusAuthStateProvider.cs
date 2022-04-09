@@ -42,7 +42,7 @@ public class PapyrusAuthStateProvider : AuthenticationStateProvider
         NotifyAuthenticationStateChanged(authState);
     }
 
-    private IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
+    private static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
     {
         var jwtToken = new JwtSecurityToken(jwt);
 

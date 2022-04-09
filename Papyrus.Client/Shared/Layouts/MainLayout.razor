@@ -2,9 +2,11 @@
 @using Papyrus.Shared.DTOs
 @using Papyrus.Client.Services.Interfaces
 @inherits LayoutComponentBase
+@implements IDisposable
 @inject IUserService userService
 @inject IAuthService auth
 @inject NavigationManager navigator
+@inject AuthenticationStateProvider authStateProvider
 
 <MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
 <MudDialogProvider />
@@ -14,10 +16,9 @@
     <MudAppBar Elevation="1" Dense="true" Color="Color.Primary">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
                        OnClick="@((_) => DrawerToggle())" Class="mr-5" />
-        <MudText Typo="Typo.h6" Color="Color.Inherit" Class="mr-5 ml-5">
-            Papyrus
-        </MudText>
-        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="ml-5" OnClick="@(() => navigator.NavigateTo("/home"))">Home</MudButton>
+        <MudLink Color="Color.Inherit" Class="mr-5 ml-5 mud-nav-link-text appbar-title" Href="/home">
+            @PapyrusContext.ApplicationName
+        </MudLink>
         <MudSpacer></MudSpacer>
         <AuthorizeView>
             <Authorized>
@@ -40,7 +41,7 @@
             <NotAuthorized>
                 @if (!context.User?.Identity?.IsAuthenticated ?? true)
                 {
-                    <NotAuthorized />
+                    <NotAuthorizedAction />
                 }
                 else
                 {
@@ -52,9 +53,6 @@
 </MudLayout>
 
 @code {
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; } = null!;
-
     private UserDTO? User { get; set; }
     bool drawerOpen = true;
 
@@ -65,12 +63,25 @@
 
     protected override async void OnInitialized()
     {
-        if ((await authenticationStateTask).User.Identity?.Name is not null)
-        {
-            User = await userService.Current();
-        }
+        GetUserFromState(authStateProvider.GetAuthenticationStateAsync());
+
+        authStateProvider.AuthenticationStateChanged += GetUserFromState;
 
         await base.OnInitializedAsync();
+    }
+
+    private async void GetUserFromState(Task<AuthenticationState> state)
+    {
+        if ((await state).User.Identity?.Name is not null)
+        {
+            User = await userService.Current();
+            StateHasChanged();
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        authStateProvider.AuthenticationStateChanged -= GetUserFromState;
     }
 
 }

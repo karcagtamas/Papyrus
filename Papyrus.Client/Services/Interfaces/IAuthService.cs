@@ -8,5 +8,6 @@ public interface IAuthService
     Task<bool> Register(RegistrationModel model);
     void Logout();
     void NotAuthorized();
+    void Authorized();
     bool IsLoggedIn();
 }

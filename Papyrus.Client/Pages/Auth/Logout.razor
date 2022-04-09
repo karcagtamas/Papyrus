@@ -1,0 +1,13 @@
+﻿@page "/logout"
+@using Papyrus.Client.Services.Interfaces
+@inject IAuthService auth
+
+<h3>Logout</h3>
+
+@code {
+    protected override void OnInitialized()
+    {
+        auth.Logout();
+        base.OnInitialized();
+    }
+}

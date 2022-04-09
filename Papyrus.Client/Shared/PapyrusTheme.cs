@@ -12,6 +12,7 @@ public static class PapyrusTheme
     private static readonly MudColor ErrorColor = new("#850525");
     private static readonly MudColor InfoColor = new("#66ADA1");
     private static readonly MudColor SuccessColor = new("#40921A");
+    private static readonly MudColor White = new("#FFFFFF");
 
     private static readonly MudTheme Theme = new()
     {
@@ -28,7 +29,8 @@ public static class PapyrusTheme
             DrawerBackground = MainColor.ColorLighten(.71),
             DrawerText = MainColor,
             DrawerIcon = MainColor,
-            ActionDefault = MainColor
+            ActionDefault = MainColor,
+            AppbarText = White
         },
         LayoutProperties = new LayoutProperties
         {

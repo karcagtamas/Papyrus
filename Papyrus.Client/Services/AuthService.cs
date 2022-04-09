@@ -64,15 +64,21 @@ public class AuthService : IAuthService
         await tokenService.ClearUser();
 
         ((PapyrusAuthStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
+
     }
 
     public void NotAuthorized()
     {
         var query = new Dictionary<string, string>
         {
-            ["redirectUri"] = navigationManager.Uri
+            ["redirectUri"] = string.IsNullOrEmpty(navigationManager.Uri) ? "dashboard" : navigationManager.ToBaseRelativePath(navigationManager.Uri)
         };
 
         navigationManager.NavigateTo(QueryHelpers.AddQueryString("/login", query));
+    }
+
+    public void Authorized()
+    {
+        navigationManager.NavigateTo("dashboard");
     }
 }
