@@ -5,25 +5,25 @@
     <img src="assets/images/main.svg" width="240" alt="Page image" />
 </div>
 <MudDivider Class="my-2" />
-<MudNavMenu>
+<MudNavMenu Dense="true" Color="Color.Secondary" Margin="Margin.Dense" Rounded="true" Class="pa-2">
     <AuthorizeView>
         <Authorized>
             <MudNavLink Icon="@Icons.Filled.Dashboard" Href="/dashboard">Dashboard</MudNavLink>
+            <MudNavLink Icon="@Icons.Filled.Search" Href="/search">Search</MudNavLink>
             <MudNavLink Icon="@Icons.Filled.Person" Href="/my">My User</MudNavLink>
-            <MudNavGroup Icon="@Icons.Filled.AdminPanelSettings" Title="Admin" Expanded="true">
-                <MudNavLink Icon="@Icons.Filled.People" Href="/users">Users</MudNavLink>
+            <MudNavLink Icon="@Icons.Filled.Groups" Href="/my-groups">My Groups</MudNavLink>
+            <MudNavGroup Icon="@Icons.Filled.Notes" Title="Notes" Expanded="false">
+                <MudNavLink Icon="@Icons.Filled.NoteAlt" Href="/notes">List</MudNavLink>
+                <MudNavLink Icon="@Icons.Filled.Tag" Href="/tags">Tags</MudNavLink>
+            </MudNavGroup>
+            <MudNavGroup Icon="@Icons.Filled.AdminPanelSettings" IconColor="Color.Warning" Title="Admin">
+                <MudNavLink Icon="@Icons.Filled.ManageAccounts" Href="/users">Users</MudNavLink>
+                <MudNavLink Icon="@Icons.Filled.SettingsSuggest" Href="/roles">Roles</MudNavLink>
             </MudNavGroup>
             <MudNavLink Icon="@Icons.Filled.Web" Href="/about">About</MudNavLink>
             <MudDivider Class="my-2" />
-            <MudNavLink Icon="@Icons.Filled.Logout" OnClick="ToLogout">Log Out</MudNavLink>
+            <MudNavLink Icon="@Icons.Filled.Logout" OnClick="ToLogout" IconColor="Color.Error">Log Out</MudNavLink>
         </Authorized>
-        <NotAuthorized>
-            <MudNavGroup Icon="@Icons.Filled.PeopleAlt" Title="Authentication" Expanded="true">
-                <MudNavLink Icon="@Icons.Filled.Login" Href="/login">Login</MudNavLink>
-                <MudNavLink Icon="@Icons.Filled.PersonAdd" Href="/register">Register</MudNavLink>
-            </MudNavGroup>
-            <MudNavLink Href="/about">About</MudNavLink>
-        </NotAuthorized>
     </AuthorizeView>
 </MudNavMenu>
 

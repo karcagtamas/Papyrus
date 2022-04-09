@@ -4,6 +4,7 @@
 @inherits LayoutComponentBase
 @inject IUserService userService
 @inject IAuthService auth
+@inject NavigationManager navigator
 
 <MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
 <MudDialogProvider />
@@ -12,14 +13,18 @@
 <MudLayout Class="flex-box">
     <MudAppBar Elevation="1" Dense="true" Color="Color.Primary">
         <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-                       OnClick="@((_) => DrawerToggle())" />
-        Papyrus
+                       OnClick="@((_) => DrawerToggle())" Class="mr-5" />
+        <MudText Typo="Typo.h6" Color="Color.Inherit" Class="mr-5 ml-5">
+            Papyrus
+        </MudText>
+        <MudButton Variant="Variant.Text" Color="Color.Inherit" Class="ml-5" OnClick="@(() => navigator.NavigateTo("/home"))">Home</MudButton>
         <MudSpacer></MudSpacer>
         <AuthorizeView>
             <Authorized>
                 @if (User is not null)
                 {
                     <MudText Typo="Typo.caption">@User.UserName</MudText>
+                    <MudAvatar Color="Color.Secondary" Class="ml-3">@User.UserName.ToUpper()[0]</MudAvatar>
                 }
             </Authorized>
         </AuthorizeView>

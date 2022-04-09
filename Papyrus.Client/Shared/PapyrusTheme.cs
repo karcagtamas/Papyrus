@@ -6,20 +6,29 @@ namespace Papyrus.Client.Shared;
 public static class PapyrusTheme
 {
     private static readonly MudColor MainColor = new("#0D2971");
-    
+    private static readonly MudColor SecondaryColor = new("#581043");
+    private static readonly MudColor TertiaryColor = new("#361B3A");
+    private static readonly MudColor WarningColor = new("#C07C38");
+    private static readonly MudColor ErrorColor = new("#850525");
+    private static readonly MudColor InfoColor = new("#66ADA1");
+    private static readonly MudColor SuccessColor = new("#40921A");
+
     private static readonly MudTheme Theme = new()
     {
         Palette = new Palette
         {
             Primary = MainColor,
-            Secondary = Colors.Teal.Darken4,
-            Tertiary = Colors.Indigo.Darken4,
-            Info = Colors.Blue.Darken4,
-            Success = Colors.Green.Darken4,
-            Warning = Colors.Orange.Darken4,
-            Error = Colors.Red.Darken4,
-            Divider = Colors.Pink.Darken4,
-            DrawerBackground = MainColor.ColorLighten(.64)
+            Secondary = SecondaryColor,
+            Tertiary = TertiaryColor,
+            Info = InfoColor,
+            Success = SuccessColor,
+            Warning = WarningColor,
+            Error = ErrorColor,
+            Divider = MainColor,
+            DrawerBackground = MainColor.ColorLighten(.71),
+            DrawerText = MainColor,
+            DrawerIcon = MainColor,
+            ActionDefault = MainColor
         },
         LayoutProperties = new LayoutProperties
         {
