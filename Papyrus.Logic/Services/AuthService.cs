@@ -45,6 +45,7 @@ public class AuthService : IAuthService
             throw new ServerException("Incorrect username or password");
 
         user.LastLogin = DateTime.Now;
+
         userService.Update(user);
         userService.Persist();
 
@@ -66,8 +67,7 @@ public class AuthService : IAuthService
             Email = model.Email,
             LastLogin = DateTime.Now,
             Registration = DateTime.Now,
-            Disabled = false,
-            OsirisId = "ALMA"
+            Disabled = false
         };
 
         var result = await userManager.CreateAsync(user, model.Password);
@@ -84,16 +84,15 @@ public class AuthService : IAuthService
             throw new ServerException("User does not exist");
         }
 
-        foreach (var token in user.RefreshTokens)
-        {
-            if (token.IsActive && token.ClientId == clientId)
-            {
-                token.Revoked = DateTime.Now;
-            }
-        }
+        InvalidateRefreshTokens(user, clientId);
 
         userService.Update(user);
         userService.Persist();
+    }
+
+    private void InvalidateRefreshTokens(User user, string? clientId)
+    {
+        user.RefreshTokens.Where(x => x.IsActive && (clientId == null || x.ClientId == clientId)).ToList().ForEach(token => token.Revoked = DateTime.Now);
     }
 
     private async Task AddDefaultRoleByResult(IdentityResult result, User user)

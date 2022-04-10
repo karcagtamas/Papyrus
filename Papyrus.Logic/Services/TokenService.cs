@@ -76,12 +76,10 @@ public class TokenService : ITokenService
             throw new ServerException("The refresh token is invalid");
         }
 
-        /*
         if (user.Disabled)
         {
-            throw new ArgumentException("User is disabled");
+            throw new ServerException("User is disabled");
         }
-        */
 
         var oldRefreshToken = user.RefreshTokens.Single(t => t.Token == refreshToken && t.ClientId == clientId);
 
@@ -91,6 +89,8 @@ public class TokenService : ITokenService
         }
 
         oldRefreshToken.Revoked = DateTime.Now;
+
+        user.RefreshTokens.Where(x => x.ClientId == clientId).ToList().ForEach(token => token.Revoked = DateTime.Now);
 
         var newRefreshToken = BuildRefreshToken(clientId);
         user.RefreshTokens.Add(newRefreshToken);

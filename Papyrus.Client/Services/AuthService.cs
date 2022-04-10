@@ -69,7 +69,8 @@ public class AuthService : IAuthService
         await tokenService.ClearUser();
 
         ((PapyrusAuthStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
-
+        
+        navigationManager.NavigateTo("home");
     }
 
     public void NotAuthorized()

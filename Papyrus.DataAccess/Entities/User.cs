@@ -6,7 +6,9 @@ namespace Papyrus.DataAccess.Entities;
 
 public class User : IdentityUser<string>, IEntity<string>
 {
-    public string OsirisId { get; set; } = default!;
+    public string? OsirisId { get; set; }
+
+    public DateTime? LastOsirisSync { get; set; }
 
     [Required]
     public DateTime Registration { get; set; }
@@ -15,7 +17,7 @@ public class User : IdentityUser<string>, IEntity<string>
     public DateTime LastLogin { get; set; }
 
     [MaxLength(100)]
-    public string? FullName { get; set; } = default!;
+    public string? FullName { get; set; }
 
     public DateTime? BirthDay { get; set; }
 
@@ -25,6 +27,8 @@ public class User : IdentityUser<string>, IEntity<string>
     public string? ImageTitle { get; set; }
 
     public byte[]? ImageData { get; set; }
+
+    public bool IsOsirisConnected { get { return OsirisId != null; } }
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = default!;
     public virtual ICollection<Group> CreatedGroups { get; set; } = default!;

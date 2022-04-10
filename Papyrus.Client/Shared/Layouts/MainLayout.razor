@@ -1,6 +1,7 @@
 @using Papyrus.Client.Shared
 @using Papyrus.Shared.DTOs
 @using Papyrus.Client.Services.Interfaces
+@using static Papyrus.Client.Shared.PapyrusMenu
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject IUserService userService
@@ -14,8 +15,12 @@
 
 <MudLayout Class="flex-box">
     <MudAppBar Elevation="1" Dense="true" Color="Color.Primary">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-                       OnClick="@((_) => DrawerToggle())" Class="mr-5" />
+        <AuthorizeView>
+            <Authorized>
+                <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
+                               OnClick="@((_) => DrawerToggle())" Class="mr-5" />
+            </Authorized>
+        </AuthorizeView>
         <MudLink Color="Color.Inherit" Class="mr-5 ml-5 mud-nav-link-text appbar-title" Href="/home">
             @PapyrusContext.ApplicationName
         </MudLink>
@@ -30,30 +35,21 @@
             </Authorized>
         </AuthorizeView>
     </MudAppBar>
-    <MudDrawer @bind-Open="@drawerOpen" Elevation="2" ClipMode="DrawerClipMode.Always" Class="drawer">
-        <NavMenu />
-    </MudDrawer>
+    <AuthorizeView>
+        <Authorized>
+            <MudDrawer @bind-Open="@drawerOpen" Elevation="2" ClipMode="DrawerClipMode.Always" Class="drawer">
+                <NavMenu />
+            </MudDrawer>
+        </Authorized>
+    </AuthorizeView>
     <MudMainContent Class="flex-box">
-        <AuthorizeView>
-            <Authorized>
-                @Body
-            </Authorized>
-            <NotAuthorized>
-                @if (!context.User?.Identity?.IsAuthenticated ?? true)
-                {
-                    <NotAuthorizedAction />
-                }
-                else
-                {
-                    <p>You do not have access for the resource</p>
-                }
-            </NotAuthorized>
-        </AuthorizeView>
+        @Body
     </MudMainContent>
 </MudLayout>
 
 @code {
     private UserDTO? User { get; set; }
+    private bool initialized = false;
     bool drawerOpen = true;
 
     void DrawerToggle()
@@ -63,16 +59,43 @@
 
     protected override async void OnInitialized()
     {
-        GetUserFromState(authStateProvider.GetAuthenticationStateAsync());
+        HandleAuthStateChange(authStateProvider.GetAuthenticationStateAsync());
 
-        authStateProvider.AuthenticationStateChanged += GetUserFromState;
+        authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
 
         await base.OnInitializedAsync();
+
+        initialized = true;
     }
 
-    private async void GetUserFromState(Task<AuthenticationState> state)
+    private async void HandleAuthStateChange(Task<AuthenticationState> state)
     {
-        if ((await state).User.Identity?.Name is not null)
+        var s = await state;
+
+        bool isAuthenticated = s.User.Identity?.Name is not null;
+        string uri = navigator.ToBaseRelativePath(navigator.Uri);
+
+        if (!isAuthenticated)
+        {
+            var inTree = UriIsAuthenticated(PapyrusMenu.Items, uri);
+
+            if (inTree)
+            {
+                auth.NotAuthorized();
+            }
+        }
+
+        GetUserFromState(s);
+    }
+
+    private bool UriIsAuthenticated(List<MenuItem> items, string uri)
+    {
+        return items.Where(x => x.Authenticated).Any(x => x.Path == uri || UriIsAuthenticated(x.Children, uri));
+    }
+
+    private async void GetUserFromState(AuthenticationState state)
+    {
+        if (state.User.Identity?.Name is not null)
         {
             User = await userService.Current();
             StateHasChanged();
@@ -81,7 +104,7 @@
 
     void IDisposable.Dispose()
     {
-        authStateProvider.AuthenticationStateChanged -= GetUserFromState;
+        authStateProvider.AuthenticationStateChanged -= HandleAuthStateChange;
     }
 
 }
