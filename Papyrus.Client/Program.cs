@@ -80,6 +80,6 @@ builder.Services.AddBlazoredLocalStorage(config =>
 });
 
 ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;
-ApplicationSettings.BaseApiUrl = ApplicationSettings.BaseUrl += "/api";
+ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
 
 await builder.Build().RunAsync();

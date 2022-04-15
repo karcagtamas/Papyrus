@@ -1,11 +1,12 @@
+using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
-using MudBlazor;
 using MudBlazor.Utilities;
 
 namespace Papyrus.Client.Pages.Editor;
 
-public partial class Editor : ComponentBase
+public partial class Editor : ComponentBase, IDisposable
 {
     [Inject]
     private IJSRuntime JSRuntime { get; set; }
@@ -14,13 +15,30 @@ public partial class Editor : ComponentBase
     private EditorAction? ColorAction { get; set; }
     private MudColor SelectedColor { get; set; } = new MudColor("#FF1212FF");
 
-    protected override void OnInitialized()
-    {
+    private HubConnection? hub;
 
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine($"{ApplicationSettings.BaseUrl}/editor");
+        hub = new HubConnectionBuilder()
+            .WithUrl($"{ApplicationSettings.BaseUrl}/editor")
+            .Build();
+
+        hub?.On<DateTime>("ReceiveTest", (time) => { Console.WriteLine($"Message received at {time}"); });
+
+        if (hub is not null)
+        {
+            await hub.StartAsync();
+        }
     }
 
     private async void ExecuteAction(EditorAction action, string param = "")
     {
+        if (hub is not null)
+        {
+            await hub.SendAsync("SendTest");
+        }
+
         switch (action)
         {
             case EditorAction.Bold:
@@ -45,7 +63,7 @@ public partial class Editor : ComponentBase
         }
     }
 
-    private void ChooseColor(EditorAction action) 
+    private void ChooseColor(EditorAction action)
     {
         ColorPickerOpened = true;
         ColorAction = action;
@@ -61,5 +79,13 @@ public partial class Editor : ComponentBase
 
         ColorPickerOpened = false;
         ColorAction = null;
+    }
+
+    public async void Dispose()
+    {
+        if (hub is not null)
+        {
+            await hub.DisposeAsync();
+        }
     }
 }

@@ -5,6 +5,7 @@ using KarcagS.Common.Tools;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -12,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Configurations;
+using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Mappers;
 using Papyrus.Logic.Services;
 using Papyrus.Logic.Services.Interfaces;
@@ -120,6 +122,8 @@ builder.Services.AddSwaggerGen(conf =>
     });
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -129,12 +133,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpInterceptor();
+app.UseHttpInterceptor(opt =>
+{
+    opt.OnlyApi = true;
+    opt.IgnoredPaths = new List<string> { @"/api/editor/[a-zA-Z0-9/]*" };
+});
 
 if (bool.TrueString.Equals(builder.Configuration["HttpsRedirect"]))
 {
     app.UseHttpsRedirection();
 }
+
+app.MapHub<EditorHub>("/editor");
 
 app.UseCors("Policy");
 
