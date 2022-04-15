@@ -4,5 +4,9 @@ public enum EditorAction
 {
     Bold,
     Italic,
-    TextColor
+    Underline,
+    Strikethrough,
+    TextColor,
+    BackColor,
+    None
 }

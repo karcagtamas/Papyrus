@@ -1,8 +1,29 @@
-<div id="rt-editor-actions">
-    <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))"></MudIconButton>
-    <MudIconButton Icon="@Icons.Filled.FormatItalic"></MudIconButton>
-    <MudIconButton Icon="@Icons.Filled.FormatColorText"></MudIconButton>
-</div>
-<div contenteditable="true" id="rt-editor">
-    <b>ALMA</b>
+<div id="rt-editor-box" class="mud-elevation-2">
+    <div id="rt-editor-actions">
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+            <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))"></MudIconButton>
+        </MudButtonGroup>
+        <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+            <MudIconButton Disabled="@ColorPickerOpened" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))">
+            </MudIconButton>
+            <MudPopover Open="@ColorPickerOpened" AnchorOrigin="Origin.BottomCenter">
+                <div class="p-1">
+                    <MudColorPicker PickerVariant="PickerVariant.Static" @bind-Value="SelectedColor" />
+                    <MudDivider />
+                    <div class="flex-box flex-row justify-content-end p-1 mt-1">
+                        <MudButton Size="Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => CloseColorChooser(true))" Class="mr-1">Cancel</MudButton>
+                        <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => CloseColorChooser(false))">Apply</MudButton>
+                    </div>
+                </div>
+            </MudPopover>
+            <MudIconButton Disabled="@ColorPickerOpened" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))"></MudIconButton>
+        </MudButtonGroup>
+    </div>
+    <MudDivider />
+    <div contenteditable="true" id="rt-editor">
+        <b>ALMA</b>
+    </div>
 </div>
