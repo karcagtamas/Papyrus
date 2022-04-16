@@ -23,7 +23,5 @@
         </MudButtonGroup>
     </div>
     <MudDivider />
-    <div contenteditable="true" id="rt-editor">
-        <b>ALMA</b>
-    </div>
+    <div @ref="editorReference" contenteditable="true" id="rt-editor" @oninput="@((args) => ContentChanged(args))" @onclick="EditorClick"></div>
 </div>
