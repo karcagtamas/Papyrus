@@ -1,13 +1,13 @@
-﻿namespace KarcagS.Shared.DiffMatchPatch;
+﻿namespace Papyrus.Shared.DiffMatchPatch;
 
 /**
  * Class representing one diff operation.
  */
 public class Diff
 {
-    public Operation operation;
+    public Operation Operation { get; set; }
     // One of: INSERT, DELETE or EQUAL.
-    public string text;
+    public string Text { get; set; }
     // The text associated with this diff operation.
 
     /**
@@ -18,8 +18,14 @@ public class Diff
     public Diff(Operation operation, string text)
     {
         // Construct a diff with the specified operation and text.
-        this.operation = operation;
-        this.text = text;
+        Operation = operation;
+        Text = text;
+    }
+
+    public Diff(TransportDiff diff)
+    {
+        Operation = diff.Operation;
+        Text = diff.Text;
     }
 
     /**
@@ -28,8 +34,8 @@ public class Diff
      */
     public override string ToString()
     {
-        string prettyText = this.text.Replace('\n', '\u00b6');
-        return "Diff(" + this.operation + ",\"" + prettyText + "\")";
+        string prettyText = Text.Replace('\n', '\u00b6');
+        return "Diff(" + Operation + ",\"" + prettyText + "\")";
     }
 
     /**
@@ -37,7 +43,7 @@ public class Diff
      * @param d Another Diff to compare against.
      * @return true or false.
      */
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         // If parameter is null return false.
         if (obj is null)
@@ -52,7 +58,7 @@ public class Diff
         }
 
         // Return true if the fields match.
-        return p.operation == this.operation && p.text == this.text;
+        return p.Operation == Operation && p.Text == Text;
     }
 
     public bool Equals(Diff obj)
@@ -64,11 +70,11 @@ public class Diff
         }
 
         // Return true if the fields match.
-        return obj.operation == this.operation && obj.text == this.text;
+        return obj.Operation == Operation && obj.Text == Text;
     }
 
     public override int GetHashCode()
     {
-        return text.GetHashCode() ^ operation.GetHashCode();
+        return Text.GetHashCode() ^ Operation.GetHashCode();
     }
 }

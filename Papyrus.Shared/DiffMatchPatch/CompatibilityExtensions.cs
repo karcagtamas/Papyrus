@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Shared.DiffMatchPatch;
+﻿namespace Papyrus.Shared.DiffMatchPatch;
 
 public static class CompatibilityExtensions
 {

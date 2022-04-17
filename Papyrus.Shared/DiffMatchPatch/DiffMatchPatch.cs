@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace KarcagS.Shared.DiffMatchPatch;
+namespace Papyrus.Shared.DiffMatchPatch;
 
 
 /**
@@ -73,7 +73,7 @@ public class DiffMatchPatch
         else
         {
             deadline = DateTime.Now +
-                new TimeSpan(((long)(Diff_Timeout * 1000)) * 10000);
+                new TimeSpan((long)(Diff_Timeout * 1000) * 10000);
         }
         return DiffMain(text1, text2, checklines, deadline);
     }
@@ -126,7 +126,7 @@ public class DiffMatchPatch
         // Restore the prefix and suffix.
         if (commonprefix.Length != 0)
         {
-            diffs.Insert(0, (new Diff(Operation.EQUAL, commonprefix)));
+            diffs.Insert(0, new Diff(Operation.EQUAL, commonprefix));
         }
         if (commonsuffix.Length != 0)
         {
@@ -173,7 +173,7 @@ public class DiffMatchPatch
         if (i != -1)
         {
             // Shorter text is inside the longer text (speedup).
-            Operation op = (text1.Length > text2.Length) ?
+            Operation op = text1.Length > text2.Length ?
                 Operation.DELETE : Operation.INSERT;
             diffs.Add(new Diff(op, longtext.Substring(0, i)));
             diffs.Add(new Diff(Operation.EQUAL, shorttext));
@@ -253,15 +253,15 @@ public class DiffMatchPatch
         string text_insert = string.Empty;
         while (pointer < diffs.Count)
         {
-            switch (diffs[pointer].operation)
+            switch (diffs[pointer].Operation)
             {
                 case Operation.INSERT:
                     count_insert++;
-                    text_insert += diffs[pointer].text;
+                    text_insert += diffs[pointer].Text;
                     break;
                 case Operation.DELETE:
                     count_delete++;
-                    text_delete += diffs[pointer].text;
+                    text_delete += diffs[pointer].Text;
                     break;
                 case Operation.EQUAL:
                     // Upon reaching an equality, check for prior redundancies.
@@ -319,7 +319,7 @@ public class DiffMatchPatch
         int delta = text1_length - text2_length;
         // If the total number of characters is odd, then the front path will
         // collide with the reverse path.
-        bool front = (delta % 2 != 0);
+        bool front = delta % 2 != 0;
         // Offsets for start and end of k loop.
         // Prevents mapping of space beyond the grid.
         int k1start = 0;
@@ -521,7 +521,7 @@ public class DiffMatchPatch
 
             if (lineHash.ContainsKey(line))
             {
-                chars.Append((char)(int)lineHash[line]);
+                chars.Append((char)lineHash[line]);
             }
             else
             {
@@ -553,11 +553,11 @@ public class DiffMatchPatch
         foreach (Diff diff in diffs)
         {
             text = new StringBuilder();
-            for (int j = 0; j < diff.text.Length; j++)
+            for (int j = 0; j < diff.Text.Length; j++)
             {
-                text.Append(lineArray[diff.text[j]]);
+                text.Append(lineArray[diff.Text[j]]);
             }
-            diff.text = text.ToString();
+            diff.Text = text.ToString();
         }
     }
 
@@ -788,37 +788,37 @@ public class DiffMatchPatch
         int length_deletions2 = 0;
         while (pointer < diffs.Count)
         {
-            if (diffs[pointer].operation == Operation.EQUAL)
+            if (diffs[pointer].Operation == Operation.EQUAL)
             {  // Equality found.
                 equalities.Push(pointer);
                 length_insertions1 = length_insertions2;
                 length_deletions1 = length_deletions2;
                 length_insertions2 = 0;
                 length_deletions2 = 0;
-                lastEquality = diffs[pointer].text;
+                lastEquality = diffs[pointer].Text;
             }
             else
             {  // an insertion or deletion
-                if (diffs[pointer].operation == Operation.INSERT)
+                if (diffs[pointer].Operation == Operation.INSERT)
                 {
-                    length_insertions2 += diffs[pointer].text.Length;
+                    length_insertions2 += diffs[pointer].Text.Length;
                 }
                 else
                 {
-                    length_deletions2 += diffs[pointer].text.Length;
+                    length_deletions2 += diffs[pointer].Text.Length;
                 }
                 // Eliminate an equality that is smaller or equal to the edits on both
                 // sides of it.
-                if (lastEquality != null && (lastEquality.Length
-                    <= Math.Max(length_insertions1, length_deletions1))
-                    && (lastEquality.Length
-                        <= Math.Max(length_insertions2, length_deletions2)))
+                if (lastEquality != null && lastEquality.Length
+                    <= Math.Max(length_insertions1, length_deletions1)
+                    && lastEquality.Length
+                        <= Math.Max(length_insertions2, length_deletions2))
                 {
                     // Duplicate record.
                     diffs.Insert(equalities.Peek(),
                                  new Diff(Operation.DELETE, lastEquality));
                     // Change second copy to insert.
-                    diffs[equalities.Peek() + 1].operation = Operation.INSERT;
+                    diffs[equalities.Peek() + 1].Operation = Operation.INSERT;
                     // Throw away the equality we just deleted.
                     equalities.Pop();
                     if (equalities.Count > 0)
@@ -853,11 +853,11 @@ public class DiffMatchPatch
         pointer = 1;
         while (pointer < diffs.Count)
         {
-            if (diffs[pointer - 1].operation == Operation.DELETE &&
-                diffs[pointer].operation == Operation.INSERT)
+            if (diffs[pointer - 1].Operation == Operation.DELETE &&
+                diffs[pointer].Operation == Operation.INSERT)
             {
-                string deletion = diffs[pointer - 1].text;
-                string insertion = diffs[pointer].text;
+                string deletion = diffs[pointer - 1].Text;
+                string insertion = diffs[pointer].Text;
                 int overlap_length1 = DiffCommonOverlap(deletion, insertion);
                 int overlap_length2 = DiffCommonOverlap(insertion, deletion);
                 if (overlap_length1 >= overlap_length2)
@@ -869,9 +869,9 @@ public class DiffMatchPatch
                         // Insert an equality and trim the surrounding edits.
                         diffs.Insert(pointer, new Diff(Operation.EQUAL,
                             insertion.Substring(0, overlap_length1)));
-                        diffs[pointer - 1].text =
+                        diffs[pointer - 1].Text =
                             deletion.Substring(0, deletion.Length - overlap_length1);
-                        diffs[pointer + 1].text = insertion.Substring(overlap_length1);
+                        diffs[pointer + 1].Text = insertion.Substring(overlap_length1);
                         pointer++;
                     }
                 }
@@ -884,11 +884,11 @@ public class DiffMatchPatch
                         // Insert an equality and swap and trim the surrounding edits.
                         diffs.Insert(pointer, new Diff(Operation.EQUAL,
                             deletion.Substring(0, overlap_length2)));
-                        diffs[pointer - 1].operation = Operation.INSERT;
-                        diffs[pointer - 1].text =
+                        diffs[pointer - 1].Operation = Operation.INSERT;
+                        diffs[pointer - 1].Text =
                             insertion.Substring(0, insertion.Length - overlap_length2);
-                        diffs[pointer + 1].operation = Operation.DELETE;
-                        diffs[pointer + 1].text = deletion.Substring(overlap_length2);
+                        diffs[pointer + 1].Operation = Operation.DELETE;
+                        diffs[pointer + 1].Text = deletion.Substring(overlap_length2);
                         pointer++;
                     }
                 }
@@ -910,16 +910,16 @@ public class DiffMatchPatch
         // Intentionally ignore the first and last element (don't need checking).
         while (pointer < diffs.Count - 1)
         {
-            if (diffs[pointer - 1].operation == Operation.EQUAL &&
-              diffs[pointer + 1].operation == Operation.EQUAL)
+            if (diffs[pointer - 1].Operation == Operation.EQUAL &&
+              diffs[pointer + 1].Operation == Operation.EQUAL)
             {
                 // This is a single edit surrounded by equalities.
-                string equality1 = diffs[pointer - 1].text;
-                string edit = diffs[pointer].text;
-                string equality2 = diffs[pointer + 1].text;
+                string equality1 = diffs[pointer - 1].Text;
+                string edit = diffs[pointer].Text;
+                string equality2 = diffs[pointer + 1].Text;
 
                 // First, shift the edit as far left as possible.
-                int commonOffset = this.DiffCommonSuffix(equality1, edit);
+                int commonOffset = DiffCommonSuffix(equality1, edit);
                 if (commonOffset > 0)
                 {
                     string commonString = edit.Substring(edit.Length - commonOffset);
@@ -954,22 +954,22 @@ public class DiffMatchPatch
                     }
                 }
 
-                if (diffs[pointer - 1].text != bestEquality1)
+                if (diffs[pointer - 1].Text != bestEquality1)
                 {
                     // We have an improvement, save it back to the diff.
                     if (bestEquality1.Length != 0)
                     {
-                        diffs[pointer - 1].text = bestEquality1;
+                        diffs[pointer - 1].Text = bestEquality1;
                     }
                     else
                     {
                         diffs.RemoveAt(pointer - 1);
                         pointer--;
                     }
-                    diffs[pointer].text = bestEdit;
+                    diffs[pointer].Text = bestEdit;
                     if (bestEquality2.Length != 0)
                     {
-                        diffs[pointer + 1].text = bestEquality2;
+                        diffs[pointer + 1].Text = bestEquality2;
                     }
                     else
                     {
@@ -1069,16 +1069,16 @@ public class DiffMatchPatch
         bool post_del = false;
         while (pointer < diffs.Count)
         {
-            if (diffs[pointer].operation == Operation.EQUAL)
+            if (diffs[pointer].Operation == Operation.EQUAL)
             {  // Equality found.
-                if (diffs[pointer].text.Length < Diff_EditCost
+                if (diffs[pointer].Text.Length < Diff_EditCost
                     && (post_ins || post_del))
                 {
                     // Candidate found.
                     equalities.Push(pointer);
                     pre_ins = post_ins;
                     pre_del = post_del;
-                    lastEquality = diffs[pointer].text;
+                    lastEquality = diffs[pointer].Text;
                 }
                 else
                 {
@@ -1090,7 +1090,7 @@ public class DiffMatchPatch
             }
             else
             {  // An insertion or deletion.
-                if (diffs[pointer].operation == Operation.DELETE)
+                if (diffs[pointer].Operation == Operation.DELETE)
                 {
                     post_del = true;
                 }
@@ -1106,17 +1106,17 @@ public class DiffMatchPatch
                  * <ins>A</del>X<ins>C</ins><del>D</del>
                  * <ins>A</ins><del>B</del>X<del>C</del>
                  */
-                if ((lastEquality.Length != 0)
-                    && ((pre_ins && pre_del && post_ins && post_del)
-                    || ((lastEquality.Length < Diff_EditCost / 2)
-                    && ((pre_ins ? 1 : 0) + (pre_del ? 1 : 0) + (post_ins ? 1 : 0)
-                    + (post_del ? 1 : 0)) == 3)))
+                if (lastEquality.Length != 0
+                    && (pre_ins && pre_del && post_ins && post_del
+                    || lastEquality.Length < Diff_EditCost / 2
+                    && (pre_ins ? 1 : 0) + (pre_del ? 1 : 0) + (post_ins ? 1 : 0)
+                    + (post_del ? 1 : 0) == 3))
                 {
                     // Duplicate record.
                     diffs.Insert(equalities.Peek(),
                                  new Diff(Operation.DELETE, lastEquality));
                     // Change second copy to insert.
-                    diffs[equalities.Peek() + 1].operation = Operation.INSERT;
+                    diffs[equalities.Peek() + 1].Operation = Operation.INSERT;
                     equalities.Pop();  // Throw away the equality we just deleted.
                     lastEquality = string.Empty;
                     if (pre_ins && pre_del)
@@ -1164,16 +1164,16 @@ public class DiffMatchPatch
         int commonlength;
         while (pointer < diffs.Count)
         {
-            switch (diffs[pointer].operation)
+            switch (diffs[pointer].Operation)
             {
                 case Operation.INSERT:
                     count_insert++;
-                    text_insert += diffs[pointer].text;
+                    text_insert += diffs[pointer].Text;
                     pointer++;
                     break;
                 case Operation.DELETE:
                     count_delete++;
-                    text_delete += diffs[pointer].text;
+                    text_delete += diffs[pointer].Text;
                     pointer++;
                     break;
                 case Operation.EQUAL:
@@ -1183,14 +1183,14 @@ public class DiffMatchPatch
                         if (count_delete != 0 && count_insert != 0)
                         {
                             // Factor out any common prefixies.
-                            commonlength = this.DiffCommonPrefix(text_insert, text_delete);
+                            commonlength = DiffCommonPrefix(text_insert, text_delete);
                             if (commonlength != 0)
                             {
-                                if ((pointer - count_delete - count_insert) > 0 &&
-                                  diffs[pointer - count_delete - count_insert - 1].operation
+                                if (pointer - count_delete - count_insert > 0 &&
+                                  diffs[pointer - count_delete - count_insert - 1].Operation
                                       == Operation.EQUAL)
                                 {
-                                    diffs[pointer - count_delete - count_insert - 1].text
+                                    diffs[pointer - count_delete - count_insert - 1].Text
                                         += text_insert.Substring(0, commonlength);
                                 }
                                 else
@@ -1203,11 +1203,11 @@ public class DiffMatchPatch
                                 text_delete = text_delete.Substring(commonlength);
                             }
                             // Factor out any common suffixies.
-                            commonlength = this.DiffCommonSuffix(text_insert, text_delete);
+                            commonlength = DiffCommonSuffix(text_insert, text_delete);
                             if (commonlength != 0)
                             {
-                                diffs[pointer].text = text_insert.Substring(text_insert.Length
-                                    - commonlength) + diffs[pointer].text;
+                                diffs[pointer].Text = text_insert.Substring(text_insert.Length
+                                    - commonlength) + diffs[pointer].Text;
                                 text_insert = text_insert.Substring(0, text_insert.Length
                                     - commonlength);
                                 text_delete = text_delete.Substring(0, text_delete.Length
@@ -1232,10 +1232,10 @@ public class DiffMatchPatch
                         pointer++;
                     }
                     else if (pointer != 0
-                        && diffs[pointer - 1].operation == Operation.EQUAL)
+                        && diffs[pointer - 1].Operation == Operation.EQUAL)
                     {
                         // Merge this equality with the previous one.
-                        diffs[pointer - 1].text += diffs[pointer].text;
+                        diffs[pointer - 1].Text += diffs[pointer].Text;
                         diffs.RemoveAt(pointer);
                     }
                     else
@@ -1249,7 +1249,7 @@ public class DiffMatchPatch
                     break;
             }
         }
-        if (diffs[diffs.Count - 1].text.Length == 0)
+        if (diffs[diffs.Count - 1].Text.Length == 0)
         {
             diffs.RemoveAt(diffs.Count - 1);  // Remove the dummy entry at the end.
         }
@@ -1260,32 +1260,32 @@ public class DiffMatchPatch
         bool changes = false;
         pointer = 1;
         // Intentionally ignore the first and last element (don't need checking).
-        while (pointer < (diffs.Count - 1))
+        while (pointer < diffs.Count - 1)
         {
-            if (diffs[pointer - 1].operation == Operation.EQUAL &&
-              diffs[pointer + 1].operation == Operation.EQUAL)
+            if (diffs[pointer - 1].Operation == Operation.EQUAL &&
+              diffs[pointer + 1].Operation == Operation.EQUAL)
             {
                 // This is a single edit surrounded by equalities.
-                if (diffs[pointer].text.EndsWith(diffs[pointer - 1].text,
+                if (diffs[pointer].Text.EndsWith(diffs[pointer - 1].Text,
                     StringComparison.Ordinal))
                 {
                     // Shift the edit over the previous equality.
-                    diffs[pointer].text = diffs[pointer - 1].text +
-                        diffs[pointer].text.Substring(0, diffs[pointer].text.Length -
-                                                      diffs[pointer - 1].text.Length);
-                    diffs[pointer + 1].text = diffs[pointer - 1].text
-                        + diffs[pointer + 1].text;
+                    diffs[pointer].Text = diffs[pointer - 1].Text +
+                        diffs[pointer].Text.Substring(0, diffs[pointer].Text.Length -
+                                                      diffs[pointer - 1].Text.Length);
+                    diffs[pointer + 1].Text = diffs[pointer - 1].Text
+                        + diffs[pointer + 1].Text;
                     diffs.Splice(pointer - 1, 1);
                     changes = true;
                 }
-                else if (diffs[pointer].text.StartsWith(diffs[pointer + 1].text,
+                else if (diffs[pointer].Text.StartsWith(diffs[pointer + 1].Text,
                     StringComparison.Ordinal))
                 {
                     // Shift the edit over the next equality.
-                    diffs[pointer - 1].text += diffs[pointer + 1].text;
-                    diffs[pointer].text =
-                        diffs[pointer].text.Substring(diffs[pointer + 1].text.Length)
-                        + diffs[pointer + 1].text;
+                    diffs[pointer - 1].Text += diffs[pointer + 1].Text;
+                    diffs[pointer].Text =
+                        diffs[pointer].Text.Substring(diffs[pointer + 1].Text.Length)
+                        + diffs[pointer + 1].Text;
                     diffs.Splice(pointer + 1, 1);
                     changes = true;
                 }
@@ -1295,7 +1295,7 @@ public class DiffMatchPatch
         // If shifts were made, the diff needs reordering and another shift sweep.
         if (changes)
         {
-            this.DiffCleanupMerge(diffs);
+            DiffCleanupMerge(diffs);
         }
     }
 
@@ -1316,15 +1316,15 @@ public class DiffMatchPatch
         Diff lastDiff = null;
         foreach (Diff aDiff in diffs)
         {
-            if (aDiff.operation != Operation.INSERT)
+            if (aDiff.Operation != Operation.INSERT)
             {
                 // Equality or deletion.
-                chars1 += aDiff.text.Length;
+                chars1 += aDiff.Text.Length;
             }
-            if (aDiff.operation != Operation.DELETE)
+            if (aDiff.Operation != Operation.DELETE)
             {
                 // Equality or insertion.
-                chars2 += aDiff.text.Length;
+                chars2 += aDiff.Text.Length;
             }
             if (chars1 > loc)
             {
@@ -1335,7 +1335,7 @@ public class DiffMatchPatch
             last_chars1 = chars1;
             last_chars2 = chars2;
         }
-        if (lastDiff != null && lastDiff.operation == Operation.DELETE)
+        if (lastDiff != null && lastDiff.Operation == Operation.DELETE)
         {
             // The location was deleted.
             return last_chars2;
@@ -1354,9 +1354,9 @@ public class DiffMatchPatch
         StringBuilder html = new StringBuilder();
         foreach (Diff aDiff in diffs)
         {
-            string text = aDiff.text.Replace("&", "&amp;").Replace("<", "&lt;")
+            string text = aDiff.Text.Replace("&", "&amp;").Replace("<", "&lt;")
               .Replace(">", "&gt;").Replace("\n", "&para;<br>");
-            switch (aDiff.operation)
+            switch (aDiff.Operation)
             {
                 case Operation.INSERT:
                     html.Append("<ins style=\"background:#e6ffe6;\">").Append(text)
@@ -1384,9 +1384,9 @@ public class DiffMatchPatch
         StringBuilder text = new StringBuilder();
         foreach (Diff aDiff in diffs)
         {
-            if (aDiff.operation != Operation.INSERT)
+            if (aDiff.Operation != Operation.INSERT)
             {
-                text.Append(aDiff.text);
+                text.Append(aDiff.Text);
             }
         }
         return text.ToString();
@@ -1402,9 +1402,9 @@ public class DiffMatchPatch
         StringBuilder text = new StringBuilder();
         foreach (Diff aDiff in diffs)
         {
-            if (aDiff.operation != Operation.DELETE)
+            if (aDiff.Operation != Operation.DELETE)
             {
-                text.Append(aDiff.text);
+                text.Append(aDiff.Text);
             }
         }
         return text.ToString();
@@ -1423,13 +1423,13 @@ public class DiffMatchPatch
         int deletions = 0;
         foreach (Diff aDiff in diffs)
         {
-            switch (aDiff.operation)
+            switch (aDiff.Operation)
             {
                 case Operation.INSERT:
-                    insertions += aDiff.text.Length;
+                    insertions += aDiff.Text.Length;
                     break;
                 case Operation.DELETE:
-                    deletions += aDiff.text.Length;
+                    deletions += aDiff.Text.Length;
                     break;
                 case Operation.EQUAL:
                     // A deletion and an insertion is one substitution.
@@ -1457,16 +1457,16 @@ public class DiffMatchPatch
         StringBuilder text = new StringBuilder();
         foreach (Diff aDiff in diffs)
         {
-            switch (aDiff.operation)
+            switch (aDiff.Operation)
             {
                 case Operation.INSERT:
-                    text.Append("+").Append(EncodeURI(aDiff.text)).Append("\t");
+                    text.Append("+").Append(EncodeURI(aDiff.Text)).Append("\t");
                     break;
                 case Operation.DELETE:
-                    text.Append("-").Append(aDiff.text.Length).Append("\t");
+                    text.Append("-").Append(aDiff.Text.Length).Append("\t");
                     break;
                 case Operation.EQUAL:
-                    text.Append("=").Append(aDiff.text.Length).Append("\t");
+                    text.Append("=").Append(aDiff.Text.Length).Append("\t");
                     break;
             }
         }
@@ -1649,7 +1649,7 @@ public class DiffMatchPatch
         }
 
         // Initialise the bit arrays.
-        int matchmask = 1 << (pattern.Length - 1);
+        int matchmask = 1 << pattern.Length - 1;
         best_loc = -1;
 
         int bin_min, bin_mid;
@@ -1698,13 +1698,13 @@ public class DiffMatchPatch
                 if (d == 0)
                 {
                     // First pass: exact match.
-                    rd[j] = ((rd[j + 1] << 1) | 1) & charMatch;
+                    rd[j] = (rd[j + 1] << 1 | 1) & charMatch;
                 }
                 else
                 {
                     // Subsequent passes: fuzzy match.
-                    rd[j] = ((rd[j + 1] << 1) | 1) & charMatch
-                        | (((last_rd[j + 1] | last_rd[j]) << 1) | 1) | last_rd[j + 1];
+                    rd[j] = (rd[j + 1] << 1 | 1) & charMatch
+                        | (last_rd[j + 1] | last_rd[j]) << 1 | 1 | last_rd[j + 1];
                 }
                 if ((rd[j] & matchmask) != 0)
                 {
@@ -1756,7 +1756,7 @@ public class DiffMatchPatch
             // Dodge divide by zero error.
             return proximity == 0 ? accuracy : 1.0;
         }
-        return accuracy + (proximity / (float)Match_Distance);
+        return accuracy + proximity / (float)Match_Distance;
     }
 
     /**
@@ -1778,7 +1778,7 @@ public class DiffMatchPatch
         int i = 0;
         foreach (char c in char_pattern)
         {
-            int value = s[c] | (1 << (pattern.Length - i - 1));
+            int value = s[c] | 1 << pattern.Length - i - 1;
             s[c] = value;
             i++;
         }
@@ -1914,37 +1914,37 @@ public class DiffMatchPatch
         string postpatch_text = text1;
         foreach (Diff aDiff in diffs)
         {
-            if (patch.diffs.Count == 0 && aDiff.operation != Operation.EQUAL)
+            if (patch.diffs.Count == 0 && aDiff.Operation != Operation.EQUAL)
             {
                 // A new patch starts here.
                 patch.start1 = char_count1;
                 patch.start2 = char_count2;
             }
 
-            switch (aDiff.operation)
+            switch (aDiff.Operation)
             {
                 case Operation.INSERT:
                     patch.diffs.Add(aDiff);
-                    patch.length2 += aDiff.text.Length;
-                    postpatch_text = postpatch_text.Insert(char_count2, aDiff.text);
+                    patch.length2 += aDiff.Text.Length;
+                    postpatch_text = postpatch_text.Insert(char_count2, aDiff.Text);
                     break;
                 case Operation.DELETE:
-                    patch.length1 += aDiff.text.Length;
+                    patch.length1 += aDiff.Text.Length;
                     patch.diffs.Add(aDiff);
                     postpatch_text = postpatch_text.Remove(char_count2,
-                        aDiff.text.Length);
+                        aDiff.Text.Length);
                     break;
                 case Operation.EQUAL:
-                    if (aDiff.text.Length <= 2 * Patch_Margin
+                    if (aDiff.Text.Length <= 2 * Patch_Margin
                         && patch.diffs.Count() != 0 && aDiff != diffs.Last())
                     {
                         // Small equality inside a patch.
                         patch.diffs.Add(aDiff);
-                        patch.length1 += aDiff.text.Length;
-                        patch.length2 += aDiff.text.Length;
+                        patch.length1 += aDiff.Text.Length;
+                        patch.length2 += aDiff.Text.Length;
                     }
 
-                    if (aDiff.text.Length >= 2 * Patch_Margin)
+                    if (aDiff.Text.Length >= 2 * Patch_Margin)
                     {
                         // Time for a new patch.
                         if (patch.diffs.Count != 0)
@@ -1964,13 +1964,13 @@ public class DiffMatchPatch
             }
 
             // Update the current character count.
-            if (aDiff.operation != Operation.INSERT)
+            if (aDiff.Operation != Operation.INSERT)
             {
-                char_count1 += aDiff.text.Length;
+                char_count1 += aDiff.Text.Length;
             }
-            if (aDiff.operation != Operation.DELETE)
+            if (aDiff.Operation != Operation.DELETE)
             {
-                char_count2 += aDiff.text.Length;
+                char_count2 += aDiff.Text.Length;
             }
         }
         // Pick up the leftover patch if not empty.
@@ -1996,7 +1996,7 @@ public class DiffMatchPatch
             Patch patchCopy = new();
             foreach (Diff aDiff in aPatch.diffs)
             {
-                Diff diffCopy = new Diff(aDiff.operation, aDiff.text);
+                Diff diffCopy = new Diff(aDiff.Operation, aDiff.Text);
                 patchCopy.diffs.Add(diffCopy);
             }
             patchCopy.start1 = aPatch.start1;
@@ -2043,7 +2043,7 @@ public class DiffMatchPatch
             string text1 = DiffText1(aPatch.diffs);
             int start_loc;
             int end_loc = -1;
-            if (text1.Length > this.Match_MaxBits)
+            if (text1.Length > Match_MaxBits)
             {
                 // patch_splitMax will only provide an oversized pattern
                 // in the case of a monster delete.
@@ -2112,24 +2112,24 @@ public class DiffMatchPatch
                         int index1 = 0;
                         foreach (Diff aDiff in aPatch.diffs)
                         {
-                            if (aDiff.operation != Operation.EQUAL)
+                            if (aDiff.Operation != Operation.EQUAL)
                             {
                                 int index2 = DiffXIndex(diffs, index1);
-                                if (aDiff.operation == Operation.INSERT)
+                                if (aDiff.Operation == Operation.INSERT)
                                 {
                                     // Insertion
-                                    text = text.Insert(start_loc + index2, aDiff.text);
+                                    text = text.Insert(start_loc + index2, aDiff.Text);
                                 }
-                                else if (aDiff.operation == Operation.DELETE)
+                                else if (aDiff.Operation == Operation.DELETE)
                                 {
                                     // Deletion
                                     text = text.Remove(start_loc + index2, DiffXIndex(diffs,
-                                        index1 + aDiff.text.Length) - index2);
+                                        index1 + aDiff.Text.Length) - index2);
                                 }
                             }
-                            if (aDiff.operation != Operation.DELETE)
+                            if (aDiff.Operation != Operation.DELETE)
                             {
-                                index1 += aDiff.text.Length;
+                                index1 += aDiff.Text.Length;
                             }
                         }
                     }
@@ -2168,7 +2168,7 @@ public class DiffMatchPatch
         // Add some padding on start of first diff.
         Patch patch = patches.First();
         List<Diff> diffs = patch.diffs;
-        if (diffs.Count == 0 || diffs.First().operation != Operation.EQUAL)
+        if (diffs.Count == 0 || diffs.First().Operation != Operation.EQUAL)
         {
             // Add nullPadding equality.
             diffs.Insert(0, new Diff(Operation.EQUAL, nullPadding));
@@ -2177,13 +2177,13 @@ public class DiffMatchPatch
             patch.length1 += paddingLength;
             patch.length2 += paddingLength;
         }
-        else if (paddingLength > diffs.First().text.Length)
+        else if (paddingLength > diffs.First().Text.Length)
         {
             // Grow first equality.
             Diff firstDiff = diffs.First();
-            int extraLength = paddingLength - firstDiff.text.Length;
-            firstDiff.text = nullPadding.Substring(firstDiff.text.Length)
-                + firstDiff.text;
+            int extraLength = paddingLength - firstDiff.Text.Length;
+            firstDiff.Text = nullPadding.Substring(firstDiff.Text.Length)
+                + firstDiff.Text;
             patch.start1 -= extraLength;
             patch.start2 -= extraLength;
             patch.length1 += extraLength;
@@ -2193,19 +2193,19 @@ public class DiffMatchPatch
         // Add some padding on end of last diff.
         patch = patches.Last();
         diffs = patch.diffs;
-        if (diffs.Count == 0 || diffs.Last().operation != Operation.EQUAL)
+        if (diffs.Count == 0 || diffs.Last().Operation != Operation.EQUAL)
         {
             // Add nullPadding equality.
             diffs.Add(new Diff(Operation.EQUAL, nullPadding));
             patch.length1 += paddingLength;
             patch.length2 += paddingLength;
         }
-        else if (paddingLength > diffs.Last().text.Length)
+        else if (paddingLength > diffs.Last().Text.Length)
         {
             // Grow last equality.
             Diff lastDiff = diffs.Last();
-            int extraLength = paddingLength - lastDiff.text.Length;
-            lastDiff.text += nullPadding.Substring(0, extraLength);
+            int extraLength = paddingLength - lastDiff.Text.Length;
+            lastDiff.Text += nullPadding.Substring(0, extraLength);
             patch.length1 += extraLength;
             patch.length2 += extraLength;
         }
@@ -2249,8 +2249,8 @@ public class DiffMatchPatch
                 while (bigpatch.diffs.Count != 0
                     && patch.length1 < patch_size - Patch_Margin)
                 {
-                    Operation diff_type = bigpatch.diffs[0].operation;
-                    string diff_text = bigpatch.diffs[0].text;
+                    Operation diff_type = bigpatch.diffs[0].Operation;
+                    string diff_text = bigpatch.diffs[0].Text;
                     if (diff_type == Operation.INSERT)
                     {
                         // Insertions are harmless.
@@ -2261,7 +2261,7 @@ public class DiffMatchPatch
                         empty = false;
                     }
                     else if (diff_type == Operation.DELETE && patch.diffs.Count == 1
-                        && patch.diffs.First().operation == Operation.EQUAL
+                        && patch.diffs.First().Operation == Operation.EQUAL
                         && diff_text.Length > 2 * patch_size)
                     {
                         // This is a large deletion.  Let it pass in one chunk.
@@ -2288,14 +2288,14 @@ public class DiffMatchPatch
                             empty = false;
                         }
                         patch.diffs.Add(new Diff(diff_type, diff_text));
-                        if (diff_text == bigpatch.diffs[0].text)
+                        if (diff_text == bigpatch.diffs[0].Text)
                         {
                             bigpatch.diffs.RemoveAt(0);
                         }
                         else
                         {
-                            bigpatch.diffs[0].text =
-                                bigpatch.diffs[0].text.Substring(diff_text.Length);
+                            bigpatch.diffs[0].Text =
+                                bigpatch.diffs[0].Text.Substring(diff_text.Length);
                         }
                     }
                 }
@@ -2321,10 +2321,10 @@ public class DiffMatchPatch
                     patch.length1 += postcontext.Length;
                     patch.length2 += postcontext.Length;
                     if (patch.diffs.Count != 0
-                        && patch.diffs[patch.diffs.Count - 1].operation
+                        && patch.diffs[patch.diffs.Count - 1].Operation
                         == Operation.EQUAL)
                     {
-                        patch.diffs[patch.diffs.Count - 1].text += postcontext;
+                        patch.diffs[patch.diffs.Count - 1].Text += postcontext;
                     }
                     else
                     {

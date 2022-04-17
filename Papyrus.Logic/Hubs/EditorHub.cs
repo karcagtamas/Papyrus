@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.HubEvents;
 
 namespace Papyrus.Logic.Hubs;
+
 public class EditorHub : Hub
 {
     public async Task SendTest()
@@ -14,9 +16,12 @@ public class EditorHub : Hub
 
     }
 
-    public async Task Change(string content)
+    public async Task Change(List<TransportDiff> diffs)
     {
-        await Clients.All.SendAsync(EditorHubEvents.EditorChanged, content);
+        if (diffs.Count > 0)
+        {
+            await Clients.All.SendAsync(EditorHubEvents.EditorChanged, diffs);
+        }
     }
 
     public async Task Disconnect()

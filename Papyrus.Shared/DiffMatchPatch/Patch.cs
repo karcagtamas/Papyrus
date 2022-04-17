@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace KarcagS.Shared.DiffMatchPatch;
+namespace Papyrus.Shared.DiffMatchPatch;
 
 /**
  * Class representing one patch operation.
@@ -22,37 +22,37 @@ public class Patch
     public override string ToString()
     {
         string coords1, coords2;
-        if (this.length1 == 0)
+        if (length1 == 0)
         {
-            coords1 = this.start1 + ",0";
+            coords1 = start1 + ",0";
         }
-        else if (this.length1 == 1)
+        else if (length1 == 1)
         {
-            coords1 = Convert.ToString(this.start1 + 1);
-        }
-        else
-        {
-            coords1 = (this.start1 + 1) + "," + this.length1;
-        }
-        if (this.length2 == 0)
-        {
-            coords2 = this.start2 + ",0";
-        }
-        else if (this.length2 == 1)
-        {
-            coords2 = Convert.ToString(this.start2 + 1);
+            coords1 = Convert.ToString(start1 + 1);
         }
         else
         {
-            coords2 = (this.start2 + 1) + "," + this.length2;
+            coords1 = start1 + 1 + "," + length1;
+        }
+        if (length2 == 0)
+        {
+            coords2 = start2 + ",0";
+        }
+        else if (length2 == 1)
+        {
+            coords2 = Convert.ToString(start2 + 1);
+        }
+        else
+        {
+            coords2 = start2 + 1 + "," + length2;
         }
         StringBuilder text = new StringBuilder();
         text.Append("@@ -").Append(coords1).Append(" +").Append(coords2)
             .Append(" @@\n");
         // Escape the body of the patch with %xx notation.
-        foreach (Diff aDiff in this.diffs)
+        foreach (Diff aDiff in diffs)
         {
-            switch (aDiff.operation)
+            switch (aDiff.Operation)
             {
                 case Operation.INSERT:
                     text.Append('+');
@@ -65,7 +65,7 @@ public class Patch
                     break;
             }
 
-            text.Append(DiffMatchPatch.EncodeURI(aDiff.text)).Append("\n");
+            text.Append(DiffMatchPatch.EncodeURI(aDiff.Text)).Append("\n");
         }
         return text.ToString();
     }

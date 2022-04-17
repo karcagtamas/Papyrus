@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
+using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.HubEvents;
 
 namespace Papyrus.Client.Pages.Editor;
@@ -21,7 +22,7 @@ public partial class Editor : ComponentBase, IDisposable
     private HubConnection? hub;
     private ElementReference? editorReference;
 
-    private List<EditorDelta> Deltas = new();
+    private int CurrentPosition;
 
 
     protected override async Task OnInitializedAsync()
@@ -30,20 +31,32 @@ public partial class Editor : ComponentBase, IDisposable
             .WithUrl($"{ApplicationSettings.BaseUrl}/editor")
             .Build();
 
-        hub?.On<string>(EditorHubEvents.EditorChanged, async (content) =>
+        hub?.On<List<TransportDiff>>(EditorHubEvents.EditorChanged, async (diffs) =>
         {
-            Console.WriteLine($"Content changed to:\n {content}");
-            Content = content;
-            await SetEditorValue(content);
-            await InvokeAsync(StateHasChanged);
+            await ApplyDiffs(diffs);
         });
 
         if (hub is not null)
         {
             await hub.StartAsync();
         }
+    }
 
-        await StartObserve();
+    private async Task ApplyDiffs(List<TransportDiff> tDiffs)
+    {
+        var diffs = tDiffs.Select(diff => new Diff(diff)).ToList();
+        var patches = new DiffMatchPatch().PatchMake(diffs);
+        var patched = new DiffMatchPatch().PatchApply(patches, Content);
+        var patchResults = (bool[])patched[1];
+
+        if (patchResults.Length == patches.Count && patchResults.All(x => x))
+        {
+            string result = (string)patched[0];
+            Content = result;
+            Console.WriteLine($"Content changed to:\n {Content}");
+            await SetEditorValue(Content);
+            await InvokeAsync(StateHasChanged);
+        }
     }
 
     private async void ExecuteAction(EditorAction action, string param = "")
@@ -72,18 +85,19 @@ public partial class Editor : ComponentBase, IDisposable
         }
     }
 
-    private async void ContentChanged(ChangeEventArgs args)
+    private async Task ContentChanged(ChangeEventArgs args)
     {
+        var old = Content;
         Content = await GetEditorValue();
+
         if (hub is not null)
         {
-            await hub.SendAsync(EditorHubEvents.EditorChange, Content);
+            var diffs = new DiffMatchPatch().DiffMain(old, Content);
+            if (diffs is not null)
+            {
+                await hub.SendAsync(EditorHubEvents.EditorChange, diffs.Select(diff => new TransportDiff(diff)).ToList());
+            }
         }
-    }
-
-    private async Task StartObserve()
-    {
-        await JSRuntime.InvokeVoidAsync("startEditorObserve", editorReference);
     }
 
     private async Task<string> GetEditorValue()
@@ -99,19 +113,6 @@ public partial class Editor : ComponentBase, IDisposable
     private async Task<int> GetCursorPosition()
     {
         return await JSRuntime.InvokeAsync<int>("getCursorPositon", editorReference);
-    }
-
-    private async Task EditorClick(MouseEventArgs args)
-    {
-        Deltas.Add(new EditorDelta
-        {
-            Action = EditorDeltaAction.Click,
-            Context = new ClickContext
-            {
-                CursorPosition = await GetCursorPosition()
-            }
-        });
-        Deltas.ForEach(x => Console.WriteLine(x));
     }
 
     private void ChooseColor(EditorAction action)

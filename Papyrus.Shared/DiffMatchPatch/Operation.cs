@@ -1,4 +1,4 @@
-﻿namespace KarcagS.Shared.DiffMatchPatch;
+﻿namespace Papyrus.Shared.DiffMatchPatch;
 
 /**-
  * The data structure representing a diff is a List of Diff objects:
