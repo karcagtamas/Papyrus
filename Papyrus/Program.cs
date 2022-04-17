@@ -5,7 +5,6 @@ using KarcagS.Common.Tools;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

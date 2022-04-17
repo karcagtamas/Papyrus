@@ -3,15 +3,20 @@
 }
 
 setEditorValueByReference = function (element, value) {
-    console.log(value);
-    //var target = element.createTextNode("\u0001");
-    //element.getSelection().getRangeAt(0).insertNode(target);
     element.innerHTML = value;
-    //var position = element.innerHTML.indexOf("\u0001");
-    //element.getSelection().setPosition(position);
-    //target.parentNode.removeChild(target);
 }
 
-getCursorPositon = function (element) {
+getCursorPosition = function () {
     return window.getSelection().getRangeAt(0).startOffset;
+}
+
+setCursorPosition = function (element, position) {
+    var selection = window.getSelection();
+    console.log(selection);
+    var range = document.createRange();
+    range.setStart(element.childNodes[0], position);
+    range.collapse(true);
+    selection.removeAllRanges();
+    selection.addRange(range);
+    element.focus();
 }
