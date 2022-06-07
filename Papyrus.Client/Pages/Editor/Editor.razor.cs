@@ -1,6 +1,5 @@
-using KarcagS.Blazor.Common.Models;
+﻿using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
@@ -21,8 +20,6 @@ public partial class Editor : ComponentBase, IDisposable
 
     private HubConnection? hub;
     private ElementReference? editorReference;
-
-    private int CurrentPosition;
 
 
     protected override async Task OnInitializedAsync()
@@ -51,44 +48,12 @@ public partial class Editor : ComponentBase, IDisposable
 
         if (patchResults.Length == patches.Count && patchResults.All(x => x))
         {
-            var cursorPosition = await GetCursorPosition();
-            var destPosition = CalculateCursorPosition(tDiffs, cursorPosition);
-            Console.WriteLine(cursorPosition);
-            Console.WriteLine(destPosition);
-
             string result = (string)patched[0];
             Content = result;
             Console.WriteLine($"Content changed to:\n {Content}");
-            await SetEditorValue(Content);
-            await SetCursorPosition(destPosition);
+            await SetEditorValue(Content, "alma");
             await InvokeAsync(StateHasChanged);
         }
-    }
-
-    private int CalculateCursorPosition(List<TransportDiff> diffs, int current)
-    {
-        int pos = current;
-        int c = 0;
-        foreach (var diff in diffs)
-        {
-            c += diff.Text.Length;
-
-            if (c >= current)
-            {
-                break;
-            }
-
-            if (diff.Operation is Operation.INSERT)
-            {
-                pos += diff.Text.Length;
-            }
-            else if (diff.Operation is Operation.DELETE)
-            {
-                pos -= diff.Text.Length;
-            }
-        }
-
-        return pos;
     }
 
     private async void ExecuteAction(EditorAction action, string param = "")
@@ -122,6 +87,9 @@ public partial class Editor : ComponentBase, IDisposable
         var old = Content;
         var current = await GetEditorValue();
 
+        // Current cursor
+        current = current.Replace("[{CURRENT_CURSOR}]", "<span class='editor-cursor' id='alma'></span>");
+
         if (hub is not null)
         {
             var diffs = new DiffMatchPatch().DiffMain(old, current);
@@ -137,19 +105,9 @@ public partial class Editor : ComponentBase, IDisposable
         return await JSRuntime.InvokeAsync<string>("getEditorValueByReference", editorReference);
     }
 
-    private async Task SetEditorValue(string value)
+    private async Task SetEditorValue(string value, string clientId)
     {
-        await JSRuntime.InvokeVoidAsync("setEditorValueByReference", editorReference, value);
-    }
-
-    private async Task<int> GetCursorPosition()
-    {
-        return await JSRuntime.InvokeAsync<int>("getCursorPosition");
-    }
-
-    private async Task SetCursorPosition(int position)
-    {
-        await JSRuntime.InvokeVoidAsync("setCursorPosition", editorReference, position);
+        await JSRuntime.InvokeVoidAsync("setEditorValueByReference", editorReference, value, clientId);
     }
 
     private void ChooseColor(EditorAction action)
