@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
+using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.HubEvents;
 
@@ -13,6 +14,9 @@ public partial class Editor : ComponentBase, IDisposable
     [Inject]
     private IJSRuntime JSRuntime { get; set; }
 
+    [Inject]
+    private ITokenService TokenService { get; set; }
+
     private bool ColorPickerOpened { get; set; }
     private EditorAction? ColorAction { get; set; }
     private MudColor SelectedColor { get; set; } = new MudColor("#FF1212FF");
@@ -20,10 +24,12 @@ public partial class Editor : ComponentBase, IDisposable
 
     private HubConnection? hub;
     private ElementReference? editorReference;
+    private string clientId;
 
 
     protected override async Task OnInitializedAsync()
     {
+        clientId = await TokenService.GetClientId();
         hub = new HubConnectionBuilder()
             .WithUrl($"{ApplicationSettings.BaseUrl}/editor")
             .Build();
@@ -51,7 +57,7 @@ public partial class Editor : ComponentBase, IDisposable
             string result = (string)patched[0];
             Content = result;
             Console.WriteLine($"Content changed to:\n {Content}");
-            await SetEditorValue(Content, "alma");
+            await SetEditorValue(Content, clientId);
             await InvokeAsync(StateHasChanged);
         }
     }
@@ -88,7 +94,7 @@ public partial class Editor : ComponentBase, IDisposable
         var current = await GetEditorValue();
 
         // Current cursor
-        current = current.Replace("[{CURRENT_CURSOR}]", "<span class='editor-cursor' id='alma'></span>");
+        current = current.Replace("[{CURRENT_CURSOR}]", "<span class='editor-cursor' id='"+ clientId +"'></span>");
 
         if (hub is not null)
         {
