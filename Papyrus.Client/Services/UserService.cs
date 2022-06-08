@@ -30,6 +30,13 @@ public class UserService : HttpCall<string>, IUserService
         return await Http.GetBool(settings).ExecuteWithResult();
     }
 
+    public async Task<UserLightDTO?> Light(string id)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, id, "Light"));
+
+        return await Http.Get<UserLightDTO>(settings).ExecuteWithResult();
+    }
+
     public async Task<bool> SetDisableStatus(List<string> ids, bool status)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Disable")).AddToaster("Disable");

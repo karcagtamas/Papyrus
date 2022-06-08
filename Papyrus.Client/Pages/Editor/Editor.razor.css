@@ -10,6 +10,8 @@
 
 #rt-editor-actions {
     margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
 }
 
 #rt-editor {

@@ -10,4 +10,5 @@ public interface ITokenService
     Task ClearUser();
     bool UserInStore();
     Task<string> GetClientId();
+    Task<string> GetAccessToken();
 }

@@ -5,6 +5,7 @@ using Microsoft.JSInterop;
 using MudBlazor.Utilities;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DiffMatchPatch;
+using Papyrus.Shared.DTOs;
 using Papyrus.Shared.HubEvents;
 
 namespace Papyrus.Client.Pages.Editor;
@@ -17,21 +18,30 @@ public partial class Editor : ComponentBase, IDisposable
     [Inject]
     private ITokenService TokenService { get; set; }
 
+    [Inject]
+    private IUserService UserService { get; set; }
+
     private bool ColorPickerOpened { get; set; }
     private EditorAction? ColorAction { get; set; }
     private MudColor SelectedColor { get; set; } = new MudColor("#FF1212FF");
     private string Content { get; set; } = "";
 
+    private List<UserLightDTO> Users { get; set; } = new List<UserLightDTO>();
+
     private HubConnection? hub;
     private ElementReference? editorReference;
-    private string clientId;
+    private string clientId = "";
 
 
     protected override async Task OnInitializedAsync()
     {
         clientId = await TokenService.GetClientId();
+        string? token = await TokenService.GetAccessToken();
         hub = new HubConnectionBuilder()
-            .WithUrl($"{ApplicationSettings.BaseUrl}/editor")
+            .WithUrl($"{ApplicationSettings.BaseUrl}/editor", options =>
+            {
+                options.AccessTokenProvider = () => Task.FromResult<string?>(token);
+            })
             .Build();
 
         hub?.On<List<TransportDiff>>(EditorHubEvents.EditorChanged, async (diffs) =>
@@ -39,9 +49,31 @@ public partial class Editor : ComponentBase, IDisposable
             await ApplyDiffs(diffs);
         });
 
+        hub?.On<string, EditorMemberChange>(EditorHubEvents.EditorMemberChange, async (user, action) =>
+        {
+            if (action == EditorMemberChange.Join)
+            {
+                var dto = await UserService.Light(user);
+
+                if (dto is not null)
+                {
+                    Users.RemoveAll(x => x.Id == user);
+                    Users.Add(dto);
+                    await InvokeAsync(StateHasChanged);
+                }
+            }
+            else if (action == EditorMemberChange.Leave)
+            {
+                Users.RemoveAll(x => x.Id == user);
+                await InvokeAsync(StateHasChanged);
+            }
+        });
+
+
         if (hub is not null)
         {
             await hub.StartAsync();
+            await hub.SendAsync(EditorHubEvents.EditorConnect, "ALMA");
         }
     }
 
@@ -94,14 +126,14 @@ public partial class Editor : ComponentBase, IDisposable
         var current = await GetEditorValue();
 
         // Current cursor
-        current = current.Replace("[{CURRENT_CURSOR}]", "<span class='editor-cursor' id='"+ clientId +"'></span>");
+        current = current.Replace("[{CURRENT_CURSOR}]", "<span class='editor-cursor' id='" + clientId + "'></span>");
 
         if (hub is not null)
         {
             var diffs = new DiffMatchPatch().DiffMain(old, current);
             if (diffs is not null)
             {
-                await hub.SendAsync(EditorHubEvents.EditorChange, diffs.Select(diff => new TransportDiff(diff)).ToList());
+                await hub.SendAsync(EditorHubEvents.EditorShare, "ALMA", diffs.Select(diff => new TransportDiff(diff)).ToList());
             }
         }
     }
@@ -137,6 +169,7 @@ public partial class Editor : ComponentBase, IDisposable
     {
         if (hub is not null)
         {
+            await hub.SendAsync(EditorHubEvents.EditorDisconnect, "ALMA");
             await hub.DisposeAsync();
         }
     }

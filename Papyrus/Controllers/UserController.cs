@@ -30,6 +30,12 @@ public class UserController : ControllerBase
         return userService.GetMapped<UserDTO>(id);
     }
 
+    [HttpGet("{id}/Light")]
+    public UserLightDTO GetLight(string id)
+    {
+        return userService.GetMapped<UserLightDTO>(id);
+    }
+
     [HttpPut("{id}")]
     public void Update(string id, [FromBody] UserModel model)
     {

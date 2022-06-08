@@ -85,7 +85,7 @@ public class TokenService : ITokenService
         return await localStorageService.GetItemAsync<string>(ClientIdKey);
     }
 
-    private async Task<string> GetAccessToken()
+    public async Task<string> GetAccessToken()
     {
         return await localStorageService.GetItemAsync<string>(AccessTokenKey);
     }

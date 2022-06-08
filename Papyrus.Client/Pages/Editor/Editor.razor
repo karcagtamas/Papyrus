@@ -21,6 +21,11 @@
             </MudPopover>
             <MudIconButton Disabled="@ColorPickerOpened" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))"></MudIconButton>
         </MudButtonGroup>
+        <MudSpacer />
+        @foreach(var user in Users)
+        {
+            <MudAvatar Color="Color.Secondary" Class="ml-3">@user.UserName.ToUpper()[0]</MudAvatar>
+        }
     </div>
     <MudDivider />
     <div @ref="editorReference" contenteditable="true" id="rt-editor" @oninput="@((args) => ContentChanged(args))"></div>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.HubEvents;
 
@@ -6,25 +7,30 @@ namespace Papyrus.Logic.Hubs;
 
 public class EditorHub : Hub
 {
-    public async Task SendTest()
+    public EditorHub()
     {
-        await Clients.All.SendAsync("ReceiveTest", DateTime.Now);
     }
 
-    public async Task Connect()
+    [Authorize]
+    public async Task Connect(string editor)
     {
-
+        await Groups.AddToGroupAsync(Context.ConnectionId, editor);
+        await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberChange, Context.UserIdentifier, EditorMemberChange.Join);
     }
 
-    public async Task Change(List<TransportDiff> diffs)
+    [Authorize]
+    public async Task Share(string editor, List<TransportDiff> diffs)
     {
         if (diffs.Count > 0)
         {
-            await Clients.All.SendAsync(EditorHubEvents.EditorChanged, diffs);
+            await Clients.Group(editor).SendAsync(EditorHubEvents.EditorChanged, diffs);
         }
     }
 
-    public async Task Disconnect()
+    [Authorize]
+    public async Task Disconnect(string editor)
     {
+        await Groups.RemoveFromGroupAsync(Context.ConnectionId, editor);
+        await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberChange, Context.UserIdentifier, EditorMemberChange.Leave);
     }
 }
