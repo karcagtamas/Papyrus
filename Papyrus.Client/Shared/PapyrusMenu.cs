@@ -10,7 +10,7 @@ public static class PapyrusMenu
             .AddIcon(Icons.Filled.Dashboard),
         MenuItem.CreateItem("Search", "search")
             .AddIcon(Icons.Filled.Search),
-        MenuItem.CreateItem("Person", "my")
+        MenuItem.CreateItem("Profile", "my")
             .AddIcon(Icons.Filled.Person),
         MenuItem.CreateItem("My Groups", "my-groups")
             .AddIcon(Icons.Filled.Groups),

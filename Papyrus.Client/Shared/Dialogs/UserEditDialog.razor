@@ -41,9 +41,9 @@
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
 
-    private UserDTO DTO { get; set; }
+    private UserDTO? DTO { get; set; }
     private UserModel Model { get; set; } = new();
-    private MudForm Form { get; set; } = null!;
+    private MudForm? Form { get; set; } = null!;
 
     protected override async void OnInitialized()
     {
@@ -57,13 +57,21 @@
         if (!string.IsNullOrEmpty(UserId))
         {
             DTO = await UserService.Get<UserDTO>(UserId);
-            Model = new UserModel(DTO);
+            if (DTO is not null)
+            {
+                Model = new UserModel(DTO);
+            }
             StateHasChanged();
         }
     }
 
     private async void Save()
     {
+        if (Form is null)
+        {
+            return;
+        }
+
         await Form.Validate();
         if (!Form.IsValid || string.IsNullOrEmpty(UserId)) return;
 
@@ -86,7 +94,7 @@
 
     private bool UserNameOrEmailChanged()
     {
-        return Model.UserName != DTO.UserName || Model.Email != DTO.Email;
+        return Model.UserName != DTO?.UserName || Model.Email != DTO?.Email;
     }
 
 }

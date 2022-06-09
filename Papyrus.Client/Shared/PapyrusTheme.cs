@@ -5,7 +5,8 @@ namespace Papyrus.Client.Shared;
 
 public static class PapyrusTheme
 {
-    private static readonly MudColor MainColor = new("#0D2971");
+    public static readonly string Main = "#0D2971";
+    private static readonly MudColor MainColor = new(Main);
     private static readonly MudColor SecondaryColor = new("#581043");
     private static readonly MudColor TertiaryColor = new("#361B3A");
     private static readonly MudColor WarningColor = new("#C07C38");
@@ -13,6 +14,7 @@ public static class PapyrusTheme
     private static readonly MudColor InfoColor = new("#66ADA1");
     private static readonly MudColor SuccessColor = new("#40921A");
     private static readonly MudColor White = new("#FFFFFF");
+    
 
     private static readonly MudTheme Theme = new()
     {
@@ -39,7 +41,11 @@ public static class PapyrusTheme
         },
         Typography = new Typography
         {
-            Default = new Default { FontFamily = new[] { "Bree Serif", "serif" } }
+            Default = new Default { FontFamily = new[] { "Bree Serif", "serif" } },
+            Button = new Button
+            {
+                TextTransform = "none"
+            }
         }
     };
 

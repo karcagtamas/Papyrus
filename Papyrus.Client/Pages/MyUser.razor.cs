@@ -11,13 +11,13 @@ namespace Papyrus.Client.Pages;
 public partial class MyUser : ComponentBase
 {
     [Inject]
-    private IDialogService DialogService { get; set; }
+    private IDialogService DialogService { get; set; } = default!;
 
     [Inject]
-    private IUserService UserService { get; set; }
+    private IUserService UserService { get; set; } = default!;
 
     [Inject]
-    private IImageUploaderService ImageUploaderService { get; set; }
+    private IImageUploaderService ImageUploaderService { get; set; } = default!;
 
     private UserDTO? User { get; set; }
     private string? Image { get; set; }

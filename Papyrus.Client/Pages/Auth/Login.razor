@@ -11,7 +11,7 @@
 <div id="panel">
     <MudPaper Class="p-4" Elevation="4">
         <MudText Typo="Typo.h4" Color="Color.Primary">Login</MudText>
-        
+
         <div id="image">
             <img src="assets/images/main.svg" alt="Main image" />
         </div>
@@ -30,12 +30,17 @@
                     Sign In
                 </MudButton>
             </div>
+            <MudDivider />
+            <div class="text-center mt-3">
+                <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="ToRegister"
+                           StartIcon="@Icons.Filled.PersonAdd">Registration</MudButton>
+            </div>
         </MudForm>
     </MudPaper>
 </div>
 
 @code {
-    MudForm form = null!;
+    MudForm? form;
 
     private LoginModel Model { get; set; } = new();
 
@@ -58,8 +63,18 @@
         base.OnInitialized();
     }
 
+    private void ToRegister()
+    {
+        navigationManager.NavigateTo("/register");
+    }
+
     private async void Submit()
     {
+        if (form is null)
+        {
+            return;
+        }
+
         await form.Validate();
         if (!form.IsValid) return;
         var res = await authService.Login(Model);

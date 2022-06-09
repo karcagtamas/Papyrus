@@ -1,3 +1,16 @@
 ﻿@page "/home"
+@inject NavigationManager NavigationManager
 
 <ApplicationPageTitle PageName="Home"></ApplicationPageTitle>
+
+<div class="page-body">
+    <img src="assets/images/main.svg" width="500" alt="Papyrus Logo" />
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Redirect">Sign In</MudButton>
+</div>
+
+@code {
+    private void Redirect()
+    {
+        NavigationManager.NavigateTo("/login");
+    }
+}

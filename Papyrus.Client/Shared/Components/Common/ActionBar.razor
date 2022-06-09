@@ -1,0 +1,8 @@
+﻿<MudPaper Class="p-2 mb-3" Elevation="2">
+    @ChildContent
+</MudPaper>
+
+@code {
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+}

@@ -1,0 +1,13 @@
+﻿@using KarcagS.Shared.Helpers
+<div>
+    <MudText Typo="Typo.body1" Color="Color.Primary"><b>@Title:</b></MudText>
+    @WriteHelper.WriteEmptyableField(Value)
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    public string? Value { get; set; } = default!;
+}
