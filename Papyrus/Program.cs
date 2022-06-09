@@ -15,6 +15,10 @@ using Papyrus.Logic.Configurations;
 using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Mappers;
 using Papyrus.Logic.Services;
+using Papyrus.Logic.Services.Auth;
+using Papyrus.Logic.Services.Auth.Interfaces;
+using Papyrus.Logic.Services.Groups;
+using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Middlewares;
 
@@ -32,8 +36,14 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
+builder.Services.AddScoped<IGroupService, GroupService>();
+
 // Add AutoMapper
-var mapperConfig = new MapperConfiguration(conf => { conf.AddProfile<UserMapper>(); });
+var mapperConfig = new MapperConfiguration(conf => 
+{ 
+    conf.AddProfile<UserMapper>(); 
+    conf.AddProfile<GroupMapper>();
+});
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
 // Cors

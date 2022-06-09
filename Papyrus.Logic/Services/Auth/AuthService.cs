@@ -3,11 +3,12 @@ using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Enums;
+using Papyrus.Logic.Services.Auth.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
-using Papyrus.Shared.DTOs;
-using Papyrus.Shared.Models;
+using Papyrus.Shared.DTOs.Auth;
+using Papyrus.Shared.Models.Auth;
 
-namespace Papyrus.Logic.Services;
+namespace Papyrus.Logic.Services.Auth;
 
 public class AuthService : IAuthService
 {

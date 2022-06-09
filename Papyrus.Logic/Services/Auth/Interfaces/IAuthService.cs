@@ -1,7 +1,7 @@
-using Papyrus.Shared.DTOs;
-using Papyrus.Shared.Models;
+using Papyrus.Shared.DTOs.Auth;
+using Papyrus.Shared.Models.Auth;
 
-namespace Papyrus.Logic.Services.Interfaces;
+namespace Papyrus.Logic.Services.Auth.Interfaces;
 
 public interface IAuthService
 {

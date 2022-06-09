@@ -1,4 +1,4 @@
-using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Auth;
 
 namespace Papyrus.Client.Services.Interfaces;
 

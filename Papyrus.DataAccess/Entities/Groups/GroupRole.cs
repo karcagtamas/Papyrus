@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
 
-namespace Papyrus.DataAccess.Entities;
+namespace Papyrus.DataAccess.Entities.Groups;
 
 public class GroupRole : IEntity<int>
 {
@@ -16,13 +16,24 @@ public class GroupRole : IEntity<int>
     public int GroupId { get; set; }
 
     [Required]
-    public bool Edit { get; set; }
+    public bool ReadOnly { get; set; }
+
+
+
 
     [Required]
-    public bool Close { get; set; }
+    public bool GroupEdit { get; set; }
+
+    [Required]
+    public bool GroupClose { get; set; }
+
+
 
     [Required]
     public bool ReadNoteList { get; set; }
+
+    [Required]
+    public bool ReadNote { get; set; }
 
     [Required]
     public bool CreateNote { get; set; }
@@ -31,22 +42,25 @@ public class GroupRole : IEntity<int>
     public bool DeleteNote { get; set; }
 
     [Required]
-    public bool ReadNote { get; set; }
-
-    [Required]
     public bool EditNote { get; set; }
+
+
 
     [Required]
     public bool ReadMemberList { get; set; }
 
     [Required]
-    public bool EditMember { get; set; }
+    public bool EditMemberList { get; set; }
+
+
 
     [Required]
     public bool ReadRoleList { get; set; }
 
     [Required]
-    public bool EditRole { get; set; }
+    public bool EditRoleList { get; set; }
+
+
 
     [Required]
     public bool ReadGroupActionLog { get; set; }
@@ -54,14 +68,13 @@ public class GroupRole : IEntity<int>
     [Required]
     public bool ReadNoteActionLog { get; set; }
 
+
+
     [Required]
     public bool ReadTagList { get; set; }
 
     [Required]
-    public bool EditTag { get; set; }
-
-    [Required]
-    public bool ReadOnly { get; set; }
+    public bool EditTagList { get; set; }
 
     public virtual Group Group { get; set; } = default!;
     public virtual ICollection<GroupMember> Members { get; set; } = default!;

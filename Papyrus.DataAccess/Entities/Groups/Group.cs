@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Attributes;
 using KarcagS.Common.Tools.Entities;
+using Papyrus.DataAccess.Entities.Notes;
 
-namespace Papyrus.DataAccess.Entities;
+namespace Papyrus.DataAccess.Entities.Groups;
 
-public class Group : IEntity<int>
+public class Group : IEntity<int>, ICreationEntity
 {
     [Key]
     [Required]
@@ -15,7 +16,7 @@ public class Group : IEntity<int>
 
     public DateTime Creation { get; set; }
 
-    [User]
+    [User(onlyInit: true)]
     [Required]
     public string OwnerId { get; set; } = default!;
 

@@ -8,10 +8,11 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Configurations;
+using Papyrus.Logic.Services.Auth.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
-using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Auth;
 
-namespace Papyrus.Logic.Services;
+namespace Papyrus.Logic.Services.Auth;
 
 public class TokenService : ITokenService
 {

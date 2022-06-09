@@ -1,4 +1,4 @@
-using Papyrus.Shared.Models;
+using Papyrus.Shared.Models.Auth;
 
 namespace Papyrus.Client.Services.Interfaces;
 

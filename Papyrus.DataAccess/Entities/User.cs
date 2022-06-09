@@ -1,6 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
 using Microsoft.AspNetCore.Identity;
+using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.DataAccess.Entities.Notes;
 
 namespace Papyrus.DataAccess.Entities;
 

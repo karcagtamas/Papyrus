@@ -1,4 +1,4 @@
-namespace Papyrus.Shared.Models;
+namespace Papyrus.Shared.Models.Auth;
 
 public class TokenModel
 {

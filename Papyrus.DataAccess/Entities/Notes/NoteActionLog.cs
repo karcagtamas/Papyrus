@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
 
-namespace Papyrus.DataAccess.Entities;
+namespace Papyrus.DataAccess.Entities.Notes;
 
 public class NoteActionLog : IEntity<int>
 {

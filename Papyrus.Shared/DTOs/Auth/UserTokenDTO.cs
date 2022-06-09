@@ -1,4 +1,4 @@
-namespace Papyrus.Shared.DTOs;
+namespace Papyrus.Shared.DTOs.Auth;
 
 public class UserTokenDTO
 {

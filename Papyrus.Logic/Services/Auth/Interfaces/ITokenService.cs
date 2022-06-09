@@ -1,7 +1,7 @@
 using Papyrus.DataAccess.Entities;
-using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Auth;
 
-namespace Papyrus.Logic.Services.Interfaces;
+namespace Papyrus.Logic.Services.Auth.Interfaces;
 
 public interface ITokenService
 {

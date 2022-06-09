@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
 using Papyrus.Client.Services.Interfaces;
-using Papyrus.Shared.DTOs;
-using Papyrus.Shared.Models;
+using Papyrus.Shared.DTOs.Auth;
+using Papyrus.Shared.Models.Auth;
 
 namespace Papyrus.Client.Services;
 

@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.Logic.Services.Interfaces;
-using Papyrus.Shared.DTOs;
-using Papyrus.Shared.Models;
+using Papyrus.Logic.Services.Auth.Interfaces;
+using Papyrus.Shared.DTOs.Auth;
+using Papyrus.Shared.Models.Auth;
 
 namespace Papyrus.Controllers;
 

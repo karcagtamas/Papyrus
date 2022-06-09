@@ -13,7 +13,7 @@ using MudBlazor.Services;
 using Papyrus.Client;
 using Papyrus.Client.Services;
 using Papyrus.Client.Services.Interfaces;
-using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Auth;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

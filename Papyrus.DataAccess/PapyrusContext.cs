@@ -2,6 +2,8 @@ using KarcagS.Common.Tools.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess.Entities;
+using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.DataAccess.Entities.Notes;
 
 namespace Papyrus.DataAccess;
 
