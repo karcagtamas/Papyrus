@@ -1,3 +1,4 @@
+@using KarcagS.Blazor.Common.Store
 @using Papyrus.Client.Services.Auth.Interfaces
 @using Papyrus.Client.Shared
 @using Papyrus.Shared.DTOs
@@ -9,6 +10,7 @@
 @inject IAuthService auth
 @inject NavigationManager navigator
 @inject AuthenticationStateProvider authStateProvider
+@inject IStoreService store
 
 <MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
 <MudDialogProvider />
@@ -25,7 +27,7 @@
         <MudLink Color="Color.Inherit" Class="mr-5 ml-5 mud-nav-link-text appbar-title" Href="/home">
             @PapyrusContext.ApplicationName
         </MudLink>
-        <MudSpacer></MudSpacer>
+        <MudSpacer />
         <AuthorizeView>
             <Authorized>
                 @if (User is not null)
@@ -39,7 +41,7 @@
     <AuthorizeView>
         <Authorized>
             <MudDrawer @bind-Open="@drawerOpen" Elevation="2" ClipMode="DrawerClipMode.Always" Class="drawer">
-                <NavMenu />
+                <NavMenu MenuItems="MenuItems" GroupMenuItems="GroupMenuItems" />
             </MudDrawer>
         </Authorized>
     </AuthorizeView>
@@ -50,6 +52,10 @@
 
 @code {
     private UserDTO? User { get; set; }
+    private int? GroupId { get; set; }
+    private List<MenuItem> MenuItems { get; set; } = new();
+    private List<MenuItem> GroupMenuItems { get; set; } = new();
+
     bool drawerOpen = true;
 
     void DrawerToggle()
@@ -60,10 +66,43 @@
     protected override async void OnInitialized()
     {
         HandleAuthStateChange(authStateProvider.GetAuthenticationStateAsync());
+        RefreshGroupItemsByStore();
 
         authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
+        store.Changed += HandleStoreChange;
+
+        MenuItems = PapyrusMenu.Items;
 
         await base.OnInitializedAsync();
+    }
+
+    private void HandleStoreChange(object? sender, EventArgs e)
+    {
+        RefreshGroupItemsByStore();
+    }
+
+    private void RefreshGroupItemsByStore()
+    {
+        if (store.IsExists("GroupId"))
+        {
+            var id = store.Get<int>("GroupId");
+
+            if (GroupId != id)
+            {
+                GroupId = id;
+
+                // Build Group Items
+                GroupMenuItems = PapyrusMenu.BuildGroupItems((int)GroupId);
+
+                StateHasChanged();
+            }
+        }
+        else
+        {
+            GroupId = null;
+            GroupMenuItems = new();
+            StateHasChanged();
+        }
     }
 
     private async void HandleAuthStateChange(Task<AuthenticationState> state)
@@ -96,13 +135,14 @@
         if (state.User.Identity?.Name is not null)
         {
             User = await userService.Current();
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
     }
 
     void IDisposable.Dispose()
     {
         authStateProvider.AuthenticationStateChanged -= HandleAuthStateChange;
+        store.Changed -= HandleStoreChange;
     }
 
 }

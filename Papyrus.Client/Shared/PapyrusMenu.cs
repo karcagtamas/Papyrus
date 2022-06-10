@@ -28,6 +28,21 @@ public static class PapyrusMenu
             .IsAuthenticated(false)
     };
 
+    public static List<MenuItem> BuildGroupItems(int groupId)
+    {
+        return new()
+        {
+            MenuItem.CreateGroupItem("Group")
+                .AddIcon(Icons.Filled.Group)
+                .AddItem(MenuItem.CreateItem("Data", $"groups/{groupId}").AddIcon(Icons.Filled.Info))
+                .AddItem(MenuItem.CreateItem("Notes", $"groups/{groupId}/notes").AddIcon(Icons.Filled.NoteAlt))
+                .AddItem(MenuItem.CreateItem("Members", $"groups/{groupId}/members").AddIcon(Icons.Filled.People))
+                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/tags").AddIcon(Icons.Filled.Tag))
+                .AddItem(MenuItem.CreateItem("Roles", $"groups/{groupId}/roles").AddIcon(Icons.Filled.SettingsSuggest))
+                .AddItem(MenuItem.CreateItem("Logs", $"groups/{groupId}/logs").AddIcon(Icons.Filled.Abc)),
+        };
+    }
+
     public class MenuItem
     {
         public string Title { get; set; }
@@ -50,7 +65,7 @@ public static class PapyrusMenu
             Children = children;
         }
 
-        public static MenuItem CreateGroupItem(string title, List<MenuItem> children) 
+        public static MenuItem CreateGroupItem(string title, List<MenuItem> children)
         {
             return new(title, null, null, children);
         }
@@ -67,19 +82,23 @@ public static class PapyrusMenu
 
         public static MenuItem CreateActionItem(string title, Action action)
         {
-            MenuItem item = new(title, null, null, new List<MenuItem>());
-            item.Action = action;
+            MenuItem item = new(title, null, null, new List<MenuItem>())
+            {
+                Action = action
+            };
             return item;
         }
 
         public static MenuItem CreateDivider()
         {
-            MenuItem item = new("", null, null, new List<MenuItem>());
-            item.IsDivider = true;
+            MenuItem item = new("", null, null, new List<MenuItem>())
+            {
+                IsDivider = true
+            };
             return item;
         }
 
-        public MenuItem AddItem(MenuItem item) 
+        public MenuItem AddItem(MenuItem item)
         {
             Children.Add(item);
             return this;
