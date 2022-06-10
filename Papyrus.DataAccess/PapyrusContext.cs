@@ -117,25 +117,4 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .WithMany(x => x.Children)
             .OnDelete(DeleteBehavior.ClientCascade);
     }
-
-    public override int SaveChanges()
-    {
-        var dateEntries = ChangeTracker
-            .Entries()
-            .Where(e => e.Entity is ILastUpdateEntity && e.State is EntityState.Added or EntityState.Modified);
-
-        var now = DateTime.Now;
-
-        foreach (var entry in dateEntries)
-        {
-            ((ILastUpdateEntity)entry.Entity).LastUpdate = now;
-
-            /*if (entityEntry.State == EntityState.Added)
-            {
-                ((IEntity<object>)entityEntry.Entity).Creation = now;
-            }*/
-        }
-
-        return base.SaveChanges();
-    }
 }

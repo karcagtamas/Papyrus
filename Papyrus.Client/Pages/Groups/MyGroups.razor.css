@@ -1,0 +1,36 @@
+﻿.page-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+    .page-content .groups {
+        display: grid;
+        gap: 2rem;
+        grid-template-columns: auto;
+    }
+
+
+@media screen and (min-width: 480px) {
+    .page-content .groups {
+        grid-template-columns: auto auto;
+    }
+}
+
+@media screen and (min-width: 720px) {
+    .page-content .groups {
+        grid-template-columns: auto auto auto;
+    }
+}
+
+@media screen and (min-width: 1080px) {
+    .page-content .groups {
+        grid-template-columns: auto auto auto auto;
+    }
+}
+
+@media screen and (min-width: 1420px) {
+    .page-content .groups {
+        grid-template-columns: auto auto auto auto auto;
+    }
+}

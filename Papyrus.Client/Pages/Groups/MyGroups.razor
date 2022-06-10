@@ -8,9 +8,11 @@
         <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
     </ActionBar>
     <div class="page-content">
-        @foreach (var group in Groups)
-        {
-            <div>@group.Name</div>
-        }
+        <div class="groups">
+            @foreach (var group in Groups)
+            {
+                <GroupListTile Group="group"></GroupListTile>
+            }
+        </div>
     </div>
 </div>

@@ -1,0 +1,29 @@
+﻿@using KarcagS.Shared.Helpers
+@using Papyrus.Shared.DTOs.Groups
+
+
+<MudCard Elevation="2" Class="p-2">
+    <div class="tile-content">
+        <MudText Typo="Typo.h6" Color="Color.Primary"><b>@Group.Name</b></MudText>
+        <MudText Typo="Typo.body1">@Group.Owner</MudText>
+        <MudSpacer />
+        <div class="desc-row">
+            <MudText Typo="Typo.body2">Created: @DateHelper.DateToString(Group.Creation)</MudText>
+            <MudIconButton Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open"></MudIconButton>
+        </div>
+    </div>
+</MudCard>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public GroupListDTO Group { get; set; } = default!;
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    private void Open()
+    {
+        NavigationManager.NavigateTo($"/groups/{Group.Id} ");
+    }
+}
