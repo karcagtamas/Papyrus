@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
+using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.DTOs;
@@ -13,13 +14,13 @@ namespace Papyrus.Client.Pages.Editor;
 public partial class Editor : ComponentBase, IDisposable
 {
     [Inject]
-    private IJSRuntime JSRuntime { get; set; }
+    private IJSRuntime JSRuntime { get; set; } = default!;
 
     [Inject]
-    private ITokenService TokenService { get; set; }
+    private ITokenService TokenService { get; set; } = default!;
 
     [Inject]
-    private IUserService UserService { get; set; }
+    private IUserService UserService { get; set; } = default!;
 
     private bool ColorPickerOpened { get; set; }
     private EditorAction? ColorAction { get; set; }

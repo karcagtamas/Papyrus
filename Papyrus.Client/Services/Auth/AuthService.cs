@@ -3,11 +3,11 @@ using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
-using Papyrus.Client.Services.Interfaces;
+using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 using Papyrus.Shared.Models.Auth;
 
-namespace Papyrus.Client.Services;
+namespace Papyrus.Client.Services.Auth;
 
 public class AuthService : IAuthService
 {
@@ -69,7 +69,7 @@ public class AuthService : IAuthService
         await tokenService.ClearUser();
 
         ((PapyrusAuthStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
-        
+
         navigationManager.NavigateTo("home");
     }
 

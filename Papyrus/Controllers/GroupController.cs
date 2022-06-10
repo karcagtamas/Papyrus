@@ -30,6 +30,12 @@ public class GroupController : ControllerBase
         return groupService.GetMapped<GroupDTO>(id);
     }
 
+    [HttpGet("User")]
+    public List<GroupListDTO> GetUserList()
+    {
+        return groupService.GetUserList();
+    }
+
     [HttpPost]
     public void Create([FromBody] GroupModel model)
     {

@@ -20,6 +20,8 @@ using Papyrus.Logic.Services.Auth.Interfaces;
 using Papyrus.Logic.Services.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
+using Papyrus.Logic.Services.Notes;
+using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,16 +34,25 @@ builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Util
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUtilsService<string>, UtilsService<PapyrusContext, string>>();
 builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
+
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
+builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
+
+builder.Services.AddScoped<INoteService, NoteService>();
+builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
+builder.Services.AddScoped<ITagService, TagService>();
 
 // Add AutoMapper
-var mapperConfig = new MapperConfiguration(conf => 
-{ 
-    conf.AddProfile<UserMapper>(); 
+var mapperConfig = new MapperConfiguration(conf =>
+{
+    conf.AddProfile<UserMapper>();
     conf.AddProfile<GroupMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());

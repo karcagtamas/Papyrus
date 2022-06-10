@@ -1,3 +1,4 @@
+@using Papyrus.Client.Services.Auth.Interfaces
 @using Papyrus.Client.Shared
 @using Papyrus.Shared.DTOs
 @using Papyrus.Client.Services.Interfaces
@@ -49,7 +50,6 @@
 
 @code {
     private UserDTO? User { get; set; }
-    private bool initialized = false;
     bool drawerOpen = true;
 
     void DrawerToggle()
@@ -64,8 +64,6 @@
         authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
 
         await base.OnInitializedAsync();
-
-        initialized = true;
     }
 
     private async void HandleAuthStateChange(Task<AuthenticationState> state)

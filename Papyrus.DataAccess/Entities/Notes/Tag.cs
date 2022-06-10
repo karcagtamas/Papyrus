@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 
-namespace Papyrus.DataAccess.Entities;
+namespace Papyrus.DataAccess.Entities.Notes;
 
 public class Tag : IEntity<int>
 {

@@ -1,0 +1,70 @@
+﻿@typeparam Model
+
+<MudDialog>
+    <DialogContent>
+        <div>
+            <MudForm @ref="Form">
+                @ChildContent
+            </MudForm>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<Task<bool>> Submit { get; set; } = default!;
+
+    [Parameter]
+    public Func<Model, ISnackbar, bool>? FormValidator { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Model ModelObj { get; set; } = default!;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = null!;
+
+    private MudForm? Form { get; set; } = null!;
+
+    private async void Save()
+    {
+        if (Form is null)
+        {
+            return;
+        }
+
+        await Form.Validate();
+        if (!Form.IsValid) return;
+
+        if (FormValidator is not null)
+        {
+            var result = FormValidator(ModelObj, Snackbar);
+
+            if (!result)
+            {
+                return;
+            }
+        }
+
+        if (await Submit())
+        {
+            Dialog.Close(DialogResult.Ok(true));
+        }
+    }
+
+    private void Cancel()
+    {
+        Dialog.Cancel();
+    }
+
+}

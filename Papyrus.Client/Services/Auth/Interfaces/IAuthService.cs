@@ -1,6 +1,6 @@
 using Papyrus.Shared.Models.Auth;
 
-namespace Papyrus.Client.Services.Interfaces;
+namespace Papyrus.Client.Services.Auth.Interfaces;
 
 public interface IAuthService
 {

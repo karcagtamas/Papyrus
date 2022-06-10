@@ -1,9 +1,9 @@
 using Blazored.LocalStorage;
 using KarcagS.Blazor.Common.Store;
-using Papyrus.Client.Services.Interfaces;
+using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 
-namespace Papyrus.Client.Services;
+namespace Papyrus.Client.Services.Auth;
 
 public class TokenService : ITokenService
 {

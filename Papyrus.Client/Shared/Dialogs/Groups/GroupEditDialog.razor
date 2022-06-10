@@ -1,0 +1,22 @@
+﻿@using Papyrus.Client.Services.Groups.Interfaces
+@using Papyrus.Shared.Models.Groups
+
+<EditorDialog Model="GroupModel" ModelObj="@Model" Submit="Submit">
+    <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+                  For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
+</EditorDialog>
+
+@code {
+    [Parameter]
+    public int? GroupId { get; set; }
+
+    [Inject]
+    private IGroupService GroupService { get; set; } = default!;
+
+    private GroupModel Model { get; set; } = new();
+
+    private Task<bool> Submit()
+    {
+        return GroupService.Create(Model);
+    }
+}

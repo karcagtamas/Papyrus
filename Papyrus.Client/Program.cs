@@ -12,6 +12,10 @@ using MudBlazor;
 using MudBlazor.Services;
 using Papyrus.Client;
 using Papyrus.Client.Services;
+using Papyrus.Client.Services.Auth;
+using Papyrus.Client.Services.Auth.Interfaces;
+using Papyrus.Client.Services.Groups;
+using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 
@@ -47,13 +51,17 @@ builder.Services.AddStoreService(async (storeService, localStorage) =>
 });
 
 builder.Services.AddScoped<ICommonService, CommonService>();
-builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IHelperService, HelperService>();
 builder.Services.AddScoped<IToasterService, ToasterService>();
 builder.Services.AddScoped<IConfirmService, ConfirmService>();
 builder.Services.AddScoped<IImageUploaderService, ImageUploaderService>();
+
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+
 builder.Services.AddScoped<IUserService, UserService>();
+
+builder.Services.AddScoped<IGroupService, GroupService>();
 
 builder.Services.AddMudServices(config =>
 {

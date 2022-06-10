@@ -5,6 +5,12 @@
 
 <div class="page-div">
     <ActionBar>
-        <MudButton Color="Color.Secondary" Variant="Variant.Filled">Create</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
     </ActionBar>
+    <div class="page-content">
+        @foreach (var group in Groups)
+        {
+            <div>@group.Name</div>
+        }
+    </div>
 </div>
