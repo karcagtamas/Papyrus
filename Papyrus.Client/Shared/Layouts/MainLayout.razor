@@ -67,6 +67,7 @@
     protected override async void OnInitialized()
     {
         HandleAuthStateChange(authStateProvider.GetAuthenticationStateAsync());
+        SetGroupMenuItemsByLocation(navigator.Uri);
 
         authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
         navigator.LocationChanged += HandleLocationChange;
@@ -78,7 +79,12 @@
 
     private void HandleLocationChange(object? sender, LocationChangedEventArgs e)
     {
-        var uri = navigator.ToBaseRelativePath(e.Location);
+        SetGroupMenuItemsByLocation(e.Location);
+    }
+
+    private void SetGroupMenuItemsByLocation(string location)
+    {
+        var uri = navigator.ToBaseRelativePath(location);
         var regex = new Regex(@"groups\/([0-9]+)\/?[/a-z]*");
         var matches = regex.Matches(uri);
 

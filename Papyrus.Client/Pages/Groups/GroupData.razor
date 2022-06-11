@@ -4,5 +4,22 @@
 <ApplicationPageTitle PageName="Group - Data" />
 
 <div class="page-div">
-
+    @if (Group is not null)
+    {
+        <ActionBar>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled">Edit</MudButton>
+            <MudSpacer />
+            <MudButton Color="Color.Secondary" Href="/my-groups">To List</MudButton>
+        </ActionBar>
+        <MudCard Elevation="2" Class="p-2">
+            <DataRow Title="Name" Value="@Group.Name" />
+            <DataRow Title="Owner" Value="@Group.Owner" />
+            <DateDataRow Title="Creation" Date="@Group.Creation" />
+            <NumberDataRow Title="Members" Number="@Group.Members" Suffix="ct." />
+            <NumberDataRow Title="Roles" Number="@Group.Roles" Suffix="ct." />
+            <NumberDataRow Title="Tags" Number="@Group.Tags" Suffix="ct." />
+            <NumberDataRow Title="Notes" Number="@Group.Notes" Suffix="ct." />
+            <DateDataRow Title="Last Action" Date="@Group.LastAction" />
+        </MudCard>
+    }
 </div>

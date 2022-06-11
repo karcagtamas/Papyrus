@@ -15,12 +15,14 @@
         </ActionBar>
         <div class="page-body">
             <div>
-                <DataRow Title="User Name" Value="@User.UserName" />
-                <DataRow Title="E-mail Address" Value="@User.Email" />
-                <DataRow Title="Full Name" Value="@User.FullName" />
-                <DateDataRow Title="Last Login" Date="User.LastLogin" />
-                <DateDataRow Title="Registration" Date="User.Registration" />
-                <DateDataRow Title="Birthday" Date="User.BirthDay" />
+                <MudCard Elevation="2" Class="p-2 mr-3">
+                    <DataRow Title="User Name" Value="@User.UserName" />
+                    <DataRow Title="E-mail Address" Value="@User.Email" />
+                    <DataRow Title="Full Name" Value="@User.FullName" />
+                    <DateDataRow Title="Last Login" Date="User.LastLogin" />
+                    <DateDataRow Title="Registration" Date="User.Registration" />
+                    <DateDataRow Title="Birthday" Date="User.BirthDay" />
+                </MudCard>
             </div>
             @if (User.ImageData is not null && User.ImageData.Length != 0 && Image is not null)
             {

@@ -10,8 +10,15 @@ public class GroupMapper : Profile
     public GroupMapper()
     {
         CreateMap<GroupModel, Group>();
-        CreateMap<Group, GroupDTO>();
-        CreateMap<Group, GroupListDTO>();
+        CreateMap<Group, GroupDTO>()
+            .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner.UserName))
+            .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members.Count))
+            .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => src.Roles.Count))
+            .ForMember(dest => dest.Notes, opt => opt.MapFrom(src => src.Notes.Count))
+            .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Count))
+            .ForMember(dest => dest.LastAction, opt => opt.MapFrom(src => GetLastAction(src.ActionLogs.ToList())));
+        CreateMap<Group, GroupListDTO>()
+            .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner.UserName));
 
         CreateMap<GroupActionLog, GroupActionLogDTO>();
         CreateMap<GroupMember, GroupMemberDTO>();
@@ -19,5 +26,12 @@ public class GroupMapper : Profile
         CreateMap<GroupRole, GroupRoleLightDTO>();
         CreateMap<GroupMemberModel, GroupMember>();
         CreateMap<GroupRoleModel, GroupRole>();
+    }
+
+    private static DateTime? GetLastAction(List<GroupActionLog> actionLogs)
+    {
+        var log = actionLogs.OrderBy(x => x.DateTime).LastOrDefault();
+
+        return log?.DateTime;
     }
 }
