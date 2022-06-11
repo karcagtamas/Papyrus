@@ -1,4 +1,5 @@
 ﻿@using Papyrus.Client.Services.Groups.Interfaces
+@using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.Models.Groups
 
 <EditorDialog Model="GroupModel" ModelObj="@Model" Submit="Submit">
@@ -13,10 +14,41 @@
     [Inject]
     private IGroupService GroupService { get; set; } = default!;
 
+    private GroupListDTO? Group { get; set; }
     private GroupModel Model { get; set; } = new();
+    private bool IsEdit { get; set; } = false;
+
+    protected override async void OnInitialized()
+    {
+        if (GroupId is not null)
+        {
+            IsEdit = true;
+            Group = await GroupService.Get<GroupListDTO>((int)GroupId);
+
+            if (Group is not null)
+            {
+                Model = new GroupModel
+                    {
+                        Name = Group.Name
+                    };
+                await InvokeAsync(StateHasChanged);
+            }
+
+        }
+        base.OnInitialized();
+    }
 
     private Task<bool> Submit()
     {
+
+        if (IsEdit)
+        {
+            if (GroupId is not null)
+            {
+                return GroupService.Update((int)GroupId, Model);
+            }
+        }
+
         return GroupService.Create(Model);
     }
 }

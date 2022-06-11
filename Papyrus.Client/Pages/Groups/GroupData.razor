@@ -7,9 +7,10 @@
     @if (Group is not null)
     {
         <ActionBar>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled">Edit</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">Edit</MudButton>
+            <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="Edit">Close</MudButton>
             <MudSpacer />
-            <MudButton Color="Color.Secondary" Href="/my-groups">To List</MudButton>
+            <MudButton Color="Color.Secondary" Href="/my-groups">My Groups</MudButton>
         </ActionBar>
         <MudCard Elevation="2" Class="p-2">
             <DataRow Title="Name" Value="@Group.Name" />

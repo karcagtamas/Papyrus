@@ -7,4 +7,5 @@ namespace Papyrus.Logic.Services.Groups.Interfaces;
 public interface IGroupService : IMapperRepository<Group, int>
 {
     List<GroupListDTO> GetUserList();
+    List<GroupMemberDTO> GetMembers(int id);
 }

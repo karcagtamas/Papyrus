@@ -36,6 +36,12 @@ public class GroupController : ControllerBase
         return groupService.GetUserList();
     }
 
+    [HttpGet("{id}/Members")]
+    public List<GroupMemberDTO> GetMembers(int id)
+    {
+        return groupService.GetMembers(id);
+    }
+
     [HttpPost]
     public void Create([FromBody] GroupModel model)
     {

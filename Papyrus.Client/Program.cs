@@ -62,6 +62,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddScoped<IGroupService, GroupService>();
+builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
 
 builder.Services.AddMudServices(config =>
 {

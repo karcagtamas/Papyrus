@@ -3,6 +3,7 @@ using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
+using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
@@ -11,8 +12,11 @@ namespace Papyrus.Logic.Services.Groups;
 
 public class GroupService : MapperRepository<Group, int, string>, IGroupService
 {
-    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Group")
+    private readonly IGroupRoleService groupRoleService;
+
+    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService) : base(context, loggerService, utilsService, mapper, "Group")
     {
+        this.groupRoleService = groupRoleService;
     }
 
     public List<GroupListDTO> GetUserList()
@@ -26,5 +30,23 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
         return GetMappedList<GroupListDTO>(x => x.OwnerId == user)
             .ToList();
+    }
+
+    public override int CreateFromModel<TModel>(TModel model, bool doPersist = true)
+    {
+        var id = base.CreateFromModel(model, doPersist);
+
+        groupRoleService.CreateDefaultRoles(id);
+
+        // TODO: Add owner as a member pls
+
+        return id;
+    }
+
+    public List<GroupMemberDTO> GetMembers(int id)
+    {
+        var group = Get(id);
+
+        return Mapper.Map<List<GroupMemberDTO>>(group.Members);
     }
 }
