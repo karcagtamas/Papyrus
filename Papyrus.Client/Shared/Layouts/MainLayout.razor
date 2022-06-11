@@ -3,6 +3,7 @@
 @using Papyrus.Client.Shared
 @using Papyrus.Shared.DTOs
 @using Papyrus.Client.Services.Interfaces
+@using System.Text.RegularExpressions
 @using static Papyrus.Client.Shared.PapyrusMenu
 @inherits LayoutComponentBase
 @implements IDisposable
@@ -66,42 +67,63 @@
     protected override async void OnInitialized()
     {
         HandleAuthStateChange(authStateProvider.GetAuthenticationStateAsync());
-        RefreshGroupItemsByStore();
 
         authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
-        store.Changed += HandleStoreChange;
+        navigator.LocationChanged += HandleLocationChange;
 
         MenuItems = PapyrusMenu.Items;
 
         await base.OnInitializedAsync();
     }
 
-    private void HandleStoreChange(object? sender, EventArgs e)
+    private void HandleLocationChange(object? sender, LocationChangedEventArgs e)
     {
-        RefreshGroupItemsByStore();
-    }
+        var uri = navigator.ToBaseRelativePath(e.Location);
+        var regex = new Regex(@"groups\/([0-9]+)\/?[/a-z]*");
+        var matches = regex.Matches(uri);
 
-    private void RefreshGroupItemsByStore()
-    {
-        if (store.IsExists("GroupId"))
+        foreach (Match match in matches)
         {
-            var id = store.Get<int>("GroupId");
-
-            if (GroupId != id)
+            if (match.Groups.Count == 2)
             {
-                GroupId = id;
+                Group g = match.Groups[1];
+                int.TryParse(g.Value, out int id);
 
-                // Build Group Items
-                GroupMenuItems = PapyrusMenu.BuildGroupItems((int)GroupId);
-
-                StateHasChanged();
+                SetGroupId(id);
+            }
+            else
+            {
+                SetGroupId(null);
             }
         }
-        else
+
+        if (matches.Count == 0)
+        {
+            if (GroupId is not null)
+            {
+                SetGroupId(null);
+            }
+        }
+    }
+
+    private void SetGroupId(int? id)
+    {
+        if (id is null)
         {
             GroupId = null;
             GroupMenuItems = new();
+            store.Remove("GroupId");
             StateHasChanged();
+        }
+        else
+        {
+            if (GroupId != id)
+            {
+                GroupId = id;
+                GroupMenuItems = PapyrusMenu.BuildGroupItems((int)id);
+                store.Add("GroupId", id);
+                StateHasChanged();
+            }
         }
     }
 
@@ -142,7 +164,7 @@
     void IDisposable.Dispose()
     {
         authStateProvider.AuthenticationStateChanged -= HandleAuthStateChange;
-        store.Changed -= HandleStoreChange;
+        navigator.LocationChanged -= HandleLocationChange;
     }
 
 }
