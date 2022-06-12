@@ -41,4 +41,10 @@ public class GroupRoleController : ControllerBase
     {
         groupRoleService.UpdateByModel(id, model);
     }
+
+    [HttpDelete("{id}")]
+    public void Delete(int id)
+    {
+        groupRoleService.DeleteById(id);
+    }
 }

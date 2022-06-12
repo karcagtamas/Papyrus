@@ -34,11 +34,26 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
     public override int CreateFromModel<TModel>(TModel model, bool doPersist = true)
     {
+        var user = Utils.GetRequiredCurrentUserId();
         var id = base.CreateFromModel(model, doPersist);
 
-        groupRoleService.CreateDefaultRoles(id);
+        var result = groupRoleService.CreateDefaultRoles(id);
+        var admin = result.FirstOrDefault(x => x.IsAdministration);
 
-        // TODO: Add owner as a member pls
+        if (admin is null)
+        {
+            throw new ServerException("Admin role not found");
+        }
+
+        // Add current user as administrator
+        var member = new GroupMember
+        {
+            GroupId = id,
+            UserId = user,
+            RoleId = admin.Id
+        };
+        Context.Set<GroupMember>().Add(member);
+        Context.SaveChanges();
 
         return id;
     }

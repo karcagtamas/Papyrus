@@ -6,9 +6,9 @@
 
 <div class="page-div">
     <ActionBar>
-        <MudButton Color="Color.Secondary" Variant="Variant.Filled">Create</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
     </ActionBar>
-    <MudTable T="GroupRoleDTO" Items="Roles" Loading="Loading" Dense="true" Elevation="2" FixedHeader="true" OnRowClick="Edit">
+    <MudTable T="GroupRoleDTO" Items="Roles" Loading="Loading" Dense="true" Elevation="2" FixedHeader="true" OnRowClick="Edit" Hover="true" Striped="true">
         <HeaderContent>
             <MudTh>
                 <MudText Color="Color.Primary">Name</MudText>
@@ -16,71 +16,21 @@
             <MudTh>
                 <MudText Color="Color.Primary">Read Only</MudText>
             </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Group Edit</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Group Close</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Listing Notes</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Read Note</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Create Note</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Delete Note</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Edit Note</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Read Members</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Edit Members</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Read Roles</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Edit Roles</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Read Action Logs</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Read Note Action Logs</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Read Tags</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Secondary">Edit Tags</MudText>
-            </MudTh>
+            @foreach (var item in SettingsItems)
+            {
+                <MudTh>
+                    <MudText Color="Color.Secondary">@item.ColumnTitle</MudText>
+                </MudTh>
+            }
         </HeaderContent>
 
         <RowTemplate>
-            <MudTd DataLabel="Name"><MudText Color="Color.Primary">@context.Name</MudText></MudTd>
+            <MudTd DataLabel="Name"><MudText Color="@(context.ReadOnly ? Color.Error : Color.Secondary)">@context.Name</MudText></MudTd>
             <MudTd DataLabel="ReadOnly"><LogicText LogicValue="context.ReadOnly" TrueText="Yes" FalseText="No" /></MudTd>
-            <MudTd DataLabel="GroupEdit"><LogicText LogicValue="context.GroupEdit" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="GroupClose"><LogicText LogicValue="context.GroupClose" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="ReadNoteList"><LogicText LogicValue="context.ReadNoteList" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="ReadNote"><LogicText LogicValue="context.ReadNote" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="CreateNote"><LogicText LogicValue="context.CreateNote" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="DeleteNote"><LogicText LogicValue="context.DeleteNote" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="EditNote"><LogicText LogicValue="context.EditNote" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="ReadMemberList"><LogicText LogicValue="context.ReadMemberList" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="EditMemberList"><LogicText LogicValue="context.EditMemberList" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="ReadRoleList"><LogicText LogicValue="context.ReadRoleList" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="EditRoleList"><LogicText LogicValue="context.EditRoleList" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="ReadGroupActionLog"><LogicText LogicValue="context.ReadGroupActionLog" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="ReadNoteActionLog"><LogicText LogicValue="context.ReadNoteActionLog" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="ReadTagList"><LogicText LogicValue="context.ReadTagList" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            <MudTd DataLabel="EditTagList"><LogicText LogicValue="context.EditTagList" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
+            @foreach (var item in SettingsItems)
+            {
+                <MudTd DataLabel="@item.ColumnTitle"><LogicText LogicValue="item.ValueGetter(context)" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
+            }
         </RowTemplate>
     </MudTable>
 </div>

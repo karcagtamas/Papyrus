@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Papyrus.Shared.DTOs.Groups;
+using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.Shared.Models.Groups;
 
@@ -65,4 +66,41 @@ public class GroupRoleModel
 
     [Required]
     public bool EditTagList { get; set; }
+
+    public GroupRoleModel()
+    {
+
+    }
+
+    public GroupRoleModel(int groupId)
+    {
+        GroupId = groupId;
+    }
+
+    public GroupRoleModel(int groupId, GroupRoleDTO dto)
+    {
+        GroupId = groupId;
+        Name = dto.Name;
+
+        GroupEdit = dto.GroupEdit;
+        GroupClose = dto.GroupClose;
+
+        ReadNoteList = dto.ReadNoteList;
+        ReadNote = dto.ReadNote;
+        CreateNote = dto.CreateNote;
+        EditNote = dto.EditNote;
+        DeleteNote = dto.DeleteNote;
+
+        ReadMemberList = dto.ReadMemberList;
+        EditMemberList = dto.EditMemberList;
+
+        ReadRoleList = dto.ReadRoleList;
+        EditRoleList = dto.EditRoleList;
+
+        ReadGroupActionLog = dto.ReadGroupActionLog;
+        ReadNoteActionLog = dto.ReadNoteActionLog;
+
+        ReadTagList = dto.ReadTagList;
+        EditTagList = dto.EditTagList;
+    }
 }

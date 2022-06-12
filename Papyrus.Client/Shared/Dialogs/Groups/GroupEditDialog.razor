@@ -2,8 +2,8 @@
 @using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.Models.Groups
 
-<EditorDialog Model="GroupModel" ModelObj="@Model" Submit="Submit">
-    <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+<EditorDialog Model="GroupModel" ModelObj="Model" Submit="Submit" EntityName="Group" IsEdit="IsEdit">
+    <MudTextField T="string" Label="Name" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
 </EditorDialog>
 
@@ -33,7 +33,6 @@
                     };
                 await InvokeAsync(StateHasChanged);
             }
-
         }
         base.OnInitialized();
     }

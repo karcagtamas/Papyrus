@@ -14,11 +14,25 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     {
     }
 
-    public void CreateDefaultRoles(int groupId)
+    public List<RoleCreationResultItem> CreateDefaultRoles(int groupId)
     {
-        CreateAdminRole(groupId);
-        CreateModeratorRole(groupId);
-        CreateDefaultRole(groupId);
+        return new() {
+            new RoleCreationResultItem
+            {
+                Id = CreateAdminRole(groupId),
+                IsAdministration = true
+            },
+            new RoleCreationResultItem
+            {
+                Id = CreateModeratorRole(groupId),
+                IsAdministration = true
+            },
+            new RoleCreationResultItem
+            {
+                Id = CreateDefaultRole(groupId),
+                IsAdministration = true
+            },
+        };
     }
 
     public List<GroupRoleDTO> GetGroupList(int groupId)
@@ -28,7 +42,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             .ToList();
     }
 
-    private void CreateAdminRole(int groupId)
+    private int CreateAdminRole(int groupId)
     {
         var role = new GroupRole
         {
@@ -52,10 +66,10 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             EditTagList = true
         };
 
-        Create(role);
+        return Create(role);
     }
 
-    private void CreateModeratorRole(int groupId)
+    private int CreateModeratorRole(int groupId)
     {
         var role = new GroupRole
         {
@@ -79,10 +93,10 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             EditTagList = true
         };
 
-        Create(role);
+        return Create(role);
     }
 
-    private void CreateDefaultRole(int groupId)
+    private int CreateDefaultRole(int groupId)
     {
         var role = new GroupRole
         {
@@ -106,8 +120,14 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             EditTagList = false
         };
 
-        Create(role);
+        return Create(role);
     }
 
+
+    public class RoleCreationResultItem
+    {
+        public int Id { get; set; }
+        public bool IsAdministration { get; set; }
+    }
 
 }

@@ -1,0 +1,97 @@
+﻿@using Papyrus.Client.Services.Groups.Interfaces
+@using Papyrus.Shared.DTOs.Groups
+@using Papyrus.Shared.Models.Groups
+
+<EditorDialog Model="GroupRoleModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Role" IsEdit="IsEdit">
+    <MudTextField Class="mb-5" T="string" Label="Name" Variant="Variant.Text" Required="true"
+                  For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
+    <MudDivider />
+    <div>
+        <MudCheckBox Label="Group Edit" For="@(() => Model.GroupEdit)" @bind-Checked="Model.GroupEdit" />
+        <MudCheckBox Label="Group Close" For="@(() => Model.GroupClose)" @bind-Checked="Model.GroupClose" />
+    </div>
+    <MudDivider />
+    <div>
+        <MudCheckBox Label="Listing Notes" For="@(() => Model.ReadNoteList)" @bind-Checked="Model.ReadNoteList" />
+        <MudCheckBox Label="Read Note" For="@(() => Model.ReadNote)" @bind-Checked="Model.ReadNote" />
+        <MudCheckBox Label="Create Note" For="@(() => Model.CreateNote)" @bind-Checked="Model.CreateNote" />
+        <MudCheckBox Label="Delete Note" For="@(() => Model.DeleteNote)" @bind-Checked="Model.DeleteNote" />
+        <MudCheckBox Label="Edit Note" For="@(() => Model.EditNote)" @bind-Checked="Model.EditNote" />
+    </div>
+    <MudDivider />
+    <div>
+        <MudCheckBox Label="Read Members" For="@(() => Model.ReadMemberList)" @bind-Checked="Model.ReadMemberList" />
+        <MudCheckBox Label="Edit Members" For="@(() => Model.EditMemberList)" @bind-Checked="Model.EditMemberList" />
+    </div>
+    <MudDivider />
+    <div>
+        <MudCheckBox Label="Read Roles" For="@(() => Model.ReadRoleList)" @bind-Checked="Model.ReadRoleList" />
+        <MudCheckBox Label="Edit Roles" For="@(() => Model.EditRoleList)" @bind-Checked="Model.EditRoleList" />
+    </div>
+    <MudDivider />
+    <div>
+        <MudCheckBox Label="Read Action Logs" For="@(() => Model.ReadGroupActionLog)" @bind-Checked="Model.ReadGroupActionLog" />
+        <MudCheckBox Label="Read Note Action Logs" For="@(() => Model.ReadNoteActionLog)" @bind-Checked="Model.ReadNoteActionLog" />
+    </div>
+    <MudDivider />
+    <div>
+        <MudCheckBox Label="Read Tags" For="@(() => Model.ReadTagList)" @bind-Checked="Model.ReadTagList" />
+        <MudCheckBox Label="Edit Tags" For="@(() => Model.EditTagList)" @bind-Checked="Model.EditTagList" />
+    </div>
+</EditorDialog>
+
+@code {
+    [Parameter]
+    public int? GroupRoleId { get; set; }
+
+    [Parameter]
+    public int GroupId { get; set; }
+
+    [Inject]
+    private IGroupRoleService GroupRoleService { get; set; } = default!;
+
+    private GroupRoleDTO? GroupRole { get; set; }
+    private GroupRoleModel Model { get; set; } = new(0);
+    private bool IsEdit { get; set; } = false;
+
+    protected override async void OnInitialized()
+    {
+        Model.GroupId = GroupId;
+        if (GroupRoleId is not null)
+        {
+            IsEdit = true;
+            GroupRole = await GroupRoleService.Get<GroupRoleDTO>((int)GroupRoleId);
+
+            if (GroupRole is not null)
+            {
+                Model = new GroupRoleModel(GroupId, GroupRole);
+                await InvokeAsync(StateHasChanged);
+            }
+
+        }
+        base.OnInitialized();
+    }
+
+    private Task<bool> Submit()
+    {
+        if (IsEdit)
+        {
+            if (GroupRoleId is not null)
+            {
+                return GroupRoleService.Update((int)GroupRoleId, Model);
+            }
+        }
+
+        return GroupRoleService.Create(Model);
+    }
+
+    private Task<bool>? Remove()
+    {
+        if (GroupRoleId is not null)
+        {
+            return GroupRoleService.Delete((int)GroupRoleId);
+        }
+
+        return default;
+    }
+}
