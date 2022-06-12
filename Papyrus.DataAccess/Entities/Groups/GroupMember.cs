@@ -3,7 +3,7 @@ using KarcagS.Common.Tools.Entities;
 
 namespace Papyrus.DataAccess.Entities.Groups;
 
-public class GroupMember : IEntity<int>
+public class GroupMember : IEntity<int>, ICreationEntity
 {
     [Key]
     [Required]
@@ -18,7 +18,14 @@ public class GroupMember : IEntity<int>
     [Required]
     public int RoleId { get; set; }
 
+    [Required]
+    public string? AddedById { get; set; }
+
+    [Required]
+    public DateTime Creation { get; set; }
+
     public virtual User User { get; set; } = default!;
     public virtual Group Group { get; set; } = default!;
     public virtual GroupRole Role { get; set; } = default!;
+    public virtual User? AddedBy { get; set; } = default!;
 }

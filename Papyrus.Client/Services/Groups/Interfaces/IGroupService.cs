@@ -6,4 +6,5 @@ namespace Papyrus.Client.Services.Groups.Interfaces;
 public interface IGroupService : IHttpCall<int>
 {
     Task<List<GroupListDTO>> GetUserList();
+    Task<List<GroupMemberDTO>> GetMembers(int groupId);
 }

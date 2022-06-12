@@ -1,4 +1,3 @@
-using KarcagS.Common.Tools.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess.Entities;
@@ -82,6 +81,11 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .WithMany(x => x.Members)
             .IsRequired()
             .OnDelete(DeleteBehavior.ClientCascade);
+        modelBuilder.Entity<GroupMember>()
+            .HasOne(x => x.AddedBy)
+            .WithMany(x => x.AddedGroupMembers)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.ClientSetNull);
 
         // Group Role
         modelBuilder.Entity<GroupRole>()

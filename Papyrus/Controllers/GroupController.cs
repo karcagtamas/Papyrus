@@ -36,7 +36,7 @@ public class GroupController : ControllerBase
         return groupService.GetUserList();
     }
 
-    [HttpGet("{id}/Members")]
+    [HttpGet("{id}/Member")]
     public List<GroupMemberDTO> GetMembers(int id)
     {
         return groupService.GetMembers(id);

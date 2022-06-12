@@ -1,0 +1,27 @@
+﻿<MudDialog>
+    <TitleContent>
+        User Search
+    </TitleContent>
+    <DialogContent>
+
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Close</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Select">Select</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code{
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    private void Select()
+    {
+        
+    }
+
+    private void Cancel()
+    {
+        Dialog.Cancel();
+    }
+}

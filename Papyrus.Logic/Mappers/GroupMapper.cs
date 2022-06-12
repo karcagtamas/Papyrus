@@ -21,7 +21,8 @@ public class GroupMapper : Profile
             .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner.UserName));
 
         CreateMap<GroupActionLog, GroupActionLogDTO>();
-        CreateMap<GroupMember, GroupMemberDTO>();
+        CreateMap<GroupMember, GroupMemberDTO>()
+            .ForMember(dest => dest.Join, opt => opt.MapFrom(src => src.Creation));
         CreateMap<GroupRole, GroupRoleDTO>();
         CreateMap<GroupRole, GroupRoleLightDTO>();
         CreateMap<GroupMemberModel, GroupMember>();

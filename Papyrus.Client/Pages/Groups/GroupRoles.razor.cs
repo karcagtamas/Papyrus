@@ -19,7 +19,7 @@ public partial class GroupRoles : ComponentBase
 
     private List<GroupRoleDTO> Roles { get; set; } = new();
     private bool Loading { get; set; } = true;
-    private List<GroupRoleSettingsItem> SettingsItems = new List<GroupRoleSettingsItem>
+    private readonly List<GroupRoleSettingsItem> SettingsItems = new List<GroupRoleSettingsItem>
     {
         new()
         {

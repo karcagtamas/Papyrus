@@ -1,49 +1,32 @@
 @using Papyrus.Shared.DTOs
 @using Papyrus.Shared.Models
 @using Services.Interfaces
-<MudDialog>
-    <DialogContent>
-        <div>
-            <MudForm @ref="Form">
-                <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
-                              For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
-                </MudTextField>
-                <MudTextField T="string" Label="Full Name" Variant="Variant.Text"
-                              For="@(() => Model.FullName)" @bind-Value="Model.FullName" FullWidth="true">
-                </MudTextField>
-                <MudTextField T="string" Label="Email" Variant="Variant.Text" InputType="InputType.Email" Required="true"
-                              For="@(() => Model.Email)" @bind-Value="Model.Email" FullWidth="true">
-                </MudTextField>
-                <MudDatePicker Label="Birth Day" Variant="Variant.Text"
-                               For="@(() => Model.BirthDay)" @bind-Date="Model.BirthDay">
-                </MudDatePicker>
-            </MudForm>
-        </div>
-    </DialogContent>
-    <DialogActions>
-        <MudButton OnClick="Cancel">Cancel</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Save">Save</MudButton>
-    </DialogActions>
-</MudDialog>
+
+<EditorDialog Model="UserModel" ModelObj="Model" EntityName="User" IsEdit="true" Submit="Submit" FormValidator="ValidateForm">
+    <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+                  For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
+    </MudTextField>
+    <MudTextField T="string" Label="Full Name" Variant="Variant.Text"
+                  For="@(() => Model.FullName)" @bind-Value="Model.FullName" FullWidth="true">
+    </MudTextField>
+    <MudTextField T="string" Label="Email" Variant="Variant.Text" InputType="InputType.Email" Required="true"
+                  For="@(() => Model.Email)" @bind-Value="Model.Email" FullWidth="true">
+    </MudTextField>
+    <MudDatePicker Label="Birth Day" Variant="Variant.Text"
+                   For="@(() => Model.BirthDay)" @bind-Date="Model.BirthDay">
+    </MudDatePicker>
+</EditorDialog>
 
 
 @code {
-
-    [CascadingParameter]
-    private MudDialogInstance Dialog { get; set; } = null!;
-
     [Parameter]
-    public string UserId { get; set; } = "";
+    public string UserId { get; set; } = default!;
 
     [Inject]
-    private IUserService UserService { get; set; } = null!;
-
-    [Inject]
-    private ISnackbar Snackbar { get; set; } = null!;
+    private IUserService UserService { get; set; } = default!;
 
     private UserDTO? DTO { get; set; }
     private UserModel Model { get; set; } = new();
-    private MudForm? Form { get; set; } = null!;
 
     protected override async void OnInitialized()
     {
@@ -65,36 +48,29 @@
         }
     }
 
-    private async void Save()
+    private Task<bool> Submit()
     {
-        if (Form is null)
-        {
-            return;
-        }
-
-        await Form.Validate();
-        if (!Form.IsValid || string.IsNullOrEmpty(UserId)) return;
-
-        if (UserNameOrEmailChanged() && await UserService.Exists(Model.UserName, Model.Email))
-        {
-            Snackbar.Add($"User is already exists with this user name [{Model.UserName}] or e-mail address [{Model.Email}]", Severity.Error);
-            return;
-        }
-
-        if (await UserService.Update(UserId, Model))
-        {
-            Dialog.Close(DialogResult.Ok(true));
-        }
+        return UserService.Update(UserId, Model);
     }
 
-    private void Cancel()
+    private async Task<bool> ValidateForm(UserModel model, ISnackbar snackbar)
     {
-        Dialog.Cancel();
+        if (string.IsNullOrEmpty(UserId))
+        {
+            return false;
+        }
+
+        if (UserNameOrEmailChanged(model) && await UserService.Exists(model.UserName, model.Email))
+        {
+            snackbar.Add($"User is already exists with this user name [{model.UserName}] or e-mail address [{model.Email}]", Severity.Error);
+            return false;
+        }
+
+        return true;
     }
 
-    private bool UserNameOrEmailChanged()
+    private bool UserNameOrEmailChanged(UserModel model)
     {
-        return Model.UserName != DTO?.UserName || Model.Email != DTO?.Email;
+        return model.UserName != DTO?.UserName || model.Email != DTO?.Email;
     }
-
 }

@@ -38,17 +38,18 @@ namespace Papyrus.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    OsirisId = table.Column<string>(type: "longtext", nullable: false)
+                    OsirisId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    LastOsirisSync = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Registration = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     LastLogin = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    FullName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false)
+                    FullName = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     BirthDay = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Disabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    ImageTitle = table.Column<string>(type: "longtext", nullable: false)
+                    ImageTitle = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageData = table.Column<byte[]>(type: "longblob", nullable: false),
+                    ImageData = table.Column<byte[]>(type: "longblob", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -261,7 +262,8 @@ namespace Papyrus.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GroupId = table.Column<int>(type: "int", nullable: false)
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    DateTime = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -283,22 +285,22 @@ namespace Papyrus.Migrations
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
-                    Edit = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Close = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ReadOnly = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    GroupEdit = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    GroupClose = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ReadNoteList = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ReadNote = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     CreateNote = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     DeleteNote = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    ReadNote = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     EditNote = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ReadMemberList = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    EditMember = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    EditMemberList = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ReadRoleList = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    EditRole = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    EditRoleList = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ReadGroupActionLog = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ReadNoteActionLog = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ReadTagList = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    EditTag = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    ReadOnly = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    EditTagList = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -380,11 +382,19 @@ namespace Papyrus.Migrations
                     UserId = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    RoleId = table.Column<int>(type: "int", nullable: false),
+                    AddedById = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Creation = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GroupMembers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupMembers_AspNetUsers_AddedById",
+                        column: x => x.AddedById,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_GroupMembers_AspNetUsers_UserId",
                         column: x => x.UserId,
@@ -475,6 +485,11 @@ namespace Papyrus.Migrations
                 name: "IX_GroupActionLogs_GroupId",
                 table: "GroupActionLogs",
                 column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupMembers_AddedById",
+                table: "GroupMembers",
+                column: "AddedById");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupMembers_GroupId",

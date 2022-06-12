@@ -11,6 +11,13 @@ public class GroupService : HttpCall<int>, IGroupService
     {
     }
 
+    public async Task<List<GroupMemberDTO>> GetMembers(int groupId)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, groupId.ToString(), "Member"));
+
+        return await Http.Get<List<GroupMemberDTO>>(settings).ExecuteWithResult() ?? new();
+    }
+
     public async Task<List<GroupListDTO>> GetUserList()
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "User"));
