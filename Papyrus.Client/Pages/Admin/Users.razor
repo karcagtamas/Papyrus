@@ -9,14 +9,14 @@
 <ApplicationPageTitle PageName="Users"></ApplicationPageTitle>
 
 <div class="page-div">
-    <div class="mb-3">
+    <ActionBar>
         <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="() => SetDisableStatus(true)"
                    Disabled="SelectedItems.IsNullOrEmpty()">Disable</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="() => SetDisableStatus(false)"
                    Disabled="SelectedItems.IsNullOrEmpty()">Enable</MudButton>
-    </div>
-    <MudTable @bind-SelectedItems="SelectedItems" Items="UserList" Loading="Loading" Dense="true" Elevation="2"
-              MultiSelection="true" FixedHeader="true">
+    </ActionBar>
+    <MudTable T="UserListDTO" @bind-SelectedItems="SelectedItems" Items="UserList" Loading="Loading" Dense="true" Elevation="2"
+              MultiSelection="true" FixedHeader="true" Hover="true" Striped="true">
         <HeaderContent>
             <MudTh>
                 <MudText Color="Color.Primary">Id</MudText>
@@ -49,12 +49,12 @@
             <MudTd DataLabel="Last Login">@DateHelper.DateToString(context.LastLogin)</MudTd>
             <MudTd DataLabel="Registration">@DateHelper.DateToString(context.Registration)</MudTd>
             <MudTd DataLabel="Disabled">@(context.Disabled ? "Yes" : "No")</MudTd>
-        </RowTemplate>
-    </MudTable>
-</div>
+            </RowTemplate>
+        </MudTable>
+    </div>
 
 
-@code {
+    @code {
 
     private List<UserListDTO> UserList { get; set; } = new();
     private bool Loading { get; set; } = true;
