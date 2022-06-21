@@ -12,4 +12,5 @@ public interface IUserService : IHttpCall<string>
     Task<bool> SetDisableStatus(List<string> ids, bool status);
     Task<bool> UpdateImage(byte[] image);
     Task<bool> UpdatePassword(UserPasswordModel model);
+    Task<List<UserLightDTO>> Search(string searchTerm, bool ignoreCurrent, List<string> ignored);
 }

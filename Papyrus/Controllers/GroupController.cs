@@ -53,4 +53,16 @@ public class GroupController : ControllerBase
     {
         groupService.UpdateByModel(id, model);
     }
+
+    [HttpPost("{id}/Member")]
+    public void AddMember(int id, [FromBody] string memberId) 
+    {
+        groupService.AddMember(id, memberId);
+    }
+
+    [HttpDelete("{id}/Member/{groupMemberId}")]
+    public void RemoveMember(int id, int groupMemberId) 
+    {
+        groupService.RemoveMember(id, groupMemberId);
+    }
 }

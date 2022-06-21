@@ -71,4 +71,10 @@ public class UserController : ControllerBase
     {
         await userService.UpdatePassword(model);
     }
+
+    [HttpGet("Search")]
+    public List<UserLightDTO> Search([FromQuery] string searchTerm, [FromQuery] bool ignoreCurrent, [FromQuery] List<string> ignored)
+    {
+        return userService.Search(searchTerm, ignoreCurrent, ignored);
+    }
 }

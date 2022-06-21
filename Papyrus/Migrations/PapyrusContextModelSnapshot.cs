@@ -171,7 +171,6 @@ namespace Papyrus.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("AddedById")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("Creation")
@@ -189,9 +188,9 @@ namespace Papyrus.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddedById");
+                    b.HasAlternateKey("GroupId", "UserId");
 
-                    b.HasIndex("GroupId");
+                    b.HasIndex("AddedById");
 
                     b.HasIndex("RoleId");
 
@@ -232,6 +231,9 @@ namespace Papyrus.Migrations
 
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("IsDefault")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -587,8 +589,7 @@ namespace Papyrus.Migrations
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.User", "AddedBy")
                         .WithMany("AddedGroupMembers")
-                        .HasForeignKey("AddedById")
-                        .IsRequired();
+                        .HasForeignKey("AddedById");
 
                     b.HasOne("Papyrus.DataAccess.Entities.Groups.Group", "Group")
                         .WithMany("Members")

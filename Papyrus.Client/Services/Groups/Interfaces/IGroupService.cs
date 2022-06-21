@@ -7,4 +7,6 @@ public interface IGroupService : IHttpCall<int>
 {
     Task<List<GroupListDTO>> GetUserList();
     Task<List<GroupMemberDTO>> GetMembers(int groupId);
+    Task<bool> AddMember(int groupId, string memberId);
+    Task<bool> RemoveMember(int groupId, int groupMemberId);
 }

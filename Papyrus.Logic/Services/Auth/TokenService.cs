@@ -105,7 +105,8 @@ public class TokenService : ITokenService
         {
             AccessToken = accessToken,
             RefreshToken = newRefreshToken.Token,
-            ClientId = clientId
+            ClientId = clientId,
+            UserId = user.Id
         };
     }
 }

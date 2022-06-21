@@ -37,6 +37,17 @@ public class UserService : HttpCall<string>, IUserService
         return await Http.Get<UserLightDTO>(settings).ExecuteWithResult();
     }
 
+    public async Task<List<UserLightDTO>> Search(string searchTerm, bool ignoreCurrent, List<string> ignored)
+    {
+        var queryParams = new HttpQueryParameters();
+        queryParams.Add("searchTerm", searchTerm);
+        queryParams.Add("ignoreCurrent", ignoreCurrent);
+        queryParams.Add("ignored", ignored);
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Search")).AddQueryParams(queryParams);
+
+        return await Http.Get<List<UserLightDTO>>(settings).ExecuteWithResult() ?? new();
+    }
+
     public async Task<bool> SetDisableStatus(List<string> ids, bool status)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Disable")).AddToaster("Disable");

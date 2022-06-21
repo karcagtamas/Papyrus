@@ -18,7 +18,6 @@ public class GroupMember : IEntity<int>, ICreationEntity
     [Required]
     public int RoleId { get; set; }
 
-    [Required]
     public string? AddedById { get; set; }
 
     [Required]

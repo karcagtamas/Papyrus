@@ -67,6 +67,8 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
 
         // Group Member
         modelBuilder.Entity<GroupMember>()
+            .HasAlternateKey(x => new { x.GroupId, x.UserId });
+        modelBuilder.Entity<GroupMember>()
             .HasOne(x => x.Group)
             .WithMany(x => x.Members)
             .IsRequired()
@@ -84,7 +86,6 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         modelBuilder.Entity<GroupMember>()
             .HasOne(x => x.AddedBy)
             .WithMany(x => x.AddedGroupMembers)
-            .IsRequired()
             .OnDelete(DeleteBehavior.ClientSetNull);
 
         // Group Role

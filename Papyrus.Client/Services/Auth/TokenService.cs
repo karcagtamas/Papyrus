@@ -50,7 +50,8 @@ public class TokenService : ITokenService
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                ClientId = clientId
+                ClientId = clientId,
+                UserId = user.UserId
             };
             storeService.Add(UserKey, tokenObj);
             await localStorageService.SetItemAsync(UserKey, tokenObj);

@@ -286,6 +286,7 @@ namespace Papyrus.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     ReadOnly = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsDefault = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     GroupEdit = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     GroupClose = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ReadNoteList = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -383,13 +384,14 @@ namespace Papyrus.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     RoleId = table.Column<int>(type: "int", nullable: false),
-                    AddedById = table.Column<string>(type: "varchar(255)", nullable: false)
+                    AddedById = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Creation = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GroupMembers", x => x.Id);
+                    table.UniqueConstraint("AK_GroupMembers_GroupId_UserId", x => new { x.GroupId, x.UserId });
                     table.ForeignKey(
                         name: "FK_GroupMembers_AspNetUsers_AddedById",
                         column: x => x.AddedById,
@@ -490,11 +492,6 @@ namespace Papyrus.Migrations
                 name: "IX_GroupMembers_AddedById",
                 table: "GroupMembers",
                 column: "AddedById");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupMembers_GroupId",
-                table: "GroupMembers",
-                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupMembers_RoleId",

@@ -1,9 +1,34 @@
-﻿<MudDialog>
+﻿@using KarcagS.Shared.Helpers
+@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.DTOs
+<MudDialog>
     <TitleContent>
-        User Search
+        <MudText Typo="Typo.h5" Color="Color.Primary">User Search</MudText>
     </TitleContent>
     <DialogContent>
+        <MudTextField T="string" Placeholder="Search" TextChanged="(value) => Fetch(value)" />
 
+        @if (Users.Count > 0 && !IsLoading)
+        {
+            <MudTable T="UserLightDTO" Items="Users" @bind-SelectedItem="Selected" Dense="true" Striped="true" OnRowClick="(e) => Selected = e.Item" RowClassFunc="RowClassFunc">
+                <HeaderContent>
+                    <MudTh>
+                        <MudText Color="Color.Primary">User Name</MudText>
+                    </MudTh>
+                    <MudTh>
+                        <MudText Color="Color.Primary">E-mail</MudText>
+                    </MudTh>
+                    <MudTh>
+                        <MudText Color="Color.Primary">Full Name</MudText>
+                    </MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="UserName">@context.UserName</MudTd>
+                    <MudTd DataLabel="UserName">@context.Email</MudTd>
+                    <MudTd DataLabel="UserName">@WriteHelper.WriteNullableField(context.FullName)</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Close</MudButton>
@@ -11,13 +36,50 @@
     </DialogActions>
 </MudDialog>
 
-@code{
+@code {
     [CascadingParameter]
     private MudDialogInstance Dialog { get; set; } = null!;
 
+    [Inject]
+    private IUserService UserService { get; set; } = default!;
+
+    private List<UserLightDTO> Users = new();
+    private UserLightDTO? Selected = null;
+    private bool IsLoading { get; set; } = false;
+
+    private async Task Fetch(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+        {
+            Users = new();
+            Selected = null;
+            return;
+        }
+
+        IsLoading = true;
+        await InvokeAsync(StateHasChanged);
+        Users = await UserService.Search(value, true, new());
+        Selected = null;
+        IsLoading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private string RowClassFunc(UserLightDTO dto, int index)
+    {
+        if (Selected is null)
+        {
+            return "";
+        }
+
+        return dto.Id == Selected.Id ? "mud-info" : "";
+    }
+
     private void Select()
     {
-        
+        if (Selected is not null)
+        {
+            Dialog.Close(Selected.Id);
+        }
     }
 
     private void Cancel()

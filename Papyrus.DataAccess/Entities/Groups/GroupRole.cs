@@ -18,6 +18,9 @@ public class GroupRole : IEntity<int>
     [Required]
     public bool ReadOnly { get; set; }
 
+    [Required]
+    public bool IsDefault { get; set; }
+
 
 
 

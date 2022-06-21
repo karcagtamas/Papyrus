@@ -1,5 +1,6 @@
 using KarcagS.Common.Tools.Repository;
 using Papyrus.DataAccess.Entities;
+using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
 
 namespace Papyrus.Logic.Services.Interfaces;
@@ -16,4 +17,5 @@ public interface IUserService : IMapperRepository<User, string>
     void UpdateImage(byte[] image);
     Task UpdatePassword(UserPasswordModel model);
     void Update(string id, UserModel model);
+    List<UserLightDTO> Search(string searchTerm, bool ignoreCurrent, List<string> ignored);
 }

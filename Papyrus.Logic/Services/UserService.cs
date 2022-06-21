@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Interfaces;
+using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
 
 namespace Papyrus.Logic.Services;
@@ -116,5 +117,12 @@ public class UserService : MapperRepository<User, string, string>, IUserService
         }
 
         UpdateByModel(id, model);
+    }
+
+    public List<UserLightDTO> Search(string searchTerm, bool ignoreCurrent, List<string> ignored)
+    {
+        var userId = Utils.GetCurrentUserId();
+        var term = searchTerm.ToLower();
+        return GetMappedList<UserLightDTO>(x => !x.Disabled && (!ignoreCurrent || x.Id != userId) && (x.UserName.ToLower().Contains(searchTerm) || x.Email.ToLower().Contains(searchTerm) || (x.FullName != null && x.FullName.ToLower().Contains(searchTerm))), 5).ToList();
     }
 }

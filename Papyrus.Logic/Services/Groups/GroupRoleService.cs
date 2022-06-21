@@ -25,12 +25,12 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             new RoleCreationResultItem
             {
                 Id = CreateModeratorRole(groupId),
-                IsAdministration = true
+                IsAdministration = false
             },
             new RoleCreationResultItem
             {
                 Id = CreateDefaultRole(groupId),
-                IsAdministration = true
+                IsAdministration = false
             },
         };
     }
@@ -38,7 +38,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public List<GroupRoleDTO> GetGroupList(int groupId)
     {
         return GetMappedList<GroupRoleDTO>(x => x.GroupId == groupId)
-            .OrderBy(x => x.ReadOnly)
+            .OrderByDescending(x => x.ReadOnly)
             .ToList();
     }
 
@@ -49,6 +49,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             GroupId = groupId,
             Name = "Administrator",
             ReadOnly = true,
+            IsDefault = false,
             GroupEdit = true,
             GroupClose = true,
             ReadNoteList = true,
@@ -76,6 +77,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             GroupId = groupId,
             Name = "Moderator",
             ReadOnly = true,
+            IsDefault = false,
             GroupEdit = true,
             GroupClose = false,
             ReadNoteList = true,
@@ -103,6 +105,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             GroupId = groupId,
             Name = "Default",
             ReadOnly = true,
+            IsDefault = true,
             GroupEdit = false,
             GroupClose = false,
             ReadNoteList = true,

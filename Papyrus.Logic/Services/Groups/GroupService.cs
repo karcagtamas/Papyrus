@@ -3,7 +3,6 @@ using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
-using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
@@ -50,7 +49,8 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         {
             GroupId = id,
             UserId = user,
-            RoleId = admin.Id
+            RoleId = admin.Id,
+            Creation = DateTime.Now
         };
         Context.Set<GroupMember>().Add(member);
         Context.SaveChanges();
@@ -63,5 +63,63 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         var group = Get(id);
 
         return Mapper.Map<List<GroupMemberDTO>>(group.Members);
+    }
+
+    public void AddMember(int id, string memberId)
+    {
+        var userId = Utils.GetCurrentUserId();
+
+        if (userId is null)
+        {
+            throw new ServerException("User not found");
+        }
+
+        var group = Get(id);
+
+        if (group is null)
+        {
+            throw new ServerException("Group not found");
+        }
+
+        if (group.Members.Any(x => x.UserId == memberId))
+        {
+            throw new ServerException("User already has been added");
+        }
+
+        var role = group.Roles.FirstOrDefault(x => x.IsDefault);
+
+        if (role is null)
+        {
+            throw new ServerException("Default role not found");
+        }
+
+        group.Members.Add(new GroupMember
+        {
+            GroupId = group.Id,
+            UserId = memberId,
+            RoleId = role.Id,
+            Creation = DateTime.Now,
+            AddedById = userId
+        });
+
+        Update(group);
+    }
+
+    public void RemoveMember(int id, int groupMemberId)
+    {
+        var member = Context.Set<GroupMember>().Find(groupMemberId);
+
+        if (member is null)
+        {
+            throw new ServerException("Group member not found");
+        }
+
+        if (member.GroupId != id)
+        {
+            throw new ServerException("Invalid member removing");
+        }
+
+        Context.Set<GroupMember>().Remove(member);
+        Context.SaveChanges();
     }
 }
