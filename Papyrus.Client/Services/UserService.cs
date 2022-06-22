@@ -21,9 +21,9 @@ public class UserService : HttpCall<string>, IUserService
 
     public async Task<bool> Exists(string userName, string email)
     {
-        var queryParams = new HttpQueryParameters();
-        queryParams.Add("userName", userName);
-        queryParams.Add("email", email);
+        var queryParams = HttpQueryParameters.Build()
+            .Add("userName", userName)
+            .Add("email", email);
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "Exists")).AddQueryParams(queryParams);
 
@@ -39,10 +39,10 @@ public class UserService : HttpCall<string>, IUserService
 
     public async Task<List<UserLightDTO>> Search(string searchTerm, bool ignoreCurrent, List<string> ignored)
     {
-        var queryParams = new HttpQueryParameters();
-        queryParams.Add("searchTerm", searchTerm);
-        queryParams.Add("ignoreCurrent", ignoreCurrent);
-        queryParams.Add("ignored", ignored);
+        var queryParams = HttpQueryParameters.Build()
+            .Add("searchTerm", searchTerm)
+            .Add("ignoreCurrent", ignoreCurrent)
+            .AddMultiple("ignored", ignored);
         var settings = new HttpSettings(Http.BuildUrl(Url, "Search")).AddQueryParams(queryParams);
 
         return await Http.Get<List<UserLightDTO>>(settings).ExecuteWithResult() ?? new();

@@ -123,6 +123,6 @@ public class UserService : MapperRepository<User, string, string>, IUserService
     {
         var userId = Utils.GetCurrentUserId();
         var term = searchTerm.ToLower();
-        return GetMappedList<UserLightDTO>(x => !x.Disabled && (!ignoreCurrent || x.Id != userId) && (x.UserName.ToLower().Contains(searchTerm) || x.Email.ToLower().Contains(searchTerm) || (x.FullName != null && x.FullName.ToLower().Contains(searchTerm))), 5).ToList();
+        return GetMappedList<UserLightDTO>(x => !x.Disabled && (!ignoreCurrent || x.Id != userId) && !ignored.Contains(x.Id) && (x.UserName.ToLower().Contains(searchTerm) || x.Email.ToLower().Contains(searchTerm) || (x.FullName != null && x.FullName.ToLower().Contains(searchTerm))), 5).ToList();
     }
 }

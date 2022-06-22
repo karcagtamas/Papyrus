@@ -40,6 +40,9 @@
     [CascadingParameter]
     private MudDialogInstance Dialog { get; set; } = null!;
 
+    [Parameter]
+    public List<string> Ignored { get; set; } = new();
+
     [Inject]
     private IUserService UserService { get; set; } = default!;
 
@@ -58,7 +61,7 @@
 
         IsLoading = true;
         await InvokeAsync(StateHasChanged);
-        Users = await UserService.Search(value, true, new());
+        Users = await UserService.Search(value, true, Ignored);
         Selected = null;
         IsLoading = false;
         await InvokeAsync(StateHasChanged);

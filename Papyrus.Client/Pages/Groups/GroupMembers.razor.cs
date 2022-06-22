@@ -37,9 +37,9 @@ public partial class GroupMembers : ComponentBase
 
     private async Task Add()
     {
-        var parameters = new DialogParameters { }; // TODO: Add ignored list
+        var parameters = new DialogParameters { { "Ignored", Members.Select(x => x.User.Id).ToList() } };
 
-        var dialog = DialogService.Show<UserSearchDialog>("Search User", new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        var dialog = DialogService.Show<UserSearchDialog>("Search User", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
