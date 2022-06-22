@@ -62,7 +62,10 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     {
         var group = Get(id);
 
-        return Mapper.Map<List<GroupMemberDTO>>(group.Members);
+        return Mapper.Map<List<GroupMemberDTO>>(group.Members)
+            .OrderBy(x => x.Role.Id)
+            .ThenBy(x => x.User.UserName)
+            .ToList();
     }
 
     public void AddMember(int id, string memberId)
