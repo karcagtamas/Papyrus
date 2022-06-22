@@ -10,7 +10,7 @@
 
         @if (Users.Count > 0 && !IsLoading)
         {
-            <MudTable T="UserLightDTO" Items="Users" @bind-SelectedItem="Selected" Dense="true" Striped="true" OnRowClick="(e) => Selected = e.Item" RowClassFunc="RowClassFunc">
+            <MudTable Style="margin-top: 2rem;" T="UserLightDTO" Items="Users" @bind-SelectedItem="Selected" Dense="true" Striped="true" OnRowClick="(e) => Selected = e.Item" RowClassFunc="RowClassFunc">
                 <HeaderContent>
                     <MudTh>
                         <MudText Color="Color.Primary">User Name</MudText>

@@ -65,4 +65,10 @@ public class GroupController : ControllerBase
     {
         groupService.RemoveMember(id, groupMemberId);
     }
+
+    [HttpPut("{id}/Member/{groupMemberId}")]
+    public void EditMember(int id, int groupMemberId, [FromBody] GroupMemberModel model)
+    {
+        groupService.EditMember(id, groupMemberId, model);
+    }
 }

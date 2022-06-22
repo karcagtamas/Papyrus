@@ -2,6 +2,7 @@
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Common;
+using Papyrus.Client.Shared.Dialogs.Groups;
 using Papyrus.Shared.DTOs.Groups;
 
 namespace Papyrus.Client.Pages.Groups;
@@ -50,6 +51,18 @@ public partial class GroupMembers : ComponentBase
                     await GetMembers();
                 }
             }
+        }
+    }
+
+    private async Task Edit(TableRowClickEventArgs<GroupMemberDTO> e)
+    {
+        var parameters = new DialogParameters { { "GroupId", GroupId }, { "Member", e.Item } };
+
+        var dialog = DialogService.Show<GroupMemberEditDialog>("Edit Group Member", parameters);
+        var result = await dialog.Result;
+        if (!result.Cancelled)
+        {
+            await GetMembers();
         }
     }
 }

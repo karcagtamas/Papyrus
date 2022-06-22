@@ -32,7 +32,7 @@
     public Func<Task<bool>> Submit { get; set; } = default!;
 
     [Parameter]
-    public Func<Task<bool>?>? Remove { get; set; } = default!;
+    public Func<Task<bool>>? Remove { get; set; } = default!;
 
     [Parameter]
     public string? Title { get; set; }
@@ -54,6 +54,9 @@
 
     [Inject]
     private ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = default!;
 
     private MudForm? Form { get; set; } = null!;
     private string TitleText { get; set; } = "";
@@ -104,14 +107,12 @@
             return;
         }
 
-        var result = Remove();
+        var parameters = new DialogParameters { { "Input", new ConfirmDialogInput { Name = EntityName, ActionFunction = async () => await Remove() } } };
 
-        if (result is null)
-        {
-            return;
-        }
+        var confirm = DialogService.Show<Confirm>("Confirm Delete", parameters);
+        var confirmResult = await confirm.Result;
 
-        if (await result)
+        if (!confirmResult.Cancelled)
         {
             Dialog.Close(DialogResult.Ok(true));
         }

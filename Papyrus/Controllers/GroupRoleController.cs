@@ -25,9 +25,15 @@ public class GroupRoleController : ControllerBase
     }
 
     [HttpGet("Group/{groupId}")]
-    public List<GroupRoleDTO> GetGroupList(int groupId)
+    public List<GroupRoleDTO> GetByGroup(int groupId)
     {
-        return groupRoleService.GetGroupList(groupId);
+        return groupRoleService.GetByGroup(groupId);
+    }
+
+    [HttpGet("Group/{groupId}/Light")]
+    public List<GroupRoleLightDTO> GetLightByGroup(int groupId)
+    {
+        return groupRoleService.GetLightByGroup(groupId);
     }
 
     [HttpPost]

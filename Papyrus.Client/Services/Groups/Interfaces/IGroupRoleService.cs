@@ -5,5 +5,6 @@ namespace Papyrus.Client.Services.Groups.Interfaces;
 
 public interface IGroupRoleService : IHttpCall<int>
 {
-    Task<List<GroupRoleDTO>> GetGroupList(int groupId);
+    Task<List<GroupRoleDTO>> GetByGroup(int groupId);
+    Task<List<GroupRoleLightDTO>> GetLightByGroup(int groupId);
 }

@@ -108,7 +108,7 @@ public partial class GroupRoles : ComponentBase
     {
         Loading = true;
         await InvokeAsync(StateHasChanged);
-        Roles = await GroupRoleService.GetGroupList(GroupId);
+        Roles = await GroupRoleService.GetByGroup(GroupId);
         Loading = false;
         await InvokeAsync(StateHasChanged);
     }

@@ -6,6 +6,7 @@ using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.Models.Groups;
 
 namespace Papyrus.Logic.Services.Groups;
 
@@ -123,6 +124,26 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         }
 
         Context.Set<GroupMember>().Remove(member);
+        Context.SaveChanges();
+    }
+
+    public void EditMember(int id, int groupMemberId, GroupMemberModel model)
+    {
+        var member = Context.Set<GroupMember>().Find(groupMemberId);
+
+        if (member is null)
+        {
+            throw new ServerException("Group member not found");
+        }
+
+        if (member.GroupId != id)
+        {
+            throw new ServerException("Invalid member removing");
+        }
+
+        member.RoleId = model.RoleId;
+
+        Context.Set<GroupMember>().Update(member);
         Context.SaveChanges();
     }
 }

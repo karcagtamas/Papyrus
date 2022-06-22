@@ -8,5 +8,6 @@ namespace Papyrus.Logic.Services.Groups.Interfaces;
 public interface IGroupRoleService : IMapperRepository<GroupRole, int>
 {
     List<RoleCreationResultItem> CreateDefaultRoles(int groupId);
-    List<GroupRoleDTO> GetGroupList(int groupId);
+    List<GroupRoleDTO> GetByGroup(int groupId);
+    List<GroupRoleLightDTO> GetLightByGroup(int groupId);
 }

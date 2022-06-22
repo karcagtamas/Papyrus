@@ -1,0 +1,52 @@
+﻿@using Papyrus.Client.Services.Groups.Interfaces
+@using Papyrus.Shared.DTOs.Groups
+@using Papyrus.Shared.Models.Groups
+
+<EditorDialog Model="GroupMemberModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Member" IsEdit="true">
+    <MudSelect T="int" Label="Role" Variant="Variant.Text" Required="true"
+               For="@(() => Model.RoleId)" @bind-Value="Model.RoleId" FullWidth="true">
+        @foreach (var role in Roles)
+        {
+            <MudSelectItem Value="@role.Id">@role.Name</MudSelectItem>
+        }
+    </MudSelect>
+</EditorDialog>
+
+@code {
+    [Parameter]
+    public int GroupId { get; set; }
+
+    [Parameter]
+    public GroupMemberDTO Member { get; set; } = default!;
+
+    [Inject]
+    private IGroupService GroupService { get; set; } = default!;
+
+    [Inject]
+    private IGroupRoleService GroupRoleService { get; set; } = default!;
+
+    private GroupMemberModel Model { get; set; } = new();
+    private List<GroupRoleLightDTO> Roles { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        Roles = await GroupRoleService.GetLightByGroup(GroupId);
+        Model = new GroupMemberModel
+            {
+                RoleId = Member.Role.Id
+            };
+        await InvokeAsync(StateHasChanged);
+
+        base.OnInitialized();
+    }
+
+    private Task<bool> Submit()
+    {
+        return GroupService.EditMember(GroupId, Member.Id, Model);
+    }
+
+    private Task<bool> Remove()
+    {
+        return GroupService.RemoveMember(GroupId, Member.Id);
+    }
+}

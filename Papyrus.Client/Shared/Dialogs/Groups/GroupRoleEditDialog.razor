@@ -85,13 +85,13 @@
         return GroupRoleService.Create(Model);
     }
 
-    private Task<bool>? Remove()
+    private Task<bool> Remove()
     {
         if (GroupRoleId is not null)
         {
             return GroupRoleService.Delete((int)GroupRoleId);
         }
 
-        return default;
+        return Task.FromResult(false);
     }
 }
