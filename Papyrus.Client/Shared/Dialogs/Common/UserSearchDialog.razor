@@ -29,6 +29,13 @@
                 </RowTemplate>
             </MudTable>
         }
+        else
+        {
+            <MudText Color="@(IsError ? Color.Error : Color.Warning)" Class="w-100 mt-5 text-center flex-box justify-content-center align-items-center flex-row gap-1">
+                <MudIcon Icon="@Icons.Filled.Info" />
+                @Message
+            </MudText>
+        }
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Close</MudButton>
@@ -49,6 +56,8 @@
     private List<UserLightDTO> Users = new();
     private UserLightDTO? Selected = null;
     private bool IsLoading { get; set; } = false;
+    private string Message { get; set; } = "You need to search first.";
+    private bool IsError { get; set; }
 
     private async Task Fetch(string value)
     {
@@ -56,6 +65,8 @@
         {
             Users = new();
             Selected = null;
+            Message = "You need to search first.";
+            IsError = false;
             return;
         }
 
@@ -64,6 +75,8 @@
         Users = await UserService.Search(value, true, Ignored);
         Selected = null;
         IsLoading = false;
+        Message = Users.Count() > 0 ? "" : "Couldn't find any user.";
+        IsError = true;
         await InvokeAsync(StateHasChanged);
     }
 
