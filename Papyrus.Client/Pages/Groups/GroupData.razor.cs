@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using KarcagS.Blazor.Common.Components.Confirm;
+using KarcagS.Blazor.Common.Services;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Groups;
@@ -12,12 +14,19 @@ public partial class GroupData : ComponentBase
     public int GroupId { get; set; }
 
     [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
+
+    [Inject]
     private IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
+    private IConfirmService ConfirmService { get; set; } = default!;
 
     [Inject]
     private IGroupService GroupService { get; set; } = default!;
 
     private GroupDTO? Group { get; set; } = default!;
+    private bool Closable { get; set; } = false;
 
     protected override async void OnInitialized()
     {
@@ -28,6 +37,7 @@ public partial class GroupData : ComponentBase
     private async Task GetGroup()
     {
         Group = await GroupService.Get<GroupDTO>(GroupId);
+        Closable = await GroupService.IsClosable(GroupId);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -45,5 +55,15 @@ public partial class GroupData : ComponentBase
         {
             await GetGroup();
         }
+    }
+
+    private async Task Close()
+    {
+        if (!Closable)
+        {
+            return;
+        }
+
+        await ConfirmService.Open(new ConfirmDialogInput { Name = "Group", ActionFunction = async () => await GroupService.Close(GroupId) }, "Confirm Close", () => Navigation.NavigateTo("/my-groups"));
     }
 }

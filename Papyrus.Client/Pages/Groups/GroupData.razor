@@ -8,7 +8,7 @@
     {
         <ActionBar>
             <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">Edit</MudButton>
-            <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="Edit">Close</MudButton>
+            <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Closable" OnClick="Close">Close</MudButton>
             <MudSpacer />
             <MudButton Color="Color.Secondary" Href="/my-groups">My Groups</MudButton>
         </ActionBar>

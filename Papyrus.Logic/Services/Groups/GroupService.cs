@@ -57,5 +57,54 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         groupMemberService.Create(member);
 
         return id;
-    } 
+    }
+
+    public bool IsClosable(int id)
+    {
+        var userId = Utils.GetRequiredCurrentUserId();
+
+        if (userId is null)
+        {
+            throw new ServerException("User not found");
+        }
+
+        var group = Get(id);
+
+        if (group is null)
+        {
+            throw new ServerException("Group not found");
+        }
+
+        return IsClosableForUser(group, userId);
+    }
+
+    public void Close(int id)
+    {
+        var userId = Utils.GetRequiredCurrentUserId();
+
+        if (userId is null)
+        {
+            throw new ServerException("User not found");
+        }
+
+        var group = Get(id);
+
+        if (group is null)
+        {
+            throw new ServerException("Group not found");
+        }
+
+        if (!IsClosableForUser(group, userId))
+        {
+            throw new ServerException("Not have permission to Close this group.");
+        }
+
+        group.IsClosed = true;
+        Update(group);
+    }
+
+    private static bool IsClosableForUser(Group group, string userId)
+    {
+        return group.OwnerId == userId && !group.IsClosed;
+    }
 }

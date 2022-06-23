@@ -47,4 +47,16 @@ public class GroupController : ControllerBase
     {
         groupService.UpdateByModel(id, model);
     }
+
+    [HttpGet("{id}/Closable")]
+    public bool IsClosable(int id)
+    {
+        return groupService.IsClosable(id);
+    }
+
+    [HttpPut("{id}/Close")]
+    public void Close(int id)
+    {
+        groupService.Close(id);
+    }
 }

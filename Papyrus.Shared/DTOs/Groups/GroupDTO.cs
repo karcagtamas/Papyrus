@@ -7,4 +7,5 @@ public class GroupDTO : GroupListDTO
     public int Notes { get; set; }
     public int Tags { get; set; }
     public DateTime? LastAction { get; set; }
+    public bool IsClosed { get; set; }
 }

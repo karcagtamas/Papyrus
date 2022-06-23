@@ -6,4 +6,5 @@ public class GroupListDTO
     public string Name { get; set; } = default!;
     public DateTime Creation { get; set; }
     public string Owner { get; set; } = default!;
+    public bool IsClosed { get; set; }
 }

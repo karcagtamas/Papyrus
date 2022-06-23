@@ -1,4 +1,5 @@
-﻿@typeparam Model
+﻿@using KarcagS.Blazor.Common.Services
+@typeparam Model
 
 <MudDialog>
     <TitleContent>
@@ -58,6 +59,9 @@
     [Inject]
     private IDialogService DialogService { get; set; } = default!;
 
+    [Inject]
+    private IConfirmService ConfirmService { get; set; } = default!;
+
     private MudForm? Form { get; set; } = null!;
     private string TitleText { get; set; } = "";
 
@@ -107,15 +111,7 @@
             return;
         }
 
-        var parameters = new DialogParameters { { "Input", new ConfirmDialogInput { Name = EntityName, ActionFunction = async () => await Remove() } } };
-
-        var confirm = DialogService.Show<Confirm>("Confirm Delete", parameters);
-        var confirmResult = await confirm.Result;
-
-        if (!confirmResult.Cancelled)
-        {
-            Dialog.Close(DialogResult.Ok(true));
-        }
+        await ConfirmService.Open(new ConfirmDialogInput { Name = EntityName, ActionFunction = async () => await Remove() }, "Confirm Delete", () => Dialog.Close(DialogResult.Ok(true)));
     }
 
     private void Cancel()

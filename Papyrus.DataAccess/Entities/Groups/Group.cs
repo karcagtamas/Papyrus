@@ -20,6 +20,9 @@ public class Group : IEntity<int>, ICreationEntity
     [Required]
     public string OwnerId { get; set; } = default!;
 
+    [Required]
+    public bool IsClosed { get; set; }
+
     public virtual User Owner { get; set; } = default!;
     public virtual ICollection<GroupMember> Members { get; set; } = default!;
     public virtual ICollection<GroupRole> Roles { get; set; } = default!;
