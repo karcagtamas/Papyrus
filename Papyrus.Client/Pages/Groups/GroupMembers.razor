@@ -25,7 +25,16 @@
             </MudTh>
         </HeaderContent>
         <RowTemplate>
-            <MudTd DataLabel="User">@context.User.UserName</MudTd>
+            <MudTd DataLabel="User">
+                @if (User is not null && context.User.Id == User)
+                {
+                    <MudText Color="Color.Error">@context.User.UserName</MudText>
+                }
+                else
+                {
+                    @context.User.UserName
+                }
+            </MudTd>
             <MudTd DataLabel="Role">@context.Role.Name</MudTd>
             <MudTd DataLabel="AddedBy">@WriteHelper.WriteNullableField(context.AddedBy?.UserName)</MudTd>
             <MudTd DataLabel="Join">@DateHelper.DateToString(context.Join)</MudTd>

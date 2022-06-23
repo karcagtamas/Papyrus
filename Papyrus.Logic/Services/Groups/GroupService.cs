@@ -6,17 +6,18 @@ using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
-using Papyrus.Shared.Models.Groups;
 
 namespace Papyrus.Logic.Services.Groups;
 
 public class GroupService : MapperRepository<Group, int, string>, IGroupService
 {
     private readonly IGroupRoleService groupRoleService;
+    private readonly IGroupMemberService groupMemberService;
 
-    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService) : base(context, loggerService, utilsService, mapper, "Group")
+    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService, IGroupMemberService groupMemberService) : base(context, loggerService, utilsService, mapper, "Group")
     {
         this.groupRoleService = groupRoleService;
+        this.groupMemberService = groupMemberService;
     }
 
     public List<GroupListDTO> GetUserList()
@@ -53,97 +54,8 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
             RoleId = admin.Id,
             Creation = DateTime.Now
         };
-        Context.Set<GroupMember>().Add(member);
-        Context.SaveChanges();
+        groupMemberService.Create(member);
 
         return id;
-    }
-
-    public List<GroupMemberDTO> GetMembers(int id)
-    {
-        var group = Get(id);
-
-        return Mapper.Map<List<GroupMemberDTO>>(group.Members)
-            .OrderBy(x => x.Role.Id)
-            .ThenBy(x => x.User.UserName)
-            .ToList();
-    }
-
-    public void AddMember(int id, string memberId)
-    {
-        var userId = Utils.GetCurrentUserId();
-
-        if (userId is null)
-        {
-            throw new ServerException("User not found");
-        }
-
-        var group = Get(id);
-
-        if (group is null)
-        {
-            throw new ServerException("Group not found");
-        }
-
-        if (group.Members.Any(x => x.UserId == memberId))
-        {
-            throw new ServerException("User already has been added");
-        }
-
-        var role = group.Roles.FirstOrDefault(x => x.IsDefault);
-
-        if (role is null)
-        {
-            throw new ServerException("Default role not found");
-        }
-
-        group.Members.Add(new GroupMember
-        {
-            GroupId = group.Id,
-            UserId = memberId,
-            RoleId = role.Id,
-            Creation = DateTime.Now,
-            AddedById = userId
-        });
-
-        Update(group);
-    }
-
-    public void RemoveMember(int id, int groupMemberId)
-    {
-        var member = Context.Set<GroupMember>().Find(groupMemberId);
-
-        if (member is null)
-        {
-            throw new ServerException("Group member not found");
-        }
-
-        if (member.GroupId != id)
-        {
-            throw new ServerException("Invalid member removing");
-        }
-
-        Context.Set<GroupMember>().Remove(member);
-        Context.SaveChanges();
-    }
-
-    public void EditMember(int id, int groupMemberId, GroupMemberModel model)
-    {
-        var member = Context.Set<GroupMember>().Find(groupMemberId);
-
-        if (member is null)
-        {
-            throw new ServerException("Group member not found");
-        }
-
-        if (member.GroupId != id)
-        {
-            throw new ServerException("Invalid member removing");
-        }
-
-        member.RoleId = model.RoleId;
-
-        Context.Set<GroupMember>().Update(member);
-        Context.SaveChanges();
-    }
+    } 
 }

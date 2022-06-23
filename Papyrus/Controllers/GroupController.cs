@@ -36,12 +36,6 @@ public class GroupController : ControllerBase
         return groupService.GetUserList();
     }
 
-    [HttpGet("{id}/Member")]
-    public List<GroupMemberDTO> GetMembers(int id)
-    {
-        return groupService.GetMembers(id);
-    }
-
     [HttpPost]
     public void Create([FromBody] GroupModel model)
     {
@@ -52,23 +46,5 @@ public class GroupController : ControllerBase
     public void Update(int id, [FromBody] GroupModel model)
     {
         groupService.UpdateByModel(id, model);
-    }
-
-    [HttpPost("{id}/Member")]
-    public void AddMember(int id, [FromBody] string memberId) 
-    {
-        groupService.AddMember(id, memberId);
-    }
-
-    [HttpDelete("{id}/Member/{groupMemberId}")]
-    public void RemoveMember(int id, int groupMemberId) 
-    {
-        groupService.RemoveMember(id, groupMemberId);
-    }
-
-    [HttpPut("{id}/Member/{groupMemberId}")]
-    public void EditMember(int id, int groupMemberId, [FromBody] GroupMemberModel model)
-    {
-        groupService.EditMember(id, groupMemberId, model);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Papyrus.Shared.Models.Groups;
 
-public class GroupMemberModel
+public class GroupMemberUpdateModel
 {
     [Required]
     public int RoleId { get; set; } = default!;
