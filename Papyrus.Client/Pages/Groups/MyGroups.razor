@@ -6,6 +6,8 @@
 <div class="page-div">
     <ActionBar>
         <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        <MudSpacer />
+        <MudSwitch T="bool" Color="Color.Secondary" CheckedChanged="HideClosedChangeHandler" Checked="HideClosedChecked" Label="Hide Closed" />
     </ActionBar>
     <div class="page-content">
         <div class="groups">

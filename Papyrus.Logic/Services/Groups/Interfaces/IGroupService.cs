@@ -6,7 +6,7 @@ namespace Papyrus.Logic.Services.Groups.Interfaces;
 
 public interface IGroupService : IMapperRepository<Group, int>
 {
-    List<GroupListDTO> GetUserList();
+    List<GroupListDTO> GetUserList(bool hideClosed = false);
     bool IsClosable(int id);
     void Close(int id);
 }

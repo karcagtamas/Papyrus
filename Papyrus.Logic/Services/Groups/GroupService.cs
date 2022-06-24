@@ -20,7 +20,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         this.groupMemberService = groupMemberService;
     }
 
-    public List<GroupListDTO> GetUserList()
+    public List<GroupListDTO> GetUserList(bool hideClosed = false)
     {
         var user = Utils.GetRequiredCurrentUserId();
 
@@ -29,7 +29,9 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
             throw new ServerException("User not found");
         }
 
-        return GetMappedList<GroupListDTO>(x => x.OwnerId == user)
+        return GetMappedList<GroupListDTO>(x => x.OwnerId == user && (!hideClosed || !x.IsClosed))
+            .OrderBy(x => x.IsClosed)
+            .ThenByDescending(x => x.Creation)
             .ToList();
     }
 

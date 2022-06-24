@@ -31,9 +31,9 @@ public class GroupController : ControllerBase
     }
 
     [HttpGet("User")]
-    public List<GroupListDTO> GetUserList()
+    public List<GroupListDTO> GetUserList([FromQuery] bool hideClosed = false)
     {
-        return groupService.GetUserList();
+        return groupService.GetUserList(hideClosed);
     }
 
     [HttpPost]

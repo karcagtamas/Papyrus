@@ -10,3 +10,7 @@
         justify-content: space-between;
         align-items: end;
     }
+
+    .tile-content.closed {
+        background-color: lightgray;
+    }

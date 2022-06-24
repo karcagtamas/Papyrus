@@ -2,14 +2,14 @@
 @using Papyrus.Shared.DTOs.Groups
 
 
-<MudCard Elevation="2" Class="p-2">
-    <div class="tile-content">
+<MudCard Elevation="2">
+    <div class="tile-content p-2 @(Group.IsClosed ? "closed" : "")">
         <MudText Typo="Typo.h6" Color="Color.Primary"><b>@Group.Name</b></MudText>
         <MudText Typo="Typo.body1">@Group.Owner</MudText>
         <MudSpacer />
         <div class="desc-row">
             <MudText Typo="Typo.body2">Created: @DateHelper.DateToString(Group.Creation)</MudText>
-            <MudIconButton Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" Disabled="Group.IsClosed" />
         </div>
     </div>
 </MudCard>
@@ -24,6 +24,11 @@
 
     private void Open()
     {
+        if (Group.IsClosed)
+        {
+            return;
+        }
+
         NavigationManager.NavigateTo($"/groups/{Group.Id} ");
     }
 }

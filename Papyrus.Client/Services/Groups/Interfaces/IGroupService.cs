@@ -5,7 +5,7 @@ namespace Papyrus.Client.Services.Groups.Interfaces;
 
 public interface IGroupService : IHttpCall<int>
 {
-    Task<List<GroupListDTO>> GetUserList();
+    Task<List<GroupListDTO>> GetUserList(bool hideClosed = false);
     Task<bool> IsClosable(int id);
     Task<bool> Close(int id);
 }

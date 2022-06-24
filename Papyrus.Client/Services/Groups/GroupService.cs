@@ -18,9 +18,12 @@ public class GroupService : HttpCall<int>, IGroupService
         return await Http.Put(settings, new HttpBody<object?>(null)).Execute();
     }
 
-    public async Task<List<GroupListDTO>> GetUserList()
+    public async Task<List<GroupListDTO>> GetUserList(bool hideClosed = false)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, "User"));
+        var queryParams = HttpQueryParameters.Build()
+            .Add("hideClosed", hideClosed);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "User")).AddQueryParams(queryParams);
 
         return await Http.Get<List<GroupListDTO>>(settings).ExecuteWithResultOrElse(new());
     }

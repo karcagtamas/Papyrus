@@ -15,6 +15,7 @@ public partial class MyGroups : ComponentBase
     private IGroupService GroupService { get; set; } = default!;
 
     private List<GroupListDTO> Groups { get; set; } = new();
+    private bool HideClosedChecked { get; set; } = true;
 
     protected override async void OnInitialized()
     {
@@ -40,7 +41,14 @@ public partial class MyGroups : ComponentBase
 
     private async Task Refresh()
     {
-        Groups = await GroupService.GetUserList();
+        Groups = await GroupService.GetUserList(HideClosedChecked);
         await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task HideClosedChangeHandler(bool value)
+    {
+        HideClosedChecked = value;
+
+        await Refresh();
     }
 }
