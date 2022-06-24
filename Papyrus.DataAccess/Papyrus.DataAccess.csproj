@@ -7,7 +7,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Karcags.Common" Version="2.2.1" />
+		<PackageReference Include="Karcags.Common" Version="2.2.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.6" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.6">
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

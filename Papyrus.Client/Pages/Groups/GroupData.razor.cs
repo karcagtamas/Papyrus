@@ -17,13 +17,13 @@ public partial class GroupData : ComponentBase
     private NavigationManager Navigation { get; set; } = default!;
 
     [Inject]
-    private IDialogService DialogService { get; set; } = default!;
-
-    [Inject]
     private IConfirmService ConfirmService { get; set; } = default!;
 
     [Inject]
     private IGroupService GroupService { get; set; } = default!;
+
+    [Inject]
+    private IHelperService HelperService { get; set; } = default!;
 
     private GroupDTO? Group { get; set; } = default!;
     private bool Closable { get; set; } = false;
@@ -49,12 +49,7 @@ public partial class GroupData : ComponentBase
     private async Task OpenDialog(int? groupId)
     {
         var parameters = new DialogParameters { { "GroupId", groupId } };
-        var dialog = DialogService.Show<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", parameters);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            await GetGroup();
-        }
+        await HelperService.OpenDialog<GroupEditDialog, object?>(groupId is null ? "Create Group" : "Edit Group", parameters, null, async () => await GetGroup());
     }
 
     private async Task Close()
@@ -64,6 +59,6 @@ public partial class GroupData : ComponentBase
             return;
         }
 
-        await ConfirmService.Open(new ConfirmDialogInput { Name = "Group", ActionFunction = async () => await GroupService.Close(GroupId) }, "Confirm Close", () => Navigation.NavigateTo("/my-groups"));
+        await ConfirmService.Open(new ConfirmDialogInput { Name = "Group", ActionName = "close", ActionFunction = async () => await GroupService.Close(GroupId) }, "Confirm Close", () => Navigation.NavigateTo("/my-groups"));
     }
 }
