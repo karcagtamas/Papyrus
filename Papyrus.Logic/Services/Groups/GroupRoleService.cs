@@ -46,7 +46,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public List<GroupRoleLightDTO> GetLightByGroup(int groupId)
     {
         return GetMappedList<GroupRoleLightDTO>(x => x.GroupId == groupId)
-            .OrderByDescending(x => x.Name)
+            .OrderBy(x => x.Name)
             .ToList();
     }
 
@@ -134,6 +134,10 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         return Create(role);
     }
 
+    public bool Exists(int groupId, string name)
+    {
+        return GetList(x => x.GroupId == groupId && x.Name == name).Any();
+    }
 
     public class RoleCreationResultItem
     {

@@ -216,7 +216,8 @@ namespace Papyrus.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Creation = table.Column<DateTime>(type: "datetime(6)", nullable: false),
                     OwnerId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    IsClosed = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -282,7 +283,7 @@ namespace Papyrus.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "longtext", nullable: false)
+                    Name = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<int>(type: "int", nullable: false),
                     ReadOnly = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -306,6 +307,7 @@ namespace Papyrus.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GroupRoles", x => x.Id);
+                    table.UniqueConstraint("AK_GroupRoles_GroupId_Name", x => new { x.GroupId, x.Name });
                     table.ForeignKey(
                         name: "FK_GroupRoles_Groups_GroupId",
                         column: x => x.GroupId,
@@ -502,11 +504,6 @@ namespace Papyrus.Migrations
                 name: "IX_GroupMembers_UserId",
                 table: "GroupMembers",
                 column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupRoles_GroupId",
-                table: "GroupRoles",
-                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Groups_OwnerId",

@@ -90,6 +90,8 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
 
         // Group Role
         modelBuilder.Entity<GroupRole>()
+            .HasAlternateKey(x => new { x.GroupId, x.Name });
+        modelBuilder.Entity<GroupRole>()
             .HasOne(x => x.Group)
             .WithMany(x => x.Roles)
             .IsRequired()

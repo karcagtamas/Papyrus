@@ -53,4 +53,10 @@ public class GroupRoleController : ControllerBase
     {
         groupRoleService.DeleteById(id);
     }
+
+    [HttpGet("Exists")]
+    public bool Exists([FromQuery] int groupId, [FromQuery] string name) 
+    {
+        return groupRoleService.Exists(groupId, name);
+    }
 }

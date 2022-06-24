@@ -2,7 +2,7 @@
 @using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.Models.Groups
 
-<EditorDialog Model="GroupRoleModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Role" IsEdit="IsEdit">
+<EditorDialog Model="GroupRoleModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Role" IsEdit="IsEdit" FormValidator="ValidateForm">
     <MudTextField Class="mb-5" T="string" Label="Name" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
     <MudDivider />
@@ -93,5 +93,16 @@
         }
 
         return Task.FromResult(false);
+    }
+
+    private async Task<bool> ValidateForm(GroupRoleModel model, ISnackbar snackbar)
+    {
+        if (await GroupRoleService.Exists(GroupId, model.Name))
+        {
+            snackbar.Add($"Group Role is already exists with this name [{model.Name}]", Severity.Error);
+            return false;
+        }
+
+        return true;
     }
 }

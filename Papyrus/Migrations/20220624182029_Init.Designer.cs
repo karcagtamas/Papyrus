@@ -11,14 +11,14 @@ using Papyrus.DataAccess;
 namespace Papyrus.Migrations
 {
     [DbContext(typeof(PapyrusContext))]
-    [Migration("20220621203833_Init")]
+    [Migration("20220624182029_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.4")
+                .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -132,6 +132,9 @@ namespace Papyrus.Migrations
                     b.Property<DateTime>("Creation")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<bool>("IsClosed")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -239,7 +242,7 @@ namespace Papyrus.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("ReadGroupActionLog")
                         .HasColumnType("tinyint(1)");
@@ -267,7 +270,7 @@ namespace Papyrus.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
+                    b.HasAlternateKey("GroupId", "Name");
 
                     b.ToTable("GroupRoles");
                 });

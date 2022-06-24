@@ -11,6 +11,17 @@ public class GroupRoleService : HttpCall<int>, IGroupRoleService
     {
     }
 
+    public async Task<bool> Exists(int groupId, string name)
+    {
+        var queryParams = HttpQueryParameters.Build()
+            .Add("groupId", groupId)
+            .Add("name", name);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists")).AddQueryParams(queryParams);
+
+        return await Http.Get<bool>(settings).ExecuteWithResultOrElse(false);
+    }
+
     public async Task<List<GroupRoleDTO>> GetByGroup(int groupId)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Group", groupId.ToString()));

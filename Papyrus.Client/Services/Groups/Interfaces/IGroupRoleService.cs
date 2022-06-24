@@ -7,4 +7,5 @@ public interface IGroupRoleService : IHttpCall<int>
 {
     Task<List<GroupRoleDTO>> GetByGroup(int groupId);
     Task<List<GroupRoleLightDTO>> GetLightByGroup(int groupId);
+    Task<bool> Exists(int groupId, string name);
 }

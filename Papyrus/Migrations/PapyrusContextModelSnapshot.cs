@@ -240,7 +240,7 @@ namespace Papyrus.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("ReadGroupActionLog")
                         .HasColumnType("tinyint(1)");
@@ -268,7 +268,7 @@ namespace Papyrus.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
+                    b.HasAlternateKey("GroupId", "Name");
 
                     b.ToTable("GroupRoles");
                 });
