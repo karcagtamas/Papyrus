@@ -5,6 +5,7 @@ using Microsoft.JSInterop;
 using MudBlazor.Utilities;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
+using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.HubEvents;

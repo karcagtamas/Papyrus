@@ -55,6 +55,7 @@ var mapperConfig = new MapperConfiguration(conf =>
 {
     conf.AddProfile<UserMapper>();
     conf.AddProfile<GroupMapper>();
+    conf.AddProfile<TagMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 

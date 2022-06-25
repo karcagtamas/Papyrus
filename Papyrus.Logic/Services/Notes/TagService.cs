@@ -4,6 +4,7 @@ using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Notes.Interfaces;
+using Papyrus.Shared.DTOs.Groups;
 
 namespace Papyrus.Logic.Services.Notes;
 
@@ -11,5 +12,26 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
 {
     public TagService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Tag")
     {
+    }
+
+    public List<GroupTagDTO> GetByGroup(int groupId) => GetMappedList<GroupTagDTO>(x => x.GroupId == groupId).ToList();
+
+    public List<GroupTagTreeItemDTO> GetTreeByGroup(int groupId)
+    {
+        var tags = GetList(x => x.GroupId == groupId && x.ParentId == null);
+
+        return tags.Select(x => Map(x)).ToList();
+    }
+
+    private GroupTagTreeItemDTO Map(Tag tag)
+    {
+        return new GroupTagTreeItemDTO
+        {
+            Id = tag.Id,
+            Caption = tag.Caption,
+            Description = tag.Description,
+            Color = tag.Color,
+            Children = tag.Children.Select(x => Map(x)).ToList(),
+        };
     }
 }

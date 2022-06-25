@@ -4,5 +4,19 @@
 <ApplicationPageTitle PageName="Group - Tags" />
 
 <div class="page-div">
-
+    <ActionBar>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled">Add</MudButton>
+    </ActionBar>
+    <MudCard Elevation="2">
+        <MudTreeView Items="TreeItems">
+            <ItemTemplate>
+                <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
+                    <Content>
+                        <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild" />
+                        <MudText>@context.Data.Caption</MudText>
+                    </Content>
+                </MudTreeViewItem>
+            </ItemTemplate>
+        </MudTreeView>
+    </MudCard>
 </div>

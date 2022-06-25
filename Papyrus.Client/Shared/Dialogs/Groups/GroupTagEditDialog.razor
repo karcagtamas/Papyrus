@@ -1,0 +1,64 @@
+﻿@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Shared.DTOs.Groups
+@using Papyrus.Shared.Models.Groups
+
+<EditorDialog Model="GroupTagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Tag" IsEdit="IsEdit">
+    <MudTextField Class="mb-5" T="string" Label="Caption" Variant="Variant.Text" Required="true"
+                  For="@(() => Model.Caption)" @bind-Value="Model.Caption" FullWidth="true" />
+</EditorDialog>
+
+@code {
+    [Parameter]
+    public int? TagId { get; set; }
+
+    [Parameter]
+    public int GroupId { get; set; }
+
+    [Inject]
+    private ITagService TagService { get; set; } = default!;
+
+    private GroupTagDTO? Tag { get; set; }
+    private GroupTagModel Model { get; set; } = new();
+    private bool IsEdit { get; set; } = false;
+
+    protected override async void OnInitialized()
+    {
+        //Model.GroupId = GroupId;
+        if (TagId is not null)
+        {
+            IsEdit = true;
+            Tag = await TagService.Get<GroupTagDTO>((int)TagId);
+
+            if (Tag is not null)
+            {
+                // Model = new GroupRoleModel(GroupId, GroupRole);
+                await InvokeAsync(StateHasChanged);
+            }
+
+        }
+        base.OnInitialized();
+    }
+
+    private Task<bool> Submit()
+    {
+        if (IsEdit)
+        {
+            if (TagId is not null)
+            {
+                return TagService.Update((int)TagId, Model);
+            }
+        }
+
+        return TagService.Create(Model);
+    }
+
+    private Task<bool> Remove()
+    {
+        if (TagId is not null)
+        {
+            return TagService.Delete((int)TagId);
+        }
+
+        return Task.FromResult(false);
+    }
+}

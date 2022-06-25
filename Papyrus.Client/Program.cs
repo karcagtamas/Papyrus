@@ -17,6 +17,8 @@ using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Groups;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Interfaces;
+using Papyrus.Client.Services.Notes;
+using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
@@ -64,6 +66,8 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
 builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
+
+builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddMudServices(config =>
 {

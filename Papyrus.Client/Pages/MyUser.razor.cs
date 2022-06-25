@@ -3,6 +3,7 @@ using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Interfaces;
+using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Dialogs;
 using Papyrus.Shared.DTOs;
 

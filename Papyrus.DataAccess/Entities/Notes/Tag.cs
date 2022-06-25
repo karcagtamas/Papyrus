@@ -13,16 +13,19 @@ public class Tag : IEntity<int>
     [Required]
     public string Caption { get; set; } = default!;
 
-    public string Description { get; set; } = default!;
+    public string? Description { get; set; }
 
     [Required]
     public string Color { get; set; } = default!;
 
     public int? GroupId { get; set; }
 
+    public string? UserId { get; set; }
+
     public int? ParentId { get; set; }
 
-    public virtual Group Group { get; set; } = default!;
-    public virtual Tag Parent { get; set; } = default!;
+    public virtual Group? Group { get; set; }
+    public virtual User? User { get; set; }
+    public virtual Tag? Parent { get; set; }
     public virtual ICollection<Tag> Children { get; set; } = default!;
 }

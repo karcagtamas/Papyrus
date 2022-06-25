@@ -120,8 +120,14 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .WithMany(x => x.Tags)
             .OnDelete(DeleteBehavior.ClientCascade);
         modelBuilder.Entity<Tag>()
+            .HasOne(x => x.User)
+            .WithMany(x => x.Tags)
+            .OnDelete(DeleteBehavior.ClientCascade);
+        modelBuilder.Entity<Tag>()
             .HasOne(x => x.Parent)
             .WithMany(x => x.Children)
             .OnDelete(DeleteBehavior.ClientCascade);
+        modelBuilder.Entity<Tag>()
+            .HasCheckConstraint("CK_Tag_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
     }
 }

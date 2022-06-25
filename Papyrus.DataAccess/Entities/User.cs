@@ -37,4 +37,5 @@ public class User : IdentityUser<string>, IEntity<string>
     public virtual ICollection<GroupMember> Groups { get; set; } = default!;
     public virtual ICollection<Note> Notes { get; set; } = default!;
     public virtual ICollection<GroupMember> AddedGroupMembers { get; set; } = default!;
+    public virtual ICollection<Tag> Tags { get; set; } = default!;
 }
