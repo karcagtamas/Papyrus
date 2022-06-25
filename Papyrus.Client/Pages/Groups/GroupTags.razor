@@ -5,7 +5,7 @@
 
 <div class="page-div">
     <ActionBar>
-        <MudButton Color="Color.Secondary" Variant="Variant.Filled">Add</MudButton>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="() => Create(null)">Create</MudButton>
     </ActionBar>
     <MudCard Elevation="2">
         <MudTreeView Items="TreeItems">
@@ -13,7 +13,10 @@
                 <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
                     <Content>
                         <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild" />
-                        <MudText>@context.Data.Caption</MudText>
+                        <div class="flex-box flex-row align-items-center">
+                            <MudText Class="mr-1">@context.Data.Caption</MudText>
+                            <MudIconButton Icon="@Icons.Filled.Add" Variant="Variant.Text" Size="Size.Small" OnClick="() => Create(context.Data.Id)" />
+                        </div>
                     </Content>
                 </MudTreeViewItem>
             </ItemTemplate>

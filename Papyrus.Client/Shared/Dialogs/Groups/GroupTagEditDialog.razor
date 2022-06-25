@@ -1,10 +1,23 @@
-﻿@using Papyrus.Client.Services.Notes.Interfaces
+﻿@using KarcagS.Shared.Helpers
+@using MudBlazor.Utilities
+@using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Groups
+@using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Shared.Models.Groups
+@using System.ComponentModel.DataAnnotations
 
 <EditorDialog Model="GroupTagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Tag" IsEdit="IsEdit">
+    @if (ObjectHelper.IsNotNull(Path))
+    {
+        <MudText Class="text-center mt-3 mb-3" Color="Color.Primary"><b>@Path?.Path/</b></MudText>
+    }
     <MudTextField Class="mb-5" T="string" Label="Caption" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Caption)" @bind-Value="Model.Caption" FullWidth="true" />
+
+    <MudTextField Class="mb-5" T="string" Label="Description" Variant="Variant.Text"
+                  For="@(() => Model.Description)" @bind-Value="Model.Description" FullWidth="true" Lines="5" />
+
+    <MudColorPicker Class="mb-5" Label="Color" Variant="Variant.Text" @bind-Text="Model.Color" />
 </EditorDialog>
 
 @code {
@@ -14,42 +27,51 @@
     [Parameter]
     public int GroupId { get; set; }
 
+    [Parameter]
+    public int? ParentId { get; set; }
+
     [Inject]
     private ITagService TagService { get; set; } = default!;
 
-    private GroupTagDTO? Tag { get; set; }
+    private TagDTO? Tag { get; set; }
     private GroupTagModel Model { get; set; } = new();
+    private TagPathDTO? Path { get; set; }
     private bool IsEdit { get; set; } = false;
 
     protected override async void OnInitialized()
     {
-        //Model.GroupId = GroupId;
+        Model.GroupId = GroupId;
+        Model.ParentId = ParentId;
         if (TagId is not null)
         {
             IsEdit = true;
-            Tag = await TagService.Get<GroupTagDTO>((int)TagId);
+            Tag = await TagService.Get<TagDTO>((int)TagId);
 
             if (Tag is not null)
             {
-                // Model = new GroupRoleModel(GroupId, GroupRole);
+                Model = new GroupTagModel(GroupId, Tag);
+                Model.ParentId = Tag.ParentId;
                 await InvokeAsync(StateHasChanged);
             }
 
         }
+
+        ObjectHelper.WhenNotNull(Model.ParentId, async (o) => { 
+            Path = await TagService.GetPath((int)o!);
+            await InvokeAsync(StateHasChanged);
+        });
+
         base.OnInitialized();
     }
 
     private Task<bool> Submit()
     {
-        if (IsEdit)
+        if (IsEdit && TagId is not null)
         {
-            if (TagId is not null)
-            {
-                return TagService.Update((int)TagId, Model);
-            }
+            return TagService.UpdateGroupTag((int)TagId, Model);
         }
 
-        return TagService.Create(Model);
+        return TagService.CreateGroupTag(Model);
     }
 
     private Task<bool> Remove()

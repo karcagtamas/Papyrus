@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using KarcagS.Blazor.Common.Services;
+using Microsoft.AspNetCore.Components;
+using MudBlazor;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Common;
+using Papyrus.Client.Shared.Dialogs.Groups;
 using Papyrus.Shared.DTOs.Groups;
 
 namespace Papyrus.Client.Pages.Groups;
@@ -12,6 +15,9 @@ public partial class GroupTags : ComponentBase
 
     [Inject]
     private ITagService TagService { get; set; } = default!;
+
+    [Inject]
+    private IHelperService HelperService { get; set; } = default!;
 
     private HashSet<TreeItem<GroupTagTreeItemDTO>> TreeItems { get; set; } = new();
     private bool Loading { get; set; } = true;
@@ -31,7 +37,25 @@ public partial class GroupTags : ComponentBase
         await InvokeAsync(StateHasChanged);
     }
 
-    private HashSet<TreeItem<GroupTagTreeItemDTO>> Wrap(List<GroupTagTreeItemDTO> src)
+    private async Task Create(int? parentId)
+    {
+        await OpenDialog(null, parentId);
+    }
+
+    private async Task Edit(TableRowClickEventArgs<GroupRoleDTO> e)
+    {
+        if (!e.Item.ReadOnly)
+        {
+            await OpenDialog(e.Item.Id, null);
+        }
+    }
+
+    private async Task OpenDialog(int? tagId, int? parentId)
+    {
+        var parameters = new DialogParameters { { "TagId", tagId }, { "GroupId", GroupId }, { "ParentId", parentId } };
+        await HelperService.OpenDialog<GroupTagEditDialog, object?>(tagId is null ? "Create Group Tag" : "Edit Group Tag", parameters, null, async () => await GetTagTree());
+    }
+    private static HashSet<TreeItem<GroupTagTreeItemDTO>> Wrap(List<GroupTagTreeItemDTO> src)
     {
         return src.Select(x => new TreeItem<GroupTagTreeItemDTO>(x, (t) => t.Children)).ToHashSet();
     }

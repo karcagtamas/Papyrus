@@ -4,6 +4,6 @@ namespace Papyrus.Shared.Models.Groups;
 
 public class GroupModel
 {
-    [Required]
+    [Required(ErrorMessage = "Field is required")]
     public string Name { get; set; } = default!;
 }
