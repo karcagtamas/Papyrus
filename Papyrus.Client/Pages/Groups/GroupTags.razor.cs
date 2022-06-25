@@ -1,4 +1,5 @@
-﻿using KarcagS.Blazor.Common.Services;
+﻿using KarcagS.Blazor.Common.Components.Confirm;
+using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Notes.Interfaces;
@@ -18,6 +19,9 @@ public partial class GroupTags : ComponentBase
 
     [Inject]
     private IHelperService HelperService { get; set; } = default!;
+
+    [Inject]
+    private IConfirmService ConfirmService { get; set; } = default!;
 
     private HashSet<TreeItem<GroupTagTreeItemDTO>> TreeItems { get; set; } = new();
     private bool Loading { get; set; } = true;
@@ -48,6 +52,11 @@ public partial class GroupTags : ComponentBase
         {
             await OpenDialog(e.Item.Id, null);
         }
+    }
+
+    private async Task Remove(int id) 
+    {
+        await ConfirmService.Open(new ConfirmDialogInput { Name = "Tag", ActionFunction = async () => await TagService.Delete(id) }, "Confirm Delete", async () => await GetTagTree());
     }
 
     private async Task OpenDialog(int? tagId, int? parentId)

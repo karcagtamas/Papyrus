@@ -15,7 +15,13 @@
                         <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild" />
                         <div class="flex-box flex-row align-items-center">
                             <MudText Class="mr-1">@context.Data.Caption</MudText>
+                            <div style="@("background-color:" + context.Data.Color)" class="color-box"></div>
                             <MudIconButton Icon="@Icons.Filled.Add" Variant="Variant.Text" Size="Size.Small" OnClick="() => Create(context.Data.Id)" />
+                            <MudSpacer />
+                            @if (!context.HasChild)
+                            {
+                                <MudIconButton Color="Color.Error" Icon="@Icons.Filled.Remove" Variant="Variant.Text" Size="Size.Small" OnClick="() => Remove(context.Data.Id)" />
+                            }
                         </div>
                     </Content>
                 </MudTreeViewItem>
