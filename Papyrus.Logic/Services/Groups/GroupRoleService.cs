@@ -134,10 +134,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         return Create(role);
     }
 
-    public bool Exists(int groupId, string name)
-    {
-        return GetList(x => x.GroupId == groupId && x.Name == name).Any();
-    }
+    public bool Exists(int groupId, string name) => GetList(x => x.GroupId == groupId && x.Name == name).Any();
 
     public class RoleCreationResultItem
     {

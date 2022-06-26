@@ -1,4 +1,5 @@
-﻿@using Papyrus.Client.Services.Groups.Interfaces
+﻿@using KarcagS.Shared.Helpers
+@using Papyrus.Client.Services.Groups.Interfaces
 @using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.Models.Groups
 
@@ -20,12 +21,12 @@
 
     protected override async void OnInitialized()
     {
-        if (GroupId is not null)
+        if (ObjectHelper.IsNotNull(GroupId))
         {
             IsEdit = true;
             Group = await GroupService.Get<GroupListDTO>((int)GroupId);
 
-            if (Group is not null)
+            if (ObjectHelper.IsNotNull(Group))
             {
                 Model = new GroupModel
                     {
@@ -39,13 +40,9 @@
 
     private Task<bool> Submit()
     {
-
-        if (IsEdit)
+        if (IsEdit && ObjectHelper.IsNotNull(GroupId))
         {
-            if (GroupId is not null)
-            {
-                return GroupService.Update((int)GroupId, Model);
-            }
+            return GroupService.Update((int)GroupId, Model);
         }
 
         return GroupService.Create(Model);

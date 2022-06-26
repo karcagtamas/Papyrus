@@ -1,4 +1,5 @@
 @page "/login"
+@using KarcagS.Shared.Helpers
 @using Microsoft.AspNetCore.WebUtilities
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.Models.Auth
@@ -71,7 +72,7 @@
 
     private async void Submit()
     {
-        if (form is null)
+        if (ObjectHelper.IsNull(form))
         {
             return;
         }

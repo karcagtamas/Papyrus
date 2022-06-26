@@ -1,5 +1,7 @@
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Enums;
@@ -30,20 +32,11 @@ public class AuthService : IAuthService
 
     public async Task<TokenDTO> Login(LoginModel model)
     {
-        var user = userManager.Users.SingleOrDefault(u => u.UserName == model.UserName);
+        User user = ObjectHelper.OrElseThrow(userManager.Users.SingleOrDefault(u => u.UserName == model.UserName), () => new ServerException("User not found"));
 
-        if (user is null)
-        {
-            throw new ServerException("User not found");
-        }
+        ExceptionHelper.Throw(user.Disabled, "User is disabled");
 
-        if (user.Disabled)
-        {
-            throw new ServerException("User is disabled");
-        }
-
-        if (!await userManager.CheckPasswordAsync(user, model.Password))
-            throw new ServerException("Incorrect username or password");
+        ExceptionHelper.Check(await userManager.CheckPasswordAsync(user, model.Password), "Incorrect username or password");
 
         user.LastLogin = DateTime.Now;
 
@@ -55,10 +48,7 @@ public class AuthService : IAuthService
 
     public async Task Register(RegistrationModel model)
     {
-        if (userService.IsExist(model.UserName, model.Email, false))
-        {
-            throw new ServerException("User already created");
-        }
+        ExceptionHelper.Throw(userService.IsExist(model.UserName, model.Email, false), "User already had created");
 
         var user = new User
         {
@@ -78,12 +68,7 @@ public class AuthService : IAuthService
 
     public void Logout(string clientId)
     {
-        var user = utils.GetCurrentUser<User>();
-
-        if (user is null)
-        {
-            throw new ServerException("User does not exist");
-        }
+        User user = ObjectHelper.OrElseThrow(utils.GetCurrentUser<User>(), () => new ServerException("User not logged in"));
 
         InvalidateRefreshTokens(user, clientId);
 

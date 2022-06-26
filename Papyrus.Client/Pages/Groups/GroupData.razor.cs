@@ -49,7 +49,7 @@ public partial class GroupData : ComponentBase
     private async Task OpenDialog(int? groupId)
     {
         var parameters = new DialogParameters { { "GroupId", groupId } };
-        await HelperService.OpenDialog<GroupEditDialog, object?>(groupId is null ? "Create Group" : "Edit Group", parameters, null, async () => await GetGroup());
+        await HelperService.OpenDialog<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", async () => await GetGroup(), parameters);
     }
 
     private async Task Close()

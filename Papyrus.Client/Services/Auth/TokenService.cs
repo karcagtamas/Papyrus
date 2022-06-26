@@ -1,5 +1,6 @@
 using Blazored.LocalStorage;
 using KarcagS.Blazor.Common.Store;
+using KarcagS.Shared.Helpers;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 
@@ -34,11 +35,21 @@ public class TokenService : ITokenService
 
         var user = await GetUser();
 
-        if (user is null)
+        if (ObjectHelper.IsNull(user))
         {
             if (!string.IsNullOrEmpty(accessToken))
             {
                 await localStorageService.RemoveItemAsync(AccessTokenKey);
+            }
+
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                await localStorageService.RemoveItemAsync(RefreshTokenKey);
+            }
+
+            if (!string.IsNullOrEmpty(clientId))
+            {
+                await localStorageService.RemoveItemAsync(ClientIdKey);
             }
 
             return;

@@ -1,4 +1,5 @@
 ﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Shared.Helpers
 @typeparam Model
 
 <MudDialog>
@@ -67,7 +68,7 @@
 
     protected override void OnInitialized()
     {
-        if (Title is not null)
+        if (ObjectHelper.IsNotNull(Title))
         {
             TitleText = Title;
         }
@@ -80,7 +81,7 @@
 
     private async Task Save()
     {
-        if (Form is null)
+        if (ObjectHelper.IsNull(Form))
         {
             return;
         }
@@ -88,7 +89,7 @@
         await Form.Validate();
         if (!Form.IsValid) return;
 
-        if (FormValidator is not null)
+        if (ObjectHelper.IsNotNull(FormValidator))
         {
             var result = await FormValidator(ModelObj, Snackbar);
 
@@ -106,7 +107,7 @@
 
     private async Task Delete()
     {
-        if (Remove is null || !IsEdit)
+        if (ObjectHelper.IsNull(Remove) || !IsEdit)
         {
             return;
         }

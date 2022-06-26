@@ -86,7 +86,7 @@
 
     private Task<bool> Remove()
     {
-        if (TagId is not null)
+        if (ObjectHelper.IsNotNull(TagId))
         {
             return TagService.Delete((int)TagId);
         }
@@ -101,18 +101,20 @@
             return;
         }
 
-        var result = await HelperService.OpenDialog<GroupTagTreeSelectorDialog, List<GroupTagTreeItemDTO>>("Select Tag", new DialogParameters { { "GroupId", GroupId }, { "ParentId", OriginalParentId is null ? TagId : OriginalParentId } }, null, () => { });
-
-        if (result is not null && result.Count > 0)
+        var result = await HelperService.OpenDialog<GroupTagTreeSelectorDialog, List<GroupTagTreeItemDTO>>("Select Tag", async (data) =>
         {
-            Model.ParentId = result[0].Id;
-            FetchPath();
-        }
-        else
-        {
-            Model.ParentId = null;
-            Path = null;
-            await InvokeAsync(StateHasChanged);
-        }
+            if (ObjectHelper.IsNotEmpty(data))
+            {
+                Model.ParentId = data[0].Id;
+                FetchPath();
+            }
+            else
+            {
+                Model.ParentId = null;
+                Path = null;
+                await InvokeAsync(StateHasChanged);
+            }
+        },
+        new DialogParameters { { "GroupId", GroupId }, { "ParentId", OriginalParentId is null ? TagId : OriginalParentId } });
     }
 }

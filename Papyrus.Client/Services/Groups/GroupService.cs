@@ -30,7 +30,11 @@ public class GroupService : HttpCall<int>, IGroupService
 
     public async Task<bool> IsClosable(int id)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Closable"));
+        var pathParams = HttpPathParameters.Build()
+            .Add(id)
+            .Add("Closable");
+
+        var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
         return await Http.Get<bool>(settings).ExecuteWithResultOrElse(false);
     }

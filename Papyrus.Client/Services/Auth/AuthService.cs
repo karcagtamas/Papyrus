@@ -1,5 +1,6 @@
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
+using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.WebUtilities;
@@ -35,7 +36,7 @@ public class AuthService : IAuthService
 
         var user = await httpService.PostWithResult<TokenDTO, LoginModel>(settings, body).ExecuteWithResult();
 
-        if (user == null) return null;
+        if (ObjectHelper.IsNull(user)) return null;
 
         await tokenService.SetUser(user);
 

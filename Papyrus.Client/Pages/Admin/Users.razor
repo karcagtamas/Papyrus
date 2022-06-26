@@ -74,8 +74,7 @@
 
     private async Task SetDisableStatus(bool status)
     {
-        if (await _userService.SetDisableStatus(SelectedItems.Where(x => x.Disabled != status).Select(x => x.Id).ToList(),
-        status))
+        if (await _userService.SetDisableStatus(SelectedItems.Where(x => x.Disabled != status).Select(x => x.Id).ToList(), status))
         {
             SelectedItems = new HashSet<UserListDTO>();
             await GetUsers();

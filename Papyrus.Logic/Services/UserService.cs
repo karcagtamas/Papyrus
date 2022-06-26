@@ -3,6 +3,7 @@ using AutoMapper;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
@@ -21,30 +22,15 @@ public class UserService : MapperRepository<User, string, string>, IUserService
         this.userManager = userManager;
     }
 
-    public User? GetByEmail(string email)
-    {
-        return userManager.Users.SingleOrDefault(user => user.Email == email);
-    }
+    public User? GetByEmail(string email) => userManager.Users.SingleOrDefault(user => user.Email == email);
 
-    public User? GetByName(string userName)
-    {
-        return userManager.Users.SingleOrDefault(user => user.UserName == userName);
-    }
+    public User? GetByName(string userName) => userManager.Users.SingleOrDefault(user => user.UserName == userName);
 
-    public User? GetByRefreshToken(string token, string clientId)
-    {
-        return GetList(x => x.RefreshTokens.Any(t => t.Token == token && t.ClientId == clientId)).FirstOrDefault();
-    }
+    public User? GetByRefreshToken(string token, string clientId) => GetList(x => x.RefreshTokens.Any(t => t.Token == token && t.ClientId == clientId)).FirstOrDefault();
 
-    public T? GetMappedByName<T>(string userName)
-    {
-        return Mapper.Map<T>(GetByName(userName));
-    }
+    public T? GetMappedByName<T>(string userName) => Mapper.Map<T>(GetByName(userName));
 
-    public T GetCurrent<T>()
-    {
-        return GetMapped<T>(Utils.GetCurrentUserId() ?? "");
-    }
+    public T GetCurrent<T>() => GetMapped<T>(Utils.GetCurrentUserId() ?? "");
 
     public bool IsExist(string userName, string email, bool ignoreCurrent)
     {
@@ -60,7 +46,7 @@ public class UserService : MapperRepository<User, string, string>, IUserService
         list.ForEach(x =>
         {
             x.Disabled = statusModel.Status;
-            Update(x);
+            Update(x, false);
         });
 
         Persist();
@@ -72,7 +58,6 @@ public class UserService : MapperRepository<User, string, string>, IUserService
         user.ImageData = image;
         user.ImageTitle = DateTime.Now.ToString(CultureInfo.InvariantCulture);
         Update(user);
-        Persist();
     }
 
     public async Task UpdatePassword(UserPasswordModel model)
@@ -106,12 +91,12 @@ public class UserService : MapperRepository<User, string, string>, IUserService
             throw new ServerException($"User not found");
         }
 
-        if (user.UserName != model.UserName && GetByName(user.UserName) is not null)
+        if (user.UserName != model.UserName && ObjectHelper.IsNotNull(GetByName(user.UserName)))
         {
             throw new ServerException($"User already exists with this name: {model.UserName}");
         }
 
-        if (user.Email != model.Email && GetByEmail(model.Email) is not null) 
+        if (user.Email != model.Email && ObjectHelper.IsNotNull(GetByEmail(model.Email))) 
         {
             throw new ServerException($"User already exists with this e-mail address: {model.Email}");
         }

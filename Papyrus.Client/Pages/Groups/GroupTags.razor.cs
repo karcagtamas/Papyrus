@@ -59,7 +59,7 @@ public partial class GroupTags : ComponentBase
     private async Task OpenDialog(int? tagId, int? parentId)
     {
         var parameters = new DialogParameters { { "TagId", tagId }, { "GroupId", GroupId }, { "ParentId", parentId } };
-        await HelperService.OpenDialog<GroupTagEditDialog, object?>(tagId is null ? "Create Group Tag" : "Edit Group Tag", parameters, null, async () => await GetTagTree());
+        await HelperService.OpenDialog<GroupTagEditDialog>(tagId is null ? "Create Group Tag" : "Edit Group Tag", async () => await GetTagTree(), parameters);
     }
     private static HashSet<TreeItem<GroupTagTreeItemDTO>> Wrap(List<GroupTagTreeItemDTO> src)
     {

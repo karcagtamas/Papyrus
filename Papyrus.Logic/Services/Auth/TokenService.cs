@@ -2,7 +2,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -65,33 +67,21 @@ public class TokenService : ITokenService
 
     public async Task<TokenDTO> Refresh(string refreshToken, string clientId)
     {
-        if (string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(refreshToken))
-        {
-            throw new ArgumentException("Input model is invalid");
-        }
+        ExceptionHelper.Throw(string.IsNullOrEmpty(clientId) || string.IsNullOrEmpty(refreshToken), "Input model is invalid");
 
-        var user = userService.GetByRefreshToken(refreshToken, clientId);
+        User user = ObjectHelper.OrElseThrow(userService.GetByRefreshToken(refreshToken, clientId), () => new ServerException("The refresh token is invalid"));
 
-        if (user is null)
-        {
-            throw new ServerException("The refresh token is invalid");
-        }
-
-        if (user.Disabled)
-        {
-            throw new ServerException("User is disabled");
-        }
+        ExceptionHelper.Throw(user.Disabled, "User is disabled");
 
         var oldRefreshToken = user.RefreshTokens.Single(t => t.Token == refreshToken && t.ClientId == clientId);
 
-        if (!oldRefreshToken.IsActive)
-        {
-            throw new ServerException("The refresh token is expired");
-        }
+        ExceptionHelper.Check(oldRefreshToken.IsActive, "The refresh token is expired");
 
         oldRefreshToken.Revoked = DateTime.Now;
 
-        user.RefreshTokens.Where(x => x.ClientId == clientId).ToList().ForEach(token => token.Revoked = DateTime.Now);
+        user.RefreshTokens.Where(x => x.ClientId == clientId)
+            .ToList()
+            .ForEach(token => token.Revoked = DateTime.Now);
 
         var newRefreshToken = BuildRefreshToken(clientId);
         user.RefreshTokens.Add(newRefreshToken);

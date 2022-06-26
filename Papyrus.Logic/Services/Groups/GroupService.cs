@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
@@ -22,14 +24,9 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
     public List<GroupListDTO> GetUserList(bool hideClosed = false)
     {
-        var user = Utils.GetRequiredCurrentUserId();
+        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
 
-        if (user is null)
-        {
-            throw new ServerException("User not found");
-        }
-
-        return GetMappedList<GroupListDTO>(x => x.OwnerId == user && (!hideClosed || !x.IsClosed))
+        return GetMappedList<GroupListDTO>(x => x.OwnerId == userId && (!hideClosed || !x.IsClosed))
             .OrderBy(x => x.IsClosed)
             .ThenByDescending(x => x.Creation)
             .ToList();
@@ -37,22 +34,17 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
     public override int CreateFromModel<TModel>(TModel model, bool doPersist = true)
     {
-        var user = Utils.GetRequiredCurrentUserId();
+        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
         var id = base.CreateFromModel(model, doPersist);
 
         var result = groupRoleService.CreateDefaultRoles(id);
-        var admin = result.FirstOrDefault(x => x.IsAdministration);
-
-        if (admin is null)
-        {
-            throw new ServerException("Admin role not found");
-        }
+        var admin = ObjectHelper.OrElseThrow(result.FirstOrDefault(x => x.IsAdministration), () => new ServerException("Admin role not found"));
 
         // Add current user as administrator
         var member = new GroupMember
         {
             GroupId = id,
-            UserId = user,
+            UserId = userId,
             RoleId = admin.Id,
             Creation = DateTime.Now
         };
@@ -63,50 +55,24 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
     public bool IsClosable(int id)
     {
-        var userId = Utils.GetRequiredCurrentUserId();
+        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
 
-        if (userId is null)
-        {
-            throw new ServerException("User not found");
-        }
-
-        var group = Get(id);
-
-        if (group is null)
-        {
-            throw new ServerException("Group not found");
-        }
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
 
         return IsClosableForUser(group, userId);
     }
 
     public void Close(int id)
     {
-        var userId = Utils.GetRequiredCurrentUserId();
+        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
 
-        if (userId is null)
-        {
-            throw new ServerException("User not found");
-        }
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
 
-        var group = Get(id);
-
-        if (group is null)
-        {
-            throw new ServerException("Group not found");
-        }
-
-        if (!IsClosableForUser(group, userId))
-        {
-            throw new ServerException("Not have permission to Close this group.");
-        }
+        ExceptionHelper.Check(IsClosableForUser(group, userId), "Not have permission to Close this group.");
 
         group.IsClosed = true;
         Update(group);
     }
 
-    private static bool IsClosableForUser(Group group, string userId)
-    {
-        return group.OwnerId == userId && !group.IsClosed;
-    }
+    private static bool IsClosableForUser(Group group, string userId) => group.OwnerId == userId && !group.IsClosed;
 }

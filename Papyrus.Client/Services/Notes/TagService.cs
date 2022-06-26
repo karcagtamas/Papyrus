@@ -34,7 +34,11 @@ public class TagService : HttpCall<int>, ITagService
 
     public async Task<TagPathDTO> GetPath(int id)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Path"));
+        var pathParams = HttpPathParameters.Build()
+            .Add(id)
+            .Add("Path");
+
+        var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
         return await Http.Get<TagPathDTO>(settings).ExecuteWithResultOrElse(new());
     }

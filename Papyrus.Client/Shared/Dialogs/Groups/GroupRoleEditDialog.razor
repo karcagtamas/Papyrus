@@ -1,4 +1,5 @@
-﻿@using Papyrus.Client.Services.Groups.Interfaces
+﻿@using KarcagS.Shared.Helpers
+@using Papyrus.Client.Services.Groups.Interfaces
 @using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.Models.Groups
 
@@ -57,12 +58,12 @@
     protected override async void OnInitialized()
     {
         Model.GroupId = GroupId;
-        if (GroupRoleId is not null)
+        if (ObjectHelper.IsNotNull(GroupRoleId))
         {
             IsEdit = true;
             GroupRole = await GroupRoleService.Get<GroupRoleDTO>((int)GroupRoleId);
 
-            if (GroupRole is not null)
+            if (ObjectHelper.IsNotNull(GroupRole))
             {
                 Model = new GroupRoleModel(GroupId, GroupRole);
                 await InvokeAsync(StateHasChanged);
@@ -74,12 +75,9 @@
 
     private Task<bool> Submit()
     {
-        if (IsEdit)
+        if (IsEdit && ObjectHelper.IsNotNull(GroupRoleId))
         {
-            if (GroupRoleId is not null)
-            {
-                return GroupRoleService.Update((int)GroupRoleId, Model);
-            }
+            return GroupRoleService.Update((int)GroupRoleId, Model);
         }
 
         return GroupRoleService.Create(Model);
@@ -87,7 +85,7 @@
 
     private Task<bool> Remove()
     {
-        if (GroupRoleId is not null)
+        if (ObjectHelper.IsNotNull(GroupRoleId))
         {
             return GroupRoleService.Delete((int)GroupRoleId);
         }

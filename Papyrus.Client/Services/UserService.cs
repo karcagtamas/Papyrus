@@ -1,7 +1,6 @@
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
 using Papyrus.Client.Services.Interfaces;
-using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
 
@@ -33,7 +32,11 @@ public class UserService : HttpCall<string>, IUserService
 
     public async Task<UserLightDTO?> Light(string id)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, id, "Light"));
+        var pathParams = HttpPathParameters.Build()
+            .Add(id)
+            .Add("Light");
+
+        var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
         return await Http.Get<UserLightDTO>(settings).ExecuteWithResult();
     }
@@ -44,6 +47,7 @@ public class UserService : HttpCall<string>, IUserService
             .Add("searchTerm", searchTerm)
             .Add("ignoreCurrent", ignoreCurrent)
             .AddMultiple("ignored", ignored);
+
         var settings = new HttpSettings(Http.BuildUrl(Url, "Search")).AddQueryParams(queryParams);
 
         return await Http.Get<List<UserLightDTO>>(settings).ExecuteWithResult() ?? new();

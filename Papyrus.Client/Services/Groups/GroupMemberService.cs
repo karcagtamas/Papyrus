@@ -13,7 +13,10 @@ public class GroupMemberService : HttpCall<int>, IGroupMemberService
 
     public async Task<List<GroupMemberDTO>> GetByGroup(int groupId)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group", groupId.ToString()));
+        var pathParams = HttpPathParameters.Build()
+            .Add(groupId);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Group")).AddPathParams(pathParams);
 
         return await Http.Get<List<GroupMemberDTO>>(settings).ExecuteWithResultOrElse(new());
     }

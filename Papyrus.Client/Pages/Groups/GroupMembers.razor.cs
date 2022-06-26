@@ -54,14 +54,11 @@ public partial class GroupMembers : ComponentBase
 
         var dialog = DialogService.Show<UserSearchDialog>("Search User", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Cancelled && result.Data is string userId)
         {
-            if (result.Data is string userId)
+            if (await GroupMemberService.Create(new GroupMemberCreateModel { UserId = userId, GroupId = GroupId }))
             {
-                if (await GroupMemberService.Create(new GroupMemberCreateModel { UserId = userId, GroupId = GroupId }))
-                {
-                    await GetMembers();
-                }
+                await GetMembers();
             }
         }
     }
