@@ -39,13 +39,18 @@ public class TagService : HttpCall<int>, ITagService
         return await Http.Get<TagPathDTO>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public async Task<List<GroupTagTreeItemDTO>> GetTreeByGroup(int groupId)
+    public async Task<List<GroupTagTreeItemDTO>> GetTreeByGroup(int groupId, int? filteredTag = null)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId)
             .Add("Tree");
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group")).AddPathParams(pathParams);
+        var queryParams = HttpQueryParameters.Build()
+            .Add("filteredTag", filteredTag);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
+            .AddPathParams(pathParams)
+            .AddQueryParams(queryParams);
 
         return await Http.Get<List<GroupTagTreeItemDTO>>(settings).ExecuteWithResultOrElse(new());
     }

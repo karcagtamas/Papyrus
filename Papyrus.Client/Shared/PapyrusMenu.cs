@@ -32,14 +32,12 @@ public static class PapyrusMenu
     {
         return new()
         {
-            MenuItem.CreateGroupItem("Group")
-                .AddIcon(Icons.Filled.Group)
-                .AddItem(MenuItem.CreateItem("Data", $"groups/{groupId}").AddIcon(Icons.Filled.Info))
-                .AddItem(MenuItem.CreateItem("Notes", $"groups/{groupId}/notes").AddIcon(Icons.Filled.NoteAlt))
-                .AddItem(MenuItem.CreateItem("Members", $"groups/{groupId}/members").AddIcon(Icons.Filled.People))
-                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/tags").AddIcon(Icons.Filled.Tag))
-                .AddItem(MenuItem.CreateItem("Roles", $"groups/{groupId}/roles").AddIcon(Icons.Filled.SettingsSuggest))
-                .AddItem(MenuItem.CreateItem("Logs", $"groups/{groupId}/logs").AddIcon(Icons.Filled.Abc)),
+            MenuItem.CreateItem("Data", $"groups/{groupId}").AddIcon(Icons.Filled.Info),
+            MenuItem.CreateItem("Notes", $"groups/{groupId}/notes").AddIcon(Icons.Filled.NoteAlt),
+            MenuItem.CreateItem("Members", $"groups/{groupId}/members").AddIcon(Icons.Filled.People),
+            MenuItem.CreateItem("Tags", $"groups/{groupId}/tags").AddIcon(Icons.Filled.Tag),
+            MenuItem.CreateItem("Roles", $"groups/{groupId}/roles").AddIcon(Icons.Filled.SettingsSuggest),
+            MenuItem.CreateItem("Logs", $"groups/{groupId}/logs").AddIcon(Icons.Filled.Abc)
         };
     }
 

@@ -26,14 +26,14 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
         };
     }
 
-    public List<GroupTagTreeItemDTO> GetTreeByGroup(int groupId)
+    public List<GroupTagTreeItemDTO> GetTreeByGroup(int groupId, int? filteredTag = null)
     {
-        var tags = GetList(x => x.GroupId == groupId && x.ParentId == null);
+        var tags = GetList(x => x.GroupId == groupId && x.ParentId == null && (filteredTag == null || x.Id != filteredTag));
 
-        return tags.Select(x => Map(x)).ToList();
+        return tags.Select(x => Map(x, filteredTag)).ToList();
     }
 
-    private GroupTagTreeItemDTO Map(Tag tag)
+    private GroupTagTreeItemDTO Map(Tag tag, int? filteredTag = null)
     {
         return new GroupTagTreeItemDTO
         {
@@ -41,7 +41,7 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
             Caption = tag.Caption,
             Description = tag.Description,
             Color = tag.Color,
-            Children = tag.Children.Select(x => Map(x)).ToList(),
+            Children = tag.Children.Where(x => filteredTag == null || x.Id != filteredTag).Select(x => Map(x)).ToList(),
         };
     }
 

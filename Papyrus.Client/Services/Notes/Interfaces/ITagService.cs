@@ -8,7 +8,7 @@ namespace Papyrus.Client.Services.Notes.Interfaces;
 public interface ITagService : IHttpCall<int>
 {
     Task<List<TagDTO>> GetByGroup(int groupId);
-    Task<List<GroupTagTreeItemDTO>> GetTreeByGroup(int groupId);
+    Task<List<GroupTagTreeItemDTO>> GetTreeByGroup(int groupId, int? filteredTag = null);
     Task<bool> CreateGroupTag(GroupTagModel model);
     Task<bool> UpdateGroupTag(int id, GroupTagModel model);
     Task<TagPathDTO> GetPath(int id);

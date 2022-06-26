@@ -1,4 +1,5 @@
-﻿@using KarcagS.Shared.Helpers
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Shared.Helpers
 @using MudBlazor.Utilities
 @using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Groups
@@ -7,10 +8,7 @@
 @using System.ComponentModel.DataAnnotations
 
 <EditorDialog Model="GroupTagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Tag" IsEdit="IsEdit">
-    @if (ObjectHelper.IsNotNull(Path))
-    {
-        <MudText Class="text-center mt-3 mb-3" Color="Color.Primary"><b>@Path?.Path/</b></MudText>
-    }
+    <MudText Class="@("text-center mt-3 mb-3 " + (IsEdit ? "hovered-text" : ""))" Color="Color.Primary" onclick="@(() => EditParent())"><b>@Path?.Path/</b></MudText>
     <MudTextField Class="mb-5" T="string" Label="Caption" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Caption)" @bind-Value="Model.Caption" FullWidth="true" />
 
@@ -33,10 +31,14 @@
     [Inject]
     private ITagService TagService { get; set; } = default!;
 
+    [Inject]
+    private IHelperService HelperService { get; set; } = default!;
+
     private TagDTO? Tag { get; set; }
     private GroupTagModel Model { get; set; } = new();
     private TagPathDTO? Path { get; set; }
     private bool IsEdit { get; set; } = false;
+    private int? OriginalParentId { get; set; }
 
     protected override async void OnInitialized()
     {
@@ -56,12 +58,20 @@
 
         }
 
-        ObjectHelper.WhenNotNull(Model.ParentId, async (o) => { 
+        FetchPath();
+
+        OriginalParentId = Model.ParentId;
+
+        base.OnInitialized();
+    }
+
+    private void FetchPath()
+    {
+        ObjectHelper.WhenNotNull(Model.ParentId, async (o) =>
+        {
             Path = await TagService.GetPath((int)o!);
             await InvokeAsync(StateHasChanged);
         });
-
-        base.OnInitialized();
     }
 
     private Task<bool> Submit()
@@ -82,5 +92,27 @@
         }
 
         return Task.FromResult(false);
+    }
+
+    private async Task EditParent()
+    {
+        if (!IsEdit)
+        {
+            return;
+        }
+
+        var result = await HelperService.OpenDialog<GroupTagTreeSelectorDialog, List<GroupTagTreeItemDTO>>("Select Tag", new DialogParameters { { "GroupId", GroupId }, { "ParentId", OriginalParentId is null ? TagId : OriginalParentId } }, null, () => { });
+
+        if (result is not null && result.Count > 0)
+        {
+            Model.ParentId = result[0].Id;
+            FetchPath();
+        }
+        else
+        {
+            Model.ParentId = null;
+            Path = null;
+            await InvokeAsync(StateHasChanged);
+        }
     }
 }

@@ -23,7 +23,7 @@ public class TagController : ControllerBase
     public List<TagDTO> GetByGroup(int groupId) => tagService.GetByGroup(groupId);
 
     [HttpGet("Group/{groupId}/Tree")]
-    public List<GroupTagTreeItemDTO> GetTreeByGroup(int groupId) => tagService.GetTreeByGroup(groupId);
+    public List<GroupTagTreeItemDTO> GetTreeByGroup(int groupId, [FromQuery] int? filteredTag) => tagService.GetTreeByGroup(groupId, filteredTag);
 
     [HttpGet("{id}")]
     public TagDTO Get(int id) => tagService.GetMapped<TagDTO>(id);

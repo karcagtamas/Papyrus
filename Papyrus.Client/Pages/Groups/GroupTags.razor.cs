@@ -46,15 +46,12 @@ public partial class GroupTags : ComponentBase
         await OpenDialog(null, parentId);
     }
 
-    private async Task Edit(TableRowClickEventArgs<GroupRoleDTO> e)
+    private async Task Edit(int id)
     {
-        if (!e.Item.ReadOnly)
-        {
-            await OpenDialog(e.Item.Id, null);
-        }
+        await OpenDialog(id, null);
     }
 
-    private async Task Remove(int id) 
+    private async Task Remove(int id)
     {
         await ConfirmService.Open(new ConfirmDialogInput { Name = "Tag", ActionFunction = async () => await TagService.Delete(id) }, "Confirm Delete", async () => await GetTagTree());
     }
