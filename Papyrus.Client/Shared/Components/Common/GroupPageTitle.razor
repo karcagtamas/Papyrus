@@ -1,0 +1,40 @@
+﻿@using KarcagS.Blazor.Common.Store
+@using Papyrus.Client.Services.Groups.Interfaces
+@implements IDisposable
+@inject IStoreService storeService
+
+<ApplicationPageTitle PageName="@($"{PageName} - {Title}")"/>
+
+@code {
+    [Parameter, EditorRequired]
+    public string PageName { get; set; } = "Page";
+
+    private string Title { get; set; } = "Group";
+
+    protected override void OnInitialized()
+    {
+        RefreshTitle();
+
+        storeService.Changed += StoreChanged;
+    }
+
+    private void StoreChanged(object? sender, StoreEventArgs e)
+    {
+        if (e.Key == "GroupTitle")
+        {
+            RefreshTitle();
+        }
+    }
+
+    private void RefreshTitle()
+    {
+        Title = storeService.Get<string>("GroupTitle") ?? "Group";
+
+        StateHasChanged();
+    }
+
+    void IDisposable.Dispose()
+    {
+        storeService.Changed -= StoreChanged;
+    }
+}

@@ -12,11 +12,15 @@
         <Authorized>
             @if (GroupMenuItems.Count > 0)
             {
-                <MudText Typo="Typo.h6" Class="text-center mb-1" Color="Color.Secondary">Group Menu</MudText>
+                <MudText Typo="Typo.h6" Class="text-center" Color="Color.Secondary">Group Menu</MudText>
+                if (!string.IsNullOrEmpty(GroupTitle))
+                {
+                    <MudText Typo="Typo.subtitle2" Class="text-center" Color="Color.Secondary">@GroupTitle</MudText>
+                }
                 <TreeMenu Items="GroupMenuItems" />
                 <MudDivider Class="my-2" />
             }
-            <MudText Typo="Typo.h6" Class="text-center mb-1" Color="Color.Secondary">Menu</MudText>
+            <MudText Typo="Typo.h6" Class="text-center" Color="Color.Secondary">Menu</MudText>
             <TreeMenu Items="MenuItems" />
             <MudDivider Class="my-2" />
             <MudNavLink Icon="@Icons.Filled.Logout" OnClick="ToLogout" IconColor="Color.Error">Log Out</MudNavLink>
@@ -31,6 +35,9 @@
 
     [Parameter]
     public List<MenuItem> GroupMenuItems { get; set; } = new();
+
+    [Parameter]
+    public string GroupTitle { get; set; } = "";
 
     private void ToLogout()
     {

@@ -1,10 +1,12 @@
 @using KarcagS.Blazor.Common.Store
 @using KarcagS.Shared.Helpers
 @using Papyrus.Client.Services.Auth.Interfaces
+@using Papyrus.Client.Services.Groups.Interfaces
 @using Papyrus.Client.Shared
 @using Papyrus.Shared.DTOs
 @using Papyrus.Client.Services.Interfaces
 @using System.Text.RegularExpressions
+@using Papyrus.Shared.DTOs.Groups
 @using static Papyrus.Client.Shared.PapyrusMenu
 @inherits LayoutComponentBase
 @implements IDisposable
@@ -13,6 +15,7 @@
 @inject NavigationManager navigator
 @inject AuthenticationStateProvider authStateProvider
 @inject IStoreService store
+@inject IGroupService groupService
 
 <MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
 <MudDialogProvider CloseButton="true" />
@@ -43,7 +46,7 @@
     <AuthorizeView>
         <Authorized>
             <MudDrawer @bind-Open="@drawerOpen" Elevation="2" ClipMode="DrawerClipMode.Always" Class="drawer">
-                <NavMenu MenuItems="MenuItems" GroupMenuItems="GroupMenuItems" />
+                <NavMenu MenuItems="MenuItems" GroupMenuItems="GroupMenuItems" GroupTitle="@GroupTitle" />
             </MudDrawer>
         </Authorized>
     </AuthorizeView>
@@ -55,6 +58,7 @@
 @code {
     private UserDTO? User { get; set; }
     private int? GroupId { get; set; }
+    private string GroupTitle { get; set; } = "";
     private List<MenuItem> MenuItems { get; set; } = new();
     private List<MenuItem> GroupMenuItems { get; set; } = new();
 
@@ -68,7 +72,7 @@
     protected override async void OnInitialized()
     {
         HandleAuthStateChange(authStateProvider.GetAuthenticationStateAsync());
-        SetGroupMenuItemsByLocation(navigator.Uri);
+        await SetGroupMenuItemsByLocation(navigator.Uri);
 
         authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
         navigator.LocationChanged += HandleLocationChange;
@@ -78,12 +82,12 @@
         await base.OnInitializedAsync();
     }
 
-    private void HandleLocationChange(object? sender, LocationChangedEventArgs e)
+    private async void HandleLocationChange(object? sender, LocationChangedEventArgs e)
     {
-        SetGroupMenuItemsByLocation(e.Location);
+        await SetGroupMenuItemsByLocation(e.Location);
     }
 
-    private void SetGroupMenuItemsByLocation(string location)
+    private async Task SetGroupMenuItemsByLocation(string location)
     {
         var uri = navigator.ToBaseRelativePath(location);
         var regex = new Regex(@"groups\/([0-9]+)\/?[/a-z]*");
@@ -96,11 +100,11 @@
                 Group g = match.Groups[1];
                 int.TryParse(g.Value, out int id);
 
-                SetGroupId(id);
+                await SetGroupId(id);
             }
             else
             {
-                SetGroupId(null);
+                await SetGroupId(null);
             }
         }
 
@@ -108,29 +112,31 @@
         {
             if (ObjectHelper.IsNotNull(GroupId))
             {
-                SetGroupId(null);
+                await SetGroupId(null);
             }
         }
     }
 
-    private void SetGroupId(int? id)
+    private async Task SetGroupId(int? id)
     {
         if (ObjectHelper.IsNull(id))
         {
             GroupId = null;
+            GroupTitle = "";
             GroupMenuItems = new();
             store.Remove("GroupId");
+            store.Remove("GroupTitle");
             StateHasChanged();
         }
         else
         {
-            if (GroupId != id)
-            {
-                GroupId = id;
-                GroupMenuItems = PapyrusMenu.BuildGroupItems((int)id);
-                store.Add("GroupId", id);
-                StateHasChanged();
-            }
+            GroupId = id;
+            var group = await groupService.Get<GroupDTO>((int)GroupId);
+            GroupTitle = group?.Name ?? "";
+            GroupMenuItems = PapyrusMenu.BuildGroupItems((int)GroupId);
+            store.Add("GroupId", (int)GroupId);
+            store.Add("GroupTitle", group?.Name ?? "Group");
+            StateHasChanged();
         }
     }
 
