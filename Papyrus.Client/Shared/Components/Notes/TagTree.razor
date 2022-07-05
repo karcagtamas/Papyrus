@@ -1,0 +1,30 @@
+﻿@using Papyrus.Shared.DTOs.Notes
+
+<MudCard Elevation="2">
+    <MudTreeView T="TreeItem<TagTreeItemDTO>" Items="TreeItems">
+        <ItemTemplate>
+            <MudTreeViewItem @bind-Expanded="context.IsExpanded" Items="context.Items">
+                <Content>
+                    <MudTreeViewItemToggleButton @bind-Expanded="context.IsExpanded" Visible="context.HasChild" />
+                    <div class="flex-box flex-row align-items-center">
+                        <MudText Class="mr-1">@context.Data.Caption</MudText>
+                        <div style="@("background-color:" + context.Data.Color)" class="color-box"></div>
+                        @if (CreateEnabled)
+                        {
+                            <MudIconButton Icon="@Icons.Filled.Add" Variant="Variant.Text" Size="Size.Small" OnClick="() => Create(context.Data.Id)" />
+                        }
+                        <MudSpacer />
+                        @if (!context.HasChild && RemoveEnabled)
+                        {
+                            <MudIconButton Color="Color.Error" Icon="@Icons.Filled.Remove" Variant="Variant.Text" Size="Size.Small" OnClick="() => Remove(context.Data.Id)" />
+                        }
+                        @if (EditEnabled)
+                        {
+                            <MudIconButton Color="Color.Warning" Icon="@Icons.Filled.Edit" Variant="Variant.Text" Size="Size.Small" OnClick="() => Edit(context.Data.Id)" />
+                        }
+                    </div>
+                </Content>
+            </MudTreeViewItem>
+        </ItemTemplate>
+    </MudTreeView>
+</MudCard>

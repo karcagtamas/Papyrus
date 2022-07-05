@@ -17,7 +17,8 @@ public static class PapyrusMenu
         MenuItem.CreateGroupItem("Notes")
             .AddIcon(Icons.Filled.Notes)
             .AddItem(MenuItem.CreateItem("List", "notes").AddIcon(Icons.Filled.NoteAlt))
-            .AddItem(MenuItem.CreateItem("Tags", "tags").AddIcon(Icons.Filled.Tag)),
+            .AddItem(MenuItem.CreateItem("Tags", "notes/tags").AddIcon(Icons.Filled.Tag))
+            .AddItem(MenuItem.CreateItem("Logs", "notes/logs").AddIcon(Icons.Filled.History).AddIconColor(Color.Warning)),
         MenuItem.CreateGroupItem("Admin")
             .AddIcon(Icons.Filled.AdminPanelSettings)
             .AddIconColor(Color.Warning)
@@ -32,12 +33,20 @@ public static class PapyrusMenu
     {
         return new()
         {
-            MenuItem.CreateItem("Data", $"groups/{groupId}").AddIcon(Icons.Filled.Info),
-            MenuItem.CreateItem("Notes", $"groups/{groupId}/notes").AddIcon(Icons.Filled.NoteAlt),
-            MenuItem.CreateItem("Members", $"groups/{groupId}/members").AddIcon(Icons.Filled.People),
-            MenuItem.CreateItem("Tags", $"groups/{groupId}/tags").AddIcon(Icons.Filled.Tag),
-            MenuItem.CreateItem("Roles", $"groups/{groupId}/roles").AddIcon(Icons.Filled.SettingsSuggest),
-            MenuItem.CreateItem("Logs", $"groups/{groupId}/logs").AddIcon(Icons.Filled.Abc)
+            MenuItem.CreateItem("Data", $"groups/{groupId}")
+                .AddIcon(Icons.Filled.Info),
+            MenuItem.CreateGroupItem("Notes")
+                .AddIcon(Icons.Filled.Notes)
+                .AddItem(MenuItem.CreateItem("List", $"groups/{groupId}/notes").AddIcon(Icons.Filled.NoteAlt))
+                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddIcon(Icons.Filled.Tag))
+                .AddItem(MenuItem.CreateItem("Logs", $"groups/{groupId}/notes/logs").AddIcon(Icons.Filled.History).AddIconColor(Color.Warning)),
+            MenuItem.CreateItem("Members", $"groups/{groupId}/members")
+                .AddIcon(Icons.Filled.People),
+            MenuItem.CreateItem("Roles", $"groups/{groupId}/roles")
+                .AddIcon(Icons.Filled.SettingsSuggest),
+            MenuItem.CreateItem("Logs", $"groups/{groupId}/logs")
+                .AddIcon(Icons.Filled.History)
+                .AddIconColor(Color.Warning)
         };
     }
 

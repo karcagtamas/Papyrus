@@ -6,8 +6,9 @@
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Shared.Models.Groups
 @using System.ComponentModel.DataAnnotations
+@using Papyrus.Shared.Models.Notes
 
-<EditorDialog Model="GroupTagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Group Tag" IsEdit="IsEdit">
+<EditorDialog Model="TagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Tag" IsEdit="IsEdit">
     <MudText Class="@("text-center mt-3 mb-3 " + (IsEdit ? "hovered-text" : ""))" Color="Color.Primary" onclick="@(() => EditParent())"><b>@Path?.Path/</b></MudText>
     <MudTextField Class="mb-5" T="string" Label="Caption" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Caption)" @bind-Value="Model.Caption" FullWidth="true" />
@@ -23,7 +24,7 @@
     public int? TagId { get; set; }
 
     [Parameter]
-    public int GroupId { get; set; }
+    public int? GroupId { get; set; }
 
     [Parameter]
     public int? ParentId { get; set; }
@@ -35,7 +36,7 @@
     private IHelperService HelperService { get; set; } = default!;
 
     private TagDTO? Tag { get; set; }
-    private GroupTagModel Model { get; set; } = new();
+    private TagModel Model { get; set; } = new();
     private TagPathDTO? Path { get; set; }
     private bool IsEdit { get; set; } = false;
     private int? OriginalParentId { get; set; }
@@ -51,7 +52,7 @@
 
             if (Tag is not null)
             {
-                Model = new GroupTagModel(GroupId, Tag);
+                Model = new TagModel(Tag, GroupId);
                 Model.ParentId = Tag.ParentId;
                 await InvokeAsync(StateHasChanged);
             }
@@ -78,10 +79,10 @@
     {
         if (IsEdit && TagId is not null)
         {
-            return TagService.UpdateGroupTag((int)TagId, Model);
+            return TagService.Update((int)TagId, Model);
         }
 
-        return TagService.CreateGroupTag(Model);
+        return TagService.Create(Model);
     }
 
     private Task<bool> Remove()
@@ -101,7 +102,7 @@
             return;
         }
 
-        var result = await HelperService.OpenDialog<GroupTagTreeSelectorDialog, List<GroupTagTreeItemDTO>>("Select Tag", async (data) =>
+        var result = await HelperService.OpenDialog<TagTreeSelectorDialog, List<TagTreeItemDTO>>("Select Tag", async (data) =>
         {
             if (ObjectHelper.IsNotEmpty(data))
             {

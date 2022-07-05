@@ -20,11 +20,13 @@ public class GroupMemberService : MapperRepository<GroupMember, int, string>, IG
 
     public void CreateFromModelWithDefaultRole<T>(T model)
     {
+        var userId = Utils.GetCurrentUserId();
         var member = Mapper.Map<GroupMember>(model);
 
         GroupRole role = ObjectHelper.OrElseThrow(groupRoleService.GetList(x => x.GroupId == member.GroupId && x.IsDefault).FirstOrDefault(), () => new ServerException("Default role not found"));
 
         member.RoleId = role.Id;
+        member.AddedById = userId;
         Create(member);
     }
 }

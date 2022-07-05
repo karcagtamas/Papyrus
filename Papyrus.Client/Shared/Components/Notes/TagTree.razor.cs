@@ -2,21 +2,32 @@
 using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Common;
-using Papyrus.Client.Shared.Dialogs.Groups;
-using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Client.Shared.Dialogs.Notes;
+using Papyrus.Shared.DTOs.Notes;
 
-namespace Papyrus.Client.Pages.Groups;
+namespace Papyrus.Client.Shared.Components.Notes;
 
-public partial class GroupTags : ComponentBase
+public partial class TagTree : ComponentBase
 {
-    [Parameter]
-    public int GroupId { get; set; }
+    [Parameter, EditorRequired]
+    public Func<Task<List<TagTreeItemDTO>>> Fetcher { get; set; } = () => Task.FromResult(new List<TagTreeItemDTO>());
 
-    [Inject]
-    private IGroupService GroupService { get; set; } = default!;
+    [Parameter]
+    public bool CreateEnabled { get; set; } = true;
+
+    [Parameter]
+    public bool EditEnabled { get; set; } = true;
+
+    [Parameter]
+    public bool RemoveEnabled { get; set; } = true;
+
+    [Parameter]
+    public int? GroupId { get; set; }
+
+    [Parameter]
+    public EventCallback OnRefresh { get; set; }
 
     [Inject]
     private ITagService TagService { get; set; } = default!;
@@ -27,9 +38,8 @@ public partial class GroupTags : ComponentBase
     [Inject]
     private IConfirmService ConfirmService { get; set; } = default!;
 
-    private HashSet<TreeItem<GroupTagTreeItemDTO>> TreeItems { get; set; } = new();
+    private HashSet<TreeItem<TagTreeItemDTO>> TreeItems { get; set; } = new();
     private bool Loading { get; set; } = true;
-    private GroupTagRightsDTO Rights { get; set; } = new();
 
     protected override async void OnInitialized()
     {
@@ -37,19 +47,24 @@ public partial class GroupTags : ComponentBase
         base.OnInitialized();
     }
 
+    public async Task Create()
+    {
+        await Create(null);
+    }
+
     private async Task Refresh()
     {
         Loading = true;
         await InvokeAsync(StateHasChanged);
-        TreeItems = Wrap(await TagService.GetTreeByGroup(GroupId));
-        Rights = await GroupService.GetTagRights(GroupId);
+        TreeItems = Wrap(await Fetcher());
         Loading = false;
         await InvokeAsync(StateHasChanged);
+        await OnRefresh.InvokeAsync();
     }
 
     private async Task Create(int? parentId)
     {
-        if (!Rights.CanCreate)
+        if (!CreateEnabled)
         {
             return;
         }
@@ -59,7 +74,7 @@ public partial class GroupTags : ComponentBase
 
     private async Task Edit(int id)
     {
-        if (!Rights.CanEdit)
+        if (!EditEnabled)
         {
             return;
         }
@@ -69,7 +84,7 @@ public partial class GroupTags : ComponentBase
 
     private async Task Remove(int id)
     {
-        if (!Rights.CanRemove)
+        if (!RemoveEnabled)
         {
             return;
         }
@@ -80,11 +95,11 @@ public partial class GroupTags : ComponentBase
     private async Task OpenDialog(int? tagId, int? parentId)
     {
         var parameters = new DialogParameters { { "TagId", tagId }, { "GroupId", GroupId }, { "ParentId", parentId } };
-        await HelperService.OpenDialog<GroupTagEditDialog>(tagId is null ? "Create Group Tag" : "Edit Group Tag", async () => await Refresh(), parameters);
+        await HelperService.OpenDialog<TagEditDialog>(tagId is null ? "Create Tag" : "Edit Tag", async () => await Refresh(), parameters);
     }
 
-    private static HashSet<TreeItem<GroupTagTreeItemDTO>> Wrap(List<GroupTagTreeItemDTO> src)
+    private static HashSet<TreeItem<TagTreeItemDTO>> Wrap(List<TagTreeItemDTO> src)
     {
-        return src.Select(x => new TreeItem<GroupTagTreeItemDTO>(x, (t) => t.Children)).ToHashSet();
+        return src.Select(x => new TreeItem<TagTreeItemDTO>(x, (t) => t.Children)).ToHashSet();
     }
 }

@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Shared.DTOs.Notes;
-using Papyrus.Shared.Models.Groups;
+using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Logic.Mappers;
 
@@ -10,6 +10,6 @@ public class TagMapper : Profile
 	public TagMapper()
 	{
 		CreateMap<Tag, TagDTO>();
-		CreateMap<GroupTagModel, Tag>();
+		CreateMap<TagModel, Tag>();
     }
 }

@@ -1,0 +1,11 @@
+﻿@page "/notes/tags"
+@attribute [Authorize]
+
+<ApplicationPageTitle PageName="Note Tags"></ApplicationPageTitle>
+
+<div class="page-div">
+    <ActionBar>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+    </ActionBar>
+    <TagTree @ref="TagTree" Fetcher="Fetcher" />
+</div>

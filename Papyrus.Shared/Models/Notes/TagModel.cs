@@ -1,12 +1,11 @@
 ﻿using Papyrus.Shared.DTOs.Notes;
 using System.ComponentModel.DataAnnotations;
 
-namespace Papyrus.Shared.Models.Groups;
+namespace Papyrus.Shared.Models.Notes;
 
-public class GroupTagModel
+public class TagModel
 {
-    [Required]
-    public int GroupId { get; set; }
+    public int? GroupId { get; set; }
 
     public int? ParentId { get; set; }
 
@@ -19,16 +18,16 @@ public class GroupTagModel
     [Required(ErrorMessage = "Field is required")]
     public string Color { get; set; } = "#FFFFFF00";
 
-    public GroupTagModel()
+    public TagModel()
     {
 
     }
 
-    public GroupTagModel(int groupId, TagDTO dto)
+    public TagModel(TagDTO dto, int? groupId = null)
     {
-        GroupId = groupId;
         Caption = dto.Caption;
         Description = dto.Description;
         Color = dto.Color;
+        GroupId = groupId;
     }
 }

@@ -1,0 +1,31 @@
+﻿@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Shared.DTOs.Groups
+@using Papyrus.Shared.DTOs.Notes
+
+<TreeSelectorDialog Data="TagTreeItemDTO" EntityName="Tag" BodyText="Persist empty selection to choose ROOT path" Fetcher="@Fetcher" ItemExtractor="@ItemExctractor" TitleGetter="@TitleGetter" />
+
+@code {
+    [Parameter]
+    public int? GroupId { get; set; }
+
+    [Parameter]
+    public int? ParentId { get; set; }
+
+    [Inject]
+    private ITagService TagService { get; set; } = default!;
+
+    private Task<List<TagTreeItemDTO>> Fetcher()
+    {
+        return TagService.GetTree(GroupId, ParentId);
+    }
+
+    private List<TagTreeItemDTO> ItemExctractor(TagTreeItemDTO obj)
+    {
+        return obj.Children;
+    }
+
+    private string TitleGetter(TagTreeItemDTO obj)
+    {
+        return obj.Caption;
+    }
+}

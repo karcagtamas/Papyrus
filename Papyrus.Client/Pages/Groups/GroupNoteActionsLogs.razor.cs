@@ -2,7 +2,7 @@
 
 namespace Papyrus.Client.Pages.Groups;
 
-public partial class GroupNotes : ComponentBase
+public partial class GroupNoteActionLogs : ComponentBase
 {
     [Parameter]
     public int GroupId { get; set; }

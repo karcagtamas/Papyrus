@@ -1,0 +1,14 @@
+﻿@page "/groups/{GroupId:int}/notes/tags"
+@attribute [Authorize]
+
+<GroupPageTitle PageName="Note Tags" />
+
+<div class="page-div">
+    @if (Rights.CanCreate)
+    {
+        <ActionBar>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        </ActionBar>
+    }
+    <TagTree @ref="TagTree" Fetcher="Fetcher" GroupId="GroupId" CreateEnabled="Rights.CanCreate" EditEnabled="Rights.CanEdit" RemoveEnabled="Rights.CanRemove" />
+</div>
