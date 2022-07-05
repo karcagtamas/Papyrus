@@ -12,6 +12,9 @@ namespace Papyrus.Client.Pages.Groups;
 public partial class GroupMembers : ComponentBase
 {
     [Inject]
+    private IGroupService GroupService { get; set; } = default!;
+
+    [Inject]
     private IGroupMemberService GroupMemberService { get; set; } = default!;
 
     [Inject]
@@ -25,12 +28,13 @@ public partial class GroupMembers : ComponentBase
 
     private string? User { get; set; }
     private List<GroupMemberDTO> Members { get; set; } = new();
+    private GroupMemberRightsDTO Rights { get; set; } = new();
     private bool Loading { get; set; } = true;
 
     protected override async void OnInitialized()
     {
         await GetUser();
-        await GetMembers();
+        await Refresh();
         base.OnInitialized();
     }
 
@@ -39,17 +43,23 @@ public partial class GroupMembers : ComponentBase
         User = (await TokenService.GetUser()).UserId;
     }
 
-    private async Task GetMembers()
+    private async Task Refresh()
     {
         Loading = true;
         await InvokeAsync(StateHasChanged);
         Members = await GroupMemberService.GetByGroup(GroupId);
+        Rights = await GroupService.GetMemberRights(GroupId);
         Loading = false;
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task Add()
     {
+        if (!Rights.CanAdd)
+        {
+            return;
+        }
+
         var parameters = new DialogParameters { { "Ignored", Members.Select(x => x.User.Id).ToList() } };
 
         var dialog = DialogService.Show<UserSearchDialog>("Search User", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
@@ -58,14 +68,14 @@ public partial class GroupMembers : ComponentBase
         {
             if (await GroupMemberService.Create(new GroupMemberCreateModel { UserId = userId, GroupId = GroupId }))
             {
-                await GetMembers();
+                await Refresh();
             }
         }
     }
 
     private async Task Edit(TableRowClickEventArgs<GroupMemberDTO> e)
     {
-        if (User is not null && e.Item.User.Id == User)
+        if (!Rights.CanEdit || (User is not null && e.Item.User.Id == User))
         {
             return;
         }
@@ -76,7 +86,7 @@ public partial class GroupMembers : ComponentBase
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            await GetMembers();
+            await Refresh();
         }
     }
 }

@@ -56,14 +56,14 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .HasOne(x => x.Owner)
             .WithMany(x => x.CreatedGroups)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Group Action Log
         modelBuilder.Entity<GroupActionLog>()
             .HasOne(x => x.Group)
             .WithMany(x => x.ActionLogs)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Group Member
         modelBuilder.Entity<GroupMember>()
@@ -72,21 +72,21 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .HasOne(x => x.Group)
             .WithMany(x => x.Members)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<GroupMember>()
             .HasOne(x => x.User)
             .WithMany(x => x.Groups)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<GroupMember>()
             .HasOne(x => x.Role)
             .WithMany(x => x.Members)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Restrict);
         modelBuilder.Entity<GroupMember>()
             .HasOne(x => x.AddedBy)
             .WithMany(x => x.AddedGroupMembers)
-            .OnDelete(DeleteBehavior.ClientSetNull);
+            .OnDelete(DeleteBehavior.SetNull);
 
         // Group Role
         modelBuilder.Entity<GroupRole>()
@@ -95,17 +95,17 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .HasOne(x => x.Group)
             .WithMany(x => x.Roles)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Note
         modelBuilder.Entity<Note>()
             .HasOne(x => x.User)
             .WithMany(x => x.Notes)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Note>()
             .HasOne(x => x.Group)
             .WithMany(x => x.Notes)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Note Action Log
         modelBuilder.Entity<NoteActionLog>()
@@ -118,15 +118,15 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         modelBuilder.Entity<Tag>()
             .HasOne(x => x.Group)
             .WithMany(x => x.Tags)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Tag>()
             .HasOne(x => x.User)
             .WithMany(x => x.Tags)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Tag>()
             .HasOne(x => x.Parent)
             .WithMany(x => x.Children)
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Tag>()
             .HasCheckConstraint("CK_Tag_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
     }

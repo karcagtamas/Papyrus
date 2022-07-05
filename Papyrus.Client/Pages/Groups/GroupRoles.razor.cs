@@ -12,12 +12,16 @@ public partial class GroupRoles : ComponentBase
     private IDialogService DialogService { get; set; } = default!;
 
     [Inject]
+    private IGroupService GroupService { get; set; } = default!;
+
+    [Inject]
     private IGroupRoleService GroupRoleService { get; set; } = default!;
 
     [Parameter]
     public int GroupId { get; set; }
 
     private List<GroupRoleDTO> Roles { get; set; } = new();
+    private GroupRoleRightsDTO Rights { get; set; } = new();
     private bool Loading { get; set; } = true;
     private readonly List<GroupRoleSettingsItem> SettingsItems = new List<GroupRoleSettingsItem>
     {
@@ -100,27 +104,33 @@ public partial class GroupRoles : ComponentBase
 
     protected override async void OnInitialized()
     {
-        await GetRoles();
+        await Refresh();
         base.OnInitialized();
     }
 
-    private async Task GetRoles()
+    private async Task Refresh()
     {
         Loading = true;
         await InvokeAsync(StateHasChanged);
         Roles = await GroupRoleService.GetByGroup(GroupId);
+        Rights = await GroupService.GetRoleRights(GroupId);
         Loading = false;
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task Create()
     {
+        if (!Rights.CanCreate)
+        {
+            return;
+        }
+
         await OpenDialog(null);
     }
 
     private async Task Edit(TableRowClickEventArgs<GroupRoleDTO> e)
     {
-        if (!e.Item.ReadOnly)
+        if (Rights.CanEdit && !e.Item.ReadOnly)
         {
             await OpenDialog(e.Item.Id);
         }
@@ -134,7 +144,7 @@ public partial class GroupRoles : ComponentBase
         var result = await dialog.Result;
         if (!result.Cancelled)
         {
-            await GetRoles();
+            await Refresh();
         }
     }
 }

@@ -26,7 +26,7 @@ public partial class GroupData : ComponentBase
     private IHelperService HelperService { get; set; } = default!;
 
     private GroupDTO? Group { get; set; } = default!;
-    private bool Closable { get; set; } = false;
+    private GroupRightsDTO Rights { get; set; } = new();
 
     protected override async void OnInitialized()
     {
@@ -37,7 +37,7 @@ public partial class GroupData : ComponentBase
     private async Task GetGroup()
     {
         Group = await GroupService.Get<GroupDTO>(GroupId);
-        Closable = await GroupService.IsClosable(GroupId);
+        Rights = await GroupService.GetRights(GroupId);
         await InvokeAsync(StateHasChanged);
     }
 
@@ -52,13 +52,19 @@ public partial class GroupData : ComponentBase
         await HelperService.OpenDialog<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", async () => await GetGroup(), parameters);
     }
 
-    private async Task Close()
+    private async Task Close() => await ExecuteAction(Rights.CanClose, "Close", () => GroupService.Close(GroupId), async () => await GetGroup());
+
+    private async Task Open() => await ExecuteAction(Rights.CanOpen, "Open", () => GroupService.Open(GroupId), async () => await GetGroup());
+
+    private async Task Remove() => await ExecuteAction(Rights.CanRemove, "Remove", () => GroupService.Remove(GroupId), () => Navigation.NavigateTo("/my-groups"));
+
+    private async Task ExecuteAction(bool preCheck, string actionName, Func<Task<bool>> performAction, Action action)
     {
-        if (!Closable)
+        if (!preCheck)
         {
             return;
         }
 
-        await ConfirmService.Open(new ConfirmDialogInput { Name = "Group", ActionName = "close", ActionFunction = async () => await GroupService.Close(GroupId) }, "Confirm Close", () => Navigation.NavigateTo("/my-groups"));
+        await ConfirmService.Open(new ConfirmDialogInput { Name = "Group", ActionName = actionName.ToLower(), ActionFunction = async () => await performAction() }, $"Confirm {actionName}", () => action());
     }
 }

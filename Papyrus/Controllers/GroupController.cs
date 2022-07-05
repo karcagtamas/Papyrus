@@ -48,15 +48,45 @@ public class GroupController : ControllerBase
         groupService.UpdateByModel(id, model);
     }
 
-    [HttpGet("{id}/Closable")]
-    public bool IsClosable(int id)
+    [HttpGet("{id}/Rights")]
+    public GroupRightsDTO GetRights(int id)
     {
-        return groupService.IsClosable(id);
+        return groupService.GetRights(id);
+    }
+
+    [HttpGet("{id}/Rights/Tag")]
+    public GroupTagRightsDTO GetTagRights(int id)
+    {
+        return groupService.GetTagRights(id);
+    }
+
+    [HttpGet("{id}/Rights/Member")]
+    public GroupMemberRightsDTO GetMemberRights(int id)
+    {
+        return groupService.GetMemberRights(id);
+    }
+
+    [HttpGet("{id}/Rights/Role")]
+    public GroupRoleRightsDTO GetRoleRights(int id)
+    {
+        return groupService.GetRoleRights(id);
     }
 
     [HttpPut("{id}/Close")]
     public void Close(int id)
     {
         groupService.Close(id);
+    }
+
+    [HttpPut("{id}/Open")]
+    public void Open(int id)
+    {
+        groupService.Open(id);
+    }
+
+    [HttpPut("{id}/Remove")]
+    public void Remove(int id)
+    {
+        groupService.Remove(id);
     }
 }

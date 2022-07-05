@@ -7,8 +7,16 @@
     @if (Group is not null)
     {
         <ActionBar>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">Edit</MudButton>
-            <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Closable" OnClick="Close">Close</MudButton>
+            @if (Group.IsClosed)
+            {
+                <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Rights.CanOpen" OnClick="Open">Open</MudButton>
+            }
+            else
+            {
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">Edit</MudButton>
+                <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Rights.CanClose" OnClick="Close">Close</MudButton>
+            }
+            <MudButton Color="Color.Error" Variant="Variant.Filled" Disabled="!Rights.CanRemove" OnClick="Remove">Remove</MudButton>
             <MudSpacer />
             <MudButton Color="Color.Secondary" Href="/my-groups">My Groups</MudButton>
         </ActionBar>

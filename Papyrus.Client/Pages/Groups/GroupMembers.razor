@@ -6,9 +6,12 @@
 <GroupPageTitle PageName="Members" />
 
 <div class="page-div">
-    <ActionBar>
-        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@Add">Add</MudButton>
-    </ActionBar>
+    @if (Rights.CanAdd)
+    {
+        <ActionBar>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@Add">Add</MudButton>
+        </ActionBar>
+    }
     <MudTable T="GroupMemberDTO" Items="Members" Loading="Loading" Dense="true" Elevation="2" FixedHeader="true" OnRowClick="Edit" Hover="true" Striped="true">
         <HeaderContent>
             <MudTh>

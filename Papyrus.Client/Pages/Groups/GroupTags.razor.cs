@@ -2,6 +2,7 @@
 using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
+using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Common;
 using Papyrus.Client.Shared.Dialogs.Groups;
@@ -15,6 +16,9 @@ public partial class GroupTags : ComponentBase
     public int GroupId { get; set; }
 
     [Inject]
+    private IGroupService GroupService { get; set; } = default!;
+
+    [Inject]
     private ITagService TagService { get; set; } = default!;
 
     [Inject]
@@ -25,42 +29,60 @@ public partial class GroupTags : ComponentBase
 
     private HashSet<TreeItem<GroupTagTreeItemDTO>> TreeItems { get; set; } = new();
     private bool Loading { get; set; } = true;
+    private GroupTagRightsDTO Rights { get; set; } = new();
 
     protected override async void OnInitialized()
     {
-        await GetTagTree();
+        await Refresh();
         base.OnInitialized();
     }
 
-    private async Task GetTagTree()
+    private async Task Refresh()
     {
         Loading = true;
         await InvokeAsync(StateHasChanged);
         TreeItems = Wrap(await TagService.GetTreeByGroup(GroupId));
+        Rights = await GroupService.GetTagRights(GroupId);
         Loading = false;
         await InvokeAsync(StateHasChanged);
     }
 
     private async Task Create(int? parentId)
     {
+        if (!Rights.CanCreate)
+        {
+            return;
+        }
+
         await OpenDialog(null, parentId);
     }
 
     private async Task Edit(int id)
     {
+        if (!Rights.CanEdit)
+        {
+            return;
+        }
+
         await OpenDialog(id, null);
     }
 
     private async Task Remove(int id)
     {
-        await ConfirmService.Open(new ConfirmDialogInput { Name = "Tag", ActionFunction = async () => await TagService.Delete(id) }, "Confirm Delete", async () => await GetTagTree());
+        if (!Rights.CanRemove)
+        {
+            return;
+        }
+
+        await ConfirmService.Open(new ConfirmDialogInput { Name = "Tag", ActionFunction = async () => await TagService.Delete(id) }, "Confirm Delete", async () => await Refresh());
     }
 
     private async Task OpenDialog(int? tagId, int? parentId)
     {
         var parameters = new DialogParameters { { "TagId", tagId }, { "GroupId", GroupId }, { "ParentId", parentId } };
-        await HelperService.OpenDialog<GroupTagEditDialog>(tagId is null ? "Create Group Tag" : "Edit Group Tag", async () => await GetTagTree(), parameters);
+        await HelperService.OpenDialog<GroupTagEditDialog>(tagId is null ? "Create Group Tag" : "Edit Group Tag", async () => await Refresh(), parameters);
     }
+
     private static HashSet<TreeItem<GroupTagTreeItemDTO>> Wrap(List<GroupTagTreeItemDTO> src)
     {
         return src.Select(x => new TreeItem<GroupTagTreeItemDTO>(x, (t) => t.Children)).ToHashSet();

@@ -5,9 +5,12 @@
 <GroupPageTitle PageName="Roles" />
 
 <div class="page-div">
-    <ActionBar>
-        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
-    </ActionBar>
+    @if (Rights.CanCreate)
+    {
+        <ActionBar>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        </ActionBar>
+    }
     <MudTable T="GroupRoleDTO" Items="Roles" Loading="Loading" Dense="true" Elevation="2" FixedHeader="true" OnRowClick="Edit" Hover="true" Striped="true">
         <HeaderContent>
             <MudTh>

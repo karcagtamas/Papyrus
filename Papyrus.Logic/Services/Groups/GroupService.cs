@@ -74,5 +74,78 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         Update(group);
     }
 
+    public GroupRightsDTO GetRights(int id)
+    {
+        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+
+        return new GroupRightsDTO
+        {
+            CanClose = IsClosableForUser(group, userId),
+            CanOpen = IsOpenableForUser(group, userId),
+            CanRemove = IsRemovableForUser(group, userId)
+        };
+    }
+
+    public void Open(int id)
+    {
+        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+
+        ExceptionHelper.Check(IsOpenableForUser(group, userId), "Not have permission to Open this group.");
+
+        group.IsClosed = false;
+        Update(group);
+    }
+
+    public void Remove(int id)
+    {
+        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+
+        ExceptionHelper.Check(IsRemovableForUser(group, userId), "Not have permission to Remove this group.");
+
+        Delete(group);
+    }
+    public GroupTagRightsDTO GetTagRights(int id)
+    {
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+
+        return new GroupTagRightsDTO
+        {
+            CanCreate = !group.IsClosed,
+            CanEdit = !group.IsClosed,
+            CanRemove = !group.IsClosed
+        };
+    }
+
+    public GroupMemberRightsDTO GetMemberRights(int id)
+    {
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+
+        return new GroupMemberRightsDTO
+        {
+            CanAdd = !group.IsClosed,
+            CanEdit = !group.IsClosed
+        };
+    }
+
+    public GroupRoleRightsDTO GetRoleRights(int id)
+    {
+        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+
+        return new GroupRoleRightsDTO
+        {
+            CanCreate = !group.IsClosed,
+            CanEdit = !group.IsClosed
+        };
+    }
+
     private static bool IsClosableForUser(Group group, string userId) => group.OwnerId == userId && !group.IsClosed;
+    private static bool IsOpenableForUser(Group group, string userId) => group.OwnerId == userId && group.IsClosed;
+    private static bool IsRemovableForUser(Group group, string userId) => group.OwnerId == userId;
+
 }
