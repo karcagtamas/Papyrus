@@ -6,6 +6,8 @@ using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.DataAccess.Enums.Groups;
+using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 
@@ -13,8 +15,11 @@ namespace Papyrus.Logic.Services.Notes;
 
 public class TagService : MapperRepository<Tag, int, string>, ITagService
 {
-    public TagService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Tag")
+    private readonly IGroupActionLogService groupActionLogService;
+
+    public TagService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Tag")
     {
+        this.groupActionLogService = groupActionLogService;
     }
 
     public List<TagDTO> GetByGroup(int groupId) => GetMappedList<TagDTO>(x => x.GroupId == groupId).ToList();
@@ -42,7 +47,7 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
 
         ExceptionHelper.Throw(ObjectHelper.IsNotNull(entity.GroupId) && ObjectHelper.IsNotNull(entity.UserId), "User and Group connection cannot be null");
 
-        if (ObjectHelper.IsNull(entity.GroupId) && ObjectHelper.IsNull(entity.UserId)) 
+        if (ObjectHelper.IsNull(entity.GroupId) && ObjectHelper.IsNull(entity.UserId))
         {
             entity.UserId = Utils.GetRequiredCurrentUserId();
         }
@@ -63,16 +68,39 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
         Update(entity, doPersist);
     }
 
-    private TagTreeItemDTO Map(Tag tag, int? filteredTag = null)
+    public override int Create(Tag entity, bool doPersist = true)
     {
-        return new TagTreeItemDTO
+        string userId = Utils.GetRequiredCurrentUserId();
+        var id = base.Create(entity, doPersist);
+
+        if (ObjectHelper.IsNotNull(entity.GroupId))
         {
-            Id = tag.Id,
-            Caption = tag.Caption,
-            Description = tag.Description,
-            Color = tag.Color,
-            Children = tag.Children.Where(x => filteredTag == null || x.Id != filteredTag).Select(x => Map(x)).ToList(),
-        };
+            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagCreate);
+        }
+
+        return id;
+    }
+
+    public override void Update(Tag entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        base.Update(entity, doPersist);
+
+        if (ObjectHelper.IsNotNull(entity.GroupId))
+        {
+            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagEdit);
+        }
+    }
+
+    public override void Delete(Tag entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        base.Delete(entity, doPersist);
+
+        if (ObjectHelper.IsNotNull(entity.GroupId))
+        {
+            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagRemove);
+        }
     }
 
     public string GetPathString(int id)
@@ -85,5 +113,17 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
         }
 
         return $"{GetPathString((int)tag.ParentId)}/{tag.Caption}";
+    }
+
+    private TagTreeItemDTO Map(Tag tag, int? filteredTag = null)
+    {
+        return new TagTreeItemDTO
+        {
+            Id = tag.Id,
+            Caption = tag.Caption,
+            Description = tag.Description,
+            Color = tag.Color,
+            Children = tag.Children.Where(x => filteredTag == null || x.Id != filteredTag).Select(x => Map(x)).ToList(),
+        };
     }
 }

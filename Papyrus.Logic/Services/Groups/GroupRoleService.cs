@@ -3,6 +3,7 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.DataAccess.Enums.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 
@@ -10,8 +11,11 @@ namespace Papyrus.Logic.Services.Groups;
 
 public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroupRoleService
 {
-    public GroupRoleService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Group Role")
+    private readonly IGroupActionLogService groupActionLogService;
+
+    public GroupRoleService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Group Role")
     {
+        this.groupActionLogService = groupActionLogService;
     }
 
     public List<RoleCreationResultItem> CreateDefaultRoles(int groupId)
@@ -132,6 +136,32 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         };
 
         return Create(role);
+    }
+
+    public override int Create(GroupRole entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        int id = base.Create(entity, doPersist);
+
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleCreate);
+
+        return id;
+    }
+
+    public override void Update(GroupRole entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        base.Update(entity, doPersist);
+
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleEdit);
+    }
+
+    public override void Delete(GroupRole entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        base.Delete(entity, doPersist);
+
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleRemove);
     }
 
     public bool Exists(int groupId, string name) => GetList(x => x.GroupId == groupId && x.Name == name).Any();

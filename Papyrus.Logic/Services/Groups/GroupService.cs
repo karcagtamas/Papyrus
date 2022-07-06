@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Repository;
@@ -6,6 +7,7 @@ using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.DataAccess.Enums.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 
@@ -15,16 +17,18 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 {
     private readonly IGroupRoleService groupRoleService;
     private readonly IGroupMemberService groupMemberService;
+    private readonly IGroupActionLogService groupActionLogService;
 
-    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService, IGroupMemberService groupMemberService) : base(context, loggerService, utilsService, mapper, "Group")
+    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService, IGroupMemberService groupMemberService, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Group")
     {
         this.groupRoleService = groupRoleService;
         this.groupMemberService = groupMemberService;
+        this.groupActionLogService = groupActionLogService;
     }
 
     public List<GroupListDTO> GetUserList(bool hideClosed = false)
     {
-        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+        string userId = Utils.GetRequiredCurrentUserId();
 
         return GetMappedList<GroupListDTO>(x => x.OwnerId == userId && (!hideClosed || !x.IsClosed))
             .OrderBy(x => x.IsClosed)
@@ -34,7 +38,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
     public override int CreateFromModel<TModel>(TModel model, bool doPersist = true)
     {
-        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+        string userId = Utils.GetRequiredCurrentUserId();
         var id = base.CreateFromModel(model, doPersist);
 
         var result = groupRoleService.CreateDefaultRoles(id);
@@ -53,18 +57,27 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         return id;
     }
 
-    public bool IsClosable(int id)
+    public override int Create(Group entity, bool doPersist = true)
     {
-        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+        string userId = Utils.GetRequiredCurrentUserId();
+        var id = base.Create(entity, doPersist);
 
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+        groupActionLogService.AddActionLog(id, userId, GroupActionLogType.Create);
 
-        return IsClosableForUser(group, userId);
+        return id;
+    }
+
+    public override void Update(Group entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        base.Update(entity, doPersist);
+
+        groupActionLogService.AddActionLog(entity.Id, userId, GroupActionLogType.DataEdit);
     }
 
     public void Close(int id)
     {
-        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+        string userId = Utils.GetRequiredCurrentUserId();
 
         Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
 
@@ -72,11 +85,13 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
         group.IsClosed = true;
         Update(group);
+
+        groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Close);
     }
 
     public GroupRightsDTO GetRights(int id)
     {
-        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+        string userId = Utils.GetRequiredCurrentUserId();
 
         Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
 
@@ -90,7 +105,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
     public void Open(int id)
     {
-        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+        string userId = Utils.GetRequiredCurrentUserId();
 
         Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
 
@@ -98,11 +113,13 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
         group.IsClosed = false;
         Update(group);
+
+        groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Open);
     }
 
     public void Remove(int id)
     {
-        string userId = ObjectHelper.OrElseThrow(Utils.GetRequiredCurrentUserId(), () => new ServerException("User not found"));
+        string userId = Utils.GetRequiredCurrentUserId();
 
         Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
 

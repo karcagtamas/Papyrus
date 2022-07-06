@@ -49,7 +49,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .HasOne(x => x.User)
             .WithMany(x => x.RefreshTokens)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
 
         // Group
         modelBuilder.Entity<Group>()
@@ -64,6 +64,10 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .WithMany(x => x.ActionLogs)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<GroupActionLog>()
+            .HasOne(x => x.Performer)
+            .WithMany(x => x.PerformedGroupActionLogs)
+            .OnDelete(DeleteBehavior.SetNull);
 
         // Group Member
         modelBuilder.Entity<GroupMember>()

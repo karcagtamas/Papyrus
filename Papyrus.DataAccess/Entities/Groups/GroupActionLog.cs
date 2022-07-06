@@ -1,19 +1,29 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
+using Papyrus.DataAccess.Enums.Groups;
 
 namespace Papyrus.DataAccess.Entities.Groups;
 
-public class GroupActionLog : IEntity<int>
+public class GroupActionLog : IEntity<long>, ICreationEntity
 {
     [Key]
     [Required]
-    public int Id { get; set; }
+    public long Id { get; set; }
 
     [Required]
     public int GroupId { get; set; }
 
     [Required]
-    public DateTime DateTime { get; set; }
+    public DateTime Creation { get; set; }
+
+    [Required]
+    public GroupActionLogType Type { get; set; }
+
+    [Required]
+    public string Text { get; set; } = default!;
+
+    public string? PerformerId { get; set; }
 
     public virtual Group Group { get; set; } = default!;
+    public virtual User? Performer { get; set; }
 }

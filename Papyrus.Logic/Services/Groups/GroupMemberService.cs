@@ -5,6 +5,7 @@ using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.DataAccess.Enums.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 
 namespace Papyrus.Logic.Services.Groups;
@@ -12,10 +13,12 @@ namespace Papyrus.Logic.Services.Groups;
 public class GroupMemberService : MapperRepository<GroupMember, int, string>, IGroupMemberService
 {
     private readonly IGroupRoleService groupRoleService;
+    private readonly IGroupActionLogService groupActionLogService;
 
-    public GroupMemberService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService) : base(context, loggerService, utilsService, mapper, "Group Member")
+    public GroupMemberService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Group Member")
     {
         this.groupRoleService = groupRoleService;
+        this.groupActionLogService = groupActionLogService;
     }
 
     public void CreateFromModelWithDefaultRole<T>(T model)
@@ -28,5 +31,31 @@ public class GroupMemberService : MapperRepository<GroupMember, int, string>, IG
         member.RoleId = role.Id;
         member.AddedById = userId;
         Create(member);
+    }
+
+    public override int Create(GroupMember entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        var id = base.Create(entity, doPersist);
+
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberAdd);
+
+        return id;
+    }
+
+    public override void Update(GroupMember entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        base.Update(entity, doPersist);
+
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberEdit);
+    }
+
+    public override void Delete(GroupMember entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        base.Delete(entity, doPersist);
+
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberRemove);
     }
 }

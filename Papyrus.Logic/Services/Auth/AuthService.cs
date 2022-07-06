@@ -41,7 +41,6 @@ public class AuthService : IAuthService
         user.LastLogin = DateTime.Now;
 
         userService.Update(user);
-        userService.Persist();
 
         return await CreateTokensAndSave(user, Guid.NewGuid().ToString());
     }
@@ -73,7 +72,6 @@ public class AuthService : IAuthService
         InvalidateRefreshTokens(user, clientId);
 
         userService.Update(user);
-        userService.Persist();
     }
 
     private void InvalidateRefreshTokens(User user, string? clientId)
