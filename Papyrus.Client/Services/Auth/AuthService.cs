@@ -32,9 +32,7 @@ public class AuthService : IAuthService
     {
         var settings = new HttpSettings(httpService.BuildUrl(Url, "Login")).AddToaster("Login");
 
-        var body = new HttpBody<LoginModel>(model);
-
-        var user = await httpService.PostWithResult<TokenDTO, LoginModel>(settings, body).ExecuteWithResult();
+        var user = await httpService.PostWithResult<TokenDTO, LoginModel>(settings, model).ExecuteWithResult();
 
         if (ObjectHelper.IsNull(user)) return null;
 
@@ -50,9 +48,7 @@ public class AuthService : IAuthService
         var settings = new HttpSettings(httpService.BuildUrl(Url, "Register"))
             .AddToaster("Registration");
 
-        var body = new HttpBody<RegistrationModel>(model);
-
-        return await httpService.Post(settings, body).Execute();
+        return await httpService.Post(settings, model).Execute();
     }
 
     public bool IsLoggedIn()
@@ -63,9 +59,8 @@ public class AuthService : IAuthService
     public async void Logout()
     {
         var settings = new HttpSettings(httpService.BuildUrl(Url, "Logout"));
-        var body = new HttpBody<string>(await tokenService.GetClientId());
 
-        await httpService.Put(settings, body).Execute();
+        await httpService.Put(settings, await tokenService.GetClientId()).Execute();
 
         await tokenService.ClearUser();
 

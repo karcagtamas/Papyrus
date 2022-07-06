@@ -1,9 +1,8 @@
-﻿using KarcagS.Blazor.Common.Components.ImageUploader;
+﻿using KarcagS.Blazor.Common.Components.FileUploader;
 using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Interfaces;
-using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Dialogs;
 using Papyrus.Shared.DTOs;
 
@@ -18,7 +17,7 @@ public partial class MyUser : ComponentBase
     private IUserService UserService { get; set; } = default!;
 
     [Inject]
-    private IImageUploaderService ImageUploaderService { get; set; } = default!;
+    private IFileUploaderService FileUploaderService { get; set; } = default!;
 
     private UserDTO? User { get; set; }
     private string? Image { get; set; }
@@ -54,9 +53,10 @@ public partial class MyUser : ComponentBase
 
     private async void ChangeImage()
     {
-        if (await ImageUploaderService.Open(new ImageUploaderDialogInput
+        if (await FileUploaderService.Open(new FileUploaderDialogInput
         {
-            ImageUpload = async data => await UserService.UpdateImage(data)
+            ImageUpload = async data => await UserService.UpdateImage(data.Files.First().Content),
+            EnabledExtensions = FileUploaderDialogInput.ImageExtensions,
         },
         "Change Profile Image"))
         {

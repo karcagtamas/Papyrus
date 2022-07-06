@@ -25,7 +25,8 @@ public class UserService : HttpCall<string>, IUserService
             .Add("userName", userName)
             .Add("email", email);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists")).AddQueryParams(queryParams);
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists"))
+            .AddQueryParams(queryParams);
 
         return await Http.GetBool(settings).ExecuteWithResult();
     }
@@ -57,26 +58,20 @@ public class UserService : HttpCall<string>, IUserService
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Disable")).AddToaster("Disable");
 
-        var body = new HttpBody<UserDisableStatusModel>(new UserDisableStatusModel { Ids = ids, Status = status });
-
-        return await Http.Post(settings, body).Execute();
+        return await Http.Post(settings, new UserDisableStatusModel { Ids = ids, Status = status }).Execute();
     }
 
     public async Task<bool> UpdateImage(byte[] image)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Image")).AddToaster("Image Update");
 
-        var body = new HttpBody<byte[]>(image);
-
-        return await Http.Put(settings, body).Execute();
+        return await Http.Put(settings, image).Execute();
     }
 
     public async Task<bool> UpdatePassword(UserPasswordModel model)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Password")).AddToaster("Password Update");
 
-        var body = new HttpBody<UserPasswordModel>(model);
-
-        return await Http.Put(settings, body).Execute();
+        return await Http.Put(settings, model).Execute();
     }
 }

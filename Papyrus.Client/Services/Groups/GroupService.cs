@@ -15,21 +15,21 @@ public class GroupService : HttpCall<int>, IGroupService
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Close"));
 
-        return await Http.Put(settings, new HttpBody<object?>(null)).Execute();
+        return await Http.PutWithoutBody(settings).Execute();
     }
 
     public async Task<bool> Open(int id)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Open"));
 
-        return await Http.Put(settings, new HttpBody<object?>(null)).Execute();
+        return await Http.PutWithoutBody(settings).Execute();
     }
 
     public async Task<bool> Remove(int id)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Remove"));
 
-        return await Http.Put(settings, new HttpBody<object?>(null)).Execute();
+        return await Http.PutWithoutBody(settings).Execute();
     }
 
     public async Task<List<GroupListDTO>> GetUserList(bool hideClosed = false)

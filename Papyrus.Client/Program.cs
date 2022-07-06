@@ -56,7 +56,7 @@ builder.Services.AddScoped<ICommonService, CommonService>();
 builder.Services.AddScoped<IHelperService, HelperService>();
 builder.Services.AddScoped<IToasterService, ToasterService>();
 builder.Services.AddScoped<IConfirmService, ConfirmService>();
-builder.Services.AddScoped<IImageUploaderService, ImageUploaderService>();
+builder.Services.AddScoped<IFileUploaderService, FileUploaderService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();

@@ -32,8 +32,8 @@ public class GroupMapper : Profile
 
     private static DateTime? GetLastAction(List<GroupActionLog> actionLogs)
     {
-        var log = actionLogs.OrderBy(x => x.DateTime).LastOrDefault();
+        var log = actionLogs.OrderBy(x => x.Creation).LastOrDefault();
 
-        return log?.DateTime;
+        return log?.Creation;
     }
 }
