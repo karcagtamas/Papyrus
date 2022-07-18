@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
+using KarcagS.Blazor.Common;
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
@@ -95,5 +96,7 @@ builder.Services.AddBlazoredLocalStorage(config =>
 
 ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;
 ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
+
+ApplicationContext.ApplicationName = "Papyrus";
 
 await builder.Build().RunAsync();

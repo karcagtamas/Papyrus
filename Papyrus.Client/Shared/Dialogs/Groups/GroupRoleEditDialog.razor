@@ -95,7 +95,7 @@
 
     private async Task<bool> ValidateForm(GroupRoleModel model, ISnackbar snackbar)
     {
-        if (model.Name != GroupRole.Name && await GroupRoleService.Exists(GroupId, model.Name))
+        if (ObjectHelper.IsNotNull(GroupRole) && model.Name != GroupRole.Name && await GroupRoleService.Exists(GroupId, model.Name))
         {
             snackbar.Add($"Group Role is already exists with this name [{model.Name}]", Severity.Error);
             return false;

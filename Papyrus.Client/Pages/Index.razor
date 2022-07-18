@@ -1,8 +1,9 @@
 ﻿@page "/"
+@using KarcagS.Blazor.Common
 @inject NavigationManager navigator
 @inject AuthenticationStateProvider authStateProvider
 
-<PageTitle>@PapyrusContext.ApplicationName</PageTitle>
+<PageTitle>@ApplicationContext.ApplicationName</PageTitle>
 
 @code {
 

@@ -1,66 +1,40 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Text;
 using KarcagS.Common.Helpers;
+using KarcagS.Common.Tools.Authentication.JWT;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
 using Papyrus.DataAccess.Entities;
-using Papyrus.Logic.Configurations;
 using Papyrus.Logic.Services.Auth.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
+using RefreshToken = Papyrus.DataAccess.Entities.RefreshToken;
 
 namespace Papyrus.Logic.Services.Auth;
 
 public class TokenService : ITokenService
 {
-    private readonly JWTConfiguration jwtConfigurations;
     private readonly IUserService userService;
     private readonly UserManager<User> userManager;
+    private readonly IJWTAuthService jwtAuthService;
 
-    public TokenService(IOptions<JWTConfiguration> jwtOptions, IUserService userService, UserManager<User> userManager)
+    public TokenService(IUserService userService, UserManager<User> userManager, IJWTAuthService jwtAuthService)
     {
-        jwtConfigurations = jwtOptions.Value;
         this.userService = userService;
         this.userManager = userManager;
+        this.jwtAuthService = jwtAuthService;
     }
 
-    public string BuildAccessToken(UserTokenDTO user, IList<string> roles)
-    {
-        var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Sub, user.Id),
-            new(ClaimTypes.Name, user.UserName),
-            new(ClaimTypes.Email, user.Email),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new(ClaimTypes.NameIdentifier, user.Id)
-        };
-
-        var roleClaims = roles.Select(r => new Claim(ClaimTypes.Role, r));
-        claims.AddRange(roleClaims);
-
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfigurations.Key));
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        var tokenDescriptor = new JwtSecurityToken(jwtConfigurations.Issuer, jwtConfigurations.Issuer, claims,
-            expires: DateTime.Now.AddMinutes(jwtConfigurations.ExpirationInMinutes),
-            signingCredentials: credentials);
-        return new JwtSecurityTokenHandler().WriteToken(tokenDescriptor);
-    }
+    public string BuildAccessToken(UserTokenDTO user, IList<string> roles) => jwtAuthService.BuildAccessToken<UserTokenDTO>(new UserEntity { Id = user.Id, UserName = user.UserName, Email = user.Email }, roles);
 
     public RefreshToken BuildRefreshToken(string clientId)
     {
-        var randomNumber = new byte[32];
-        using var generator = RandomNumberGenerator.Create();
-        generator.GetBytes(randomNumber);
+        var token = jwtAuthService.BuildRefreshToken();
         return new RefreshToken
         {
-            Token = Guid.NewGuid().ToString(),
-            Expires = DateTime.Now.AddDays(3),
-            Created = DateTime.Now,
+            Token = token.Token,
+            Expires = token.Expires,
+            Created = token.Creation,
             ClientId = clientId
         };
     }
@@ -98,5 +72,12 @@ public class TokenService : ITokenService
             ClientId = clientId,
             UserId = user.Id
         };
+    }
+
+    public class UserEntity : IUser
+    {
+        public string Id { get; set; } = default!;
+        public string UserName { get; set; } = default!;
+        public string Email { get; set; } = default!;
     }
 }

@@ -1,9 +1,9 @@
 ﻿using KarcagS.Blazor.Common.Components.Confirm;
+using KarcagS.Blazor.Common.Components.Tree;
 using KarcagS.Blazor.Common.Services;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Notes.Interfaces;
-using Papyrus.Client.Shared.Components.Common;
 using Papyrus.Client.Shared.Dialogs.Notes;
 using Papyrus.Shared.DTOs.Notes;
 

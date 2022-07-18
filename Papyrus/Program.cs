@@ -2,6 +2,7 @@ using System.Text;
 using AutoMapper;
 using KarcagS.Common.Middlewares;
 using KarcagS.Common.Tools;
+using KarcagS.Common.Tools.Authentication.JWT;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -11,7 +12,6 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
-using Papyrus.Logic.Configurations;
 using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Mappers;
 using Papyrus.Logic.Services;
@@ -34,6 +34,7 @@ builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Util
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUtilsService<string>, UtilsService<PapyrusContext, string>>();
 builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
+builder.Services.AddScoped<IJWTAuthService, JWTAuthService>();
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
