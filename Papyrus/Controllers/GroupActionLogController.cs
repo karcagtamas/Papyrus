@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Services.Groups.Interfaces;
-using Papyrus.Shared.DTOs.Groups;
-using Papyrus.Shared.Models.Groups;
+using Papyrus.Shared.DTOs.Groups.ActionsLogs;
 
 namespace Papyrus.Controllers;
 
@@ -11,52 +10,13 @@ namespace Papyrus.Controllers;
 [Authorize]
 public class GroupActionLogController : ControllerBase
 {
-    private readonly IGroupRoleService groupRoleService;
+    private readonly IGroupActionLogService groupActionLogService;
 
-    public GroupActionLogController(IGroupRoleService groupRoleService)
+    public GroupActionLogController(IGroupActionLogService groupActionLogService)
     {
-        this.groupRoleService = groupRoleService;
-    }
-
-    [HttpGet("{id}")]
-    public GroupRoleDTO Get(int id)
-    {
-        return groupRoleService.GetMapped<GroupRoleDTO>(id);
+        this.groupActionLogService = groupActionLogService;
     }
 
     [HttpGet("Group/{groupId}")]
-    public List<GroupRoleDTO> GetByGroup(int groupId)
-    {
-        return groupRoleService.GetByGroup(groupId);
-    }
-
-    [HttpGet("Group/{groupId}/Light")]
-    public List<GroupRoleLightDTO> GetLightByGroup(int groupId)
-    {
-        return groupRoleService.GetLightByGroup(groupId);
-    }
-
-    [HttpPost]
-    public void Create([FromBody] GroupRoleModel model)
-    {
-        groupRoleService.CreateFromModel(model);
-    }
-
-    [HttpPut("{id}")]
-    public void Update(int id, [FromBody] GroupRoleModel model)
-    {
-        groupRoleService.UpdateByModel(id, model);
-    }
-
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
-        groupRoleService.DeleteById(id);
-    }
-
-    [HttpGet("Exists")]
-    public bool Exists([FromQuery] int groupId, [FromQuery] string name) 
-    {
-        return groupRoleService.Exists(groupId, name);
-    }
+    public List<GroupActionLogDTO> GetByGroup(int groupId) => groupActionLogService.GetByGroup(groupId);
 }

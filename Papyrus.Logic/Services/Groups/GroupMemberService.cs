@@ -5,8 +5,8 @@ using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
-using Papyrus.DataAccess.Enums.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.Logic.Services.Groups;
 

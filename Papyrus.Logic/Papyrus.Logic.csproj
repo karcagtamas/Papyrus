@@ -8,7 +8,6 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Papyrus.DataAccess\Papyrus.DataAccess.csproj" />
-		<ProjectReference Include="..\Papyrus.Shared\Papyrus.Shared.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

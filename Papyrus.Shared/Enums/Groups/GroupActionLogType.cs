@@ -1,4 +1,4 @@
-﻿namespace Papyrus.DataAccess.Enums.Groups;
+﻿namespace Papyrus.Shared.Enums.Groups;
 
 public enum GroupActionLogType
 {

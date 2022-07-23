@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
-using Papyrus.DataAccess.Enums.Groups;
+using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.DataAccess.Entities.Groups;
 

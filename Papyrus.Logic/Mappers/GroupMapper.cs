@@ -2,6 +2,8 @@
 using Papyrus.Shared.Models.Groups;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.ActionsLogs;
+using KarcagS.Shared.Helpers;
 
 namespace Papyrus.Logic.Mappers;
 
@@ -20,7 +22,8 @@ public class GroupMapper : Profile
         CreateMap<Group, GroupListDTO>()
             .ForMember(dest => dest.Owner, opt => opt.MapFrom(src => src.Owner.UserName));
 
-        CreateMap<GroupActionLog, GroupActionLogDTO>();
+        CreateMap<GroupActionLog, GroupActionLogDTO>()
+            .ForMember(dest => dest.Performer, opt => opt.MapFrom(src => ObjectHelper.MapOrDefault(src.Performer, p => p.UserName) ?? "System"));
         CreateMap<GroupMember, GroupMemberDTO>()
             .ForMember(dest => dest.Join, opt => opt.MapFrom(src => src.Creation));
         CreateMap<GroupRole, GroupRoleDTO>();

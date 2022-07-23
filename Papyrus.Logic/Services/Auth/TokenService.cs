@@ -25,7 +25,7 @@ public class TokenService : ITokenService
         this.jwtAuthService = jwtAuthService;
     }
 
-    public string BuildAccessToken(UserTokenDTO user, IList<string> roles) => jwtAuthService.BuildAccessToken<UserTokenDTO>(new UserEntity { Id = user.Id, UserName = user.UserName, Email = user.Email }, roles);
+    public string BuildAccessToken(UserTokenDTO user, IList<string> roles) => jwtAuthService.BuildAccessToken(new UserEntity { Id = user.Id, UserName = user.UserName, Email = user.Email }, roles);
 
     public RefreshToken BuildRefreshToken(string clientId)
     {

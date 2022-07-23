@@ -3,8 +3,9 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
-using Papyrus.DataAccess.Enums.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Shared.DTOs.Groups.ActionsLogs;
+using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.Logic.Services.Groups;
 
@@ -25,6 +26,13 @@ public class GroupActionLogService : MapperRepository<GroupActionLog, long, stri
         };
 
         Create(log);
+    }
+
+    public List<GroupActionLogDTO> GetByGroup(int groupId)
+    {
+        return GetMappedList<GroupActionLogDTO>(x => x.GroupId == groupId)
+            .OrderByDescending(x => x.Creation)
+            .ToList();
     }
 
     private static string GetText(GroupActionLogType type)
