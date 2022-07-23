@@ -110,6 +110,18 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .HasOne(x => x.Group)
             .WithMany(x => x.Notes)
             .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<Note>()
+            .HasOne(x => x.Creator)
+            .WithMany(x => x.CreatedNotes)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+        modelBuilder.Entity<Note>()
+            .HasOne(x => x.LastUpdater)
+            .WithMany(x => x.LastUpdatedNotes)
+            .IsRequired(false)
+            .OnDelete(DeleteBehavior.SetNull);
+        modelBuilder.Entity<Note>()
+            .HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
 
         // Note Action Log
         modelBuilder.Entity<NoteActionLog>()

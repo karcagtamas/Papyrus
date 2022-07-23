@@ -18,9 +18,8 @@ public static class PapyrusMenu
         MenuItem.CreateGroupItem("Notes")
             .AddIcon(Icons.Filled.Notes)
             .AddItem(MenuItem.CreateItem("List", "notes").AddIcon(Icons.Filled.NoteAlt))
-            .AddItem(MenuItem.CreateItem("Tags", "notes/tags").AddIcon(Icons.Filled.Tag))
-            .AddItem(MenuItem.CreateItem("Logs", "notes/logs").AddIcon(Icons.Filled.History).AddIconColor(Color.Warning)),
-        MenuItem.CreateGroupItem("Admin")
+            .AddItem(MenuItem.CreateItem("Tags", "notes/tags").AddIcon(Icons.Filled.Tag)),
+        MenuItem.CreateGroupItem("Administration")
             .AddIcon(Icons.Filled.AdminPanelSettings)
             .AddIconColor(Color.Warning)
             .AddItem(MenuItem.CreateItem("Users", "users").AddIcon(Icons.Filled.ManageAccounts))
@@ -39,8 +38,7 @@ public static class PapyrusMenu
             MenuItem.CreateGroupItem("Notes")
                 .AddIcon(Icons.Filled.Notes)
                 .AddItem(MenuItem.CreateItem("List", $"groups/{groupId}/notes").AddIcon(Icons.Filled.NoteAlt))
-                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddIcon(Icons.Filled.Tag))
-                .AddItem(MenuItem.CreateItem("Logs", $"groups/{groupId}/notes/logs").AddIcon(Icons.Filled.History).AddIconColor(Color.Warning)),
+                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddIcon(Icons.Filled.Tag)),
             MenuItem.CreateItem("Members", $"groups/{groupId}/members")
                 .AddIcon(Icons.Filled.People),
             MenuItem.CreateItem("Roles", $"groups/{groupId}/roles")

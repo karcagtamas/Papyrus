@@ -287,32 +287,51 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Note", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("Creation")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("varchar(255)");
+
                     b.Property<int?>("GroupId")
-                        .IsRequired()
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("LastUpdaterId")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("Public")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("Title")
                         .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatorId");
+
                     b.HasIndex("GroupId");
+
+                    b.HasIndex("LastUpdaterId");
 
                     b.HasIndex("UserId");
 
                     b.ToTable("Notes");
+
+                    b.HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
                 });
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteActionLog", b =>
@@ -321,8 +340,9 @@ namespace Papyrus.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("NoteId")
-                        .HasColumnType("int");
+                    b.Property<string>("NoteId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.HasKey("Id");
 
@@ -658,19 +678,31 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Note", b =>
                 {
+                    b.HasOne("Papyrus.DataAccess.Entities.User", "Creator")
+                        .WithMany("CreatedNotes")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
                     b.HasOne("Papyrus.DataAccess.Entities.Groups.Group", "Group")
                         .WithMany("Notes")
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Papyrus.DataAccess.Entities.User", "LastUpdater")
+                        .WithMany("LastUpdatedNotes")
+                        .HasForeignKey("LastUpdaterId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Papyrus.DataAccess.Entities.User", "User")
                         .WithMany("Notes")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Creator");
 
                     b.Navigation("Group");
+
+                    b.Navigation("LastUpdater");
 
                     b.Navigation("User");
                 });
@@ -755,7 +787,11 @@ namespace Papyrus.Migrations
 
                     b.Navigation("CreatedGroups");
 
+                    b.Navigation("CreatedNotes");
+
                     b.Navigation("Groups");
+
+                    b.Navigation("LastUpdatedNotes");
 
                     b.Navigation("Notes");
 

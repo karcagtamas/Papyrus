@@ -4,5 +4,15 @@
 <GroupPageTitle PageName="Notes" />
 
 <div class="page-div">
-
+    <ActionBar>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+    </ActionBar>
+    <div class="page-content">
+        <div class="notes">
+            @foreach (var note in Notes)
+            {
+                <NoteListTile Note="note" />
+            }
+        </div>
+    </div>
 </div>

@@ -70,6 +70,7 @@ builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
 builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
 
 builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<INoteService, NoteService>();
 
 builder.Services.AddMudServices(config =>
 {

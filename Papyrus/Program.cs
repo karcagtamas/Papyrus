@@ -57,6 +57,7 @@ var mapperConfig = new MapperConfiguration(conf =>
     conf.AddProfile<UserMapper>();
     conf.AddProfile<GroupMapper>();
     conf.AddProfile<TagMapper>();
+    conf.AddProfile<NoteMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
@@ -136,7 +137,7 @@ builder.Services.AddSwaggerGen(conf =>
 {
     conf.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT containing userid claim",
+        Description = "JWT containing user id claim",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,

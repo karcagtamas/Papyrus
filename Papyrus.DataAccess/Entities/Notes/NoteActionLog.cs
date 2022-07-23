@@ -10,7 +10,7 @@ public class NoteActionLog : IEntity<int>
     public int Id { get; set; }
 
     [Required]
-    public int NoteId { get; set; }
+    public string NoteId { get; set; } = default!;
 
     public virtual Note Note { get; set; } = default!;
 }
