@@ -36,4 +36,15 @@ public class NoteService : HttpCall<string>, INoteService
 
         return Http.Get<List<NoteLightDTO>>(settings).ExecuteWithResultOrElse(new());
     }
+
+    public Task<NoteLightDTO?> GetLight(string id)
+    {
+        var pathParams = HttpPathParameters.Build()
+            .Add(id);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Light"))
+            .AddPathParams(pathParams);
+
+        return Http.Get<NoteLightDTO>(settings).ExecuteWithResult();
+    }
 }

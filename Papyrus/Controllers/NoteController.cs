@@ -21,6 +21,9 @@ public class NoteController : ControllerBase
     [HttpGet("{id}")]
     public NoteDTO Get(string id) => noteService.GetMapped<NoteDTO>(id);
 
+    [HttpGet("Light/{id}")]
+    public NoteLightDTO GetLight(string id) => noteService.GetMapped<NoteLightDTO>(id);
+
     [HttpGet("Group/{groupId}")]
     public List<NoteLightDTO> GetByGroup(int groupId) => noteService.GetByGroup(groupId);
 
@@ -29,4 +32,10 @@ public class NoteController : ControllerBase
 
     [HttpPost]
     public NoteCreationDTO CreateEmpty([FromBody] NoteCreateModel model) => noteService.CreateEmpty(model.GroupId);
+
+    [HttpPut("{id}")]
+    public void Update(string id, [FromBody] NoteModel model) => noteService.UpdateByModel(id, model);
+
+    [HttpDelete("{id}")]
+    public void Delete(string id) => noteService.DeleteById(id);
 }

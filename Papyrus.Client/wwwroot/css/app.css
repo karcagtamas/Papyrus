@@ -99,10 +99,10 @@ a,
     }
 
 .editor-cursor {
-    display: block;
     background-color: red;
-    width: 1px;
+    width: 2px;
     height: 1rem;
+    display: inline-block;
 }
 
 .hovered-text:hover {

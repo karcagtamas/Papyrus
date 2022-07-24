@@ -1,11 +1,14 @@
 ﻿using KarcagS.Blazor.Common.Models;
+using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
+using MudBlazor;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Common.Editor;
+using Papyrus.Client.Shared.Dialogs.Notes;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Notes;
@@ -19,6 +22,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
     public string Id { get; set; } = default!;
 
     [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+
+    [Inject]
     private ITokenService TokenService { get; set; } = default!;
 
     [Inject]
@@ -27,6 +33,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
     [Inject]
     private IUserService UserService { get; set; } = default!;
 
+    [Inject]
+    private IHelperService HelperService { get; set; } = default!;
+
     private Editor? Editor = new();
 
     private HubConnection? hub;
@@ -34,10 +43,13 @@ public partial class NoteEditor : ComponentBase, IDisposable
     private NoteDTO Note { get; set; } = default!;
     private string ClientId { get; set; } = string.Empty;
     private List<UserLightDTO> Users { get; set; } = new();
+    private bool DataCollapsed { get; set; } = true;
 
     protected override async void OnInitialized()
     {
         await Refresh();
+
+        DataCollapsed = true;
 
         ClientId = await TokenService.GetClientId();
 
@@ -112,6 +124,15 @@ public partial class NoteEditor : ComponentBase, IDisposable
                 await h.SendAsync(EditorHubEvents.EditorShare, Id, diffs.Select(diff => new TransportDiff(diff)).ToList());
             }
         });
+    }
+
+    private async Task OpenEdit() 
+    {
+        var parameters = new DialogParameters { { "NoteId", Id } };
+
+        // TODO: Check EDIT or DELETE event
+        // TODO: Refresh by socket
+        await HelperService.OpenDialog<NoteEditDialog>("Edit Note", async () => await Refresh(), parameters);
     }
 
     private async Task ApplyDiffs(List<TransportDiff> tDiffs)

@@ -1,0 +1,37 @@
+﻿@using KarcagS.Shared.Helpers
+@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Shared.DTOs.Notes
+@using Papyrus.Shared.Models.Notes
+
+<EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Note" IsEdit="true">
+    <MudTextField Class="mb-5" T="string" Label="Title" Variant="Variant.Text" Required="true"
+                  For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth="true" />
+</EditorDialog>
+
+@code {
+    [Parameter]
+    public string NoteId { get; set; } = default!;
+
+    [Inject]
+    private INoteService NoteService { get; set; } = default!;
+
+    private NoteLightDTO? Note { get; set; }
+    private NoteModel Model { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        Note = await NoteService.GetLight(NoteId);
+
+        if (ObjectHelper.IsNotNull(Note))
+        {
+            Model = new();
+            await InvokeAsync(StateHasChanged);
+        }
+
+        base.OnInitialized();
+    }
+
+    private Task<bool> Submit() => NoteService.Update(NoteId, Model);
+
+    private Task<bool> Remove() => NoteService.Delete(NoteId);
+}

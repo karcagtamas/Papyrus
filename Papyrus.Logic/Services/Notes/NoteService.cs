@@ -4,15 +4,20 @@ using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
+using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.Logic.Services.Notes;
 
 public class NoteService : MapperRepository<Note, string, string>, INoteService
 {
-    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Note")
+    private readonly IGroupActionLogService groupActionLogService;
+
+    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Note")
     {
+        this.groupActionLogService = groupActionLogService;
     }
 
     public NoteCreationDTO CreateEmpty(int? groupId)
@@ -23,13 +28,15 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             Content = ""
         };
 
+        var userId = Utils.GetRequiredCurrentUserId();
+
         if (ObjectHelper.IsNotNull(groupId))
         {
             note.GroupId = groupId;
+            groupActionLogService.AddActionLog((int)groupId, userId, GroupActionLogType.NoteCreate);
         }
         else
         {
-            var userId = Utils.GetRequiredCurrentUserId();
             note.UserId = userId;
         }
 

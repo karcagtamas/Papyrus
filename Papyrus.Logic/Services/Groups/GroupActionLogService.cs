@@ -52,6 +52,7 @@ public class GroupActionLogService : MapperRepository<GroupActionLog, long, stri
             GroupActionLogType.TagEdit => "Tag edited",
             GroupActionLogType.TagRemove => "Tag removed",
             GroupActionLogType.DataEdit => "Data edited",
+            GroupActionLogType.NoteCreate => "Note created",
             _ => "",
         };
     }

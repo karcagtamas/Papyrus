@@ -14,5 +14,6 @@ public enum GroupActionLogType
     MemberRemove,
     TagCreate,
     TagEdit,
-    TagRemove
+    TagRemove,
+    NoteCreate
 }
