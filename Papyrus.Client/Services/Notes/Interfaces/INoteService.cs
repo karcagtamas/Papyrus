@@ -7,4 +7,5 @@ public interface INoteService : IHttpCall<string>
 {
     Task<List<NoteLightDTO>> GetByGroup(int groupId);
     Task<List<NoteLightDTO>> GetByUser();
+    Task<NoteCreationDTO?> CreateEmpty(int? groupId);
 }

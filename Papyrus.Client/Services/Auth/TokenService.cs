@@ -22,10 +22,7 @@ public class TokenService : ITokenService
         this.storeService = storeService;
     }
 
-    public async Task<TokenDTO> GetUser()
-    {
-        return await localStorageService.GetItemAsync<TokenDTO>(UserKey);
-    }
+    public async Task<TokenDTO> GetUser() => await localStorageService.GetItemAsync<TokenDTO>(UserKey);
 
     public async Task RefreshStore()
     {
@@ -87,23 +84,16 @@ public class TokenService : ITokenService
         storeService.Remove(UserKey);
     }
 
-    public bool UserInStore()
-    {
-        return storeService.IsExists(UserKey);
-    }
+    public bool UserInStore() => storeService.IsExists(UserKey);
 
-    public async Task<string> GetClientId()
-    {
-        return await localStorageService.GetItemAsync<string>(ClientIdKey);
-    }
+    public async Task<string> GetClientId() => await localStorageService.GetItemAsync<string>(ClientIdKey);
 
-    public async Task<string> GetAccessToken()
-    {
-        return await localStorageService.GetItemAsync<string>(AccessTokenKey);
-    }
+    public async Task<string> GetAccessToken() => await localStorageService.GetItemAsync<string>(AccessTokenKey);
 
-    private async Task<string> GetRefreshToken()
+    private async Task<string> GetRefreshToken() => await localStorageService.GetItemAsync<string>(RefreshTokenKey);
+
+    public async Task<string?> GetAccessTokenProvider()
     {
-        return await localStorageService.GetItemAsync<string>(RefreshTokenKey);
+        return await localStorageService.GetItemAsync<string?>(AccessTokenKey);
     }
 }

@@ -6,7 +6,7 @@
             <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))"></MudIconButton>
             <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))"></MudIconButton>
         </MudButtonGroup>
-        <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
+        <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
             <MudIconButton Disabled="@ColorPickerOpened" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))">
             </MudIconButton>
             <MudPopover Open="@ColorPickerOpened" AnchorOrigin="Origin.BottomCenter">
@@ -22,10 +22,8 @@
             <MudIconButton Disabled="@ColorPickerOpened" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))"></MudIconButton>
         </MudButtonGroup>
         <MudSpacer />
-        @foreach(var user in Users)
-        {
-            <MudAvatar Color="Color.Secondary" Class="ml-3">@user.UserName.ToUpper()[0]</MudAvatar>
-        }
+
+        @RightToolbar
     </div>
     <MudDivider />
     <div @ref="editorReference" contenteditable="true" id="rt-editor" @oninput="@((args) => ContentChanged(args))"></div>

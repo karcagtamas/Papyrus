@@ -8,4 +8,5 @@ public interface INoteService : IMapperRepository<Note, string>
 {
     List<NoteLightDTO> GetByGroup(int groupId);
     List<NoteLightDTO> GetByUser();
+    NoteCreationDTO CreateEmpty(int? groupId);
 }

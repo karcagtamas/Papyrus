@@ -1,0 +1,14 @@
+﻿@page "/notes/editor/{Id}"
+
+<ApplicationPageTitle PageName="@PageTitle"></ApplicationPageTitle>
+
+<div class="page-div p-2">
+    <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange">
+        <RightToolbar>
+            @foreach (var user in Users)
+            {
+                <MudAvatar Color="Color.Secondary" Class="ml-3">@user.UserName.ToUpper()[0]</MudAvatar>
+            }
+        </RightToolbar>
+    </Editor>
+</div>

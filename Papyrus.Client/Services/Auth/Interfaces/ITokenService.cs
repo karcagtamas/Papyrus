@@ -11,4 +11,5 @@ public interface ITokenService
     bool UserInStore();
     Task<string> GetClientId();
     Task<string> GetAccessToken();
+    Task<string?> GetAccessTokenProvider();
 }

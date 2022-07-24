@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
+using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Controllers;
 
@@ -25,4 +26,7 @@ public class NoteController : ControllerBase
 
     [HttpGet("User")]
     public List<NoteLightDTO> GetByUser() => noteService.GetByUser();
+
+    [HttpPost]
+    public NoteCreationDTO CreateEmpty([FromBody] NoteCreateModel model) => noteService.CreateEmpty(model.GroupId);
 }

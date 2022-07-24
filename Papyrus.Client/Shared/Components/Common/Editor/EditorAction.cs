@@ -1,4 +1,4 @@
-namespace Papyrus.Client.Pages.Editor;
+namespace Papyrus.Client.Shared.Components.Common.Editor;
 
 public enum EditorAction
 {

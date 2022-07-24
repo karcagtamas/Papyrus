@@ -9,7 +9,7 @@
         <MudText Typo="Typo.body1">@Note.Creator</MudText>
         <MudSpacer />
         <div class="desc-row">
-            <MudText Typo="Typo.body2">Created: @DateHelper.DateToString(Note.LastUpdate)</MudText>
+            <MudText Typo="Typo.body2">Last Update: @DateHelper.DateToString(Note.LastUpdate)</MudText>
             <MudIconButton Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
         </div>
     </div>
@@ -24,6 +24,6 @@
 
     private void Open()
     {
-        NavigationManager.NavigateTo($"/notes/{Note.Id} ");
+        NavigationManager.NavigateTo($"/notes/editor/{Note.Id} ");
     }
 }
