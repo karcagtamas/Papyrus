@@ -28,4 +28,5 @@ public class Tag : IEntity<int>
     public virtual User? User { get; set; }
     public virtual Tag? Parent { get; set; }
     public virtual ICollection<Tag> Children { get; set; } = default!;
+    public virtual ICollection<NoteTag> Notes { get; set; } = default!;
 }

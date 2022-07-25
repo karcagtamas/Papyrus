@@ -15,7 +15,7 @@ public class EditorHub : Hub
     public async Task Connect(string editor)
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, editor);
-        await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberChange, Context.UserIdentifier, EditorMemberChange.Join);
+        await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberChanged, Context.UserIdentifier, EditorMemberChange.Join);
     }
 
     [Authorize]
@@ -25,12 +25,12 @@ public class EditorHub : Hub
         {
             await Clients.Group(editor).SendAsync(EditorHubEvents.EditorChanged, diffs);
         }
-    }
+    } 
 
     [Authorize]
     public async Task Disconnect(string editor)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, editor);
-        await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberChange, Context.UserIdentifier, EditorMemberChange.Leave);
+        await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberChanged, Context.UserIdentifier, EditorMemberChange.Leave);
     }
 }

@@ -5,6 +5,7 @@ namespace Papyrus.Shared.Models.Notes;
 public class NoteModel
 {
     public string Title { get; set; } = default!;
+    public List<int> Tags { get; set; } = new();
 
     public NoteModel()
     {

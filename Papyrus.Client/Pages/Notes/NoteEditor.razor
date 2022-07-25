@@ -10,6 +10,12 @@
         <MudCard Elevation="2" Class="p-2 m-3 mb-1 mt-1">
             <div class="d-flex flex-row align-items-center">
                 <MudText Color="Color.Primary" Typo="Typo.h5">@Note.Title</MudText>
+                <div class="ml-2 mr-2 d-flex flex-row align-items-center">
+                   @foreach (var tag in Note.Tags)
+                   {
+                       <TagBox Tag="tag" />
+                   }
+                </div>
                 <MudSpacer />
                 <div>
                     <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" />

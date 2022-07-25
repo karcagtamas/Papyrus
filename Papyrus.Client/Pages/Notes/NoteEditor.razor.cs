@@ -87,7 +87,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
             await ApplyDiffs(diffs);
         });
 
-        hub?.On<string, EditorMemberChange>(EditorHubEvents.EditorMemberChange, async (user, action) =>
+        hub?.On<string, EditorMemberChange>(EditorHubEvents.EditorMemberChanged, async (user, action) =>
         {
             if (action == EditorMemberChange.Join)
             {

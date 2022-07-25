@@ -7,4 +7,6 @@ public class NoteLightDTO
     public DateTime LastUpdate { get; set; }
     public string? Creator { get; set; }
     public bool Public { get; set; }
+    public List<NoteTagDTO> Tags { get; set; } = default!;
+    public int? GroupId { get; set; }
 }

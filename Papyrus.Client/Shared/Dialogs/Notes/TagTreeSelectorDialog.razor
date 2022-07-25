@@ -11,6 +11,9 @@
     [Parameter]
     public int? ParentId { get; set; }
 
+    [Parameter]
+    public List<int> DisabledIds { get; set; } = new();
+
     [Inject]
     private ITagService TagService { get; set; } = default!;
 

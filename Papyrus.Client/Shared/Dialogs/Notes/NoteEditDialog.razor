@@ -1,4 +1,5 @@
-﻿@using KarcagS.Shared.Helpers
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Shared.Helpers
 @using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Shared.Models.Notes
@@ -6,6 +7,14 @@
 <EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Note" IsEdit="true">
     <MudTextField Class="mb-5" T="string" Label="Title" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth="true" />
+
+    <div>
+        @foreach (var tag in Tags)
+        {
+            <TagBox Tag="tag" OnClose="@(() => RemoveTag(tag.Id))" />
+        }
+        <MudChip Style="height: 1.6rem;" Label="true" OnClick="AddTags"><MudIcon Size="Size.Small" Icon="@Icons.Filled.Add" /></MudChip>
+    </div>
 </EditorDialog>
 
 @code {
@@ -13,10 +22,14 @@
     public string NoteId { get; set; } = default!;
 
     [Inject]
+    private IHelperService HelperService { get; set; } = default!;
+
+    [Inject]
     private INoteService NoteService { get; set; } = default!;
 
     private NoteLightDTO? Note { get; set; }
     private NoteModel Model { get; set; } = new();
+    private List<NoteTagDTO> Tags { get; set; } = new();
 
     protected override async void OnInitialized()
     {
@@ -24,7 +37,9 @@
 
         if (ObjectHelper.IsNotNull(Note))
         {
-            Model = new();
+            Model = new(Note);
+            Tags = Note.Tags;
+            Model.Tags = Tags.Select(x => x.Id).ToList();
             await InvokeAsync(StateHasChanged);
         }
 
@@ -34,4 +49,37 @@
     private Task<bool> Submit() => NoteService.Update(NoteId, Model);
 
     private Task<bool> Remove() => NoteService.Delete(NoteId);
+
+    private async Task AddTags()
+    {
+        if (ObjectHelper.IsNull(Note))
+        {
+            return;
+        }
+
+        var result = await HelperService.OpenDialog<TagTreeSelectorDialog, List<TagTreeItemDTO>>("Select Tag", (data) =>
+        {
+            if (ObjectHelper.IsNotEmpty(data))
+            {
+                var tags = data.Select(x => new NoteTagDTO
+                    {
+                        Id = x.Id,
+                        Caption = x.Caption,
+                        Color = x.Color
+                    })
+                .ToList();
+
+                Tags.AddRange(tags);
+                Model.Tags.AddRange(tags.Select(x => x.Id));
+            }
+        },
+        new DialogParameters { { "GroupId", Note.GroupId }, { "DisabledIds", Model.Tags } });
+    }
+
+    private void RemoveTag(int id)
+    {
+        Tags = Tags.Where(x => x.Id != id).ToList();
+        Model.Tags.Remove(id);
+        StateHasChanged();
+    }
 }

@@ -16,17 +16,19 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<Note> Notes { get; set; }
     public DbSet<NoteActionLog> NoteActionLogs { get; set; }
     public DbSet<Tag> Tags { get; set; }
+    public DbSet<NoteTag> NoteTags { get; set; }
 
     public PapyrusContext(DbContextOptions<PapyrusContext> options) : base(options)
     {
         RefreshTokens = default!;
         Groups = default!;
         GroupActionLogs = default!;
-        GroupMembers = default!;
+        GroupMembers = default!; 
         GroupRoles = default!;
         Notes = default!;
         NoteActionLogs = default!;
         Tags = default!;
+        NoteTags = default!;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -145,5 +147,19 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .OnDelete(DeleteBehavior.Cascade);
         modelBuilder.Entity<Tag>()
             .HasCheckConstraint("CK_Tag_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+
+        // Note Tags
+        modelBuilder.Entity<NoteTag>()
+            .HasKey(x => new { x.NoteId, x.TagId });
+        modelBuilder.Entity<NoteTag>()
+            .HasOne(x => x.Note)
+            .WithMany(x => x.Tags)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<NoteTag>()
+            .HasOne(x => x.Tag)
+            .WithMany(x => x.Notes)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -34,7 +34,7 @@ public class NoteController : ControllerBase
     public NoteCreationDTO CreateEmpty([FromBody] NoteCreateModel model) => noteService.CreateEmpty(model.GroupId);
 
     [HttpPut("{id}")]
-    public void Update(string id, [FromBody] NoteModel model) => noteService.UpdateByModel(id, model);
+    public void Update(string id, [FromBody] NoteModel model) => noteService.UpdateWithTags(id, model);
 
     [HttpDelete("{id}")]
     public void Delete(string id) => noteService.DeleteById(id);

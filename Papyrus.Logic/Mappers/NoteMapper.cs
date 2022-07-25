@@ -16,6 +16,13 @@ public class NoteMapper : Profile
         CreateMap<Note, NoteLightDTO>()
             .ForMember(dest => dest.Creator, opt => opt.MapFrom(src => ObjectHelper.MapOrDefault(src.Creator, x => x.UserName)));
 
-        CreateMap<NoteModel, Note>();
+        CreateMap<NoteModel, Note>()
+            .ForMember(dest => dest.Tags, opt => opt.Ignore());
+
+        CreateMap<NoteTag, NoteTagDTO>()
+            .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Tag.Id))
+            .ForMember(dest => dest.Caption, opt => opt.MapFrom(src => src.Tag.Caption))
+            .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Tag.Color));
+        CreateMap<Tag, NoteTagDTO>();
     }
 }

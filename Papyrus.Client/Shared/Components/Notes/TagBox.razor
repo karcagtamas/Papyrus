@@ -1,0 +1,14 @@
+﻿@using Papyrus.Shared.DTOs.Notes
+
+<MudChip Label="true" Style="@Style" OnClose="OnClose">@Tag.Caption</MudChip>
+
+@code {
+    [Parameter, EditorRequired]
+    public NoteTagDTO Tag { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
+    public string Style { get => $"background-color: {Tag.Color}; height: 1.6rem;"; }
+
+}

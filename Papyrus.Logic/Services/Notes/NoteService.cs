@@ -8,6 +8,7 @@ using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
+using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Logic.Services.Notes;
 
@@ -63,5 +64,28 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return GetMappedList<NoteLightDTO>(x => x.UserId == userId)
             .OrderByDescending(x => x.LastUpdate)
             .ToList();
+    }
+
+    public void UpdateWithTags(string id, NoteModel model)
+    {
+        UpdateByModel(id, model);
+
+        Note note = Get(id);
+
+        var tags = note.Tags;
+        tags = tags.Where(x => model.Tags.Any(t => t == x.TagId)).ToList();
+
+        model.Tags.Where(x => !tags.Any(t => t.TagId == x)).ToList().ForEach(x =>
+        {
+            tags.Add(new NoteTag
+            {
+                NoteId = id,
+                TagId = x
+            });
+        });
+
+        note.Tags = tags;
+
+        Update(note);
     }
 }
