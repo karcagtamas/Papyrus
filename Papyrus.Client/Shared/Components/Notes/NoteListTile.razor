@@ -20,10 +20,10 @@
     public NoteLightDTO Note { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IJSRuntime JSRuntime { get; set; } = default!;
 
-    private void Open()
+    private async void Open()
     {
-        NavigationManager.NavigateTo($"/notes/editor/{Note.Id} ");
+        await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{Note.Id}", "_blank");
     }
 }

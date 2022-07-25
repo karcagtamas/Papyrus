@@ -1,7 +1,9 @@
 ﻿using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
+using System;
 
 namespace Papyrus.Client.Pages.Groups;
 
@@ -14,7 +16,7 @@ public partial class GroupNotes : ComponentBase
     private INoteService NoteService { get; set; } = default!;
 
     [Inject]
-    private NavigationManager NavigationManager { get; set; } = default!;
+    private IJSRuntime JSRuntime { get; set; } = default!;
 
     private List<NoteLightDTO> Notes { get; set; } = new();
 
@@ -37,7 +39,7 @@ public partial class GroupNotes : ComponentBase
 
         if (ObjectHelper.IsNotNull(result))
         {
-            NavigationManager.NavigateTo($"/notes/editor/{result.Id}");
+            await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
         }
     }
 }
