@@ -7,12 +7,12 @@
     <MudTextField Class="mb-5" T="string" Label="Name" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
     <MudDivider />
-    <div>
+    <div class="d-flex flex-row">
         <MudCheckBox Label="Group Edit" For="@(() => Model.GroupEdit)" @bind-Checked="Model.GroupEdit" />
         <MudCheckBox Label="Group Close" For="@(() => Model.GroupClose)" @bind-Checked="Model.GroupClose" />
     </div>
     <MudDivider />
-    <div>
+    <div class="d-flex flex-row">
         <MudCheckBox Label="Listing Notes" For="@(() => Model.ReadNoteList)" @bind-Checked="Model.ReadNoteList" />
         <MudCheckBox Label="Read Note" For="@(() => Model.ReadNote)" @bind-Checked="Model.ReadNote" />
         <MudCheckBox Label="Create Note" For="@(() => Model.CreateNote)" @bind-Checked="Model.CreateNote" />
@@ -20,22 +20,22 @@
         <MudCheckBox Label="Edit Note" For="@(() => Model.EditNote)" @bind-Checked="Model.EditNote" />
     </div>
     <MudDivider />
-    <div>
+    <div class="d-flex flex-row">
         <MudCheckBox Label="Read Members" For="@(() => Model.ReadMemberList)" @bind-Checked="Model.ReadMemberList" />
         <MudCheckBox Label="Edit Members" For="@(() => Model.EditMemberList)" @bind-Checked="Model.EditMemberList" />
     </div>
     <MudDivider />
-    <div>
+    <div class="d-flex flex-row">
         <MudCheckBox Label="Read Roles" For="@(() => Model.ReadRoleList)" @bind-Checked="Model.ReadRoleList" />
         <MudCheckBox Label="Edit Roles" For="@(() => Model.EditRoleList)" @bind-Checked="Model.EditRoleList" />
     </div>
     <MudDivider />
-    <div>
+    <div class="d-flex flex-row">
         <MudCheckBox Label="Read Action Logs" For="@(() => Model.ReadGroupActionLog)" @bind-Checked="Model.ReadGroupActionLog" />
         <MudCheckBox Label="Read Note Action Logs" For="@(() => Model.ReadNoteActionLog)" @bind-Checked="Model.ReadNoteActionLog" />
     </div>
     <MudDivider />
-    <div>
+    <div class="d-flex flex-row">
         <MudCheckBox Label="Read Tags" For="@(() => Model.ReadTagList)" @bind-Checked="Model.ReadTagList" />
         <MudCheckBox Label="Edit Tags" For="@(() => Model.EditTagList)" @bind-Checked="Model.EditTagList" />
     </div>

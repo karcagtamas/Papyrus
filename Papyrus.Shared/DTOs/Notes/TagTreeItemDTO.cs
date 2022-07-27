@@ -1,6 +1,8 @@
-﻿namespace Papyrus.Shared.DTOs.Notes;
+﻿using KarcagS.Shared.Common;
 
-public class TagTreeItemDTO
+namespace Papyrus.Shared.DTOs.Notes;
+
+public class TagTreeItemDTO : IIdentified<int>
 {
     public int Id { get; set; } = default!;
     public string Caption { get; set; } = default!;

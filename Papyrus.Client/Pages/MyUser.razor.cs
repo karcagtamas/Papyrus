@@ -11,7 +11,7 @@ namespace Papyrus.Client.Pages;
 public partial class MyUser : ComponentBase
 {
     [Inject]
-    private IDialogService DialogService { get; set; } = default!;
+    private IHelperService HelperService { get; set; } = default!;
 
     [Inject]
     private IUserService UserService { get; set; } = default!;
@@ -24,11 +24,11 @@ public partial class MyUser : ComponentBase
 
     protected override async void OnInitialized()
     {
-        GetUser();
-        await base.OnInitializedAsync();
+        await GetUser();
+        base.OnInitialized();
     }
 
-    private async void GetUser()
+    private async Task GetUser()
     {
         User = await UserService.Current();
         if (User is not null && User.ImageData is not null && User.ImageData.Length != 0)
@@ -36,19 +36,14 @@ public partial class MyUser : ComponentBase
             string b64 = Convert.ToBase64String(User.ImageData);
             Image = $"data:image/gif;base64,{b64}";
         }
-        StateHasChanged();
+        await InvokeAsync(StateHasChanged);
     }
 
-    private async void Edit()
+    private async Task Edit()
     {
         var parameters = new DialogParameters { { "UserId", User?.Id ?? "" } };
-        var dialog = DialogService.Show<UserEditDialog>("Edit User", parameters);
-        var result = await dialog.Result;
 
-        if (!result.Cancelled)
-        {
-            GetUser();
-        }
+        await HelperService.OpenEditorDialog<UserEditDialog>("Edit User", async (res) => await GetUser(), parameters);
     }
 
     private async void ChangeImage()
@@ -60,19 +55,9 @@ public partial class MyUser : ComponentBase
         },
         "Change Profile Image"))
         {
-            GetUser();
+            await GetUser();
         }
     }
 
-    private async void ChangePassword()
-    {
-        var parameters = new DialogParameters { };
-        var dialog = DialogService.Show<ChangePasswordDialog>("Change Password", parameters);
-        var result = await dialog.Result;
-
-        if (!result.Cancelled)
-        {
-            GetUser();
-        }
-    }
+    private async Task ChangePassword() => await HelperService.OpenEditorDialog<ChangePasswordDialog>("Change Password", async (res) => await GetUser(), new DialogParameters { });
 }

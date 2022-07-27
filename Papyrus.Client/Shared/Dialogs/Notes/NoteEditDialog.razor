@@ -73,7 +73,7 @@
                 Model.Tags.AddRange(tags.Select(x => x.Id));
             }
         },
-        new DialogParameters { { "GroupId", Note.GroupId }, { "DisabledIds", Model.Tags } });
+        new DialogParameters { { "GroupId", Note.GroupId }, { "DisabledIds", Model.Tags }, { "MultiSelect", true } });
     }
 
     private void RemoveTag(int id)

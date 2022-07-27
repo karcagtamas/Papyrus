@@ -48,10 +48,7 @@
         }
     }
 
-    private Task<bool> Submit()
-    {
-        return UserService.Update(UserId, Model);
-    }
+    private Task<bool> Submit() => UserService.Update(UserId, Model);
 
     private async Task<bool> ValidateForm(UserModel model, ISnackbar snackbar)
     {
@@ -69,8 +66,5 @@
         return true;
     }
 
-    private bool UserNameOrEmailChanged(UserModel model)
-    {
-        return model.UserName != DTO?.UserName || model.Email != DTO?.Email;
-    }
+    private bool UserNameOrEmailChanged(UserModel model) => model.UserName != DTO?.UserName || model.Email != DTO?.Email;
 }

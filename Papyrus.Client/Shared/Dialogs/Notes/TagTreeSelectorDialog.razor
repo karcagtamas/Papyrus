@@ -2,7 +2,7 @@
 @using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.DTOs.Notes
 
-<TreeSelectorDialog Data="TagTreeItemDTO" EntityName="Tag" BodyText="Persist empty selection to choose ROOT path" Fetcher="@Fetcher" ItemExtractor="@ItemExctractor" TitleGetter="@TitleGetter" />
+<TreeSelectorDialog TKey="int" T="TagTreeItemDTO" EntityName="Tag" BodyText="Persist empty selection to choose ROOT path" Fetcher="@Fetcher" ItemExtractor="@ItemExctractor" TitleGetter="@TitleGetter" MultiSelect="MultiSelect" DisabledIds="DisabledIds" />
 
 @code {
     [Parameter]
@@ -13,6 +13,9 @@
 
     [Parameter]
     public List<int> DisabledIds { get; set; } = new();
+
+    [Parameter]
+    public bool MultiSelect { get; set; }
 
     [Inject]
     private ITagService TagService { get; set; } = default!;

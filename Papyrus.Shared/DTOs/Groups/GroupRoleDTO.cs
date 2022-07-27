@@ -1,6 +1,8 @@
-﻿namespace Papyrus.Shared.DTOs.Groups;
+﻿using KarcagS.Shared.Common;
 
-public class GroupRoleDTO
+namespace Papyrus.Shared.DTOs.Groups;
+
+public class GroupRoleDTO : IIdentified<int>
 {
     public int Id { get; set; }
     public string Name { get; set; } = default!;

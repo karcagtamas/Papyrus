@@ -17,12 +17,12 @@ public partial class GroupActionLogs : ComponentBase
     private TableDataSource<GroupActionLogDTO, long> DataSource { get; set; } = default!;
     private TableConfiguration<GroupActionLogDTO, long> Config { get; set; } = default!;
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         DataSource = new TableDataSource<GroupActionLogDTO, long>(() => GroupActionLogService.GetByGroup(GroupId));
         Config = TableConfiguration<GroupActionLogDTO, long>.Build()
             .AddColumn(
-                new TableColumn<GroupActionLogDTO, long>
+                new()
                 {
                     Key = "text",
                     Title = "Text",
@@ -31,7 +31,7 @@ public partial class GroupActionLogs : ComponentBase
                 }
             )
             .AddColumn(
-                new TableColumn<GroupActionLogDTO, long>
+                new()
                 {
                     Key = "performer",
                     Title = "Performer",
@@ -40,7 +40,7 @@ public partial class GroupActionLogs : ComponentBase
                 }
             )
             .AddColumn(
-                new TableColumn<GroupActionLogDTO, long>(Presets.Date)
+                new()
                 {
                     Key = "creation",
                     Title = "Creation",
@@ -48,6 +48,7 @@ public partial class GroupActionLogs : ComponentBase
                     ValueGetter = (obj) => obj.Creation
                 }
             );
+        await InvokeAsync(StateHasChanged);
         base.OnInitialized();
     }
 }

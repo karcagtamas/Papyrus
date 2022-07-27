@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using KarcagS.Blazor.Common.Components.Table;
+using KarcagS.Blazor.Common.Services;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Groups;
@@ -8,8 +10,8 @@ namespace Papyrus.Client.Pages.Groups;
 
 public partial class GroupRoles : ComponentBase
 {
-    [Inject]
-    private IDialogService DialogService { get; set; } = default!;
+    [Parameter]
+    public int GroupId { get; set; }
 
     [Inject]
     private IGroupService GroupService { get; set; } = default!;
@@ -17,104 +19,68 @@ public partial class GroupRoles : ComponentBase
     [Inject]
     private IGroupRoleService GroupRoleService { get; set; } = default!;
 
-    [Parameter]
-    public int GroupId { get; set; }
+    [Inject]
+    private IHelperService HelperService { get; set; } = default!;
 
-    private List<GroupRoleDTO> Roles { get; set; } = new();
+    private ListTable<GroupRoleDTO, int>? ListTable { get; set; }
+    private TableDataSource<GroupRoleDTO, int> DataSource { get; set; } = default!;
+    private TableConfiguration<GroupRoleDTO, int> Config { get; set; } = default!;
+
     private GroupRoleRightsDTO Rights { get; set; } = new();
-    private bool Loading { get; set; } = true;
-    private readonly List<GroupRoleSettingsItem> SettingsItems = new List<GroupRoleSettingsItem>
-    {
-        new()
-        {
-            ColumnTitle = "Group Edit",
-            ValueGetter = (dto) => dto.GroupEdit
-        },
-        new()
-        {
-            ColumnTitle = "Group Close",
-            ValueGetter = (dto) => dto.GroupClose
-        },
-        new()
-        {
-            ColumnTitle = "Listing Notes",
-            ValueGetter = (dto) => dto.ReadNoteList
-        },
-        new()
-        {
-            ColumnTitle = "Read Note",
-            ValueGetter = (dto) => dto.ReadNote
-        },
-        new()
-        {
-            ColumnTitle = "Create Note",
-            ValueGetter = (dto) => dto.CreateNote
-        },
-        new()
-        {
-            ColumnTitle = "Delete Note",
-            ValueGetter = (dto) => dto.DeleteNote
-        },
-        new()
-        {
-            ColumnTitle = "Edit Note",
-            ValueGetter = (dto) => dto.EditNote
-        },
-        new()
-        {
-            ColumnTitle = "Read Members",
-            ValueGetter = (dto) => dto.ReadMemberList
-        },
-        new()
-        {
-            ColumnTitle = "Edit Members",
-            ValueGetter = (dto) => dto.EditMemberList
-        },
-        new()
-        {
-            ColumnTitle = "Read Roles",
-            ValueGetter = (dto) => dto.ReadRoleList
-        },
-        new()
-        {
-            ColumnTitle = "Edit Roles",
-            ValueGetter = (dto) => dto.EditRoleList
-        },
-        new()
-        {
-            ColumnTitle = "Read Action Logs",
-            ValueGetter = (dto) => dto.ReadGroupActionLog
-        },
-        new()
-        {
-            ColumnTitle = "Read Note Action Logs",
-            ValueGetter = (dto) => dto.ReadNoteActionLog
-        },
-        new()
-        {
-            ColumnTitle = "Read Tags",
-            ValueGetter = (dto) => dto.ReadTagList
-        },
-        new()
-        {
-            ColumnTitle = "Edit Tags",
-            ValueGetter = (dto) => dto.EditTagList
-        }
-    };
 
     protected override async void OnInitialized()
     {
-        await Refresh();
+        await Refresh(false);
+        DataSource = new TableDataSource<GroupRoleDTO, int>(() => GroupRoleService.GetByGroup(GroupId));
+        Config = TableConfiguration<GroupRoleDTO, int>.Build()
+            .AddColumn(
+                new()
+                {
+                    Key = "name",
+                    Title = "Name",
+                    TitleColor = Color.Primary,
+                    ValueGetter = (obj) => obj.Name,
+                    ColorGetter = (obj, i) => obj.ReadOnly ? Color.Error : Color.Secondary,
+                }
+            )
+            .AddColumn(
+                new()
+                {
+                    Key = "readonly",
+                    Title = "Read Only",
+                    TitleColor = Color.Primary,
+                    ValueGetter = (obj) => obj.ReadOnly ? "Yes" : "No"
+                }
+            )
+            .AddColumn(BuildColumn("group-edit", "Group Edit", (obj) => obj.GroupEdit))
+            .AddColumn(BuildColumn("group-close", "Group Close", (obj) => obj.GroupClose))
+            .AddColumn(BuildColumn("listing-notes", "Listing Notes", (obj) => obj.ReadNoteList))
+            .AddColumn(BuildColumn("read-note", "Read Note", (obj) => obj.ReadNote))
+            .AddColumn(BuildColumn("create-note", "Create Note", (obj) => obj.CreateNote))
+            .AddColumn(BuildColumn("delete-note", "Delete Note", (obj) => obj.DeleteNote))
+            .AddColumn(BuildColumn("edit-note", "Edit Note", (obj) => obj.EditNote))
+            .AddColumn(BuildColumn("read-members", "Read Members", (obj) => obj.ReadMemberList))
+            .AddColumn(BuildColumn("edit-members", "Edit Members", (obj) => obj.EditMemberList))
+            .AddColumn(BuildColumn("read-roles", "Read Roles", (obj) => obj.ReadRoleList))
+            .AddColumn(BuildColumn("edit-roles", "Edit Roles", (obj) => obj.EditRoleList))
+            .AddColumn(BuildColumn("read-logs", "Read Logs", (obj) => obj.ReadGroupActionLog))
+            .AddColumn(BuildColumn("read-note-logs", "Read Note Logs", (obj) => obj.ReadNoteActionLog))
+            .AddColumn(BuildColumn("read-tags", "Read Tags", (obj) => obj.GroupEdit))
+            .AddColumn(BuildColumn("edit-tags", "Edit Tags", (obj) => obj.GroupEdit));
+        Config.ClickDisableOn = (obj) => !Rights.CanEdit || obj.ReadOnly;
+        await InvokeAsync(StateHasChanged);
         base.OnInitialized();
     }
 
-    private async Task Refresh()
+    private async Task Refresh(bool tableRefresh = true)
     {
-        Loading = true;
-        await InvokeAsync(StateHasChanged);
-        Roles = await GroupRoleService.GetByGroup(GroupId);
         Rights = await GroupService.GetRoleRights(GroupId);
-        Loading = false;
+
+        if (tableRefresh)
+        {
+            ListTable?.Refresh();
+        }
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -128,29 +94,24 @@ public partial class GroupRoles : ComponentBase
         await OpenDialog(null);
     }
 
-    private async Task Edit(TableRowClickEventArgs<GroupRoleDTO> e)
-    {
-        if (Rights.CanEdit && !e.Item.ReadOnly)
-        {
-            await OpenDialog(e.Item.Id);
-        }
-    }
-
     private async Task OpenDialog(int? groupRoleId)
     {
         var parameters = new DialogParameters { { "GroupRoleId", groupRoleId }, { "GroupId", GroupId } };
 
-        var dialog = DialogService.Show<GroupRoleEditDialog>(groupRoleId is null ? "Create Group Role" : "Edit Group Role", parameters);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            await Refresh();
-        }
+        await HelperService.OpenEditorDialog<GroupRoleEditDialog>(groupRoleId is null ? "Create Group Role" : "Edit Group Role", async (res) => await Refresh(), parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
     }
-}
 
-public class GroupRoleSettingsItem
-{
-    public string ColumnTitle { get; set; } = default!;
-    public Func<GroupRoleDTO, bool> ValueGetter { get; set; } = (dto) => false;
+    private static TableColumn<GroupRoleDTO, int> BuildColumn(string key, string title, Func<GroupRoleDTO, bool> getter)
+    {
+        return new()
+        {
+            Key = key,
+            Title = title,
+            TitleColor = Color.Secondary,
+            ValueGetter = (obj) => getter(obj) ? "Yes" : "No",
+            ColorGetter = (obj, i) => getter(obj) ? Color.Success : Color.Error
+        };
+    }
+
+    private async Task RowClickHandler(RowItem<GroupRoleDTO, int> item) => await OpenDialog(item.Id);
 }

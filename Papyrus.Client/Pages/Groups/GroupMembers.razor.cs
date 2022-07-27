@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using KarcagS.Blazor.Common.Components.Table;
+using KarcagS.Blazor.Common.Services;
+using KarcagS.Shared.Helpers;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Groups.Interfaces;
@@ -11,6 +14,9 @@ namespace Papyrus.Client.Pages.Groups;
 
 public partial class GroupMembers : ComponentBase
 {
+    [Parameter]
+    public int GroupId { get; set; }
+
     [Inject]
     private IGroupService GroupService { get; set; } = default!;
 
@@ -23,33 +29,73 @@ public partial class GroupMembers : ComponentBase
     [Inject]
     private ITokenService TokenService { get; set; } = default!;
 
-    [Parameter]
-    public int GroupId { get; set; }
+    [Inject]
+    private IHelperService HelperService { get; set; } = default!;
+
+    private ListTable<GroupMemberDTO, int>? ListTable { get; set; }
+    private TableDataSource<GroupMemberDTO, int> DataSource { get; set; } = default!;
+    private TableConfiguration<GroupMemberDTO, int> Config { get; set; } = default!;
 
     private string? User { get; set; }
-    private List<GroupMemberDTO> Members { get; set; } = new();
     private GroupMemberRightsDTO Rights { get; set; } = new();
-    private bool Loading { get; set; } = true;
 
     protected override async void OnInitialized()
     {
-        await GetUser();
-        await Refresh();
+        await Refresh(false);
+        DataSource = new TableDataSource<GroupMemberDTO, int>(() => GroupMemberService.GetByGroup(GroupId));
+        Config = TableConfiguration<GroupMemberDTO, int>.Build()
+            .AddColumn(
+                new()
+                {
+                    Key = "user",
+                    Title = "User",
+                    TitleColor = Color.Primary,
+                    ValueGetter = (obj) => obj.User.UserName,
+                    ColorGetter = (obj, i) => obj.User.Id == User ? Color.Error : Color.Default,
+                }
+            )
+            .AddColumn(
+                new()
+                {
+                    Key = "role",
+                    Title = "Role",
+                    TitleColor = Color.Primary,
+                    ValueGetter = (obj) => obj.Role.Name
+                }
+            )
+            .AddColumn(
+                new()
+                {
+                    Key = "added-by",
+                    Title = "Added By",
+                    TitleColor = Color.Primary,
+                    ValueGetter = (obj) => WriteHelper.WriteNullableField(obj.AddedBy?.UserName)
+                }
+            )
+            .AddColumn(
+                new()
+                {
+                    Key = "join",
+                    Title = "Join",
+                    TitleColor = Color.Primary,
+                    ValueGetter = (obj) => DateHelper.DateToString(obj.Join)
+                }
+            );
+        Config.ClickDisableOn = (obj) => !Rights.CanEdit || (User is not null && obj.User.Id == User);
+        await InvokeAsync(StateHasChanged);
         base.OnInitialized();
     }
 
-    private async Task GetUser()
+    private async Task Refresh(bool tableRefresh = true)
     {
         User = (await TokenService.GetUser()).UserId;
-    }
-
-    private async Task Refresh()
-    {
-        Loading = true;
-        await InvokeAsync(StateHasChanged);
-        Members = await GroupMemberService.GetByGroup(GroupId);
         Rights = await GroupService.GetMemberRights(GroupId);
-        Loading = false;
+
+        if (tableRefresh)
+        {
+            ListTable?.Refresh();
+        }
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -60,7 +106,7 @@ public partial class GroupMembers : ComponentBase
             return;
         }
 
-        var parameters = new DialogParameters { { "Ignored", Members.Select(x => x.User.Id).ToList() } };
+        var parameters = new DialogParameters { { "Ignored", DataSource.RawData.Select(x => x.User.Id).ToList() } };
 
         var dialog = DialogService.Show<UserSearchDialog>("Search User", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
@@ -73,20 +119,10 @@ public partial class GroupMembers : ComponentBase
         }
     }
 
-    private async Task Edit(TableRowClickEventArgs<GroupMemberDTO> e)
+    private async Task RowClickHandler(RowItem<GroupMemberDTO, int> item)
     {
-        if (!Rights.CanEdit || (User is not null && e.Item.User.Id == User))
-        {
-            return;
-        }
+        var parameters = new DialogParameters { { "GroupId", GroupId }, { "Member", item.Data } };
 
-        var parameters = new DialogParameters { { "GroupId", GroupId }, { "Member", e.Item } };
-
-        var dialog = DialogService.Show<GroupMemberEditDialog>("Edit Group Member", parameters);
-        var result = await dialog.Result;
-        if (!result.Cancelled)
-        {
-            await Refresh();
-        }
+        await HelperService.OpenEditorDialog<GroupMemberEditDialog>("Edit Group Member", async (res) => await Refresh(), parameters);
     }
 }

@@ -1,4 +1,5 @@
-﻿@using Papyrus.Shared.DTOs.Notes
+﻿@using KarcagS.Shared.Helpers
+@using Papyrus.Shared.DTOs.Notes
 
 <MudChip Label="true" Style="@Style" OnClose="OnClose">@Tag.Caption</MudChip>
 
@@ -9,6 +10,6 @@
     [Parameter]
     public EventCallback OnClose { get; set; }
 
-    public string Style { get => $"background-color: {Tag.Color}; height: 1.6rem;"; }
+    public string Style { get => $"background-color: {Tag.Color}; height: 1.6rem; color: {ColorHelper.GetForegroundColor(Tag.Color)}"; }
 
 }

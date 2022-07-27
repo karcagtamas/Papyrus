@@ -95,7 +95,7 @@ public partial class TagTree : ComponentBase
     private async Task OpenDialog(int? tagId, int? parentId)
     {
         var parameters = new DialogParameters { { "TagId", tagId }, { "GroupId", GroupId }, { "ParentId", parentId } };
-        await HelperService.OpenDialog<TagEditDialog>(tagId is null ? "Create Tag" : "Edit Tag", async () => await Refresh(), parameters);
+        await HelperService.OpenEditorDialog<TagEditDialog>(tagId is null ? "Create Tag" : "Edit Tag", async (res) => await Refresh(), parameters);
     }
 
     private static HashSet<TreeItem<TagTreeItemDTO>> Wrap(List<TagTreeItemDTO> src)

@@ -1,4 +1,5 @@
 ﻿@page "/groups/{GroupId:int}/roles"
+@using KarcagS.Shared.Helpers
 @using Papyrus.Shared.DTOs.Groups
 @attribute [Authorize]
 
@@ -11,29 +12,8 @@
             <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
         </ActionBar>
     }
-    <MudTable T="GroupRoleDTO" Items="Roles" Loading="Loading" Dense="true" Elevation="2" FixedHeader="true" OnRowClick="Edit" Hover="true" Striped="true">
-        <HeaderContent>
-            <MudTh>
-                <MudText Color="Color.Primary">Name</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Primary">Read Only</MudText>
-            </MudTh>
-            @foreach (var item in SettingsItems)
-            {
-                <MudTh>
-                    <MudText Color="Color.Secondary">@item.ColumnTitle</MudText>
-                </MudTh>
-            }
-        </HeaderContent>
-
-        <RowTemplate>
-            <MudTd DataLabel="Name"><MudText Color="@(context.ReadOnly ? Color.Error : Color.Secondary)">@context.Name</MudText></MudTd>
-            <MudTd DataLabel="ReadOnly"><LogicText LogicValue="context.ReadOnly" TrueText="Yes" FalseText="No" /></MudTd>
-            @foreach (var item in SettingsItems)
-            {
-                <MudTd DataLabel="@item.ColumnTitle"><LogicText LogicValue="item.ValueGetter(context)" TrueText="Yes" FalseText="No" Colorize="true" /></MudTd>
-            }
-        </RowTemplate>
-    </MudTable>
+    @if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Config))
+    {
+        <ListTable @ref="ListTable" T="GroupRoleDTO" TKey="int" DataSource="DataSource" Config="Config" OnRowClick="RowClickHandler" />
+    }
 </div>

@@ -12,35 +12,9 @@
             <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@Add">Add</MudButton>
         </ActionBar>
     }
-    <MudTable T="GroupMemberDTO" Items="Members" Loading="Loading" Dense="true" Elevation="2" FixedHeader="true" OnRowClick="Edit" Hover="true" Striped="true">
-        <HeaderContent>
-            <MudTh>
-                <MudText Color="Color.Primary">User</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Primary">Role</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Primary">Added By</MudText>
-            </MudTh>
-            <MudTh>
-                <MudText Color="Color.Primary">Join</MudText>
-            </MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="User">
-                @if (User is not null && context.User.Id == User)
-                {
-                    <MudText Color="Color.Error">@context.User.UserName</MudText>
-                }
-                else
-                {
-                    @context.User.UserName
-                }
-            </MudTd>
-            <MudTd DataLabel="Role">@context.Role.Name</MudTd>
-            <MudTd DataLabel="AddedBy">@WriteHelper.WriteNullableField(context.AddedBy?.UserName)</MudTd>
-            <MudTd DataLabel="Join">@DateHelper.DateToString(context.Join)</MudTd>
-        </RowTemplate>
-    </MudTable>
+
+    @if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Config))
+    {
+        <ListTable @ref="ListTable" T="GroupMemberDTO" TKey="int" DataSource="DataSource" Config="Config" OnRowClick="RowClickHandler" />
+    }
 </div>
