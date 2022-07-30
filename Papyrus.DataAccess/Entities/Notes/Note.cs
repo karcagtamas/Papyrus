@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Attributes;
 using KarcagS.Common.Tools.Entities;
+using Papyrus.DataAccess.Entities.Editor;
 using Papyrus.DataAccess.Entities.Groups;
 
 namespace Papyrus.DataAccess.Entities.Notes;
@@ -41,4 +42,5 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     public virtual User? LastUpdater { get; set; }
     public virtual ICollection<NoteActionLog> ActionLogs { get; set; } = default!;
     public virtual ICollection<NoteTag> Tags { get; set; } = default!;
+    public virtual ICollection<EditorMember> EditorMemberships { get; set; } = default!;
 }

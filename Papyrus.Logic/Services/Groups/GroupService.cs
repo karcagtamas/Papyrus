@@ -29,7 +29,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     {
         string userId = Utils.GetRequiredCurrentUserId();
 
-        return GetMappedList<GroupListDTO>(x => x.OwnerId == userId && (!hideClosed || !x.IsClosed))
+        return GetMappedList<GroupListDTO>(x => (x.OwnerId == userId || x.Members.Any(m => m.UserId == userId)) && (!hideClosed || !x.IsClosed))
             .OrderBy(x => x.IsClosed)
             .ThenByDescending(x => x.Creation)
             .ToList();

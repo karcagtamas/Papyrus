@@ -17,6 +17,8 @@ using Papyrus.Logic.Mappers;
 using Papyrus.Logic.Services;
 using Papyrus.Logic.Services.Auth;
 using Papyrus.Logic.Services.Auth.Interfaces;
+using Papyrus.Logic.Services.Editor;
+using Papyrus.Logic.Services.Editor.Interfaces;
 using Papyrus.Logic.Services.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
@@ -50,6 +52,8 @@ builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
 builder.Services.AddScoped<ITagService, TagService>();
+
+builder.Services.AddScoped<IEditorService, EditorService>();
 
 // Add AutoMapper
 var mapperConfig = new MapperConfiguration(conf =>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Papyrus.DataAccess;
 
@@ -10,9 +11,10 @@ using Papyrus.DataAccess;
 namespace Papyrus.Migrations
 {
     [DbContext(typeof(PapyrusContext))]
-    partial class PapyrusContextModelSnapshot : ModelSnapshot
+    [Migration("20220730174739_EditorMembers")]
+    partial class EditorMembers
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -144,8 +146,6 @@ namespace Papyrus.Migrations
                     b.HasKey("Id");
 
                     b.HasAlternateKey("UserId", "NoteId", "ConnectionId");
-
-                    b.HasIndex("NoteId");
 
                     b.ToTable("EditorMembers");
                 });
@@ -646,25 +646,6 @@ namespace Papyrus.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Editor.EditorMember", b =>
-                {
-                    b.HasOne("Papyrus.DataAccess.Entities.Notes.Note", "Note")
-                        .WithMany("EditorMemberships")
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Papyrus.DataAccess.Entities.User", "User")
-                        .WithMany("EditorMemberships")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Note");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Groups.Group", b =>
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.User", "Owner")
@@ -857,8 +838,6 @@ namespace Papyrus.Migrations
                 {
                     b.Navigation("ActionLogs");
 
-                    b.Navigation("EditorMemberships");
-
                     b.Navigation("Tags");
                 });
 
@@ -876,8 +855,6 @@ namespace Papyrus.Migrations
                     b.Navigation("CreatedGroups");
 
                     b.Navigation("CreatedNotes");
-
-                    b.Navigation("EditorMemberships");
 
                     b.Navigation("Groups");
 

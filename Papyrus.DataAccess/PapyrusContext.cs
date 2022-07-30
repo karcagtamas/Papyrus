@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess.Entities;
+using Papyrus.DataAccess.Entities.Editor;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.DataAccess.Entities.Notes;
 
@@ -18,17 +19,20 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<Tag> Tags { get; set; }
     public DbSet<NoteTag> NoteTags { get; set; }
 
+    public DbSet<EditorMember> EditorMembers { get; set; }
+
     public PapyrusContext(DbContextOptions<PapyrusContext> options) : base(options)
     {
         RefreshTokens = default!;
         Groups = default!;
         GroupActionLogs = default!;
-        GroupMembers = default!; 
+        GroupMembers = default!;
         GroupRoles = default!;
         Notes = default!;
         NoteActionLogs = default!;
         Tags = default!;
         NoteTags = default!;
+        EditorMembers = default!;
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -159,6 +163,20 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         modelBuilder.Entity<NoteTag>()
             .HasOne(x => x.Tag)
             .WithMany(x => x.Notes)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+
+        // Editor Member
+        modelBuilder.Entity<EditorMember>()
+            .HasAlternateKey(x => new { x.UserId, x.NoteId, x.ConnectionId });
+        modelBuilder.Entity<EditorMember>()
+            .HasOne(x => x.User)
+            .WithMany(x => x.EditorMemberships)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<EditorMember>()
+            .HasOne(x => x.Note)
+            .WithMany(x => x.EditorMemberships)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
     }

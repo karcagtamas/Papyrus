@@ -15,6 +15,8 @@ using Papyrus.Client;
 using Papyrus.Client.Services;
 using Papyrus.Client.Services.Auth;
 using Papyrus.Client.Services.Auth.Interfaces;
+using Papyrus.Client.Services.Editor;
+using Papyrus.Client.Services.Editor.Interfaces;
 using Papyrus.Client.Services.Groups;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Interfaces;
@@ -71,6 +73,8 @@ builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
 
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<INoteService, NoteService>();
+
+builder.Services.AddScoped<IEditorService, EditorService>();
 
 builder.Services.AddMudServices(config =>
 {

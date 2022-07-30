@@ -10,14 +10,9 @@ public static class EditorHubEvents
     public static readonly string EditorUpdateNote = "UpdateNote";
 
     public static readonly string EditorChanged = "Changed";
-    public static readonly string EditorMemberChanged = "MemberChanged";
+    public static readonly string EditorMemberJoined = "MemberJoined";
+    public static readonly string EditorMemberLeft = "MemberLeft";
     public static readonly string EditorNoteUpdated = "NoteUpdated";
-}
-
-public enum EditorMemberChange
-{
-    Join,
-    Leave
 }
 
 public class NoteChangeEventArgs

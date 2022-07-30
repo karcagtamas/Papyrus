@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using Papyrus.Client.Services.Auth.Interfaces;
+using Papyrus.Client.Services.Editor.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Common.Editor;
@@ -32,10 +33,10 @@ public partial class NoteEditor : ComponentBase, IDisposable
     private INoteService NoteService { get; set; } = default!;
 
     [Inject]
-    private IUserService UserService { get; set; } = default!;
+    private IHelperService HelperService { get; set; } = default!;
 
     [Inject]
-    private IHelperService HelperService { get; set; } = default!;
+    private IEditorService EditorService { get; set; } = default!;
 
     private Editor? Editor = new();
 
@@ -70,6 +71,10 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
             PageTitle = $"Editor [{Note.Title}]";
 
+            Users = new();
+            var users = await EditorService.GetMembers(Note.Id);
+            Users.AddRange(users);
+
             await InvokeAsync(StateHasChanged);
         }
     }
@@ -88,30 +93,28 @@ public partial class NoteEditor : ComponentBase, IDisposable
             await ApplyDiffs(diffs);
         });
 
-        hub?.On<string, EditorMemberChange>(EditorHubEvents.EditorMemberChanged, async (user, action) =>
+        hub?.On<UserLightDTO>(EditorHubEvents.EditorMemberJoined, async (user) =>
         {
-            if (action == EditorMemberChange.Join)
+            if (ObjectHelper.IsNotNull(user))
             {
-                var dto = await UserService.Light(user);
-
-                if (dto is not null)
-                {
-                    Users.RemoveAll(x => x.Id == user);
-                    Users.Add(dto);
-                    await InvokeAsync(StateHasChanged);
-                }
-            }
-            else if (action == EditorMemberChange.Leave)
-            {
-                Users.RemoveAll(x => x.Id == user);
+                Users.RemoveAll(x => x.Id == user.Id);
+                Users.Add(user);
                 await InvokeAsync(StateHasChanged);
             }
+        });
+
+        hub?.On<string>(EditorHubEvents.EditorMemberLeft, async (user) =>
+        {
+            // Remove user from the list
+            Users.RemoveAll(x => x.Id == user);
+            await InvokeAsync(StateHasChanged);
         });
 
         hub?.On<NoteChangeEventArgs>(EditorHubEvents.EditorNoteUpdated, async (args) =>
         {
             Note.Title = args.Title;
             Note.Tags = args.Tags;
+            PageTitle = $"Editor [{Note.Title}]";
             await InvokeAsync(StateHasChanged);
         });
 
