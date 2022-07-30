@@ -18,15 +18,23 @@
                 </div>
                 <MudSpacer />
                 <div>
-                    <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" />
-                    <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenEdit" />
+                    <MudTooltip Text="Edit note data">
+                        <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" />
+                    </MudTooltip>
+                    <MudTooltip Text="Open note history">
+                        <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenEdit" />
+                    </MudTooltip>
 
                     @if (ObjectHelper.IsNotNull(Note.GroupId))
                     {
-                        <MudIconButton Size="Size.Small" Color="Color.Primary" Icon="@Icons.Filled.Group" Class="mr-3 ml-3" OnClick="@(() => NavigationManager.NavigateTo($"/groups/{Note.GroupId}") )" />
+                        <MudTooltip Text="Back to group">
+                            <MudIconButton Size="Size.Small" Color="Color.Primary" Icon="@Icons.Filled.Group" Class="mr-3 ml-3" OnClick="@(() => NavigationManager.NavigateTo($"/groups/{Note.GroupId}") )" />
+                        </MudTooltip>
                     }
 
-                    <MudIconButton Size="Size.Small" Icon="@(DataCollapsed ? Icons.Filled.ExpandMore : Icons.Filled.ExpandLess)" Class="mr-3 ml-3" OnClick="@(() => DataCollapsed = !DataCollapsed)" />
+                    <MudTooltip Text="@(DataCollapsed ? "Expand data" : "Collapse data")">
+                        <MudIconButton Size="Size.Small" Icon="@(DataCollapsed ? Icons.Filled.ExpandMore : Icons.Filled.ExpandLess)" Class="mr-3 ml-3" OnClick="@(() => DataCollapsed = !DataCollapsed)" />
+                    </MudTooltip>
                 </div>
             </div>
             @if (!DataCollapsed)

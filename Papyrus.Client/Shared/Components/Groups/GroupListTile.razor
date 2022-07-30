@@ -9,7 +9,9 @@
         <MudSpacer />
         <div class="desc-row">
             <MudText Typo="Typo.body2">Created: @DateHelper.DateToString(Group.Creation)</MudText>
-            <MudIconButton Size="Size.Small" Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
+            <MudTooltip Text="Open group">
+                <MudIconButton Size="Size.Small" Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
+            </MudTooltip>
         </div>
     </div>
 </MudCard>

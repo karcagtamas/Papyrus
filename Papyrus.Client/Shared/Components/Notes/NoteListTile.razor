@@ -10,7 +10,9 @@
         <MudSpacer />
         <div class="desc-row">
             <MudText Typo="Typo.body2">Last Update: @DateHelper.DateToString(Note.LastUpdate)</MudText>
-            <MudIconButton Size="Size.Small" Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
+            <MudTooltip Text="Open note in new tab">
+                <MudIconButton Size="Size.Small" Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
+            </MudTooltip>
         </div>
     </div>
 </MudCard>

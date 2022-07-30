@@ -14,6 +14,7 @@ body {
     display: flex;
     flex: 1;
     flex-direction: column;
+    overflow: hidden;
 }
 
 h1:focus {
@@ -81,6 +82,7 @@ a,
     display: flex;
     flex: 1;
     flex-direction: column;
+    overflow: auto;
 }
 
 .flex-box {
