@@ -25,7 +25,10 @@ public class EditorHub : Hub
         {
             await Clients.Group(editor).SendAsync(EditorHubEvents.EditorChanged, diffs);
         }
-    } 
+    }
+
+    [Authorize]
+    public async Task UpdateNote(string editor, NoteChangeEventArgs args) => await Clients.Group(editor).SendAsync(EditorHubEvents.EditorNoteUpdated, args);
 
     [Authorize]
     public async Task Disconnect(string editor)

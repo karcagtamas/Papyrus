@@ -1,4 +1,5 @@
-﻿using KarcagS.Blazor.Common.Models;
+﻿using KarcagS.Blazor.Common.Components.Dialogs;
+using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Components;
@@ -107,6 +108,13 @@ public partial class NoteEditor : ComponentBase, IDisposable
             }
         });
 
+        hub?.On<NoteChangeEventArgs>(EditorHubEvents.EditorNoteUpdated, async (args) =>
+        {
+            Note.Title = args.Title;
+            Note.Tags = args.Tags;
+            await InvokeAsync(StateHasChanged);
+        });
+
         ObjectHelper.WhenNotNull(hub, async (h) =>
         {
             await h.StartAsync();
@@ -126,13 +134,27 @@ public partial class NoteEditor : ComponentBase, IDisposable
         });
     }
 
-    private async Task OpenEdit() 
+    private async Task OpenEdit()
     {
         var parameters = new DialogParameters { { "NoteId", Id } };
 
-        // TODO: Check EDIT or DELETE event
-        // TODO: Refresh by socket
-        await HelperService.OpenDialog<NoteEditDialog>("Edit Note", async () => await Refresh(), parameters);
+        await HelperService.OpenEditorDialog<NoteEditDialog>("Edit Note", async (res) =>
+        {
+            if (res.Performed)
+            {
+                if (res.Event == EditorCloseEvent.Remove)
+                {
+                    var url = ObjectHelper.IsNotNull(Note.GroupId) ? $"/groups/{Note.GroupId}/notes" : "/notes";
+                    NavigationManager.NavigateTo(url);
+                }
+                else if (res.Event == EditorCloseEvent.Edit)
+                {
+                    var note = await NoteService.GetLight(Id);
+
+                    ObjectHelper.WhenNotNull(note, n => hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags }));
+                }
+            }
+        }, parameters);
     }
 
     private async Task ApplyDiffs(List<TransportDiff> tDiffs)
@@ -157,7 +179,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     public async void Dispose()
     {
-        if (hub is not null)
+        if (ObjectHelper.IsNotNull(hub))
         {
             await hub.SendAsync(EditorHubEvents.EditorDisconnect, Id);
             await hub.DisposeAsync();
