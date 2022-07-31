@@ -28,6 +28,9 @@ using Papyrus.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddLogging();
+builder.Services.AddHttpLogging(opt => { });
+
 // Config
 builder.Services.Configure<JWTConfiguration>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Utils"));
@@ -202,5 +205,10 @@ if (app.Environment.IsDevelopment() || bool.TrueString.Equals(builder.Configurat
 }
 
 app.SeedRoles();
+
+var lf = app.Services.GetRequiredService<ILoggerFactory>();
+lf.AddFile($@"{Directory.GetCurrentDirectory()}\Logs\log.txt");
+
+app.UseHttpLogging();
 
 app.Run();
