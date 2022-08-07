@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using KarcagS.Shared.Helpers;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
-using Papyrus.Shared.DTOs;
+using Papyrus.Shared.HubEvents;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Papyrus.Client.Shared.Components.Common.Editor;
 
-public partial class Editor : ComponentBase
+public partial class Editor : ComponentBase, IDisposable
 {
     [Parameter, EditorRequired]
     public string ClientId { get; set; } = default!;
@@ -25,6 +28,16 @@ public partial class Editor : ComponentBase
     private MudColor SelectedColor { get; set; } = new MudColor("#FF1212FF");
     private string Content { get; set; } = "";
     private ElementReference? editorReference;
+
+    private Subject<string> subject = new();
+    private IDisposable? disposable;
+
+    protected override void OnInitialized()
+    {
+        disposable = subject.Throttle(TimeSpan.FromSeconds(1))
+            .Subscribe(async (e) => await OnContentChange.InvokeAsync(e));
+        base.OnInitialized();
+    }
 
     public async Task SetValue(string content)
     {
@@ -68,7 +81,7 @@ public partial class Editor : ComponentBase
         // Current cursor
         current = current.Replace("[{CURRENT_CURSOR}]", $"<span class='editor-cursor' id='{ClientId}'></span>");
 
-        await OnContentChange.InvokeAsync(current);
+        subject.OnNext(current);
     }
 
     private async Task<string> GetEditorValue() => await JSRuntime.InvokeAsync<string>("getEditorValueByReference", editorReference);
@@ -91,4 +104,6 @@ public partial class Editor : ComponentBase
         ColorPickerOpened = false;
         ColorAction = null;
     }
+
+    public void Dispose() => disposable?.Dispose();
 }
