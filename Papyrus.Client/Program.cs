@@ -37,6 +37,7 @@ builder.Services.AddHttpService(config =>
 {
     config.IsTokenBearer = true;
     config.UnauthorizedPath = "/logout";
+    config.UnauthorizedPathRedirectQueryParamName = "redirectUri";
     config.AccessTokenName = "access-token";
     config.IsTokenRefresher = true;
     config.RefreshTokenName = "refresh-token";

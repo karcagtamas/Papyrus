@@ -6,7 +6,7 @@ public interface IAuthService
 {
     Task<string?> Login(LoginModel model);
     Task<bool> Register(RegistrationModel model);
-    void Logout();
+    void Logout(string? redirectUri = null);
     void NotAuthorized();
     void Authorized();
     bool IsLoggedIn();

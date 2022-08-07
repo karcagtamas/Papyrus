@@ -56,7 +56,7 @@ public class AuthService : IAuthService
         return tokenService.UserInStore();
     }
 
-    public async void Logout()
+    public async void Logout(string? redirectUri = null)
     {
         var settings = new HttpSettings(httpService.BuildUrl(Url, "Logout"));
 
@@ -66,7 +66,18 @@ public class AuthService : IAuthService
 
         ((PapyrusAuthStateProvider)authenticationStateProvider).MarkUserAsLoggedOut();
 
-        navigationManager.NavigateTo("home");
+
+        var query = new Dictionary<string, string>();
+
+        if (ObjectHelper.IsNotNull(redirectUri))
+        {
+            query.Add("redirectUri", redirectUri);
+            navigationManager.NavigateTo(QueryHelpers.AddQueryString("/login", query));
+        }
+        else
+        {
+            navigationManager.NavigateTo(ObjectHelper.OrElse(redirectUri, "home"));
+        }
     }
 
     public void NotAuthorized()

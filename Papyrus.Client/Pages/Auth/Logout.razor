@@ -1,12 +1,21 @@
 ﻿@page "/logout"
+@using Microsoft.AspNetCore.WebUtilities
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Client.Services.Auth.Interfaces
 @inject IAuthService auth
+@inject NavigationManager navigation
 
 @code {
     protected override void OnInitialized()
     {
-        auth.Logout();
+        var uri = navigation.ToAbsoluteUri(navigation.Uri);
+        string? redirect = null;
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("redirectUri", out var redirectString))
+        {
+            redirect = redirectString;
+        }
+
+        auth.Logout(redirect);
         base.OnInitialized();
     }
 }
