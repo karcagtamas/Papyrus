@@ -7,14 +7,13 @@ using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Editor.Interfaces;
-using Papyrus.Client.Services.Interfaces;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Common.Editor;
 using Papyrus.Client.Shared.Dialogs.Notes;
-using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.HubEvents;
+using System.Text;
 
 namespace Papyrus.Client.Pages.Notes;
 
@@ -76,6 +75,13 @@ public partial class NoteEditor : ComponentBase, IDisposable
             Users.AddRange(users);
 
             await InvokeAsync(StateHasChanged);
+
+            if (ObjectHelper.IsNotNull(Editor))
+            {
+                await Editor.SetValue(note.Content);
+            }
+
+            await InvokeAsync(StateHasChanged);
         }
     }
 
@@ -88,10 +94,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
             })
             .Build();
 
-        hub?.On<List<TransportDiff>>(EditorHubEvents.EditorChanged, async (diffs) =>
-        {
-            await ApplyDiffs(diffs);
-        });
+        hub?.On<byte[]>(EditorHubEvents.EditorChanged, ApplyDiffs);
 
         hub?.On<UserLightDTO>(EditorHubEvents.EditorMemberJoined, async (user) =>
         {
@@ -127,13 +130,12 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     private void HandleChange(string content)
     {
-        ObjectHelper.WhenNotNull(hub, async (h) =>
+        ObjectHelper.WhenNotNull(hub, (h) =>
         {
-            var diffs = new DiffMatchPatch().DiffMain(ObjectHelper.OrElse(Editor?.GetValue(), ""), content);
-            if (diffs is not null)
+            ObjectHelper.WhenNotNull(Editor, async (e) =>
             {
-                await h.SendAsync(EditorHubEvents.EditorShare, Id, diffs.Select(diff => new TransportDiff(diff)).ToList());
-            }
+                await h.SendAsync(EditorHubEvents.EditorShare, Id, Encoding.UTF8.GetBytes(content));
+            });
         });
     }
 
@@ -160,24 +162,16 @@ public partial class NoteEditor : ComponentBase, IDisposable
         }, parameters);
     }
 
-    private async Task ApplyDiffs(List<TransportDiff> tDiffs)
+    private async Task ApplyDiffs(byte[] content)
     {
-        var diffs = tDiffs.Select(diff => new Diff(diff)).ToList();
-        var patches = new DiffMatchPatch().PatchMake(diffs);
-        var patched = new DiffMatchPatch().PatchApply(patches, ObjectHelper.OrElse(Editor?.GetValue(), ""));
-        var patchResults = (bool[])patched[1];
-
-        if (patchResults.Length == patches.Count && patchResults.All(x => x))
+        var stringContent = Encoding.UTF8.GetString(content);
+        if (ObjectHelper.IsNotNull(Editor))
         {
-            string result = (string)patched[0];
-
-            if (ObjectHelper.IsNotNull(Editor))
-            {
-                await Editor.SetValue(result);
-            }
-
-            await InvokeAsync(StateHasChanged);
+            await Editor.SetValue(stringContent);
+            Note.Content = stringContent;
         }
+
+        await InvokeAsync(StateHasChanged);
     }
 
     public async void Dispose()

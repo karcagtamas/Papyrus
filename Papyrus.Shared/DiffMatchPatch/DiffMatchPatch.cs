@@ -7,7 +7,7 @@ namespace Papyrus.Shared.DiffMatchPatch;
 
 /**
  * Class containing the diff, match and patch methods.
- * Also Contains the behaviour settings.
+ * Also Contains the behavior settings.
  */
 public class DiffMatchPatch
 {
@@ -191,7 +191,7 @@ public class DiffMatchPatch
         }
 
         // Check to see if the problem can be split in two.
-        string[] hm = DiffHalfMatch(text1, text2);
+        string[]? hm = DiffHalfMatch(text1, text2);
         if (hm != null)
         {
             // A half-match was found, sort out the return data.
@@ -508,7 +508,7 @@ public class DiffMatchPatch
         string line;
         StringBuilder chars = new StringBuilder();
         // Walk the text, pulling out a Substring for each line.
-        // text.split('\n') would would temporarily double our memory footprint.
+        // text.split('\n') would temporarily double our memory footprint.
         // Modifying text would create many large strings to garbage collect.
         while (lineEnd < text.Length - 1)
         {
@@ -546,7 +546,7 @@ public class DiffMatchPatch
      * @param diffs List of Diff objects.
      * @param lineArray List of unique strings.
      */
-    protected void DiffCharsToLines(ICollection<Diff> diffs,
+    protected static void DiffCharsToLines(ICollection<Diff> diffs,
                     IList<string> lineArray)
     {
         StringBuilder text;
@@ -610,7 +610,7 @@ public class DiffMatchPatch
      * @return The number of characters common to the end of the first
      *     string and the start of the second string.
      */
-    protected int DiffCommonOverlap(string text1, string text2)
+    protected static int DiffCommonOverlap(string text1, string text2)
     {
         // Cache the text lengths to prevent multiple calls.
         int text1_length = text1.Length;
@@ -670,7 +670,7 @@ public class DiffMatchPatch
      *     common middle.  Or null if there was no match.
      */
 
-    protected string[] DiffHalfMatch(string text1, string text2)
+    protected string[]? DiffHalfMatch(string text1, string text2)
     {
         if (Diff_Timeout <= 0)
         {
@@ -685,12 +685,12 @@ public class DiffMatchPatch
         }
 
         // First check if the second quarter is the seed for a half-match.
-        string[] hm1 = DiffHalfMatchI(longtext, shorttext,
+        string[]? hm1 = DiffHalfMatchI(longtext, shorttext,
                                        (longtext.Length + 3) / 4);
         // Check again based on the third quarter.
-        string[] hm2 = DiffHalfMatchI(longtext, shorttext,
+        string[]? hm2 = DiffHalfMatchI(longtext, shorttext,
                                        (longtext.Length + 1) / 2);
-        string[] hm;
+        string[]? hm;
         if (hm1 == null && hm2 == null)
         {
             return null;
@@ -717,6 +717,11 @@ public class DiffMatchPatch
         }
         else
         {
+            if (hm is null)
+            {
+                return null;
+            }
+
             return new string[] { hm[2], hm[3], hm[0], hm[1], hm[4] };
         }
     }
@@ -731,7 +736,7 @@ public class DiffMatchPatch
      *     suffix of longtext, the prefix of shorttext, the suffix of shorttext
      *     and the common middle.  Or null if there was no match.
      */
-    private string[] DiffHalfMatchI(string longtext, string shorttext, int i)
+    private string[]? DiffHalfMatchI(string longtext, string shorttext, int i)
     {
         // Start with a 1/4 length Substring at position i as a seed.
         string seed = longtext.Substring(i, longtext.Length / 4);
@@ -778,7 +783,7 @@ public class DiffMatchPatch
         // Stack of indices where equalities are found.
         Stack<int> equalities = new();
         // Always equal to equalities[equalitiesLength-1][1]
-        string lastEquality = null;
+        string? lastEquality = null;
         int pointer = 0;  // Index of current position.
                           // Number of characters that changed prior to the equality.
         int length_insertions1 = 0;
@@ -1182,7 +1187,7 @@ public class DiffMatchPatch
                     {
                         if (count_delete != 0 && count_insert != 0)
                         {
-                            // Factor out any common prefixies.
+                            // Factor out any common prefixes.
                             commonlength = DiffCommonPrefix(text_insert, text_delete);
                             if (commonlength != 0)
                             {
@@ -1202,7 +1207,7 @@ public class DiffMatchPatch
                                 text_insert = text_insert.Substring(commonlength);
                                 text_delete = text_delete.Substring(commonlength);
                             }
-                            // Factor out any common suffixies.
+                            // Factor out any common suffixes.
                             commonlength = DiffCommonSuffix(text_insert, text_delete);
                             if (commonlength != 0)
                             {
@@ -1313,7 +1318,7 @@ public class DiffMatchPatch
         int chars2 = 0;
         int last_chars1 = 0;
         int last_chars2 = 0;
-        Diff lastDiff = null;
+        Diff? lastDiff = null;
         foreach (Diff aDiff in diffs)
         {
             if (aDiff.Operation != Operation.INSERT)
@@ -1497,7 +1502,7 @@ public class DiffMatchPatch
         {
             if (token.Length == 0)
             {
-                // Blank tokens are ok (from a trailing \t).
+                // Blank tokens are OK (from a trailing \t).
                 continue;
             }
             // Each token begins with a one character parameter which specifies the
@@ -1615,7 +1620,7 @@ public class DiffMatchPatch
 
     /**
      * Locate the best instance of 'pattern' in 'text' near 'loc' using the
-     * Bitap algorithm.  Returns -1 if no match found.
+     * Bitmap algorithm.  Returns -1 if no match found.
      * @param text The text to search.
      * @param pattern The pattern to search for.
      * @param loc The location to search around.
@@ -1626,7 +1631,7 @@ public class DiffMatchPatch
         // assert (Match_MaxBits == 0 || pattern.Length <= Match_MaxBits)
         //    : "Pattern too long for this application.";
 
-        // Initialise the alphabet.
+        // Initialize the alphabet.
         Dictionary<char, int> s = MatchAlphabet(pattern);
 
         // Highest score beyond which we give up.
@@ -1648,7 +1653,7 @@ public class DiffMatchPatch
             }
         }
 
-        // Initialise the bit arrays.
+        // Initialize the bit arrays.
         int matchmask = 1 << pattern.Length - 1;
         best_loc = -1;
 
@@ -1760,7 +1765,7 @@ public class DiffMatchPatch
     }
 
     /**
-     * Initialise the alphabet for the Bitap algorithm.
+     * Initialize the alphabet for the Bitmap algorithm.
      * @param pattern The text to encode.
      * @return Hash of character locations.
      */
@@ -1883,8 +1888,7 @@ public class DiffMatchPatch
      * @return List of Patch objects.
      * @deprecated Prefer patch_make(string text1, List<Diff> diffs).
      */
-    public List<Patch> PatchMake(string text1, string text2,
-        List<Diff> diffs)
+    public List<Patch> PatchMake(string text1, string text2, List<Diff> diffs)
     {
         return PatchMake(text1, diffs);
     }
@@ -2045,7 +2049,7 @@ public class DiffMatchPatch
             int end_loc = -1;
             if (text1.Length > Match_MaxBits)
             {
-                // patch_splitMax will only provide an oversized pattern
+                // patch_splitMax will only provide an over sized pattern
                 // in the case of a monster delete.
                 start_loc = MatchMain(text,
                     text1.Substring(0, Match_MaxBits), expected_loc);
@@ -2304,7 +2308,7 @@ public class DiffMatchPatch
                 precontext = precontext.Substring(Math.Max(0,
                     precontext.Length - Patch_Margin));
 
-                string postcontext = null;
+                string? postcontext;
                 // Append the end context for this patch.
                 if (DiffText1(bigpatch.diffs).Length > Patch_Margin)
                 {
@@ -2344,9 +2348,9 @@ public class DiffMatchPatch
      * @param patches List of Patch objects.
      * @return Text representation of patches.
      */
-    public string PatchToText(List<Patch> patches)
+    public static string PatchToText(List<Patch> patches)
     {
-        StringBuilder text = new StringBuilder();
+        StringBuilder text = new();
         foreach (Patch aPatch in patches)
         {
             text.Append(aPatch);
@@ -2361,7 +2365,7 @@ public class DiffMatchPatch
      * @return List of Patch objects.
      * @throws ArgumentException If invalid input.
      */
-    public List<Patch> PatchFromText(string textline)
+    public static List<Patch> PatchFromText(string textline)
     {
         List<Patch> patches = new();
         if (textline.Length == 0)

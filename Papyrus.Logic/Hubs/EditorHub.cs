@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using KarcagS.Shared.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Papyrus.Logic.Services.Editor.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
@@ -6,6 +7,7 @@ using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.HubEvents;
+using System.Text;
 
 namespace Papyrus.Logic.Hubs;
 
@@ -33,11 +35,27 @@ public class EditorHub : Hub
     }
 
     [Authorize]
-    public async Task Share(string editor, List<TransportDiff> diffs)
+    public void Share(string editor, byte[] value)
     {
+        var note = noteService.GetOptional(editor);
+
+        if (ObjectHelper.IsNull(note))
+        {
+            return;
+        }
+
+        string originalContent = note.Content;
+        string content = Encoding.UTF8.GetString(value);
+        List<Diff> diffs = new DiffMatchPatch().DiffMain(originalContent, content);
         if (diffs.Count > 0)
         {
-            await Clients.Group(editor).SendAsync(EditorHubEvents.EditorChanged, diffs);
+            Diff.ApplyDiffs(originalContent, diffs, async (res) =>
+            {
+                note.Content = res;
+                noteService.Update(note);
+
+                await Clients.Group(editor).SendAsync(EditorHubEvents.EditorChanged, Encoding.UTF8.GetBytes(res));
+            });
         }
     }
 

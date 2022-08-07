@@ -3,8 +3,7 @@
 public static class CompatibilityExtensions
 {
     // JScript splice function
-    public static List<T> Splice<T>(this List<T> input, int start, int count,
-        params T[] objects)
+    public static List<T> Splice<T>(this List<T> input, int start, int count, params T[] objects)
     {
         List<T> deletedRange = input.GetRange(start, count);
         input.RemoveRange(start, count);
@@ -16,6 +15,6 @@ public static class CompatibilityExtensions
     // Java substring function
     public static string JavaSubstring(this string s, int begin, int end)
     {
-        return s.Substring(begin, end - begin);
+        return s[begin..end];
     }
 }
