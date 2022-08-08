@@ -54,13 +54,13 @@ public class EditorHub : Hub
                 note.Content = res;
                 noteService.Update(note);
 
-                await Clients.Group(editor).SendAsync(EditorHubEvents.EditorChanged, Encoding.UTF8.GetBytes(res));
+                await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorChanged, Encoding.UTF8.GetBytes(res));
             });
         }
     }
 
     [Authorize]
-    public async Task UpdateNote(string editor, NoteChangeEventArgs args) => await Clients.Group(editor).SendAsync(EditorHubEvents.EditorNoteUpdated, args);
+    public async Task UpdateNote(string editor, NoteChangeEventArgs args) => await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorNoteUpdated, args);
 
     [Authorize]
     public async Task Disconnect(string editor)

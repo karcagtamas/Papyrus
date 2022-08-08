@@ -1,9 +1,8 @@
-﻿using KarcagS.Shared.Helpers;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
-using Papyrus.Shared.HubEvents;
+using Papyrus.Shared.DiffMatchPatch;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -41,9 +40,25 @@ public partial class Editor : ComponentBase, IDisposable
 
     public async Task SetValue(string content)
     {
-        Content = content;
-        await SetEditorValue(Content, ClientId);
-        Console.WriteLine($"Content changed to:\n {Content}");
+        var current = await GetEditorValue(true);
+
+        Content = current;
+
+        var diffs = new DiffMatchPatch().DiffMain(Content, content);
+
+        diffs.Where(x => x.Operation == Operation.DELETE && x.Text == "‎")
+            .ToList()
+            .ForEach(x => x.Operation = Operation.EQUAL);
+
+        if (diffs.Count > 0)
+        {
+            Diff.ApplyDiffs(Content, diffs, async (res) =>
+            {
+                Content = res;
+                await SetEditorValue(Content, ClientId);
+                Console.WriteLine($"Content changed to:\n {Content}");
+            });
+        }
     }
 
     public string GetValue() => Content;
@@ -74,17 +89,9 @@ public partial class Editor : ComponentBase, IDisposable
         }
     }
 
-    private async Task ContentChanged(ChangeEventArgs args)
-    {
-        var current = await GetEditorValue();
+    private async Task ContentChanged(ChangeEventArgs args) => subject.OnNext(await GetEditorValue());
 
-        // Current cursor
-        current = current.Replace("[{CURRENT_CURSOR}]", $"<span class='editor-cursor' id='{ClientId}'></span>");
-
-        subject.OnNext(current);
-    }
-
-    private async Task<string> GetEditorValue() => await JSRuntime.InvokeAsync<string>("getEditorValueByReference", editorReference);
+    private async Task<string> GetEditorValue(bool withCursorLocation = false) => await JSRuntime.InvokeAsync<string>("getEditorValueByReference", editorReference, withCursorLocation);
 
     private async Task SetEditorValue(string value, string clientId) => await JSRuntime.InvokeVoidAsync("setEditorValueByReference", editorReference, value, clientId);
 

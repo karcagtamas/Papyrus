@@ -68,7 +68,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
         {
             Note = note;
 
-            PageTitle = $"Editor [{Note.Title}]";
+            UpdatePageTitle();
 
             Users = new();
             var users = await EditorService.GetMembers(Note.Id);
@@ -117,7 +117,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
         {
             Note.Title = args.Title;
             Note.Tags = args.Tags;
-            PageTitle = $"Editor [{Note.Title}]";
+            UpdatePageTitle();
             await InvokeAsync(StateHasChanged);
         });
 
@@ -156,7 +156,15 @@ public partial class NoteEditor : ComponentBase, IDisposable
                 {
                     var note = await NoteService.GetLight(Id);
 
-                    ObjectHelper.WhenNotNull(note, n => hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags }));
+                    ObjectHelper.WhenNotNull(note, async n =>
+                    {
+                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags });
+
+                        Note.Title = n.Title;
+                        Note.Tags = n.Tags;
+                        UpdatePageTitle();
+                        await InvokeAsync(StateHasChanged);
+                    });
                 }
             }
         }, parameters);
@@ -172,6 +180,11 @@ public partial class NoteEditor : ComponentBase, IDisposable
         }
 
         await InvokeAsync(StateHasChanged);
+    }
+
+    private void UpdatePageTitle()
+    {
+        PageTitle = $"Editor [{Note.Title}]";
     }
 
     public async void Dispose()
