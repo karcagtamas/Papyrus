@@ -58,6 +58,9 @@ builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
 
+// Mandatory for HTTP Interceptor
+builder.Services.AddErrorConverter((conf) => { });
+
 // Add AutoMapper
 var mapperConfig = new MapperConfiguration(conf =>
 {
@@ -68,7 +71,7 @@ var mapperConfig = new MapperConfiguration(conf =>
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
-// Cors
+// CORS
 builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("Policy", cb =>
