@@ -1,4 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Components.Dialogs;
+using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Helpers;
@@ -36,6 +37,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     [Inject]
     private IEditorService EditorService { get; set; } = default!;
+
+    [Inject]
+    private IToasterService Toaster { get; set; } = default!;
 
     private Editor? Editor = new();
 
@@ -132,6 +136,12 @@ public partial class NoteEditor : ComponentBase, IDisposable
     {
         ObjectHelper.WhenNotNull(hub, (h) =>
         {
+            if (h.State != HubConnectionState.Connected)
+            {
+                Toaster.Open(new ToasterSettings { Caption = "Connection unexpectedly disconnected. Please try to reload the page.", Type = ToasterType.Error });
+                return;
+            }
+
             ObjectHelper.WhenNotNull(Editor, async (e) =>
             {
                 await h.SendAsync(EditorHubEvents.EditorShare, Id, Encoding.UTF8.GetBytes(content));
@@ -158,6 +168,12 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
                     ObjectHelper.WhenNotNull(note, async n =>
                     {
+                        if ((hub?.State ?? HubConnectionState.Disconnected) != HubConnectionState.Connected)
+                        {
+                            Toaster.Open(new ToasterSettings { Caption = "Connection unexpectedly disconnected. Please try to reload the page.", Type = ToasterType.Error });
+                            return;
+                        }
+
                         hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags });
 
                         Note.Title = n.Title;
