@@ -39,7 +39,9 @@
                 @if (User is not null)
                 {
                     <MudText Typo="Typo.caption">@User.UserName</MudText>
-                    <MudAvatar Color="Color.Secondary" Class="ml-3">@User.UserName.ToUpper()[0]</MudAvatar>
+                    <MudTooltip Text="@User.DisplayName">
+                        <MudAvatar Color="Color.Secondary" Class="ml-3">@User.UserName.ToUpper()[0]</MudAvatar>
+                    </MudTooltip>
                 }
             </Authorized>
         </AuthorizeView>

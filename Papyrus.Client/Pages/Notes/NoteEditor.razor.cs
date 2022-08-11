@@ -49,6 +49,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
     private string ClientId { get; set; } = string.Empty;
     private List<UserLightDTO> Users { get; set; } = new();
     private bool DataCollapsed { get; set; } = true;
+    private bool IsSaving { get; set; } = false;
 
     protected override async void OnInitialized()
     {
@@ -132,6 +133,8 @@ public partial class NoteEditor : ComponentBase, IDisposable
         });
     }
 
+    private void SaveDirtyState() => ObjectHelper.WhenNotNull(Editor, async e => await e.SaveDirtyState());
+
     private void HandleChange(string content)
     {
         ObjectHelper.WhenNotNull(hub, (h) =>
@@ -144,7 +147,17 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
             ObjectHelper.WhenNotNull(Editor, async (e) =>
             {
+                // Pre-save actions
+                IsSaving = true;
+                await InvokeAsync(StateHasChanged);
+
+                // Save
                 await h.SendAsync(EditorHubEvents.EditorShare, Id, Encoding.UTF8.GetBytes(content));
+
+                // Post-save actions
+                e.IsDirty = false;
+                IsSaving = false;
+                await InvokeAsync(StateHasChanged);
             });
         });
     }

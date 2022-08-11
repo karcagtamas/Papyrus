@@ -1,4 +1,6 @@
-﻿namespace Papyrus.Shared.DTOs;
+﻿using KarcagS.Shared.Helpers;
+
+namespace Papyrus.Shared.DTOs;
 
 public class UserLightDTO
 {
@@ -6,4 +8,6 @@ public class UserLightDTO
     public string UserName { get; set; } = default!;
     public string Email { get; set; } = default!;
     public string? FullName { get; set; } = default!;
+
+    public string DisplayName { get => ObjectHelper.IsNull(FullName) ? UserName : $"{UserName} [{FullName}]"; }
 }

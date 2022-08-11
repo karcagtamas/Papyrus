@@ -31,6 +31,8 @@ public partial class Editor : ComponentBase, IDisposable
     private Subject<string> subject = new();
     private IDisposable? disposable;
 
+    public bool IsDirty { get; set; }
+
     protected override void OnInitialized()
     {
         disposable = subject.Throttle(TimeSpan.FromMilliseconds(700))
@@ -63,6 +65,8 @@ public partial class Editor : ComponentBase, IDisposable
 
     public string GetValue() => Content;
 
+    public async Task SaveDirtyState() => await OnContentChange.InvokeAsync(Content);
+
     private async void ExecuteAction(EditorAction action, string param = "")
     {
         switch (action)
@@ -89,7 +93,11 @@ public partial class Editor : ComponentBase, IDisposable
         }
     }
 
-    private async Task ContentChanged(ChangeEventArgs args) => subject.OnNext(await GetEditorValue());
+    private async Task ContentChanged(ChangeEventArgs args)
+    {
+        IsDirty = true;
+        subject.OnNext(await GetEditorValue());
+    }
 
     private async Task<string> GetEditorValue(bool withCursorLocation = false) => await JSRuntime.InvokeAsync<string>("getEditorValueByReference", editorReference, withCursorLocation);
 
