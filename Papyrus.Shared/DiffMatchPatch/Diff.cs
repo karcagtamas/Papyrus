@@ -86,15 +86,16 @@ public class Diff
         var patched = new DiffMatchPatch().PatchApply(patches, baseText);
         var patchResults = (bool[])patched[1];
 
-        if (patchResults.Length == patches.Count && patchResults.All(x => x))
+        if (patchResults.Any(x => !x))
         {
-            string result = (string)patched[0];
-
-            successAction(result);
-
-            return result;
+            Console.WriteLine("One or more patches were unsuccessful");
+            return default;
         }
 
-        return default;
+        string result = (string)patched[0];
+
+        successAction(result);
+
+        return result;
     }
 }

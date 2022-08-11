@@ -33,7 +33,7 @@ public partial class Editor : ComponentBase, IDisposable
 
     protected override void OnInitialized()
     {
-        disposable = subject.Throttle(TimeSpan.FromSeconds(1))
+        disposable = subject.Throttle(TimeSpan.FromMilliseconds(700))
             .Subscribe(async (e) => await OnContentChange.InvokeAsync(e));
         base.OnInitialized();
     }
