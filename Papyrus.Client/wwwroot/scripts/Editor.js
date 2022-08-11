@@ -8,7 +8,10 @@
 }
 
 setEditorValueByReference = function (element, value, clientId) {
-    element.innerHTML = value.replace("‎", "<span id='" + clientId + "' />");
+    var modifiedValue = value.replace("‎", "<span id='" + clientId + "'></span>");
+    element.innerHTML = modifiedValue;
+
+    // Refocus
     var cursor = document.getElementById(clientId);
     if (cursor) {
         setCursorPosition(cursor, 0);
