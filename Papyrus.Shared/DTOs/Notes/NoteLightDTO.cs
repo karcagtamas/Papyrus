@@ -9,4 +9,5 @@ public class NoteLightDTO
     public bool Public { get; set; }
     public List<NoteTagDTO> Tags { get; set; } = default!;
     public int? GroupId { get; set; }
+    public bool Deleted { get; set; }
 }

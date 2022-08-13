@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
+using Papyrus.Shared.Enums.Notes;
 using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Controllers;
@@ -25,10 +26,10 @@ public class NoteController : ControllerBase
     public NoteLightDTO GetLight(string id) => noteService.GetMapped<NoteLightDTO>(id);
 
     [HttpGet("Group/{groupId}")]
-    public List<NoteLightDTO> GetByGroup(int groupId) => noteService.GetByGroup(groupId);
+    public List<NoteLightDTO> GetByGroup(int groupId, [FromQuery] NoteSearchType searchType = NoteSearchType.All) => noteService.GetByGroup(groupId, searchType);
 
     [HttpGet("User")]
-    public List<NoteLightDTO> GetByUser() => noteService.GetByUser();
+    public List<NoteLightDTO> GetByUser([FromQuery] NoteSearchType searchType = NoteSearchType.All) => noteService.GetByUser(searchType);
 
     [HttpPost]
     public NoteCreationDTO CreateEmpty([FromBody] NoteCreateModel model) => noteService.CreateEmpty(model.GroupId);
@@ -37,5 +38,5 @@ public class NoteController : ControllerBase
     public void Update(string id, [FromBody] NoteModel model) => noteService.UpdateWithTags(id, model);
 
     [HttpDelete("{id}")]
-    public void Delete(string id) => noteService.DeleteById(id);
+    public void Delete(string id) => noteService.Delete(id);
 }

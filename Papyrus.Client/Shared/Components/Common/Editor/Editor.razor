@@ -1,13 +1,13 @@
 <div id="rt-editor-box" class="mud-elevation-2">
     <div id="rt-editor-actions">
         <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
-            <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))"></MudIconButton>
-            <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))"></MudIconButton>
-            <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))"></MudIconButton>
-            <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))" Disabled="Disabled"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))" Disabled="Disabled"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))" Disabled="Disabled"></MudIconButton>
+            <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))" Disabled="Disabled"></MudIconButton>
         </MudButtonGroup>
         <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
-            <MudIconButton Disabled="@ColorPickerOpened" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))">
+            <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))">
             </MudIconButton>
             <MudPopover Open="@ColorPickerOpened" AnchorOrigin="Origin.BottomCenter">
                 <div class="p-1">
@@ -19,12 +19,12 @@
                     </div>
                 </div>
             </MudPopover>
-            <MudIconButton Disabled="@ColorPickerOpened" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))"></MudIconButton>
+            <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))"></MudIconButton>
         </MudButtonGroup>
         <MudSpacer />
 
         @RightToolbar
     </div>
     <MudDivider />
-    <div @ref="editorReference" contenteditable="true" id="rt-editor" @oninput="@((args) => ContentChanged(args))"></div>
+    <div @ref="editorReference" contenteditable="@(!Disabled)" id="rt-editor" @oninput="@((args) => ContentChanged(args))"></div>
 </div>

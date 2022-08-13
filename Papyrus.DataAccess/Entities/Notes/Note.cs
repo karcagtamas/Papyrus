@@ -36,6 +36,9 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     [User]
     public string? LastUpdaterId { get; set; }
 
+    [Required]
+    public bool Deleted { get; set; }
+
     public virtual User? User { get; set; }
     public virtual Group? Group { get; set; }
     public virtual User? Creator { get; set; }

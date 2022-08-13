@@ -1,0 +1,14 @@
+﻿<MudTooltip RootClass="d-flex flex-row align-items-center" Text="@(Public ? "Published" : "Not Published")">
+    <MudIcon Class="@Class" Size="Size" Icon="@(Public ? Icons.Filled.Visibility : Icons.Filled.VisibilityOff)" Color="Color.Info" />
+</MudTooltip>
+
+@code {
+    [Parameter, EditorRequired]
+    public bool Public { get; set; }
+
+    [Parameter]
+    public Size Size { get; set; } = Size.Medium;
+
+    [Parameter]
+    public string Class { get; set; } = "";
+}

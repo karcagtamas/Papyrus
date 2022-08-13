@@ -8,6 +8,7 @@ using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
+using Papyrus.Shared.Enums.Notes;
 using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Logic.Services.Notes;
@@ -15,10 +16,12 @@ namespace Papyrus.Logic.Services.Notes;
 public class NoteService : MapperRepository<Note, string, string>, INoteService
 {
     private readonly IGroupActionLogService groupActionLogService;
+    private readonly INoteActionLogService noteActionLogService;
 
-    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Note")
+    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService) : base(context, loggerService, utilsService, mapper, "Note")
     {
         this.groupActionLogService = groupActionLogService;
+        this.noteActionLogService = noteActionLogService;
     }
 
     public NoteCreationDTO CreateEmpty(int? groupId)
@@ -49,19 +52,28 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             Title = note.Title
         };
     }
-
-    public List<NoteLightDTO> GetByGroup(int groupId)
+    public override string Create(Note entity, bool doPersist = true)
     {
-        return GetMappedList<NoteLightDTO>(x => x.GroupId == groupId)
+        string userId = Utils.GetRequiredCurrentUserId();
+        var id = base.Create(entity, doPersist);
+
+        noteActionLogService.AddActionLog(id, userId, NoteActionLogType.Create);
+
+        return id;
+    }
+
+    public List<NoteLightDTO> GetByGroup(int groupId, NoteSearchType searchType = NoteSearchType.All)
+    {
+        return GetMappedList<NoteLightDTO>(x => x.GroupId == groupId && !x.Deleted && (searchType == NoteSearchType.All || (searchType == NoteSearchType.Published && x.Public) || (searchType == NoteSearchType.NotPublished && !x.Public)))
             .OrderByDescending(x => x.LastUpdate)
             .ToList();
     }
 
-    public List<NoteLightDTO> GetByUser()
+    public List<NoteLightDTO> GetByUser(NoteSearchType searchType = NoteSearchType.All)
     {
         var userId = Utils.GetRequiredCurrentUserId();
 
-        return GetMappedList<NoteLightDTO>(x => x.UserId == userId)
+        return GetMappedList<NoteLightDTO>(x => x.UserId == userId && !x.Deleted && (searchType == NoteSearchType.All || (searchType == NoteSearchType.Published && x.Public) || (searchType == NoteSearchType.NotPublished && !x.Public)))
             .OrderByDescending(x => x.LastUpdate)
             .ToList();
     }
@@ -85,6 +97,51 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         });
 
         note.Tags = tags;
+
+        Update(note);
+    }
+
+    public override void Update(Note entity, bool doPersist = true)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        var original = Context.Entry(entity).OriginalValues;
+
+        ObjectHelper.WhenNotNull(original, o =>
+        {
+            if (o["Title"] as string != entity.Title)
+            {
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.TitleEdit);
+            }
+
+            if (Context.Entry(entity).Collection(x => x.Tags).IsModified)
+            {
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.TagEdit);
+            }
+
+            if (o["Content"] as string != entity.Content)
+            {
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.ContentEdit);
+            }
+
+            if (o["Public"] as bool? != entity.Public)
+            {
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Publish);
+            }
+
+            if (o["Deleted"] as bool? != entity.Deleted)
+            {
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Delete);
+            }
+        });
+
+        base.Update(entity, doPersist);
+    }
+
+    public void Delete(string id)
+    {
+        var note = Get(id);
+
+        note.Deleted = true;
 
         Update(note);
     }

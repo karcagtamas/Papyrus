@@ -10,6 +10,7 @@
     {
         <MudCard Elevation="2" Class="p-2 m-3 mb-1 mt-1">
             <div class="d-flex flex-row align-items-center">
+                <NotePublicStatusIcon Class="ml-1 mr-2" Public="Note.Public" />
                 <MudText Color="Color.Primary" Typo="Typo.h5">@Note.Title</MudText>
                 <div class="ml-2 mr-2 d-flex flex-row align-items-center">
                     @foreach (var tag in Note.Tags)
@@ -20,7 +21,7 @@
                 <MudSpacer />
                 <div>
                     <MudTooltip Text="Edit note data">
-                        <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" />
+                        <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" Disabled="Note.Deleted" />
                     </MudTooltip>
                     <MudTooltip Text="Open note history">
                         <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenEdit" />
@@ -41,13 +42,25 @@
             @if (!DataCollapsed)
             {
                 <MudDivider Class="mt-2 mb-2" />
-                <DateDataRow Title="Creation" Date="@Note.Creation" />
-                <DateDataRow Title="Last Update" Date="@Note.LastUpdate" />
-                <DataRow Title="Creator" Value="@Note.Creator" />
-                <DataRow Title="Last Updater" Value="@Note.LastUpdater" />
+                <div class="d-flex flex-row">
+                    <div class="flex-grow-1">
+                        <DateDataRow Title="Creation" Date="@Note.Creation" OneRow="true" />
+                    </div>
+                    <div class="flex-grow-1">
+                        <DateDataRow Title="Last Update" Date="@Note.LastUpdate" OneRow="true" />
+                    </div>
+                    <div class="flex-grow-1">
+                        <DataRow Title="Creator" Value="@Note.Creator" OneRow="true" />
+                    </div>
+                    <div class="flex-grow-1">
+                        <DataRow Title="Last Updater" Value="@Note.LastUpdater" OneRow="true" />
+                    </div>
+                </div>
+                <LogicDataRow Title="Is Public" Value="Note.Public" TrueValue="Yes" FalseValue="No" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
+                <LogicDataRow Title="Is Deleted" Value="Note.Deleted" TrueValue="Yes" FalseValue="No" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
             }
         </MudCard>
-        <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange">
+        <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange" Disabled="Note.Deleted">
             <RightToolbar>
                 <div class="d-flex flex-row align-items-center gap-3">
                     @foreach (var user in Users)
@@ -58,15 +71,18 @@
                     }
                 </div>
                 <div class="d-flex ml-3 mr-2 flex-row align-items-center gap-2">
-                    @if (IsSaving)
+                    @if (!Note.Deleted)
                     {
-                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
-                    }
-                    else
-                    {
-                        <MudTooltip Text="Save content">
-                            <MudIconButton Icon="@Icons.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="!Editor?.IsDirty ?? true" />
-                        </MudTooltip>
+                        @if (IsSaving)
+                        {
+                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
+                        }
+                        else
+                        {
+                            <MudTooltip Text="Save content">
+                                <MudIconButton Icon="@Icons.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="!Editor?.IsDirty ?? true" />
+                            </MudTooltip>
+                        }
                     }
                     <MudTooltip Text="@(ObjectHelper.OrElse(hub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? "Connection active" : "Connection inactive")">
                         <MudIcon Icon="@(ObjectHelper.OrElse(hub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? Icons.Filled.Cloud : Icons.Filled.CloudOff)" Color="Color.Primary" />

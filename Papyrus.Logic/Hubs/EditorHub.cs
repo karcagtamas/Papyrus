@@ -63,6 +63,9 @@ public class EditorHub : Hub
     public async Task UpdateNote(string editor, NoteChangeEventArgs args) => await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorNoteUpdated, args);
 
     [Authorize]
+    public async Task DeleteNote(string editor) => await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorNoteDeleted);
+
+    [Authorize]
     public async Task Disconnect(string editor)
     {
         await Groups.RemoveFromGroupAsync(Context.ConnectionId, editor);

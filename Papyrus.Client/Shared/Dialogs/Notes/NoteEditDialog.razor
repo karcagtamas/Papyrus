@@ -7,7 +7,7 @@
 <EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Note" IsEdit="true">
     <MudTextField Class="mb-5" T="string" Label="Title" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth="true" />
-
+    <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="Is Public" For="@(() => Model.Public)" @bind-Checked="Model.Public" />
     <div>
         @foreach (var tag in Tags)
         {

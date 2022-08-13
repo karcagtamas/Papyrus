@@ -8,15 +8,18 @@ public static class EditorHubEvents
     public static readonly string EditorDisconnect = "Disconnect";
     public static readonly string EditorShare = "Share";
     public static readonly string EditorUpdateNote = "UpdateNote";
+    public static readonly string EditorDeleteNote = "DeleteNote";
 
     public static readonly string EditorChanged = "Changed";
     public static readonly string EditorMemberJoined = "MemberJoined";
     public static readonly string EditorMemberLeft = "MemberLeft";
     public static readonly string EditorNoteUpdated = "NoteUpdated";
+    public static readonly string EditorNoteDeleted = "NoteDeleted";
 }
 
 public class NoteChangeEventArgs
 {
     public string Title { get; set; } = default!;
     public List<NoteTagDTO> Tags { get; set; } = new();
+    public bool Public { get; set; }
 }

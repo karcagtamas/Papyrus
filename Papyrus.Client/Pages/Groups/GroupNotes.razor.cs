@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
+using Papyrus.Shared.Enums.Notes;
 using System;
 
 namespace Papyrus.Client.Pages.Groups;
@@ -19,6 +20,7 @@ public partial class GroupNotes : ComponentBase
     private IJSRuntime JSRuntime { get; set; } = default!;
 
     private List<NoteLightDTO> Notes { get; set; } = new();
+    private NoteSearchType SearchType { get; set; } = NoteSearchType.All; 
 
     protected override async void OnInitialized()
     {
@@ -28,7 +30,7 @@ public partial class GroupNotes : ComponentBase
 
     private async Task Refresh()
     {
-        Notes = await NoteService.GetByGroup(GroupId);
+        Notes = await NoteService.GetByGroup(GroupId, SearchType);
 
         await InvokeAsync(StateHasChanged);
     }
@@ -41,5 +43,11 @@ public partial class GroupNotes : ComponentBase
         {
             await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
         }
+    }
+
+    private async Task HandleSearchTypeChange(NoteSearchType searchType)
+    {
+        SearchType = searchType;
+        await Refresh();
     }
 }

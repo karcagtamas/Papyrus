@@ -19,6 +19,9 @@ public partial class Editor : ComponentBase, IDisposable
     [Parameter]
     public RenderFragment RightToolbar { get; set; } = default!;
 
+    [Parameter]
+    public bool Disabled { get; set; } = false;
+
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = default!;
 
@@ -69,6 +72,11 @@ public partial class Editor : ComponentBase, IDisposable
 
     private async void ExecuteAction(EditorAction action, string param = "")
     {
+        if (Disabled)
+        {
+            return;
+        }
+
         switch (action)
         {
             case EditorAction.Bold:
@@ -95,6 +103,11 @@ public partial class Editor : ComponentBase, IDisposable
 
     private async Task ContentChanged(ChangeEventArgs args)
     {
+        if (Disabled)
+        {
+            return;
+        }
+
         IsDirty = true;
         subject.OnNext(await GetEditorValue());
     }
@@ -105,6 +118,11 @@ public partial class Editor : ComponentBase, IDisposable
 
     private void ChooseColor(EditorAction action)
     {
+        if (Disabled)
+        {
+            return;
+        }
+
         ColorPickerOpened = true;
         ColorAction = action;
     }

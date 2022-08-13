@@ -122,9 +122,12 @@ public partial class NoteEditor : ComponentBase, IDisposable
         {
             Note.Title = args.Title;
             Note.Tags = args.Tags;
+            Note.Public = args.Public;
             UpdatePageTitle();
             await InvokeAsync(StateHasChanged);
         });
+
+        hub?.On(EditorHubEvents.EditorNoteDeleted, () => HandleDeleteAction());
 
         ObjectHelper.WhenNotNull(hub, async (h) =>
         {
@@ -172,8 +175,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
             {
                 if (res.Event == EditorCloseEvent.Remove)
                 {
-                    var url = ObjectHelper.IsNotNull(Note.GroupId) ? $"/groups/{Note.GroupId}/notes" : "/notes";
-                    NavigationManager.NavigateTo(url);
+                    hub?.SendAsync(EditorHubEvents.EditorNoteDeleted, Id);
+
+                    HandleDeleteAction();
                 }
                 else if (res.Event == EditorCloseEvent.Edit)
                 {
@@ -187,10 +191,11 @@ public partial class NoteEditor : ComponentBase, IDisposable
                             return;
                         }
 
-                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags });
+                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags, Public = n.Public });
 
                         Note.Title = n.Title;
                         Note.Tags = n.Tags;
+                        Note.Public = n.Public;
                         UpdatePageTitle();
                         await InvokeAsync(StateHasChanged);
                     });
@@ -214,6 +219,12 @@ public partial class NoteEditor : ComponentBase, IDisposable
     private void UpdatePageTitle()
     {
         PageTitle = $"Editor [{Note.Title}]";
+    }
+
+    private void HandleDeleteAction()
+    {
+        var url = ObjectHelper.IsNotNull(Note.GroupId) ? $"/groups/{Note.GroupId}/notes" : "/notes";
+        NavigationManager.NavigateTo(url);
     }
 
     public async void Dispose()

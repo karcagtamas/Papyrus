@@ -134,7 +134,11 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .HasOne(x => x.Note)
             .WithMany(x => x.ActionLogs)
             .IsRequired()
-            .OnDelete(DeleteBehavior.ClientCascade);
+            .OnDelete(DeleteBehavior.Cascade);
+        modelBuilder.Entity<NoteActionLog>()
+            .HasOne(x => x.Performer)
+            .WithMany(x => x.PerformedNoteActionLogs)
+            .OnDelete(DeleteBehavior.SetNull);
 
         // Tag
         modelBuilder.Entity<Tag>()
