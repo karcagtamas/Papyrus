@@ -24,7 +24,7 @@
                         <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" Disabled="Note.Deleted" />
                     </MudTooltip>
                     <MudTooltip Text="Open note history">
-                        <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenEdit" />
+                        <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenLogs" />
                     </MudTooltip>
 
                     @if (ObjectHelper.IsNotNull(Note.GroupId))

@@ -177,10 +177,12 @@ public partial class NoteEditor : ComponentBase, IDisposable
                 {
                     hub?.SendAsync(EditorHubEvents.EditorNoteDeleted, Id);
 
+                    // Will notify other clients
                     HandleDeleteAction();
                 }
                 else if (res.Event == EditorCloseEvent.Edit)
                 {
+                    // Fetch new data
                     var note = await NoteService.GetLight(Id);
 
                     ObjectHelper.WhenNotNull(note, async n =>
@@ -191,8 +193,10 @@ public partial class NoteEditor : ComponentBase, IDisposable
                             return;
                         }
 
+                        // Notify other clients
                         hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags, Public = n.Public });
 
+                        // Internal update
                         Note.Title = n.Title;
                         Note.Tags = n.Tags;
                         Note.Public = n.Public;
@@ -202,6 +206,15 @@ public partial class NoteEditor : ComponentBase, IDisposable
                 }
             }
         }, parameters);
+    }
+
+    private async Task OpenLogs()
+    {
+        var parameters = new DialogParameters { { "NoteId", Id } };
+
+        var options = new DialogOptions { FullScreen = true };
+
+        await HelperService.OpenDialog<NoteActionLogDialog>("Note Action Log", () => { }, parameters, options);
     }
 
     private async Task ApplyDiffs(byte[] content)

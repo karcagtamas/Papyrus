@@ -1,0 +1,66 @@
+﻿@using KarcagS.Shared.Helpers
+@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Shared.DTOs.Notes.ActionsLogs
+@inject INoteActionLogService NoteActionLogService
+
+<MudDialog ClassContent="d-flex flex-column flex-grow-1">
+    <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">Action Logs</MudText></TitleContent>
+    <DialogContent>
+        <div style="max-height: 80vh; overflow: auto; padding: 1rem;">
+            @if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Config))
+            {
+                <ListTable T="NoteActionLogDTO" TKey="long" DataSource="DataSource" Config="Config" />
+            }
+        </div>
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        <MudButton Color="Color.Primary" OnClick="@(() => Dialog.Close())">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [Parameter]
+    public string NoteId { get; set; } = default!;
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    private TableDataSource<NoteActionLogDTO, long> DataSource { get; set; } = default!;
+    private TableConfiguration<NoteActionLogDTO, long> Config { get; set; } = default!;
+
+    protected override async void OnInitialized()
+    {
+        DataSource = new TableDataSource<NoteActionLogDTO, long>(() => NoteActionLogService.GetByNote(NoteId));
+        Config = TableConfiguration<NoteActionLogDTO, long>.Build()
+            .AddColumn(
+                new()
+                    {
+                        Key = "text",
+                        Title = "Text",
+                        TitleColor = Color.Primary,
+                        ValueGetter = (obj) => obj.Text
+                    }
+            )
+            .AddColumn(
+                new()
+                    {
+                        Key = "performer",
+                        Title = "Performer",
+                        TitleColor = Color.Primary,
+                        ValueGetter = (obj) => obj.Performer ?? ""
+                    }
+            )
+            .AddColumn(
+                new()
+                    {
+                        Key = "creation",
+                        Title = "Creation",
+                        TitleColor = Color.Primary,
+                        ValueGetter = (obj) => obj.Creation
+                    }
+            );
+        await InvokeAsync(StateHasChanged);
+        base.OnInitialized();
+    }
+}
