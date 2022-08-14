@@ -5,9 +5,12 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
+using MimeMapping;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
+using Papyrus.Logic.Services.Common.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
+using Papyrus.Mongo.DataAccess.Enums;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
 
@@ -16,10 +19,12 @@ namespace Papyrus.Logic.Services;
 public class UserService : MapperRepository<User, string, string>, IUserService
 {
     private readonly UserManager<User> userManager;
+    private readonly IFileService fileService;
 
-    public UserService(PapyrusContext context, ILoggerService logger, IUtilsService<string> utils, IMapper mapper, UserManager<User> userManager) : base(context, logger, utils, mapper, "User")
+    public UserService(PapyrusContext context, ILoggerService logger, IUtilsService<string> utils, IMapper mapper, UserManager<User> userManager, IFileService fileService) : base(context, logger, utils, mapper, "User")
     {
         this.userManager = userManager;
+        this.fileService = fileService;
     }
 
     public User? GetByEmail(string email) => userManager.Users.SingleOrDefault(user => user.Email == email);
@@ -52,11 +57,21 @@ public class UserService : MapperRepository<User, string, string>, IUserService
         Persist();
     }
 
-    public void UpdateImage(byte[] image)
+    public void UpdateImage(ImageModel model)
     {
         var user = Utils.GetCurrentUser<User>();
-        user.ImageData = image;
-        user.ImageTitle = DateTime.Now.ToString(CultureInfo.InvariantCulture);
+
+        var fileId = fileService.Insert(new Mongo.DataAccess.Entities.File
+        {
+            Category = FileCategory.Picture,
+            Name = model.Name,
+            Content = model.Content,
+            Size = model.Size,
+            Extension = model.Extension,
+            MimeType = MimeUtility.GetMimeMapping(model.Name)
+        });
+
+        user.ImageId = fileId;
         Update(user);
     }
 
@@ -96,7 +111,7 @@ public class UserService : MapperRepository<User, string, string>, IUserService
             throw new ServerException($"User already exists with this name: {model.UserName}");
         }
 
-        if (user.Email != model.Email && ObjectHelper.IsNotNull(GetByEmail(model.Email))) 
+        if (user.Email != model.Email && ObjectHelper.IsNotNull(GetByEmail(model.Email)))
         {
             throw new ServerException($"User already exists with this e-mail address: {model.Email}");
         }

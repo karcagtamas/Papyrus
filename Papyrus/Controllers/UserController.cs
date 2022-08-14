@@ -61,9 +61,9 @@ public class UserController : ControllerBase
     }
 
     [HttpPut("Image")]
-    public void UpdateImage([FromBody] byte[] image)
+    public void UpdateImage([FromBody] ImageModel model)
     {
-        userService.UpdateImage(image);
+        userService.UpdateImage(model);
     }
 
     [HttpPut("Password")]

@@ -6,6 +6,7 @@ using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
+using Papyrus.Mongo.DataAccess.Entities;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
 using Papyrus.Shared.Enums.Notes;
@@ -17,19 +18,20 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 {
     private readonly IGroupActionLogService groupActionLogService;
     private readonly INoteActionLogService noteActionLogService;
+    private readonly INoteContentService noteContentService;
 
-    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService) : base(context, loggerService, utilsService, mapper, "Note")
+    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService, INoteContentService noteContentService) : base(context, loggerService, utilsService, mapper, "Note")
     {
         this.groupActionLogService = groupActionLogService;
         this.noteActionLogService = noteActionLogService;
+        this.noteContentService = noteContentService;
     }
 
     public NoteCreationDTO CreateEmpty(int? groupId)
     {
         var note = new Note
         {
-            Title = "New Document",
-            Content = ""
+            Title = "New Document"
         };
 
         var userId = Utils.GetRequiredCurrentUserId();
@@ -43,6 +45,10 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         {
             note.UserId = userId;
         }
+
+        // Create content
+        var contentId = noteContentService.Insert(new NoteContent { Content = "" });
+        note.ContentId = contentId;
 
         var id = Create(note);
 
@@ -76,6 +82,23 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return GetMappedList<NoteLightDTO>(x => x.UserId == userId && !x.Deleted && (searchType == NoteSearchType.All || (searchType == NoteSearchType.Published && x.Public) || (searchType == NoteSearchType.NotPublished && !x.Public)))
             .OrderByDescending(x => x.LastUpdate)
             .ToList();
+    }
+
+    public override T GetMapped<T>(string id)
+    {
+        var mapped = base.GetMapped<T>(id);
+
+        if (mapped is NoteDTO dto)
+        {
+            if (ObjectHelper.IsNotNull(dto))
+            {
+                var content = noteContentService.Get(dto.ContentId);
+
+                dto.Content = content?.Content ?? "";
+            }
+        }
+
+        return mapped;
     }
 
     public void UpdateWithTags(string id, NoteModel model)
@@ -118,7 +141,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
                 noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.TagEdit);
             }
 
-            if (o["Content"] as string != entity.Content)
+            if (o["ContentLastEdit"] as DateTime? != entity.ContentLastEdit)
             {
                 noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.ContentEdit);
             }

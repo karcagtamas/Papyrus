@@ -1,4 +1,5 @@
 @page "/my"
+@using KarcagS.Shared.Helpers
 @attribute [Authorize]
 
 <ApplicationPageTitle PageName="My User"></ApplicationPageTitle>
@@ -23,10 +24,10 @@
                     <DateDataRow Title="Birthday" Date="User.BirthDay" />
                 </MudCard>
             </div>
-            @if (User.ImageData is not null && User.ImageData.Length != 0 && Image is not null)
+            @if (ObjectHelper.IsNotNull(Image))
             {
                 <div class="p-2 text-center profile-pic" style="border-color: @PapyrusTheme.AppTheme.ColorPalette.MainColorValue">
-                    <img src="@Image" alt="@User.ImageTitle" />
+                    <img src="@Image" alt="@User.UserName" />
                 </div>
             }
         </div>

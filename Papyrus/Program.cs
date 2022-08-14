@@ -4,6 +4,7 @@ using KarcagS.Common.Middlewares;
 using KarcagS.Common.Tools;
 using KarcagS.Common.Tools.Authentication.JWT;
 using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Common.Tools.Mongo;
 using KarcagS.Common.Tools.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -17,6 +18,8 @@ using Papyrus.Logic.Mappers;
 using Papyrus.Logic.Services;
 using Papyrus.Logic.Services.Auth;
 using Papyrus.Logic.Services.Auth.Interfaces;
+using Papyrus.Logic.Services.Common;
+using Papyrus.Logic.Services.Common.Interfaces;
 using Papyrus.Logic.Services.Editor;
 using Papyrus.Logic.Services.Editor.Interfaces;
 using Papyrus.Logic.Services.Groups;
@@ -25,6 +28,7 @@ using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Middlewares;
+using Papyrus.Mongo.DataAccess.Configurations;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +39,11 @@ builder.Services.AddHttpLogging(opt => { });
 builder.Services.Configure<JWTConfiguration>(builder.Configuration.GetSection("Jwt"));
 builder.Services.Configure<UtilsSettings>(builder.Configuration.GetSection("Utils"));
 
+// Add mongo
+builder.AddMongo<CollectionConfiguration>((conf) => conf.GetSection("Mongo"));
+
 // Add services to the container.
+builder.Services.AddSingleton<IMongoService<CollectionConfiguration>, MongoService<CollectionConfiguration>>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddScoped<IUtilsService<string>, UtilsService<PapyrusContext, string>>();
 builder.Services.AddScoped<ILoggerService, LoggerService<string>>();
@@ -54,9 +62,12 @@ builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
 
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
+builder.Services.AddScoped<INoteContentService, NoteContentService>();
 builder.Services.AddScoped<ITagService, TagService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
+
+builder.Services.AddScoped<IFileService, FileService>();
 
 // Mandatory for HTTP Interceptor
 builder.Services.AddErrorConverter((conf) => { });
@@ -184,7 +195,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpInterceptor(opt =>
 {
     opt.OnlyApi = true;
-    opt.IgnoredPaths = new List<string> { @"/api/editor/[a-zA-Z0-9/]*" };
+    opt.IgnoredPaths = new List<string> { @"/api/editor/[a-zA-Z0-9/]*", @"\/api\/File\/[a-z0-9A-Z]*" };
 });
 
 if (bool.TrueString.Equals(builder.Configuration["HttpsRedirect"]))

@@ -1,10 +1,14 @@
 ﻿using KarcagS.Blazor.Common.Components.FileUploader;
 using KarcagS.Blazor.Common.Services;
+using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 using MudBlazor;
+using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Client.Shared.Dialogs;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.Models;
 
 namespace Papyrus.Client.Pages;
 
@@ -19,6 +23,15 @@ public partial class MyUser : ComponentBase
     [Inject]
     private IFileUploaderService FileUploaderService { get; set; } = default!;
 
+    [Inject]
+    private ICommonService CommonService { get; set; } = default!;
+
+    [Inject]
+    private IJSRuntime JSRuntime { get; set; } = default!;
+
+    [Inject]
+    private ITokenService TokenService { get; set; } = default!;
+
     private UserDTO? User { get; set; }
     private string? Image { get; set; }
 
@@ -31,11 +44,19 @@ public partial class MyUser : ComponentBase
     private async Task GetUser()
     {
         User = await UserService.Current();
-        if (User is not null && User.ImageData is not null && User.ImageData.Length != 0)
+        ObjectHelper.WhenNotNull(User, u =>
         {
-            string b64 = Convert.ToBase64String(User.ImageData);
-            Image = $"data:image/gif;base64,{b64}";
-        }
+            ObjectHelper.WhenNotNull(u.ImageId, async img =>
+            {
+                var token = await TokenService.GetAccessToken();
+
+                ObjectHelper.WhenNotNull(token, async t =>
+                {
+                    Image = await JSRuntime.InvokeAsync<string>("displayProtectedFile", CommonService.GetFileUrl(img), t);
+                    await InvokeAsync(StateHasChanged);
+                });
+            });
+        });
         await InvokeAsync(StateHasChanged);
     }
 
@@ -50,7 +71,17 @@ public partial class MyUser : ComponentBase
     {
         if (await FileUploaderService.Open(new FileUploaderDialogInput
         {
-            ImageUpload = async data => await UserService.UpdateImage(data.Files.First().Content),
+            ImageUpload = async data =>
+            {
+                var imageFile = data.Files.First();
+                return await UserService.UpdateImage(new ImageModel
+                {
+                    Name = imageFile.Name,
+                    Content = imageFile.Content,
+                    Size = imageFile.Size,
+                    Extension = imageFile.Extension
+                });
+            },
             EnabledExtensions = FileUploaderDialogInput.ImageExtensions,
         },
         "Change Profile Image"))

@@ -10,7 +10,7 @@ public interface IUserService : IHttpCall<string>
     Task<UserLightDTO?> Light(string id);
     Task<bool> Exists(string userName, string email);
     Task<bool> SetDisableStatus(List<string> ids, bool status);
-    Task<bool> UpdateImage(byte[] image);
+    Task<bool> UpdateImage(ImageModel model);
     Task<bool> UpdatePassword(UserPasswordModel model);
     Task<List<UserLightDTO>> Search(string searchTerm, bool ignoreCurrent, List<string> ignored);
 }

@@ -16,12 +16,14 @@ public class EditorHub : Hub
     private readonly INoteService noteService;
     private readonly IEditorService editorService;
     private readonly IUserService userService;
+    private readonly INoteContentService noteContentService;
 
-    public EditorHub(INoteService noteService, IEditorService editorService, IUserService userService)
+    public EditorHub(INoteService noteService, IEditorService editorService, IUserService userService, INoteContentService noteContentService)
     {
         this.noteService = noteService;
         this.editorService = editorService;
         this.userService = userService;
+        this.noteContentService = noteContentService;
     }
 
     [Authorize]
@@ -44,14 +46,22 @@ public class EditorHub : Hub
             return;
         }
 
-        string originalContent = note.Content;
+        var originalContent = noteContentService.Get(note.ContentId);
+
+        if (ObjectHelper.IsNull(originalContent))
+        {
+            return;
+        }
+
         string content = Encoding.UTF8.GetString(value);
-        List<Diff> diffs = new DiffMatchPatch().DiffMain(originalContent, content);
+        List<Diff> diffs = new DiffMatchPatch().DiffMain(originalContent.Content, content);
         if (diffs.Count > 0)
         {
-            Diff.ApplyDiffs(originalContent, diffs, async (res) =>
+            Diff.ApplyDiffs(originalContent.Content, diffs, async (res) =>
             {
-                note.Content = res;
+                noteContentService.UpdateContent(originalContent.Id, res);
+
+                note.ContentLastEdit = DateTime.Now;
                 noteService.Update(note);
 
                 await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorChanged, Encoding.UTF8.GetBytes(res));

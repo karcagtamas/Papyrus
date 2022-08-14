@@ -15,9 +15,6 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     [Required]
     public string Title { get; set; } = default!;
 
-    [Required]
-    public string Content { get; set; } = default!;
-
     public string? UserId { get; set; }
     public int? GroupId { get; set; }
 
@@ -38,6 +35,11 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
 
     [Required]
     public bool Deleted { get; set; }
+
+    [Required]
+    public string ContentId { get; set; } = default!;
+
+    public DateTime? ContentLastEdit { get; set; }
 
     public virtual User? User { get; set; }
     public virtual Group? Group { get; set; }

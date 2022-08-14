@@ -61,11 +61,11 @@ public class UserService : HttpCall<string>, IUserService
         return await Http.Post(settings, new UserDisableStatusModel { Ids = ids, Status = status }).Execute();
     }
 
-    public async Task<bool> UpdateImage(byte[] image)
+    public async Task<bool> UpdateImage(ImageModel model)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Image")).AddToaster("Image Update");
 
-        return await Http.Put(settings, image).Execute();
+        return await Http.Put(settings, model).Execute();
     }
 
     public async Task<bool> UpdatePassword(UserPasswordModel model)

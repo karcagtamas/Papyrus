@@ -27,9 +27,7 @@ public class User : IdentityUser<string>, IEntity<string>
     [Required]
     public bool Disabled { get; set; }
 
-    public string? ImageTitle { get; set; }
-
-    public byte[]? ImageData { get; set; }
+    public string? ImageId { get; set; }
 
     public bool IsOsirisConnected { get { return OsirisId != null; } }
 

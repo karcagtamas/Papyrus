@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Papyrus.DataAccess;
 
@@ -10,13 +11,14 @@ using Papyrus.DataAccess;
 namespace Papyrus.Migrations
 {
     [DbContext(typeof(PapyrusContext))]
-    partial class PapyrusContextModelSnapshot : ModelSnapshot
+    [Migration("20220814120330_ImageToFileStore")]
+    partial class ImageToFileStore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "6.0.7")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -319,12 +321,9 @@ namespace Papyrus.Migrations
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("ContentId")
+                    b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("ContentLastEdit")
-                        .HasColumnType("datetime(6)");
 
                     b.Property<DateTime>("Creation")
                         .HasColumnType("datetime(6)");

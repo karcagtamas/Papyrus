@@ -9,6 +9,7 @@ WORKDIR /src
 COPY *.sln . 
 COPY Papyrus/*.csproj ./Papyrus/
 COPY Papyrus.Logic/*.csproj ./Papyrus.Logic/
+COPY Papyrus.Mongo.DataAccess/*.csproj ./Papyrus.Mongo.DataAccess/
 COPY Papyrus.DataAccess/*.csproj ./Papyrus.DataAccess/
 COPY Papyrus.Client/*.csproj ./Papyrus.Client/
 COPY Papyrus.Shared/*.csproj ./Papyrus.Shared/
@@ -17,6 +18,7 @@ RUN dotnet restore
 
 COPY Papyrus/. ./Papyrus/
 COPY Papyrus.Logic/. ./Papyrus.Logic/
+COPY Papyrus.Mongo.DataAccess/. ./Papyrus.Mongo.DataAccess/
 COPY Papyrus.DataAccess/. ./Papyrus.DataAccess/
 COPY Papyrus.Shared/. ./Papyrus.Shared/
 
