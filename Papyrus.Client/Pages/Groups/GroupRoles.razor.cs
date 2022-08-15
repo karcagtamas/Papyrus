@@ -31,8 +31,9 @@ public partial class GroupRoles : ComponentBase
     protected override async void OnInitialized()
     {
         await Refresh(false);
-        DataSource = new TableDataSource<GroupRoleDTO, int>(() => GroupRoleService.GetByGroup(GroupId));
+        DataSource = new TableDataSource<GroupRoleDTO, int>((filter) => GroupRoleService.GetByGroup(GroupId));
         Config = TableConfiguration<GroupRoleDTO, int>.Build()
+            .AddTitle("Management Roles")
             .AddColumn(
                 new()
                 {
@@ -66,7 +67,8 @@ public partial class GroupRoles : ComponentBase
             .AddColumn(BuildColumn("read-logs", "Read Logs", (obj) => obj.ReadGroupActionLog))
             .AddColumn(BuildColumn("read-note-logs", "Read Note Logs", (obj) => obj.ReadNoteActionLog))
             .AddColumn(BuildColumn("read-tags", "Read Tags", (obj) => obj.GroupEdit))
-            .AddColumn(BuildColumn("edit-tags", "Edit Tags", (obj) => obj.GroupEdit));
+            .AddColumn(BuildColumn("edit-tags", "Edit Tags", (obj) => obj.GroupEdit))
+            .AddFilter(TableFilterConfiguration.Build().IsTextFilterEnabled(true));
         Config.ClickDisableOn = (obj) => !Rights.CanEdit || obj.ReadOnly;
         await InvokeAsync(StateHasChanged);
         base.OnInitialized();

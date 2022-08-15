@@ -42,8 +42,9 @@ public partial class GroupMembers : ComponentBase
     protected override async void OnInitialized()
     {
         await Refresh(false);
-        DataSource = new TableDataSource<GroupMemberDTO, int>(() => GroupMemberService.GetByGroup(GroupId));
+        DataSource = new TableDataSource<GroupMemberDTO, int>((filter) => GroupMemberService.GetByGroup(GroupId));
         Config = TableConfiguration<GroupMemberDTO, int>.Build()
+            .AddTitle("Group Members")
             .AddColumn(
                 new()
                 {
@@ -80,8 +81,9 @@ public partial class GroupMembers : ComponentBase
                     TitleColor = Color.Primary,
                     ValueGetter = (obj) => DateHelper.DateToString(obj.Join)
                 }
-            );
-        Config.ClickDisableOn = (obj) => !Rights.CanEdit || (User is not null && obj.User.Id == User);
+            )
+            .DisableClickOn((obj) => !Rights.CanEdit || (User is not null && obj.User.Id == User))
+            .AddFilter(TableFilterConfiguration.Build().IsTextFilterEnabled(true));
         await InvokeAsync(StateHasChanged);
         base.OnInitialized();
     }

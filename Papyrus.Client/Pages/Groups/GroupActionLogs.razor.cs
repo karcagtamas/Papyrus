@@ -19,8 +19,9 @@ public partial class GroupActionLogs : ComponentBase
 
     protected override async void OnInitialized()
     {
-        DataSource = new TableDataSource<GroupActionLogDTO, long>(() => GroupActionLogService.GetByGroup(GroupId));
+        DataSource = new TableDataSource<GroupActionLogDTO, long>((filter) => GroupActionLogService.GetByGroup(GroupId));
         Config = TableConfiguration<GroupActionLogDTO, long>.Build()
+            .AddTitle("Action Logs")
             .AddColumn(
                 new()
                 {
@@ -36,7 +37,7 @@ public partial class GroupActionLogs : ComponentBase
                     Key = "performer",
                     Title = "Performer",
                     TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.Performer ?? ""
+                    ValueGetter = (obj) => obj.Performer ?? "N/A"
                 }
             )
             .AddColumn(
