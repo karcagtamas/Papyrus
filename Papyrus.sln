@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Frontend", "Frontend", "{1A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Papyrus.Shared", "Papyrus.Shared\Papyrus.Shared.csproj", "{907CB599-23C2-4A05-9945-18E5362268D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Papyrus.Mongo.DataAccess", "Papyrus.Mongo.DataAccess\Papyrus.Mongo.DataAccess.csproj", "{E8E3DFE7-5A66-4501-B934-2446090E3CE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Papyrus.Mongo.DataAccess", "Papyrus.Mongo.DataAccess\Papyrus.Mongo.DataAccess.csproj", "{E8E3DFE7-5A66-4501-B934-2446090E3CE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

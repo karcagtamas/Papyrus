@@ -5,9 +5,12 @@
 
 <div class="page-div">
     <ActionBar>
-        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
-        <MudSpacer />
-        <MudSwitch T="bool" Color="Color.Secondary" CheckedChanged="HideClosedChangeHandler" Checked="HideClosedChecked" Label="Hide Closed" />
+        <ChildContent>
+            <InfoButton Text="All groups are available where you are involved or you are a member" />
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+            <MudSpacer />
+            <MudSwitch T="bool" Color="Color.Secondary" CheckedChanged="HideClosedChangeHandler" Checked="HideClosedChecked" Label="Hide Closed" />
+        </ChildContent>
     </ActionBar>
     <div class="page-content">
         <div class="groups">

@@ -4,11 +4,12 @@
 <GroupPageTitle PageName="Note Tags" />
 
 <div class="page-div">
-    @if (Rights.CanCreate)
-    {
-        <ActionBar>
+    <ActionBar>
+        <InfoButton Text="Tags are managed in tree hierarchy" />
+        @if (Rights.CanCreate)
+        {
             <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
-        </ActionBar>
-    }
+        }
+    </ActionBar>
     <TagTree @ref="TagTree" Fetcher="Fetcher" GroupId="GroupId" CreateEnabled="Rights.CanCreate" EditEnabled="Rights.CanEdit" RemoveEnabled="Rights.CanRemove" />
 </div>
