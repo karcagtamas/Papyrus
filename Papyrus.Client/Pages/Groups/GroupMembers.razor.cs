@@ -95,7 +95,7 @@ public partial class GroupMembers : ComponentBase
 
         if (tableRefresh)
         {
-            ListTable?.Refresh();
+            ListTable?.ForceRefresh();
         }
 
         await InvokeAsync(StateHasChanged);

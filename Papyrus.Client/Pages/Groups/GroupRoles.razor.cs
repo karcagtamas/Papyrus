@@ -80,7 +80,7 @@ public partial class GroupRoles : ComponentBase
 
         if (tableRefresh)
         {
-            ListTable?.Refresh();
+            ListTable?.ForceRefresh();
         }
 
         await InvokeAsync(StateHasChanged);
