@@ -19,9 +19,13 @@ public class GroupMemberController : ControllerBase
     }
 
     [HttpGet("Group/{groupId}")]
-    public List<GroupMemberDTO> GetByGroup(int groupId)
+    public List<GroupMemberDTO> GetByGroup(int groupId, [FromQuery] string? textFilter)
     {
-        return groupMemberService.GetMappedList<GroupMemberDTO>(x => x.GroupId == groupId)
+        return groupMemberService.GetMappedList<GroupMemberDTO>(x => x.GroupId == groupId
+                && (textFilter == null
+                    || x.User.UserName.Contains(textFilter)
+                    || x.Role.Name.Contains(textFilter)
+                    || (x.AddedBy != null && x.AddedBy.UserName.Contains(textFilter))))
             .OrderBy(x => x.Role.Id)
             .ThenBy(x => x.User.UserName)
             .ToList();

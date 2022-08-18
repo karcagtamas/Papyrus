@@ -11,12 +11,17 @@ public class GroupMemberService : HttpCall<int>, IGroupMemberService
     {
     }
 
-    public async Task<List<GroupMemberDTO>> GetByGroup(int groupId)
+    public async Task<List<GroupMemberDTO>> GetByGroup(int groupId, string? textFilter = null)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group")).AddPathParams(pathParams);
+        var queryParams = HttpQueryParameters.Build()
+            .Add("textFilter", textFilter);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
+            .AddPathParams(pathParams)
+            .AddQueryParams(queryParams);
 
         return await Http.Get<List<GroupMemberDTO>>(settings).ExecuteWithResultOrElse(new());
     }

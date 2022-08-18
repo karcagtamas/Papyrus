@@ -1,6 +1,8 @@
 ﻿using KarcagS.Blazor.Common.Components.Table;
+using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Helpers;
+using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Auth.Interfaces;
@@ -42,7 +44,7 @@ public partial class GroupMembers : ComponentBase
     protected override async void OnInitialized()
     {
         await Refresh(false);
-        DataSource = new TableDataSource<GroupMemberDTO, int>((filter) => GroupMemberService.GetByGroup(GroupId));
+        DataSource = new TableDataSource<GroupMemberDTO, int>(async (options) => new TableResult<GroupMemberDTO> { Items = await GroupMemberService.GetByGroup(GroupId, options.Filter.TextFilter) });
         Config = TableConfiguration<GroupMemberDTO, int>.Build()
             .AddTitle("Group Members")
             .AddColumn(
@@ -53,6 +55,7 @@ public partial class GroupMembers : ComponentBase
                     TitleColor = Color.Primary,
                     ValueGetter = (obj) => obj.User.UserName,
                     ColorGetter = (obj, i) => obj.User.Id == User ? Color.Error : Color.Default,
+                    Width = 480
                 }
             )
             .AddColumn(
@@ -70,16 +73,18 @@ public partial class GroupMembers : ComponentBase
                     Key = "added-by",
                     Title = "Added By",
                     TitleColor = Color.Primary,
-                    ValueGetter = (obj) => WriteHelper.WriteNullableField(obj.AddedBy?.UserName)
+                    ValueGetter = (obj) => WriteHelper.WriteNullableField(obj.AddedBy?.UserName),
+                    Width = 320
                 }
             )
             .AddColumn(
-                new()
+                new(Presets.Date)
                 {
                     Key = "join",
                     Title = "Join",
                     TitleColor = Color.Primary,
-                    ValueGetter = (obj) => DateHelper.DateToString(obj.Join)
+                    ValueGetter = (obj) => obj.Join,
+                    Width = 180
                 }
             )
             .DisableClickOn((obj) => !Rights.CanEdit || (User is not null && obj.User.Id == User))

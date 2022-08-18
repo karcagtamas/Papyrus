@@ -1,4 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Components.Table;
+using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
@@ -19,7 +20,7 @@ public partial class GroupActionLogs : ComponentBase
 
     protected override async void OnInitialized()
     {
-        DataSource = new TableDataSource<GroupActionLogDTO, long>((filter) => GroupActionLogService.GetByGroup(GroupId));
+        DataSource = new TableDataSource<GroupActionLogDTO, long>(async (options) => await GroupActionLogService.GetByGroup(GroupId, options.Pagination?.Page, options.Pagination?.Size));
         Config = TableConfiguration<GroupActionLogDTO, long>.Build()
             .AddTitle("Action Logs")
             .AddColumn(
@@ -37,18 +38,21 @@ public partial class GroupActionLogs : ComponentBase
                     Key = "performer",
                     Title = "Performer",
                     TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.Performer ?? "N/A"
+                    ValueGetter = (obj) => obj.Performer ?? "N/A",
+                    Width = 320
                 }
             )
             .AddColumn(
-                new()
+                new(Presets.Date)
                 {
                     Key = "creation",
                     Title = "Creation",
                     TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.Creation
+                    ValueGetter = (obj) => obj.Creation,
+                    Width = 180
                 }
-            );
+            )
+            .AddPagination(TablePaginationConfiguration.Build().IsPaginationEnabled(true));
         await InvokeAsync(StateHasChanged);
         base.OnInitialized();
     }

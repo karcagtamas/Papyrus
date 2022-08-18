@@ -1,5 +1,7 @@
 ﻿using KarcagS.Blazor.Common.Components.Table;
+using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Services;
+using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
@@ -31,7 +33,7 @@ public partial class GroupRoles : ComponentBase
     protected override async void OnInitialized()
     {
         await Refresh(false);
-        DataSource = new TableDataSource<GroupRoleDTO, int>((filter) => GroupRoleService.GetByGroup(GroupId));
+        DataSource = new TableDataSource<GroupRoleDTO, int>(async (options) => new TableResult<GroupRoleDTO> { Items = await GroupRoleService.GetByGroup(GroupId, options.Filter.TextFilter) });
         Config = TableConfiguration<GroupRoleDTO, int>.Build()
             .AddTitle("Management Roles")
             .AddColumn(
@@ -50,7 +52,9 @@ public partial class GroupRoles : ComponentBase
                     Key = "readonly",
                     Title = "Read Only",
                     TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.ReadOnly ? "Yes" : "No"
+                    ValueGetter = (obj) => obj.ReadOnly ? "Yes" : "No",
+                    Width = 40,
+                    Alignment = Alignment.Center,
                 }
             )
             .AddColumn(BuildColumn("group-edit", "Group Edit", (obj) => obj.GroupEdit))
@@ -111,7 +115,9 @@ public partial class GroupRoles : ComponentBase
             Title = title,
             TitleColor = Color.Secondary,
             ValueGetter = (obj) => getter(obj) ? "Yes" : "No",
-            ColorGetter = (obj, i) => getter(obj) ? Color.Success : Color.Error
+            ColorGetter = (obj, i) => getter(obj) ? Color.Success : Color.Error,
+            Width = 40,
+            Alignment = Alignment.Center
         };
     }
 

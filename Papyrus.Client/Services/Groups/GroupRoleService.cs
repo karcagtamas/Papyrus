@@ -17,17 +17,23 @@ public class GroupRoleService : HttpCall<int>, IGroupRoleService
             .Add("groupId", groupId)
             .Add("name", name);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists")).AddQueryParams(queryParams);
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists"))
+            .AddQueryParams(queryParams);
 
         return await Http.Get<bool>(settings).ExecuteWithResultOrElse(false);
     }
 
-    public async Task<List<GroupRoleDTO>> GetByGroup(int groupId)
+    public async Task<List<GroupRoleDTO>> GetByGroup(int groupId, string? textFilter = null)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group")).AddPathParams(pathParams);
+        var queryParams = HttpQueryParameters.Build()
+            .Add("textFilter", textFilter);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
+            .AddPathParams(pathParams)
+            .AddQueryParams(queryParams);
 
         return await Http.Get<List<GroupRoleDTO>>(settings).ExecuteWithResultOrElse(new());
     }
@@ -38,7 +44,8 @@ public class GroupRoleService : HttpCall<int>, IGroupRoleService
             .Add(groupId)
             .Add("Light");
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group")).AddPathParams(pathParams);
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
+            .AddPathParams(pathParams);
 
         return await Http.Get<List<GroupRoleLightDTO>>(settings).ExecuteWithResultOrElse(new());
     }

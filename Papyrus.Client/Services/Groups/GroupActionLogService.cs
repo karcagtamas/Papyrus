@@ -1,5 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
+using KarcagS.Shared.Table;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups.ActionsLogs;
 
@@ -11,14 +12,19 @@ public class GroupActionLogService : HttpCall<long>, IGroupActionLogService
     {
     }
 
-    public Task<List<GroupActionLogDTO>> GetByGroup(int groupId)
+    public Task<TableResult<GroupActionLogDTO>> GetByGroup(int groupId, int? page = null, int? size = null)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
-            .AddPathParams(pathParams);
+        var queryParams = HttpQueryParameters.Build()
+            .Add("page", page)
+            .Add("size", size);
 
-        return Http.Get<List<GroupActionLogDTO>>(settings).ExecuteWithResultOrElse(new());
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
+            .AddPathParams(pathParams)
+            .AddQueryParams(queryParams);
+
+        return Http.Get<TableResult<GroupActionLogDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 }

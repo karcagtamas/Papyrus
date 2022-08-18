@@ -39,9 +39,9 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         };
     }
 
-    public List<GroupRoleDTO> GetByGroup(int groupId)
+    public List<GroupRoleDTO> GetByGroup(int groupId, string? textFilter = null)
     {
-        return GetMappedList<GroupRoleDTO>(x => x.GroupId == groupId)
+        return GetMappedList<GroupRoleDTO>(x => x.GroupId == groupId && (textFilter == null || x.Name.Contains(textFilter)))
             .OrderByDescending(x => x.ReadOnly)
             .ThenBy(x => x.Id)
             .ToList();

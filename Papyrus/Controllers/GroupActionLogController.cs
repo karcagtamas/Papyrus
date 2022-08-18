@@ -1,3 +1,4 @@
+using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Services.Groups.Interfaces;
@@ -18,5 +19,5 @@ public class GroupActionLogController : ControllerBase
     }
 
     [HttpGet("Group/{groupId}")]
-    public List<GroupActionLogDTO> GetByGroup(int groupId) => groupActionLogService.GetByGroup(groupId);
+    public TableResult<GroupActionLogDTO> GetByGroup(int groupId, [FromQuery] int? page = null, [FromQuery] int? size = null) => groupActionLogService.GetByGroup(groupId, page, size);
 }

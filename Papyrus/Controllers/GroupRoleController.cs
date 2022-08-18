@@ -19,44 +19,23 @@ public class GroupRoleController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public GroupRoleDTO Get(int id)
-    {
-        return groupRoleService.GetMapped<GroupRoleDTO>(id);
-    }
+    public GroupRoleDTO Get(int id) => groupRoleService.GetMapped<GroupRoleDTO>(id);
 
     [HttpGet("Group/{groupId}")]
-    public List<GroupRoleDTO> GetByGroup(int groupId)
-    {
-        return groupRoleService.GetByGroup(groupId);
-    }
+    public List<GroupRoleDTO> GetByGroup(int groupId, string? textFilter = null) => groupRoleService.GetByGroup(groupId, textFilter);
 
     [HttpGet("Group/{groupId}/Light")]
-    public List<GroupRoleLightDTO> GetLightByGroup(int groupId)
-    {
-        return groupRoleService.GetLightByGroup(groupId);
-    }
+    public List<GroupRoleLightDTO> GetLightByGroup(int groupId) => groupRoleService.GetLightByGroup(groupId);
 
     [HttpPost]
-    public void Create([FromBody] GroupRoleModel model)
-    {
-        groupRoleService.CreateFromModel(model);
-    }
+    public void Create([FromBody] GroupRoleModel model) => groupRoleService.CreateFromModel(model);
 
     [HttpPut("{id}")]
-    public void Update(int id, [FromBody] GroupRoleModel model)
-    {
-        groupRoleService.UpdateByModel(id, model);
-    }
+    public void Update(int id, [FromBody] GroupRoleModel model) => groupRoleService.UpdateByModel(id, model);
 
     [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
-        groupRoleService.DeleteById(id);
-    }
+    public void Delete(int id) => groupRoleService.DeleteById(id);
 
     [HttpGet("Exists")]
-    public bool Exists([FromQuery] int groupId, [FromQuery] string name) 
-    {
-        return groupRoleService.Exists(groupId, name);
-    }
+    public bool Exists([FromQuery] int groupId, [FromQuery] string name) => groupRoleService.Exists(groupId, name);
 }
