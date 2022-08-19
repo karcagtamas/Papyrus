@@ -1,16 +1,29 @@
 ﻿@page "/home"
+@using Papyrus.Client.Services.Auth.Interfaces
 @inject NavigationManager NavigationManager
+@inject IAuthService Auth
 
 <ApplicationPageTitle PageName="Home"></ApplicationPageTitle>
 
 <div class="page-body">
-    <img src="assets/images/main.svg" width="500" alt="Papyrus Logo" />
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Redirect">Sign In</MudButton>
+    <img class="mb-5" src="assets/images/main.svg" width="500" alt="Papyrus Logo" />
+
+    @if (!Auth.IsLoggedIn())
+    {
+        <MudText Typo="Typo.body2" Class="mb-5">You are <b>logged out</b>. For the continuing click on the <b>Sign In</b> button.</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Redirect("/login"))">Sign In</MudButton>
+    }
+    else
+    {
+        <MudText Typo="Typo.body2" Class="mb-5">You are logged in. For the continuing click on the <b>Dashboard</b> button.</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Redirect("/dashboard"))">Dashboard</MudButton>
+    }
+
 </div>
 
 @code {
-    private void Redirect()
+    private void Redirect(string path)
     {
-        NavigationManager.NavigateTo("/login");
+        NavigationManager.NavigateTo(path);
     }
 }
