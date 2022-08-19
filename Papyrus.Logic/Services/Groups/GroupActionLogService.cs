@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
@@ -31,11 +32,17 @@ public class GroupActionLogService : MapperRepository<GroupActionLog, long, stri
 
     public TableResult<GroupActionLogDTO> GetByGroup(int groupId, int? page = null, int? size = null)
     {
+        IEnumerable<GroupActionLogDTO> items = GetMappedList<GroupActionLogDTO>(x => x.GroupId == groupId)
+            .OrderByDescending(x => x.Creation);
+
+        if (ObjectHelper.IsNotNull(page) && ObjectHelper.IsNotNull(size))
+        {
+            items = items.Skip((int)page * (int)size).Take((int)size);
+        }
+
         return new TableResult<GroupActionLogDTO>
         {
-            Items = GetMappedList<GroupActionLogDTO>(x => x.GroupId == groupId, size, page == null || size == null ? null : page * size)
-            .OrderByDescending(x => x.Creation)
-            .ToList(),
+            Items = items.ToList(),
             AllItemCount = Count(x => x.GroupId == groupId)
         };
     }
