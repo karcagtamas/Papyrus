@@ -1,4 +1,27 @@
 ﻿@page "/notes"
+@using Papyrus.Shared.Enums.Notes
 @attribute [Authorize]
 
 <ApplicationPageTitle PageName="Notes"></ApplicationPageTitle>
+
+<div class="page-div">
+    <ActionBar>
+        <div>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        </div>
+        <MudSpacer />
+        <MudRadioGroup Class="mr-3" T="NoteSearchType" SelectedOption="SearchType" SelectedOptionChanged="HandleSearchTypeChange">
+            <MudRadio Size="Size.Small" Option="NoteSearchType.All">All</MudRadio>
+            <MudRadio Size="Size.Small" Option="NoteSearchType.Published">Only Published</MudRadio>
+            <MudRadio Size="Size.Small" Option="NoteSearchType.NotPublished">Only Not Published</MudRadio>
+        </MudRadioGroup>
+    </ActionBar>
+    <div class="page-content">
+        <div class="notes">
+            @foreach (var note in NoteList)
+            {
+                <NoteListTile Note="note" />
+            }
+        </div>
+    </div>
+</div>
