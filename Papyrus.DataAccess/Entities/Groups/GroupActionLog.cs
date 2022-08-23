@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
+using KarcagS.Shared.Common;
 using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.DataAccess.Entities.Groups;
 
-public class GroupActionLog : IEntity<long>, ICreationEntity
+public class GroupActionLog : IEntity<long>, IIdentified<long>, ICreationEntity
 {
     [Key]
     [Required]

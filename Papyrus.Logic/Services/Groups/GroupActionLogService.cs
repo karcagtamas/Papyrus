@@ -42,7 +42,7 @@ public class GroupActionLogService : MapperRepository<GroupActionLog, long, stri
 
         return new TableResult<GroupActionLogDTO>
         {
-            Items = items.ToList(),
+            Items = new(),
             AllItemCount = Count(x => x.GroupId == groupId)
         };
     }

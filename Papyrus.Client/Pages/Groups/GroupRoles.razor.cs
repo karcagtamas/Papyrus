@@ -1,7 +1,9 @@
-﻿using KarcagS.Blazor.Common.Components.Table;
+﻿using KarcagS.Blazor.Common.Components.ListTable;
+using KarcagS.Blazor.Common.Components.Table;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Table;
+using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
@@ -33,7 +35,7 @@ public partial class GroupRoles : ComponentBase
     protected override async void OnInitialized()
     {
         await Refresh(false);
-        DataSource = new TableDataSource<GroupRoleDTO, int>(async (options) => new TableResult<GroupRoleDTO> { Items = await GroupRoleService.GetByGroup(GroupId, options.Filter.TextFilter) });
+        DataSource = new TableDataSource<GroupRoleDTO, int>(async (options) => new TableResult<int> { Items = new() });
         Config = TableConfiguration<GroupRoleDTO, int>.Build()
             .AddTitle("Management Roles")
             .AddColumn(

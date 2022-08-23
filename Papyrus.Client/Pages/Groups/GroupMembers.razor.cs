@@ -1,4 +1,5 @@
-﻿using KarcagS.Blazor.Common.Components.Table;
+﻿using KarcagS.Blazor.Common.Components.ListTable;
+using KarcagS.Blazor.Common.Components.Table;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Helpers;
@@ -44,7 +45,7 @@ public partial class GroupMembers : ComponentBase
     protected override async void OnInitialized()
     {
         await Refresh(false);
-        DataSource = new TableDataSource<GroupMemberDTO, int>(async (options) => new TableResult<GroupMemberDTO> { Items = await GroupMemberService.GetByGroup(GroupId, options.Filter.TextFilter) });
+        DataSource = new TableDataSource<GroupMemberDTO, int>(async (options) => new TableResult<int> { });
         Config = TableConfiguration<GroupMemberDTO, int>.Build()
             .AddTitle("Group Members")
             .AddColumn(

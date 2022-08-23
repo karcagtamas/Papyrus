@@ -32,7 +32,7 @@
 
     protected override async void OnInitialized()
     {
-        DataSource = new TableDataSource<NoteActionLogDTO, long>(async (options) => new TableResult<NoteActionLogDTO> { Items = await NoteActionLogService.GetByNote(NoteId) });
+        DataSource = new TableDataSource<NoteActionLogDTO, long>(async (options) => new TableResult<long> { Items = new() });
         Config = TableConfiguration<NoteActionLogDTO, long>.Build()
             .AddTitle("Performed Actions")
             .AddColumn(

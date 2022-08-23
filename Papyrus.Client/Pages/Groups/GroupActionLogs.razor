@@ -6,8 +6,5 @@
 <GroupPageTitle PageName="Logs" />
 
 <div class="page-div">
-    @if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Config))
-    {
-        <ListTable T="GroupActionLogDTO" TKey="long" DataSource="DataSource" Config="Config" />
-    }
+    <Table TKey="long" Service="GroupActionLogTableService" ExtraParams="ExtraParams" />
 </div>

@@ -59,6 +59,7 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
 builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
 builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
+builder.Services.AddScoped<IGroupActionLogTableService, GroupActionLogTableService>();
 
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
