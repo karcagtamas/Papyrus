@@ -58,6 +58,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
 builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
+builder.Services.AddScoped<IGroupMemberTableService, GroupMemberTableService>();
 builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
 builder.Services.AddScoped<IGroupActionLogTableService, GroupActionLogTableService>();
 

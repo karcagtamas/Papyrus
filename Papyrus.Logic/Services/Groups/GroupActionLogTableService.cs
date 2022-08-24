@@ -39,7 +39,8 @@ public class GroupActionLogTableService : TableService<GroupActionLog, long>, IG
 
     public override DataSource<GroupActionLog, long> BuildDataSource()
     {
-        return ListTableDataSource<GroupActionLog, long>.Build((query) => groupActionLogService.GetListAsQuery(x => x.GroupId == int.Parse(query.ExtraParams["groupId"].ToString() ?? "0"))); // FIX: Filtered by group and default ordering by Creation
+        return ListTableDataSource<GroupActionLog, long>.Build((query) => groupActionLogService.GetListAsQuery(x => x.GroupId == int.Parse(query.ExtraParams["groupId"].ToString() ?? "0")))
+            .ApplyDefaultOrdering(x => x.Creation);
     }
 
     public override Table<GroupActionLog, long> BuildTable()

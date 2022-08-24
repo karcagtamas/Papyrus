@@ -1,9 +1,10 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
+using KarcagS.Shared.Common;
 
 namespace Papyrus.DataAccess.Entities.Groups;
 
-public class GroupRole : IEntity<int>
+public class GroupRole : IEntity<int>, IIdentified<int>
 {
     [Key]
     [Required]
