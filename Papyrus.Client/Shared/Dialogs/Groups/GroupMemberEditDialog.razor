@@ -17,7 +17,7 @@
     public int GroupId { get; set; }
 
     [Parameter]
-    public GroupMemberDTO Member { get; set; } = default!;
+    public int MemberId { get; set; } = default!;
 
     [Inject]
     private IGroupService GroupService { get; set; } = default!;
@@ -29,16 +29,23 @@
     private IGroupRoleService GroupRoleService { get; set; } = default!;
 
     private GroupMemberUpdateModel Model { get; set; } = new();
+    private GroupMemberDTO? Member { get; set; }
     private List<GroupRoleLightDTO> Roles { get; set; } = new();
 
     protected override async void OnInitialized()
     {
         Roles = await GroupRoleService.GetLightByGroup(GroupId);
+        Member = await GroupMemberService.Get<GroupMemberDTO>(MemberId);
         await InvokeAsync(StateHasChanged);
-        Model = new GroupMemberUpdateModel
-            {
-                RoleId = Member.Role.Id,
-            };
+
+        if (ObjectHelper.IsNotNull(Member))
+        {
+            Model = new GroupMemberUpdateModel
+                {
+                    RoleId = Member.Role.Id,
+                };
+        }
+
         await InvokeAsync(StateHasChanged);
 
         base.OnInitialized();
@@ -46,11 +53,11 @@
 
     private Task<bool> Submit()
     {
-        return GroupMemberService.Update(Member.Id, Model);
+        return GroupMemberService.Update(MemberId, Model);
     }
 
     private Task<bool> Remove()
     {
-        return GroupMemberService.Delete(Member.Id);
+        return GroupMemberService.Delete(MemberId);
     }
 }

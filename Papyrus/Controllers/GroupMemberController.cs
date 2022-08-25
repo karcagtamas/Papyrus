@@ -31,6 +31,9 @@ public class GroupMemberController : ControllerBase
             .ToList();
     }
 
+    [HttpGet("{id}")]
+    public GroupMemberDTO Get(int id) => groupMemberService.GetMapped<GroupMemberDTO>(id);
+
     [HttpPost]
     public void AddMember([FromBody] GroupMemberCreateModel model)
     {

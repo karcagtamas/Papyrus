@@ -15,13 +15,14 @@ public class GroupActionLogTableService : TableService<GroupActionLog, long>, IG
     public GroupActionLogTableService(IGroupActionLogService groupActionLogService)
     {
         this.groupActionLogService = groupActionLogService;
+        Initialize();
     }
 
     public override Configuration<GroupActionLog, long> BuildConfiguration()
     {
         return Configuration<GroupActionLog, long>
             .Build("group-log-table")
-            .AddTitle("Action Logs")
+            .SetTitle("Action Logs")
             .AddColumn(Column<GroupActionLog, long>.Build("text")
                 .SetTitle("Text")
                 .AddValueGetter(obj => obj.Text))

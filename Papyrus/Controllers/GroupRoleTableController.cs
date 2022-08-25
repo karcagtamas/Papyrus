@@ -18,5 +18,5 @@ public class GroupRoleTableController : TableController<GroupRole, int>
         this.service = service;
     }
 
-    public override ITableService<GroupRole, int> GetService() => service;
+    protected override ITableService<GroupRole, int> GetService() => service;
 }

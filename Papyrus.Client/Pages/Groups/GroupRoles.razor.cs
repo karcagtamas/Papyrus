@@ -1,13 +1,12 @@
 ﻿using KarcagS.Blazor.Common.Components.ListTable;
 using KarcagS.Blazor.Common.Components.Table;
-using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Services;
 using KarcagS.Shared.Table;
-using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Groups;
+using Papyrus.Shared;
 using Papyrus.Shared.DTOs.Groups;
 
 namespace Papyrus.Client.Pages.Groups;
@@ -18,65 +17,56 @@ public partial class GroupRoles : ComponentBase
     public int GroupId { get; set; }
 
     [Inject]
-    private IGroupService GroupService { get; set; } = default!;
+    private IGroupRoleTableService GroupRoleTableService { get; set; } = default!;
+
+    private Dictionary<string, object> ExtraParams { get; set; } = new();
+
+    private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
 
     [Inject]
-    private IGroupRoleService GroupRoleService { get; set; } = default!;
+    private IGroupService GroupService { get; set; } = default!;
 
     [Inject]
     private IHelperService HelperService { get; set; } = default!;
 
-    private ListTable<GroupRoleDTO, int>? ListTable { get; set; }
-    private TableDataSource<GroupRoleDTO, int> DataSource { get; set; } = default!;
-    private TableConfiguration<GroupRoleDTO, int> Config { get; set; } = default!;
+    private Table<int>? Table { get; set; }
 
     private GroupRoleRightsDTO Rights { get; set; } = new();
 
     protected override async void OnInitialized()
     {
+        ExtraParams = new Dictionary<string, object>
+        {
+            { "groupId", GroupId }
+        };
+        Style.AddColorGetter(item =>
+        {
+            if (item.Tags.Contains(Tags.TrueValue))
+            {
+                return Color.Success;
+            }
+            else if (item.Tags.Contains(Tags.FalseValue) || item.Tags.Contains(Tags.ReadOnly))
+            {
+                return Color.Error;
+            }
+            else if (item.Tags.Contains(Tags.RoleName))
+            {
+                return Color.Secondary;
+            }
+
+            return Color.Default;
+        }).AddTitleColorGetter(col =>
+        {
+            if (col == "name" || col == "readonly")
+            {
+                return Color.Primary;
+            }
+
+            return Color.Secondary;
+        });
+
         await Refresh(false);
-        DataSource = new TableDataSource<GroupRoleDTO, int>(async (options) => new TableResult<int> { Items = new() });
-        Config = TableConfiguration<GroupRoleDTO, int>.Build()
-            .AddTitle("Management Roles")
-            .AddColumn(
-                new()
-                {
-                    Key = "name",
-                    Title = "Name",
-                    TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.Name,
-                    ColorGetter = (obj, i) => obj.ReadOnly ? Color.Error : Color.Secondary,
-                }
-            )
-            .AddColumn(
-                new()
-                {
-                    Key = "readonly",
-                    Title = "Read Only",
-                    TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.ReadOnly ? "Yes" : "No",
-                    Width = 40,
-                    Alignment = Alignment.Center,
-                }
-            )
-            .AddColumn(BuildColumn("group-edit", "Group Edit", (obj) => obj.GroupEdit))
-            .AddColumn(BuildColumn("group-close", "Group Close", (obj) => obj.GroupClose))
-            .AddColumn(BuildColumn("listing-notes", "Listing Notes", (obj) => obj.ReadNoteList))
-            .AddColumn(BuildColumn("read-note", "Read Note", (obj) => obj.ReadNote))
-            .AddColumn(BuildColumn("create-note", "Create Note", (obj) => obj.CreateNote))
-            .AddColumn(BuildColumn("delete-note", "Delete Note", (obj) => obj.DeleteNote))
-            .AddColumn(BuildColumn("edit-note", "Edit Note", (obj) => obj.EditNote))
-            .AddColumn(BuildColumn("read-members", "Read Members", (obj) => obj.ReadMemberList))
-            .AddColumn(BuildColumn("edit-members", "Edit Members", (obj) => obj.EditMemberList))
-            .AddColumn(BuildColumn("read-roles", "Read Roles", (obj) => obj.ReadRoleList))
-            .AddColumn(BuildColumn("edit-roles", "Edit Roles", (obj) => obj.EditRoleList))
-            .AddColumn(BuildColumn("read-logs", "Read Logs", (obj) => obj.ReadGroupActionLog))
-            .AddColumn(BuildColumn("read-note-logs", "Read Note Logs", (obj) => obj.ReadNoteActionLog))
-            .AddColumn(BuildColumn("read-tags", "Read Tags", (obj) => obj.GroupEdit))
-            .AddColumn(BuildColumn("edit-tags", "Edit Tags", (obj) => obj.GroupEdit))
-            .AddFilter(TableFilterConfiguration.Build().IsTextFilterEnabled(true));
-        Config.ClickDisableOn = (obj) => !Rights.CanEdit || obj.ReadOnly;
-        await InvokeAsync(StateHasChanged);
+
         base.OnInitialized();
     }
 
@@ -86,7 +76,7 @@ public partial class GroupRoles : ComponentBase
 
         if (tableRefresh)
         {
-            ListTable?.ForceRefresh();
+            Table?.Refresh();
         }
 
         await InvokeAsync(StateHasChanged);
@@ -109,19 +99,5 @@ public partial class GroupRoles : ComponentBase
         await HelperService.OpenEditorDialog<GroupRoleEditDialog>(groupRoleId is null ? "Create Group Role" : "Edit Group Role", async (res) => await Refresh(), parameters, new DialogOptions { MaxWidth = MaxWidth.Medium, FullWidth = true });
     }
 
-    private static TableColumn<GroupRoleDTO, int> BuildColumn(string key, string title, Func<GroupRoleDTO, bool> getter)
-    {
-        return new()
-        {
-            Key = key,
-            Title = title,
-            TitleColor = Color.Secondary,
-            ValueGetter = (obj) => getter(obj) ? "Yes" : "No",
-            ColorGetter = (obj, i) => getter(obj) ? Color.Success : Color.Error,
-            Width = 40,
-            Alignment = Alignment.Center
-        };
-    }
-
-    private async Task RowClickHandler(RowItem<GroupRoleDTO, int> item) => await OpenDialog(item.Id);
+    private async Task RowClickHandler(ResultRowItem<int> item) => await OpenDialog(item.ItemKey);
 }

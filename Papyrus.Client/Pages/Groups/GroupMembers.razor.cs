@@ -1,15 +1,12 @@
-﻿using KarcagS.Blazor.Common.Components.ListTable;
-using KarcagS.Blazor.Common.Components.Table;
-using KarcagS.Blazor.Common.Enums;
+﻿using KarcagS.Blazor.Common.Components.Table;
 using KarcagS.Blazor.Common.Services;
-using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Common;
 using Papyrus.Client.Shared.Dialogs.Groups;
+using Papyrus.Shared;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.Models.Groups;
 
@@ -21,6 +18,13 @@ public partial class GroupMembers : ComponentBase
     public int GroupId { get; set; }
 
     [Inject]
+    private IGroupMemberTableService GroupMemberTableService { get; set; } = default!;
+
+    private Dictionary<string, object> ExtraParams { get; set; } = new();
+
+    private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
+
+    [Inject]
     private IGroupService GroupService { get; set; } = default!;
 
     [Inject]
@@ -30,78 +34,31 @@ public partial class GroupMembers : ComponentBase
     private IDialogService DialogService { get; set; } = default!;
 
     [Inject]
-    private ITokenService TokenService { get; set; } = default!;
-
-    [Inject]
     private IHelperService HelperService { get; set; } = default!;
 
-    private ListTable<GroupMemberDTO, int>? ListTable { get; set; }
-    private TableDataSource<GroupMemberDTO, int> DataSource { get; set; } = default!;
-    private TableConfiguration<GroupMemberDTO, int> Config { get; set; } = default!;
-
-    private string? User { get; set; }
+    private Table<int>? Table { get; set; }
     private GroupMemberRightsDTO Rights { get; set; } = new();
 
     protected override async void OnInitialized()
     {
+        ExtraParams = new Dictionary<string, object>
+        {
+            { "groupId", GroupId }
+        };
+        Style.AddColorGetter(value => value.Tags.Contains(Tags.CurrentUserTag) ? Color.Error : Color.Default);
+
         await Refresh(false);
-        DataSource = new TableDataSource<GroupMemberDTO, int>(async (options) => new TableResult<int> { });
-        Config = TableConfiguration<GroupMemberDTO, int>.Build()
-            .AddTitle("Group Members")
-            .AddColumn(
-                new()
-                {
-                    Key = "user",
-                    Title = "User",
-                    TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.User.UserName,
-                    ColorGetter = (obj, i) => obj.User.Id == User ? Color.Error : Color.Default,
-                    Width = 480
-                }
-            )
-            .AddColumn(
-                new()
-                {
-                    Key = "role",
-                    Title = "Role",
-                    TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.Role.Name
-                }
-            )
-            .AddColumn(
-                new()
-                {
-                    Key = "added-by",
-                    Title = "Added By",
-                    TitleColor = Color.Primary,
-                    ValueGetter = (obj) => WriteHelper.WriteNullableField(obj.AddedBy?.UserName),
-                    Width = 320
-                }
-            )
-            .AddColumn(
-                new(Presets.Date)
-                {
-                    Key = "join",
-                    Title = "Join",
-                    TitleColor = Color.Primary,
-                    ValueGetter = (obj) => obj.Join,
-                    Width = 180
-                }
-            )
-            .DisableClickOn((obj) => !Rights.CanEdit || (User is not null && obj.User.Id == User))
-            .AddFilter(TableFilterConfiguration.Build().IsTextFilterEnabled(true));
-        await InvokeAsync(StateHasChanged);
+
         base.OnInitialized();
     }
 
     private async Task Refresh(bool tableRefresh = true)
     {
-        User = (await TokenService.GetUser()).UserId;
         Rights = await GroupService.GetMemberRights(GroupId);
 
         if (tableRefresh)
         {
-            ListTable?.ForceRefresh();
+            Table?.Refresh();
         }
 
         await InvokeAsync(StateHasChanged);
@@ -114,7 +71,7 @@ public partial class GroupMembers : ComponentBase
             return;
         }
 
-        var parameters = new DialogParameters { { "Ignored", DataSource.RawData.Select(x => x.User.Id).ToList() } };
+        var parameters = new DialogParameters { { "Ignored", Table?.GetData().Select(x => x.ItemKey).ToList() ?? new() } };
 
         var dialog = DialogService.Show<UserSearchDialog>("Search User", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
@@ -127,9 +84,14 @@ public partial class GroupMembers : ComponentBase
         }
     }
 
-    private async Task RowClickHandler(RowItem<GroupMemberDTO, int> item)
+    private async Task RowClickHandler(ResultRowItem<int> item)
     {
-        var parameters = new DialogParameters { { "GroupId", GroupId }, { "Member", item.Data } };
+        if (!Rights.CanEdit)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters { { "GroupId", GroupId }, { "MemberId", item.ItemKey } };
 
         await HelperService.OpenEditorDialog<GroupMemberEditDialog>("Edit Group Member", async (res) => await Refresh(), parameters);
     }

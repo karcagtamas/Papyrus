@@ -6,6 +6,7 @@ using KarcagS.Common.Tools.Authentication.JWT;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Mongo;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Table;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -57,6 +58,7 @@ builder.Services.AddScoped<IRoleService, RoleService>();
 
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
+builder.Services.AddScoped<IGroupRoleTableService, GroupRoleTableService>();
 builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
 builder.Services.AddScoped<IGroupMemberTableService, GroupMemberTableService>();
 builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
@@ -72,7 +74,10 @@ builder.Services.AddScoped<IEditorService, EditorService>();
 builder.Services.AddScoped<IFileService, FileService>();
 
 // Mandatory for HTTP Interceptor
-builder.Services.AddErrorConverter((conf) => { });
+builder.Services.AddErrorConverter((conf) =>
+{
+    conf.AddAgent(new TableErrorConverterAgent());
+});
 
 // Add AutoMapper
 var mapperConfig = new MapperConfiguration(conf =>

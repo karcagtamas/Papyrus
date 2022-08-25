@@ -4,6 +4,7 @@ using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Table.Enums;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Shared;
 
 namespace Papyrus.Logic.Services.Groups;
 
@@ -14,13 +15,15 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
     public GroupRoleTableService(IGroupRoleService groupRoleService)
     {
         this.groupRoleService = groupRoleService;
+        Initialize();
     }
 
     public override Configuration<GroupRole, int> BuildConfiguration()
     {
+        // TODO: Edit right check for readonly state
         return Configuration<GroupRole, int>
             .Build("group-role-table")
-            .AddTitle("Management Roles")
+            .SetTitle("Management Roles")
             .AddColumn(Column<GroupRole, int>.Build("name")
                 .SetTitle("Name")
                 .AddValueGetter(obj => obj.Name))
@@ -47,7 +50,15 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
             .AddColumn(BuildColumn("edit-tags", "Edit Tags", (obj) => obj.EditTagList))
             .DisableClickOn(obj => obj.ReadOnly)
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
-            .AddTagProvider((obj, col) => obj.ReadOnly ? "READONLY" : "")
+            .AddTagProvider((obj, col) =>
+            {
+                if (col.Key == "name")
+                {
+                    return obj.ReadOnly ? Tags.ReadOnly : Tags.RoleName;
+                }
+
+                return "";
+            })
             .AddTagProvider((obj, col) =>
             {
                 return col.Key switch
@@ -97,5 +108,5 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
             .SetWidth(40);
     }
 
-    private static string GetTag(bool value) => value ? "TRUE_VALUE" : "FALSE_VALUE";
+    private static string GetTag(bool value) => value ? Tags.TrueValue : Tags.FalseValue;
 }

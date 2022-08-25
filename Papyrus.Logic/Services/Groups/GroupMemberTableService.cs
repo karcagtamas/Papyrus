@@ -6,6 +6,7 @@ using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table.Enums;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Shared;
 
 namespace Papyrus.Logic.Services.Groups;
 
@@ -14,10 +15,11 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
     private readonly IUtilsService<string> utilsService;
     private readonly IGroupMemberService groupMemberService;
 
-    public GroupMemberTableService(IUtilsService<string> utilsService, IGroupMemberService groupMemberService)
+    public GroupMemberTableService(IUtilsService<string> utilsService, IGroupMemberService groupMemberService) : base()
     {
         this.utilsService = utilsService;
         this.groupMemberService = groupMemberService;
+        Initialize();
     }
 
     public override Configuration<GroupMember, int> BuildConfiguration()
@@ -25,7 +27,7 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
         var userId = utilsService.GetRequiredCurrentUserId();
         return Configuration<GroupMember, int>
             .Build("group-member-table")
-            .AddTitle("Group Members")
+            .SetTitle("Group Members")
             .AddColumn(Column<GroupMember, int>.Build("user")
                 .SetTitle("User")
                 .AddValueGetter(obj => obj.User.UserName)
@@ -44,7 +46,7 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
                 .SetWidth(180))
             .DisableClickOn(obj => userId == obj.UserId)
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
-            .AddTagProvider((obj, col) => userId == obj.UserId ? "CURRENT_USER" : ""); // TODO: Table readonly => because of right
+            .AddTagProvider((obj, col) => userId == obj.UserId ? Tags.CurrentUserTag : ""); // TODO: Table readonly => because of right
     }
 
     public override DataSource<GroupMember, int> BuildDataSource()

@@ -18,5 +18,5 @@ public class GroupActionLogTableController : TableController<GroupActionLog, lon
         this.service = service;
     }
 
-    public override ITableService<GroupActionLog, long> GetService() => service;
+    protected override ITableService<GroupActionLog, long> GetService() => service;
 }

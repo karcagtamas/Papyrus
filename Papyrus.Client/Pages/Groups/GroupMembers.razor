@@ -1,6 +1,5 @@
 ﻿@page "/groups/{GroupId:int}/members"
 @using KarcagS.Shared.Helpers
-@using Papyrus.Shared.DTOs.Groups
 @attribute [Authorize]
 
 <GroupPageTitle PageName="Members" />
@@ -13,8 +12,5 @@
         </ActionBar>
     }
 
-    @if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Config))
-    {
-        <ListTable @ref="ListTable" T="GroupMemberDTO" TKey="int" DataSource="DataSource" Config="Config" OnRowClick="RowClickHandler" />
-    }
+    <Table @ref="Table" TKey="int" Service="GroupMemberTableService" ExtraParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" />
 </div>
