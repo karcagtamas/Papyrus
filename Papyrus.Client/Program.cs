@@ -78,6 +78,7 @@ builder.Services.AddScoped<IGroupActionLogTableService, GroupActionLogTableServi
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
+builder.Services.AddScoped<INoteActionLogTableService, NoteActionLogTableService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
 

@@ -2,16 +2,13 @@
 @using KarcagS.Shared.Table
 @using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Notes.ActionsLogs
-@inject INoteActionLogService NoteActionLogService
+@inject INoteActionLogTableService NoteActionLogTableService
 
 <MudDialog ClassContent="d-flex flex-column flex-grow-1">
     <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">Action Logs</MudText></TitleContent>
     <DialogContent>
-        <div style="max-height: 80vh; overflow: auto; padding: 1rem;">
-            @if (ObjectHelper.IsNotNull(DataSource) && ObjectHelper.IsNotNull(Config))
-            {
-                <ListTable T="NoteActionLogDTO" TKey="long" DataSource="DataSource" Config="Config" />
-            }
+        <div class="d-flex" style="max-height: 84vh; overflow: hidden; padding: 1rem;">
+            <Table TKey="long" Service="NoteActionLogTableService" ExtraParams="ExtraParams" />
         </div>
     </DialogContent>
     <DialogActions>
@@ -27,42 +24,14 @@
     [CascadingParameter]
     private MudDialogInstance Dialog { get; set; } = null!;
 
-    private TableDataSource<NoteActionLogDTO, long> DataSource { get; set; } = default!;
-    private TableConfiguration<NoteActionLogDTO, long> Config { get; set; } = default!;
+    private Dictionary<string, object> ExtraParams { get; set; } = new();
 
-    protected override async void OnInitialized()
+    protected override void OnInitialized()
     {
-        DataSource = new TableDataSource<NoteActionLogDTO, long>(async (options) => new TableResult<long> { Items = new() });
-        Config = TableConfiguration<NoteActionLogDTO, long>.Build()
-            .AddTitle("Performed Actions")
-            .AddColumn(
-                new()
-                    {
-                        Key = "text",
-                        Title = "Text",
-                        TitleColor = Color.Primary,
-                        ValueGetter = (obj) => obj.Text
-                    }
-            )
-            .AddColumn(
-                new()
-                    {
-                        Key = "performer",
-                        Title = "Performer",
-                        TitleColor = Color.Primary,
-                        ValueGetter = (obj) => obj.Performer ?? ""
-                    }
-            )
-            .AddColumn(
-                new()
-                    {
-                        Key = "creation",
-                        Title = "Creation",
-                        TitleColor = Color.Primary,
-                        ValueGetter = (obj) => obj.Creation
-                    }
-            );
-        await InvokeAsync(StateHasChanged);
+        ExtraParams = new Dictionary<string, object>
+        {
+            { "noteId", NoteId }
+        };
         base.OnInitialized();
     }
 }

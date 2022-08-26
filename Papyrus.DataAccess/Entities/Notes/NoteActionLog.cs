@@ -1,10 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
+using KarcagS.Shared.Common;
 using Papyrus.Shared.Enums.Notes;
 
 namespace Papyrus.DataAccess.Entities.Notes;
 
-public class NoteActionLog : IEntity<long>, ICreationEntity
+public class NoteActionLog : IEntity<long>, IIdentified<long>, ICreationEntity
 {
     [Key]
     [Required]
