@@ -12,5 +12,5 @@
         </ActionBar>
     }
 
-    <Table @ref="Table" TKey="int" Service="GroupMemberTableService" ExtraParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" />
+    <Table @ref="Table" TKey="int" ReadOnly="!Rights.CanEdit" Service="GroupMemberTableService" ExtraParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" />
 </div>
