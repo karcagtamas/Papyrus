@@ -1,6 +1,7 @@
 ﻿using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
+using KarcagS.Shared.Enums;
 using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table.Enums;
 using Papyrus.DataAccess.Entities.Notes;
@@ -41,7 +42,8 @@ public class NoteActionLogTableService : TableService<NoteActionLog, long>, INot
     public override DataSource<NoteActionLog, long> BuildDataSource()
     {
         return ListTableDataSource<NoteActionLog, long>.Build((query) => noteActionLogService.GetListAsQuery(x => x.NoteId == query.ExtraParams["noteId"].ToString()))
-            .ApplyDefaultOrdering(x => x.Creation);
+            .OrderBy(x => x.Creation, OrderDirection.Descend)
+            .ApplyOrdering();
     }
 
     public override Table<NoteActionLog, long> BuildTable()

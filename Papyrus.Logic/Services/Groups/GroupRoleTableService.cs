@@ -1,6 +1,7 @@
 ﻿using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
+using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table.Enums;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
@@ -80,13 +81,15 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
                     "edit-tags" => GetTag(obj.EditTagList),
                     _ => "",
                 };
-            }); // TODO: Table readonly => because of right - Order By desc Readonly and asc by Id
+            }); // TODO: Table readonly => because of right
     }
 
     public override DataSource<GroupRole, int> BuildDataSource()
     {
         return ListTableDataSource<GroupRole, int>.Build((query) => groupRoleService.GetListAsQuery(x => x.GroupId == int.Parse(query.ExtraParams["groupId"].ToString() ?? "0")))
-            .ApplyDefaultOrdering(x => x.ReadOnly)
+            .OrderBy(x => x.ReadOnly, OrderDirection.Descend)
+            .ThenBy(x => x.Id)
+            .ApplyOrdering()
             .SetEFFilteredEntries("Name");
     }
 

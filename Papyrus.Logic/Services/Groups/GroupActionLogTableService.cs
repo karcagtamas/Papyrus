@@ -1,6 +1,7 @@
 ﻿using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
+using KarcagS.Shared.Enums;
 using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table.Enums;
 using Papyrus.DataAccess.Entities.Groups;
@@ -41,7 +42,8 @@ public class GroupActionLogTableService : TableService<GroupActionLog, long>, IG
     public override DataSource<GroupActionLog, long> BuildDataSource()
     {
         return ListTableDataSource<GroupActionLog, long>.Build((query) => groupActionLogService.GetListAsQuery(x => x.GroupId == int.Parse(query.ExtraParams["groupId"].ToString() ?? "0")))
-            .ApplyDefaultOrdering(x => x.Creation);
+            .OrderBy(x => x.Creation, OrderDirection.Descend)
+            .ApplyOrdering();
     }
 
     public override Table<GroupActionLog, long> BuildTable()

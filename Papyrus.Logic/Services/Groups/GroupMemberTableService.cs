@@ -2,6 +2,7 @@
 using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
+using KarcagS.Shared.Enums;
 using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table.Enums;
 using Papyrus.DataAccess.Entities.Groups;
@@ -52,7 +53,8 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
     public override DataSource<GroupMember, int> BuildDataSource()
     {
         return ListTableDataSource<GroupMember, int>.Build((query) => groupMemberService.GetListAsQuery(x => x.GroupId == int.Parse(query.ExtraParams["groupId"].ToString() ?? "0")))
-            .ApplyDefaultOrdering(x => x.RoleId)
+            .OrderBy(x => x.RoleId, OrderDirection.Descend)
+            .ApplyOrdering()
             .SetEFFilteredEntries("User.UserName", "Role.Name", "AddedBy.UserName");
     }
 
