@@ -1,12 +1,11 @@
 using KarcagS.Blazor.Common.Theme;
 using MudBlazor;
-using MudBlazor.Utilities;
 
 namespace Papyrus.Client.Shared;
 
 public static class PapyrusTheme
 {
-    public static readonly AppTheme AppTheme = new AppTheme(new AppTheme.AppColorPalette
+    public static readonly AppTheme AppTheme = new(new AppTheme.AppColorPalette
     {
         MainColor = new("#0D2971"),
         SecondaryColor = new("#581043"),

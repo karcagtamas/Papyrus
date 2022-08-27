@@ -1,0 +1,40 @@
+﻿@using System.Globalization
+@using MudBlazor.Utilities
+@inject NavigationManager Navigator
+@inject IJSRuntime JS
+
+<MudMenu Label="@Culture.DisplayName" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+    @foreach (var culture in supportedCultures)
+    {
+        <MudMenuItem OnClick="@(() => Culture = culture)"><MudText Color="@(Culture.Equals(culture) ? Color.Primary : Color.Default)">@culture.DisplayName</MudText></MudMenuItem>
+    }
+</MudMenu>
+
+@code {
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
+    [Parameter]
+    public Variant Variant { get; set; } = Variant.Filled;
+
+    private CultureInfo[] supportedCultures = new[]
+    {
+        new CultureInfo("en-US"),
+        new CultureInfo("hu-HU"),
+    };
+
+    private CultureInfo Culture
+    {
+        get => CultureInfo.CurrentCulture;
+        set
+        {
+            if (CultureInfo.CurrentCulture != value)
+            {
+                var js = (IJSInProcessRuntime)JS;
+                js.InvokeVoid("blazorCulture.set", value.Name);
+
+                Navigator.NavigateTo(Navigator.Uri, forceLoad: true);
+            }
+        }
+    }
+}
