@@ -6,3 +6,9 @@
   justify-content: center;
   align-items: center;
 }
+
+.culture-selector {
+    position: absolute;
+    top: 0;
+    right: 3rem;
+}

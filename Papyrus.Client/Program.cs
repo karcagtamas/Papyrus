@@ -23,6 +23,10 @@ using Papyrus.Client.Services.Interfaces;
 using Papyrus.Client.Services.Notes;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
+using System.Globalization;
+using Microsoft.JSInterop;
+using Microsoft.Extensions.Localization;
+using Papyrus.Shared.Localization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -106,9 +110,36 @@ builder.Services.AddBlazoredLocalStorage(config =>
     config.JsonSerializerOptions.WriteIndented = false;
 });
 
+builder.Services.AddLocalization(opt =>
+{
+    opt.ResourcesPath = "Resources";
+});
+
 ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;
 ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
 
 ApplicationContext.ApplicationName = "Papyrus";
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+CultureInfo culture;
+var js = host.Services.GetRequiredService<IJSRuntime>();
+var result = await js.InvokeAsync<string>("blazorCulture.get");
+
+if (result != null)
+{
+    culture = new CultureInfo(result);
+}
+else
+{
+    culture = new CultureInfo("en");
+    await js.InvokeVoidAsync("blazorCulture.set", "en-US");
+}
+
+CultureInfo.DefaultThreadCurrentCulture = culture;
+CultureInfo.DefaultThreadCurrentUICulture = culture;
+
+var localizerFactory = host.Services.GetRequiredService<IStringLocalizerFactory>();
+ErrorMessageLocalizer.GetInstance().AddLocalizer(localizerFactory.Create(typeof(Program)));
+
+await host.RunAsync();

@@ -1,17 +1,19 @@
-using System.ComponentModel.DataAnnotations;
+using Papyrus.Shared.Attributes;
 
 namespace Papyrus.Shared.Models.Auth;
 
 public class RegistrationModel
 {
-    [Required(ErrorMessage = "User Name is required")]
+    [LocalizedRequired(ErrorMessage = "User Name is required")]
     public string UserName { get; set; } = default!;
 
-    [Required(ErrorMessage = "E-mail is required")]
+    [LocalizedRequired(ErrorMessage = "E-mail is required")]
+    [LocalizedEmailAddress]
     public string Email { get; set; } = default!;
 
-    [Required(ErrorMessage = "Password is required")]
+    [LocalizedRequired(ErrorMessage = "Password is required")]
     public string Password { get; set; } = default!;
 
+    [LocalizedMaxLength(100)]
     public string FullName { get; set; } = default!;
 }

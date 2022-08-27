@@ -1,12 +1,12 @@
-using System.ComponentModel.DataAnnotations;
+using Papyrus.Shared.Attributes;
 
 namespace Papyrus.Shared.Models.Auth;
 
 public class LoginModel
 {
-    [Required(ErrorMessage = "User Name is required")]
+    [LocalizedRequired(ErrorMessage = "User Name is required")]
     public string UserName { get; set; } = default!;
 
-    [Required(ErrorMessage = "Password is required")]
+    [LocalizedRequired(ErrorMessage = "Password is required")]
     public string Password { get; set; } = default!;
 }

@@ -1,41 +1,43 @@
 @page "/login"
 @using KarcagS.Shared.Helpers
 @using Microsoft.AspNetCore.WebUtilities
+@using Microsoft.Extensions.Localization
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.Models.Auth
 @using Papyrus.Client.Services.Auth.Interfaces
 @layout AuthLayout
-@inject NavigationManager navigationManager
-@inject IAuthService authService
+@inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+@inject IStringLocalizer<Login> L
 
-<ApplicationPageTitle PageName="Login"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div id="panel">
     <MudPaper Class="p-4" Elevation="4">
-        <MudText Typo="Typo.h4" Color="Color.Primary">Login</MudText>
+        <MudText Typo="Typo.h4" Color="Color.Primary">@L["Title"]</MudText>
 
         <div id="image">
-            <img src="assets/images/main.svg" alt="Main image" />
+            <img src="assets/images/main.svg" alt="@L["Image"]" />
         </div>
 
         <MudForm @ref="form" Model="Model">
-            <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+            <MudTextField T="string" Label="@L["Field.UserName"]" Variant="Variant.Text" Required="true"
                           For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
             </MudTextField>
-            <MudTextField T="string" Label="Password" Variant="Variant.Text" InputType="@passwordInput"
+            <MudTextField T="string" Label="@L["Field.Password"]" Variant="Variant.Text" InputType="@passwordInput"
                           Adornment="Adornment.End" AdornmentIcon="@passwordInputIcon" OnAdornmentClick="SwitchPasswordVisibility"
                           Required="true" For="@(() => Model.Password)" @bind-Value="Model.Password" FullWidth="true">
             </MudTextField>
             <div class="text-center mt-3 mb-3">
                 <MudButton Color="Color.Primary" Class="mt-3" Variant="Variant.Filled" OnClick="Submit"
                            StartIcon="@Icons.Filled.Login">
-                    Sign In
+                    @L["Button"]
                 </MudButton>
             </div>
             <MudDivider />
             <div class="text-center mt-3">
                 <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="ToRegister"
-                           StartIcon="@Icons.Filled.PersonAdd">Registration</MudButton>
+                           StartIcon="@Icons.Filled.PersonAdd">@L["Redirect"]</MudButton>
             </div>
         </MudForm>
     </MudPaper>
@@ -53,7 +55,7 @@
 
     protected override void OnInitialized()
     {
-        var uri = navigationManager.ToAbsoluteUri(navigationManager.Uri);
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
 
         var queryStrings = QueryHelpers.ParseQuery(uri.Query);
 
@@ -67,7 +69,7 @@
 
     private void ToRegister()
     {
-        navigationManager.NavigateTo("/register");
+        NavigationManager.NavigateTo("/register");
     }
 
     private async void Submit()
@@ -79,17 +81,17 @@
 
         await form.Validate();
         if (!form.IsValid) return;
-        var res = await authService.Login(Model);
+        var res = await AuthService.Login(Model);
         if (!string.IsNullOrEmpty(res))
         {
             if (string.IsNullOrEmpty(redirectUri))
             {
 
-                navigationManager.NavigateTo("/dashboard");
+                NavigationManager.NavigateTo("/dashboard");
             }
             else
             {
-                navigationManager.NavigateTo(redirectUri);
+                NavigationManager.NavigateTo(redirectUri);
             }
         }
     }

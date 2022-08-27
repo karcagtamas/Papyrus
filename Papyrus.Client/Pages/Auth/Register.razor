@@ -7,41 +7,42 @@
 @layout AuthLayout
 @inject NavigationManager navigationManager
 @inject IAuthService authService
+@inject IStringLocalizer<Register> L
 
-<ApplicationPageTitle PageName="Register"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div id="panel">
     <MudPaper Class="p-4" Elevation="4">
-        <MudText Typo="Typo.h4" Color="Color.Primary">Register</MudText>
+        <MudText Typo="Typo.h4" Color="Color.Primary">@L["Title"]</MudText>
 
         <div id="image">
-            <img src="assets/images/main.svg" alt="Main image" />
+            <img src="assets/images/main.svg" alt="@L["Image"]" />
         </div>
 
         <MudForm @ref="form">
-            <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+            <MudTextField T="string" Label="@L["Field.UserName"]" Variant="Variant.Text" Required="true"
                           For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
             </MudTextField>
-            <MudTextField T="string" Label="E-mail" Variant="Variant.Text" Required="true" For="@(() => Model.Email)"
+            <MudTextField T="string" Label="@L["Field.Email"]" Variant="Variant.Text" Required="true" For="@(() => Model.Email)"
                           @bind-Value="Model.Email" FullWidth="true">
             </MudTextField>
-            <MudTextField T="string" Label="Password" Variant="Variant.Text" InputType="@passwordInput"
+            <MudTextField T="string" Label="@L["Field.Password"]" Variant="Variant.Text" InputType="@passwordInput"
                           Adornment="Adornment.End" AdornmentIcon="@passwordInputIcon" OnAdornmentClick="SwitchPasswordVisibility"
                           Required="true" For="@(() => Model.UserName)" @bind-Value="Model.Password" FullWidth="true">
             </MudTextField>
-            <MudTextField T="string" Label="Full Name" Variant="Variant.Text" For="@(() => Model.FullName)"
+            <MudTextField T="string" Label="@L["Field.FullName"]" Variant="Variant.Text" For="@(() => Model.FullName)"
                           @bind-Value="Model.FullName" FullWidth="true">
             </MudTextField>
             <div class="text-center mt-3 mb-3">
                 <MudButton Color="Color.Primary" Class="mt-3" Variant="Variant.Filled" OnClick="Submit"
                            StartIcon="@Icons.Filled.PersonAdd">
-                    Sign Up
+                    @L["Button"]
                 </MudButton>
             </div>
             <MudDivider />
             <div class="text-center mt-3">
                 <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="ToLogin"
-                           StartIcon="@Icons.Filled.Login">Login</MudButton>
+                           StartIcon="@Icons.Filled.Login">@L["Redirect"]</MudButton>
             </div>
         </MudForm>
     </MudPaper>
