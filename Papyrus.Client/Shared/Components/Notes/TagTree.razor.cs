@@ -1,6 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Components.Confirm;
 using KarcagS.Blazor.Common.Components.Tree;
-using KarcagS.Blazor.Common.Services;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Notes.Interfaces;

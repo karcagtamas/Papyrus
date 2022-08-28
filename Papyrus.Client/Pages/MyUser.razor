@@ -1,27 +1,28 @@
 @page "/my"
 @using KarcagS.Shared.Helpers
 @attribute [Authorize]
+@inject IStringLocalizer<MyUser> L
 
-<ApplicationPageTitle PageName="My User"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div class="page-div">
 
-    @if (User is not null)
+    @if (ObjectHelper.IsNotNull(User))
     {
         <ActionBar>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">Edit</MudButton>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ChangeImage">Change Image</MudButton>
-            <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="ChangePassword">Change Password</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">@L["EditAction"]</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="ChangeImage">@L["ChangeImageAction"]</MudButton>
+            <MudButton Color="Color.Warning" Variant="Variant.Filled" OnClick="ChangePassword">@L["ChangePasswordAction"]</MudButton>
         </ActionBar>
         <div class="page-body">
             <div>
                 <MudCard Elevation="2" Class="p-2 mr-3">
-                    <DataRow Title="User Name" Value="@User.UserName" />
-                    <DataRow Title="E-mail Address" Value="@User.Email" />
-                    <DataRow Title="Full Name" Value="@User.FullName" />
-                    <DateDataRow Title="Last Login" Date="User.LastLogin" />
-                    <DateDataRow Title="Registration" Date="User.Registration" />
-                    <DateDataRow Title="Birthday" Date="User.BirthDay" />
+                    <DataRow Title="@L["UserName"]" Value="@User.UserName" />
+                    <DataRow Title="@L["Email"]" Value="@User.Email" />
+                    <DataRow Title="@L["FullName"]" Value="@User.FullName" />
+                    <DateDataRow Title="@L["LastLogin"]" Date="User.LastLogin" />
+                    <DateDataRow Title="@L["Registration"]" Date="User.Registration" />
+                    <DateDataRow Title="@L["Birthday"]" Date="User.BirthDay" />
                 </MudCard>
             </div>
             @if (ObjectHelper.IsNotNull(Image))

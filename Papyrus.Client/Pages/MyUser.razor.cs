@@ -1,6 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Components.FileUploader;
-using KarcagS.Blazor.Common.Services;
-using KarcagS.Shared.Helpers;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
@@ -84,7 +83,7 @@ public partial class MyUser : ComponentBase
             },
             EnabledExtensions = FileUploaderDialogInput.ImageExtensions,
         },
-        "Change Profile Image"))
+        L["ChangeProfileImageTitle"]))
         {
             await GetUser();
         }

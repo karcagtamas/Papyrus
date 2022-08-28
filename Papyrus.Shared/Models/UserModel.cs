@@ -1,17 +1,18 @@
-using System.ComponentModel.DataAnnotations;
+using Papyrus.Shared.Attributes;
 using Papyrus.Shared.DTOs;
 
 namespace Papyrus.Shared.Models;
 
 public class UserModel
 {
-    [Required(ErrorMessage = "Field is required")]
+    [LocalizedRequired(ErrorMessage = "Field is required")]
     public string UserName { get; set; }
 
-    [Required(ErrorMessage = "Field is required")]
+    [LocalizedRequired(ErrorMessage = "Field is required")]
+    [LocalizedEmailAddress]
     public string Email { get; set; }
 
-    [MaxLength(100, ErrorMessage = "Max length is 100")]
+    [LocalizedMaxLength(100, ErrorMessage = "Max length is 100")]
     public string? FullName { get; set; }
 
     public DateTime? BirthDay { get; set; }

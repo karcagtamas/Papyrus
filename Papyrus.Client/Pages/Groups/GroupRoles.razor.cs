@@ -1,6 +1,5 @@
-﻿using KarcagS.Blazor.Common.Components.ListTable;
-using KarcagS.Blazor.Common.Components.Table;
-using KarcagS.Blazor.Common.Services;
+﻿using KarcagS.Blazor.Common.Components.Table;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;

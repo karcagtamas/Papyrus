@@ -1,8 +1,7 @@
 ﻿using KarcagS.Blazor.Common.Components.Dialogs;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
-using KarcagS.Blazor.Common.Services;
-using KarcagS.Shared.Helpers;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using MudBlazor;

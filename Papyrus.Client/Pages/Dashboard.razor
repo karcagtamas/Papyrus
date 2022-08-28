@@ -1,10 +1,11 @@
 @page "/dashboard"
 @attribute [Authorize]
+@inject IStringLocalizer<Dashboard> L
 
 <ApplicationPageTitle PageName="Dashboard" />
 
 <div class="page-body">
     <MudText Typo="Typo.h2" Color="Color.Primary">Papyrus</MudText>
-    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-5">Note Manager Application</MudText>
-    <img class="mt-5" src="assets/images/main.svg" width="500" alt="Papyrus Logo" />
+    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-5">@L["Details"]</MudText>
+    <img class="mt-5" src="assets/images/main.svg" width="500" alt="@L["Image"]" />
 </div>

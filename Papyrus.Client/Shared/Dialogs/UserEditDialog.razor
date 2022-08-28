@@ -1,18 +1,19 @@
 @using Papyrus.Shared.DTOs
 @using Papyrus.Shared.Models
 @using Services.Interfaces
+@inject IStringLocalizer<UserEditDialog> L
 
-<EditorDialog Model="UserModel" ModelObj="Model" EntityName="User" IsEdit="true" Submit="Submit" FormValidator="ValidateForm">
-    <MudTextField T="string" Label="User Name" Variant="Variant.Text" Required="true"
+<EditorDialog Model="UserModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="true" Submit="Submit" FormValidator="ValidateForm">
+    <MudTextField T="string" Label="@L["Field.UserName"]" Variant="Variant.Text" Required="true"
                   For="@(() => Model.UserName)" @bind-Value="Model.UserName" FullWidth="true">
     </MudTextField>
-    <MudTextField T="string" Label="Full Name" Variant="Variant.Text"
+    <MudTextField T="string" Label="@L["Field.FullName"]" Variant="Variant.Text"
                   For="@(() => Model.FullName)" @bind-Value="Model.FullName" FullWidth="true">
     </MudTextField>
-    <MudTextField T="string" Label="Email" Variant="Variant.Text" InputType="InputType.Email" Required="true"
+    <MudTextField T="string" Label="@L["Field.Email"]" Variant="Variant.Text" InputType="InputType.Email" Required="true"
                   For="@(() => Model.Email)" @bind-Value="Model.Email" FullWidth="true">
     </MudTextField>
-    <MudDatePicker Label="Birth Day" Variant="Variant.Text"
+    <MudDatePicker Label="@L["Field.BirthDay"]" Variant="Variant.Text"
                    For="@(() => Model.BirthDay)" @bind-Date="Model.BirthDay">
     </MudDatePicker>
 </EditorDialog>
@@ -59,7 +60,7 @@
 
         if (UserNameOrEmailChanged(model) && await UserService.Exists(model.UserName, model.Email))
         {
-            snackbar.Add($"User is already exists with this user name [{model.UserName}] or e-mail address [{model.Email}]", Severity.Error);
+            snackbar.Add(L["Message.AlreadyExists", model.UserName, model.Email], Severity.Error);
             return false;
         }
 

@@ -1,6 +1,5 @@
 ﻿using KarcagS.Shared.Helpers;
 using Microsoft.Extensions.Localization;
-using Papyrus.Shared.Attributes;
 
 namespace Papyrus.Shared.Localization;
 

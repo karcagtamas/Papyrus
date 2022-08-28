@@ -27,6 +27,9 @@ using System.Globalization;
 using Microsoft.JSInterop;
 using Microsoft.Extensions.Localization;
 using Papyrus.Shared.Localization;
+using KarcagS.Blazor.Common.Localization;
+using KarcagS.Blazor.Common.Services.Interfaces;
+using KarcagS.Shared.Localization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -115,6 +118,8 @@ builder.Services.AddLocalization(opt =>
     opt.ResourcesPath = "Resources";
 });
 
+builder.Services.AddLibraryLocalization();
+
 ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;
 ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
 
@@ -140,6 +145,8 @@ CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
 
 var localizerFactory = host.Services.GetRequiredService<IStringLocalizerFactory>();
-ErrorMessageLocalizer.GetInstance().AddLocalizer(localizerFactory.Create(typeof(Program)));
+var localizer = localizerFactory.Create(typeof(Program));
+ErrorMessageLocalizer.GetInstance().AddLocalizer(localizer);
+LocalizationExtensions.RegisterLibraryLocalizator(localizer);
 
 await host.RunAsync();

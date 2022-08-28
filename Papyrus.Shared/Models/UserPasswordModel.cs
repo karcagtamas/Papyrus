@@ -1,13 +1,13 @@
-using System.ComponentModel.DataAnnotations;
+using Papyrus.Shared.Attributes;
 
 namespace Papyrus.Shared.Models;
 
 public class UserPasswordModel
 {
-    [Required(ErrorMessage = "Field is required")]
+    [LocalizedRequired(ErrorMessage = "Field is required")]
     public string OldPassword { get; set; } = default!;
 
 
-    [Required(ErrorMessage = "Field is required")]
+    [LocalizedRequired(ErrorMessage = "Field is required")]
     public string NewPassword { get; set; } = default!;
 }
