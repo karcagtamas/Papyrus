@@ -117,13 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Details" xml:space="preserve">
-    <value>Jegyzet Menedzser Alkalmazás</value>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright &lt;em&gt;2022-2023&lt;/em&gt; - &lt;small&gt;Karcag Tamas, All Rights Reserved&lt;/small&gt;</value>
   </data>
   <data name="Image" xml:space="preserve">
-    <value>Alkalmazás Logó</value>
+    <value>Application Logo</value>
   </data>
   <data name="PageName" xml:space="preserve">
-    <value>Írányítópult</value>
+    <value>About</value>
+  </data>
+  <data name="Row1" xml:space="preserve">
+    <value>&lt;b&gt;Papyrus&lt;/b&gt; Application is created for managing different kind of &lt;b&gt;notes&lt;/b&gt; and giving possibility to &lt;b&gt;search&lt;/b&gt; fast between them.</value>
+  </data>
+  <data name="Row2" xml:space="preserve">
+    <value>This is a Thesis prototype application what is created by &lt;b&gt;Karcag Tamas&lt;/b&gt; at SZE University.</value>
   </data>
 </root>

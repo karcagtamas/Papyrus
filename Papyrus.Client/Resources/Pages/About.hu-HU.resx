@@ -117,13 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Details" xml:space="preserve">
-    <value>Jegyzet Menedzser Alkalmazás</value>
+  <data name="Copyright" xml:space="preserve">
+    <value>Copyright &lt;em&gt;2022-2023&lt;/em&gt; - &lt;small&gt;Karcag Tamas, Minden jog fentartva&lt;/small&gt;</value>
   </data>
   <data name="Image" xml:space="preserve">
-    <value>Alkalmazás Logó</value>
+    <value>Application Logo</value>
   </data>
   <data name="PageName" xml:space="preserve">
-    <value>Írányítópult</value>
+    <value>About</value>
+  </data>
+  <data name="Row1" xml:space="preserve">
+    <value>A &lt;b&gt;Papyrus&lt;/b&gt; Alkalmazás különböző típusú &lt;b&gt;jegyzetek&lt;/b&gt; kezelésére készült és lehetőséget ad a gyors &lt;b&gt;keresésre&lt;/b&gt; közöttük.</value>
+  </data>
+  <data name="Row2" xml:space="preserve">
+    <value>Ez egy Szakdolgozat prototípus alkalmazás amit &lt;b&gt;Karcag Tamas&lt;/b&gt; készített a SZE Egyetemen.</value>
   </data>
 </root>

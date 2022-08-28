@@ -123,4 +123,7 @@
   <data name="Image" xml:space="preserve">
     <value>Application Logo</value>
   </data>
+  <data name="PageName" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
 </root>

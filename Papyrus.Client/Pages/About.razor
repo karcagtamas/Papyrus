@@ -1,18 +1,20 @@
 @page "/about"
+@using Papyrus.Client.Utils
+@inject IStringLocalizer<About> L
 
-<ApplicationPageTitle PageName="About" />
+<ApplicationPageTitle PageName="@L["PageName"]" />
 
 <div class="page-body">
-    <img src="assets/images/main.svg" width="500" alt="Papyrus Logo" />
+    <img src="assets/images/main.svg" width="500" alt="@L["Image"]" />
 
     <MudPaper Class="p-3" Elevation="2">
-        <MudText Align="Align.Justify" Typo="Typo.body1"><b>Papyrus</b> Application is created for managing different kind of <b>notes</b> and giving possibility to <b>search</b> fast between them.</MudText>
-        <MudText Align="Align.Justify" Typo="Typo.body1">This is a Thesis prototype application what is created by <b>Karcag Tamas</b> at SZE University.</MudText>
+        <MudText Align="Align.Justify" Typo="Typo.body1">@L["Row1"].AsMarkup()</MudText>
+        <MudText Align="Align.Justify" Typo="Typo.body1">@L["Row2"].AsMarkup()</MudText>
         <div class="mt-5 d-flex flex-row gap-4 justify-content-center">
             <MudIconButton Size="Size.Small" Icon="@Icons.Filled.Web" />
             <MudIconButton Size="Size.Small" Icon="@Icons.Filled.Web" />
             <MudIconButton Size="Size.Small" Icon="@Icons.Filled.Web" />
         </div>
-        <MudText Class="mt-5" Align="Align.Justify" Typo="Typo.body1">Copyright <em>2022-2023</em> - <small>Karcag Tamas, All Rights Reserved</small></MudText>
+        <MudText Class="mt-5" Align="Align.Justify" Typo="Typo.body1">@L["Copyright"].AsMarkup()</MudText>
     </MudPaper>
 </div>
