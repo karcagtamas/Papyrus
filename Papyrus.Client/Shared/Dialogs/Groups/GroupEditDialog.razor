@@ -2,9 +2,10 @@
 @using Papyrus.Client.Services.Groups.Interfaces
 @using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.Models.Groups
+@inject IStringLocalizer<GroupEditDialog> L
 
-<EditorDialog Model="GroupModel" ModelObj="Model" Submit="Submit" EntityName="Group" IsEdit="IsEdit">
-    <MudTextField T="string" Label="Name" Variant="Variant.Text" Required="true"
+<EditorDialog Model="GroupModel" ModelObj="Model" Submit="Submit" EntityName="@L["Entity"]" IsEdit="IsEdit">
+    <MudTextField T="string" Label="@L["Field.Name"]" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
 </EditorDialog>
 

@@ -1,15 +1,16 @@
 ﻿@using KarcagS.Shared.Helpers
 @using Papyrus.Shared.DTOs.Groups
+@inject IStringLocalizer<GroupListTile> L
 
 
 <MudCard Elevation="2">
     <div class="tile-content p-2 @(Group.IsClosed ? "closed" : "")">
-        <MudText Typo="Typo.h6" Color="Color.Primary"><b>@Group.Name</b> @if (Group.IsClosed) { <small> - [Closed]</small> }</MudText>
+        <MudText Typo="Typo.h6" Color="Color.Primary"><b>@Group.Name</b> @if (Group.IsClosed) { <small> - [@L["ClosedStatus"]]</small> }</MudText>
             <MudText Typo="Typo.body1">@Group.Owner</MudText>
         <MudSpacer />
         <div class="desc-row">
-            <MudText Typo="Typo.body2">Created: @DateHelper.DateToString(Group.Creation)</MudText>
-            <MudTooltip Text="Open group">
+            <MudText Typo="Typo.body2">@L["Creation"]: @DateHelper.DateToString(Group.Creation)</MudText>
+            <MudTooltip Text="@L["OpenGroupInfo"]">
                 <MudIconButton Size="Size.Small" Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
             </MudTooltip>
         </div>

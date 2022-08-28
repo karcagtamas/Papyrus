@@ -1,34 +1,35 @@
 ﻿@page "/groups/{GroupId:int}"
 @attribute [Authorize]
+@inject IStringLocalizer<GroupData> L
 
-<GroupPageTitle PageName="Data" />
+<GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    @if (Group is not null)
+    @if (ObjectHelper.IsNotNull(Group))
     {
         <ActionBar>
             @if (Group.IsClosed)
             {
-                <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Rights.CanOpen" OnClick="Open">Open</MudButton>
+                <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Rights.CanOpen" OnClick="Open">@L["OpenAction"]</MudButton>
             }
             else
             {
-                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">Edit</MudButton>
-                <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Rights.CanClose" OnClick="Close">Close</MudButton>
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">@L["EditAction"]</MudButton>
+                <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Rights.CanClose" OnClick="Close">@L["CloseAction"]</MudButton>
             }
-            <MudButton Color="Color.Error" Variant="Variant.Filled" Disabled="!Rights.CanRemove" OnClick="Remove">Remove</MudButton>
+            <MudButton Color="Color.Error" Variant="Variant.Filled" Disabled="!Rights.CanRemove" OnClick="Remove">@L["RemoveAction"]</MudButton>
             <MudSpacer />
-            <MudButton Color="Color.Secondary" Href="/my-groups">My Groups</MudButton>
+            <MudButton Color="Color.Secondary" Href="/my-groups">@L["MyGroupsLink"]</MudButton>
         </ActionBar>
         <MudCard Elevation="2" Class="p-2">
-            <DataRow Title="Name" Value="@Group.Name" />
-            <DataRow Title="Owner" Value="@Group.Owner" />
-            <DateDataRow Title="Creation" Date="@Group.Creation" />
-            <NumericDataRow Title="Members" Number="@Group.Members" Suffix="ct." />
-            <NumericDataRow Title="Roles" Number="@Group.Roles" Suffix="ct." />
-            <NumericDataRow Title="Tags" Number="@Group.Tags" Suffix="ct." />
-            <NumericDataRow Title="Notes" Number="@Group.Notes" Suffix="ct." />
-            <DateDataRow Title="Last Action" Date="@Group.LastAction" />
+            <DataRow Title="@L["Name"]" Value="@Group.Name" />
+            <DataRow Title="@L["Owner"]" Value="@Group.Owner" />
+            <DateDataRow Title="@L["Creation"]" Date="@Group.Creation" />
+            <NumericDataRow Title="@L["Members"]" Number="@Group.Members" Suffix="@L["CountSuffix"]" />
+            <NumericDataRow Title="@L["Roles"]" Number="@Group.Roles" Suffix="@L["CountSuffix"]" />
+            <NumericDataRow Title="@L["Tags"]" Number="@Group.Tags" Suffix="@L["CountSuffix"]" />
+            <NumericDataRow Title="@L["Notes"]" Number="@Group.Notes" Suffix="@L["CountSuffix"]" />
+            <DateDataRow Title="@L["LastAction"]" Date="@Group.LastAction" />
         </MudCard>
     }
 </div>

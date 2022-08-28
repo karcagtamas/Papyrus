@@ -52,19 +52,19 @@ public partial class GroupData : ComponentBase
         await HelperService.OpenEditorDialog<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", async (res) => await GetGroup(), parameters);
     }
 
-    private async Task Close() => await ExecuteAction(Rights.CanClose, "Close", () => GroupService.Close(GroupId), async () => await GetGroup());
+    private async Task Close() => await ExecuteAction(Rights.CanClose, L["CloseAction"], L["CloseActionName"], () => GroupService.Close(GroupId), async () => await GetGroup());
 
-    private async Task Open() => await ExecuteAction(Rights.CanOpen, "Open", () => GroupService.Open(GroupId), async () => await GetGroup());
+    private async Task Open() => await ExecuteAction(Rights.CanOpen, L["OpenAction"], L["OpenActionName"], () => GroupService.Open(GroupId), async () => await GetGroup());
 
-    private async Task Remove() => await ExecuteAction(Rights.CanRemove, "Remove", () => GroupService.Remove(GroupId), () => Navigation.NavigateTo("/my-groups"));
+    private async Task Remove() => await ExecuteAction(Rights.CanRemove, L["RemoveAction"], L["RemoveActionName"], () => GroupService.Remove(GroupId), () => Navigation.NavigateTo("/my-groups"));
 
-    private async Task ExecuteAction(bool preCheck, string actionName, Func<Task<bool>> performAction, Action action)
+    private async Task ExecuteAction(bool preCheck, string action, string actionName, Func<Task<bool>> performAction, Action postAction)
     {
         if (!preCheck)
         {
             return;
         }
 
-        await ConfirmService.Open(new ConfirmDialogInput { Name = "Group", ActionName = actionName.ToLower(), ActionFunction = async () => await performAction() }, $"Confirm {actionName}", () => action());
+        await ConfirmService.Open(new ConfirmDialogInput { Name = L["Entity"], ActionName = actionName.ToLower(), ActionFunction = async () => await performAction() }, L["ActionConfirmTitle", action], () => postAction());
     }
 }

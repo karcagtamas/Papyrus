@@ -1,15 +1,16 @@
 ﻿@page "/my-groups"
 @attribute [Authorize]
+@inject IStringLocalizer<MyGroups> L
 
-<ApplicationPageTitle PageName="My Groups" />
+<ApplicationPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
     <ActionBar>
         <ChildContent>
-            <InfoButton Text="All groups are available where you are involved or you are a member" />
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+            <InfoButton Text="@L["PageInfo"]" />
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
             <MudSpacer />
-            <MudSwitch T="bool" Color="Color.Secondary" CheckedChanged="HideClosedChangeHandler" Checked="HideClosedChecked" Label="Hide Closed" />
+            <MudSwitch T="bool" Color="Color.Secondary" CheckedChanged="HideClosedChangeHandler" Checked="HideClosedChecked" Label="@L["ClosedFilter"]" />
         </ChildContent>
     </ActionBar>
     <div class="page-content">
