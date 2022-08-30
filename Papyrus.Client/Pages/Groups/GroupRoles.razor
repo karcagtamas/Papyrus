@@ -1,6 +1,7 @@
 ﻿@page "/groups/{GroupId:int}/roles"
 @using KarcagS.Shared.Helpers
 @attribute [Authorize]
+@inject IStringLocalizer<GroupRoles> L
 
 <GroupPageTitle PageName="Roles" />
 
@@ -8,8 +9,8 @@
     @if (Rights.CanCreate)
     {
         <ActionBar>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
         </ActionBar>
     }
-    <Table @ref="Table" TKey="int" ReadOnly="!Rights.CanEdit" Service="GroupRoleTableService" ExtraParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" />
+    <Table @ref="Table" TKey="int" ReadOnly="!Rights.CanEdit" Service="GroupRoleTableService" ExtraParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" Localizer="L" />
 </div>

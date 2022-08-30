@@ -21,34 +21,33 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
 
     public override Configuration<GroupRole, int> BuildConfiguration()
     {
-        // TODO: Edit right check for readonly state
         return Configuration<GroupRole, int>
             .Build("group-role-table")
-            .SetTitle("Management Roles")
+            .SetTitle("Management Roles", "Table.Title")
             .AddColumn(Column<GroupRole, int>.Build("name")
-                .SetTitle("Name")
+                .SetTitle("Name", "TableColumn.Name")
                 .AddValueGetter(obj => obj.Name))
             .AddColumn(Column<GroupRole, int>.Build("readonly")
-                .SetTitle("Read Only")
+                .SetTitle("Read Only", "TableColumn.ReadOnly")
                 .AddValueGetter(obj => obj.ReadOnly)
-                .SetFormatter(ColumnFormatter.Logic, "Yes", "No")
+                .SetFormatter(ColumnFormatter.Logic, "TrueValue", "FalseValue")
                 .SetAlignment(Alignment.Center)
                 .SetWidth(40))
-            .AddColumn(BuildColumn("group-edit", "Group Edit", (obj) => obj.GroupEdit))
-            .AddColumn(BuildColumn("group-close", "Group Close", (obj) => obj.GroupClose))
-            .AddColumn(BuildColumn("listing-notes", "Listing Notes", (obj) => obj.ReadNoteList))
-            .AddColumn(BuildColumn("read-note", "Read Note", (obj) => obj.ReadNote))
-            .AddColumn(BuildColumn("create-note", "Create Note", (obj) => obj.CreateNote))
-            .AddColumn(BuildColumn("delete-note", "Delete Note", (obj) => obj.DeleteNote))
-            .AddColumn(BuildColumn("edit-note", "Edit Note", (obj) => obj.EditNote))
-            .AddColumn(BuildColumn("read-members", "Read Members", (obj) => obj.ReadMemberList))
-            .AddColumn(BuildColumn("edit-members", "Edit Members", (obj) => obj.EditMemberList))
-            .AddColumn(BuildColumn("read-roles", "Read Roles", (obj) => obj.ReadRoleList))
-            .AddColumn(BuildColumn("edit-roles", "Edit Roles", (obj) => obj.EditRoleList))
-            .AddColumn(BuildColumn("read-logs", "Read Logs", (obj) => obj.ReadGroupActionLog))
-            .AddColumn(BuildColumn("read-note-logs", "Read Note Logs", (obj) => obj.ReadNoteActionLog))
-            .AddColumn(BuildColumn("read-tags", "Read Tags", (obj) => obj.ReadTagList))
-            .AddColumn(BuildColumn("edit-tags", "Edit Tags", (obj) => obj.EditTagList))
+            .AddColumn(BuildColumn("group-edit", "Group Edit", (obj) => obj.GroupEdit, "TableColumn.GroupEdit"))
+            .AddColumn(BuildColumn("group-close", "Group Close", (obj) => obj.GroupClose, "TableColumn.GroupClose"))
+            .AddColumn(BuildColumn("listing-notes", "Listing Notes", (obj) => obj.ReadNoteList, "TableColumn.ReadNotes"))
+            .AddColumn(BuildColumn("read-note", "Read Note", (obj) => obj.ReadNote, "TableColumn.ReadNote"))
+            .AddColumn(BuildColumn("create-note", "Create Note", (obj) => obj.CreateNote, "TableColumn.CreateNote"))
+            .AddColumn(BuildColumn("delete-note", "Delete Note", (obj) => obj.DeleteNote, "TableColumn.DeleteNote"))
+            .AddColumn(BuildColumn("edit-note", "Edit Note", (obj) => obj.EditNote, "TableColumn.EditNote"))
+            .AddColumn(BuildColumn("read-members", "Read Members", (obj) => obj.ReadMemberList, "TableColumn.ReadMembers"))
+            .AddColumn(BuildColumn("edit-members", "Edit Members", (obj) => obj.EditMemberList, "TableColumn.EditMembers"))
+            .AddColumn(BuildColumn("read-roles", "Read Roles", (obj) => obj.ReadRoleList, "TableColumn.ReadRoles"))
+            .AddColumn(BuildColumn("edit-roles", "Edit Roles", (obj) => obj.EditRoleList, "TableColumn.EditRoles"))
+            .AddColumn(BuildColumn("read-logs", "Read Logs", (obj) => obj.ReadGroupActionLog, "TableColumn.ReadLogs"))
+            .AddColumn(BuildColumn("read-note-logs", "Read Note Logs", (obj) => obj.ReadNoteActionLog, "TableColumn.ReadNoteLogs"))
+            .AddColumn(BuildColumn("read-tags", "Read Tags", (obj) => obj.ReadTagList, "TableColumn.ReadTags"))
+            .AddColumn(BuildColumn("edit-tags", "Edit Tags", (obj) => obj.EditTagList, "TableColumn.EditTags"))
             .DisableClickOn(obj => obj.ReadOnly)
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
             .AddTagProvider((obj, col) =>
@@ -101,13 +100,13 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
             .Build();
     }
 
-    private static Column<GroupRole, int> BuildColumn(string key, string title, Func<GroupRole, object> getter)
+    private static Column<GroupRole, int> BuildColumn(string key, string title, Func<GroupRole, object> getter, string? resourceKey = null)
     {
         return Column<GroupRole, int>.Build(key)
-            .SetTitle(title)
+            .SetTitle(title, resourceKey)
             .SetAlignment(Alignment.Center)
             .AddValueGetter(getter)
-            .SetFormatter(ColumnFormatter.Logic, "Yes", "No")
+            .SetFormatter(ColumnFormatter.Logic, "TrueValue", "FalseValue")
             .SetWidth(40);
     }
 
