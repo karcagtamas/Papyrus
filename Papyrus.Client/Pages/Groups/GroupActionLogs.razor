@@ -1,9 +1,10 @@
 ﻿@page "/groups/{GroupId:int}/logs"
 @using KarcagS.Shared.Helpers
 @attribute [Authorize]
+@inject IStringLocalizer<GroupActionLogs> L
 
-<GroupPageTitle PageName="Logs" />
+<GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    <Table TKey="long" Service="GroupActionLogTableService" ExtraParams="ExtraParams" />
+    <Table TKey="long" Service="GroupActionLogTableService" ExtraParams="ExtraParams" Localizer="L" />
 </div>

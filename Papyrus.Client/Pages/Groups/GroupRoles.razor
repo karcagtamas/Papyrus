@@ -3,7 +3,7 @@
 @attribute [Authorize]
 @inject IStringLocalizer<GroupRoles> L
 
-<GroupPageTitle PageName="Roles" />
+<GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
     @if (Rights.CanCreate)

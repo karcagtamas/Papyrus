@@ -117,70 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CreateAction" xml:space="preserve">
-    <value>Létrehozás</value>
-  </data>
-  <data name="FalseValue" xml:space="preserve">
-    <value>Nem</value>
-  </data>
   <data name="PageName" xml:space="preserve">
-    <value>Szerepkörök</value>
+    <value>Logs</value>
   </data>
   <data name="Table.Title" xml:space="preserve">
-    <value>Menedzsment Szerepkörök</value>
+    <value>Action Logs</value>
   </data>
-  <data name="TableColumn.CreateNote" xml:space="preserve">
-    <value>Jegyzet Létrehozása</value>
+  <data name="TableColumn.Creation" xml:space="preserve">
+    <value>Creation</value>
   </data>
-  <data name="TableColumn.DeleteNote" xml:space="preserve">
-    <value>Jegyzet Törlése</value>
+  <data name="TableColumn.Performer" xml:space="preserve">
+    <value>Performer</value>
   </data>
-  <data name="TableColumn.EditMembers" xml:space="preserve">
-    <value>Tagok Szerkesztése</value>
-  </data>
-  <data name="TableColumn.EditNote" xml:space="preserve">
-    <value>Jegyzet Szerkesztés</value>
-  </data>
-  <data name="TableColumn.EditRoles" xml:space="preserve">
-    <value>Szerepkörök Szerkesztése</value>
-  </data>
-  <data name="TableColumn.EditTags" xml:space="preserve">
-    <value>Címkék Szerkesztése</value>
-  </data>
-  <data name="TableColumn.GroupClose" xml:space="preserve">
-    <value>Csoport Lezárása</value>
-  </data>
-  <data name="TableColumn.GroupEdit" xml:space="preserve">
-    <value>Csoport Szerkesztése</value>
-  </data>
-  <data name="TableColumn.Name" xml:space="preserve">
-    <value>Név</value>
-  </data>
-  <data name="TableColumn.ReadLogs" xml:space="preserve">
-    <value>Logok Olvasása</value>
-  </data>
-  <data name="TableColumn.ReadMembers" xml:space="preserve">
-    <value>Tagok Olvasása</value>
-  </data>
-  <data name="TableColumn.ReadNote" xml:space="preserve">
-    <value>Jegyzet Olvasása</value>
-  </data>
-  <data name="TableColumn.ReadNoteLogs" xml:space="preserve">
-    <value>Jegyzet Logok Olvasása</value>
-  </data>
-  <data name="TableColumn.ReadNotes" xml:space="preserve">
-    <value>Jegyzetek Olvasása</value>
-  </data>
-  <data name="TableColumn.ReadOnly" xml:space="preserve">
-    <value>Csak Olvasható</value>
-  </data>
-  <data name="TableColumn.ReadRoles" xml:space="preserve">
-    <value>Szerepkörök Olvasása</value>
-  </data>
-  <data name="TableColumn.ReadTags" xml:space="preserve">
-    <value>Címkék Olvasása</value>
-  </data>
-  <data name="TrueValue" xml:space="preserve">
-    <value>Igen</value>
+  <data name="TableColumn.Text" xml:space="preserve">
+    <value>Text</value>
   </data>
 </root>
