@@ -58,4 +58,6 @@ public class GroupMemberService : MapperRepository<GroupMember, int, string>, IG
 
         groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberRemove);
     }
+
+    public List<string> GetMemberKeys(List<int> memberIds) => GetList(x => memberIds.Contains(x.Id)).Select(x => x.UserId).ToList();
 }

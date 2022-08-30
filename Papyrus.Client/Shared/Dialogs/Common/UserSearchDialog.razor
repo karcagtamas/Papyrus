@@ -1,12 +1,14 @@
 ﻿@using KarcagS.Shared.Helpers
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.DTOs
+@inject IStringLocalizer<UserSearchDialog> L
+
 <MudDialog>
     <TitleContent>
-        <MudText Typo="Typo.h5" Color="Color.Primary">User Search</MudText>
+        <MudText Typo="Typo.h5" Color="Color.Primary">@L["Title"]</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField T="string" Placeholder="Search" TextChanged="(value) => Fetch(value)" />
+        <MudTextField T="string" Placeholder="@L["SearchPlaceholder"]" TextChanged="(value) => Fetch(value)" />
 
         @if (Users.Count > 0 && !IsLoading)
         {
@@ -24,8 +26,8 @@
                 </HeaderContent>
                 <RowTemplate>
                     <MudTd DataLabel="UserName">@context.UserName</MudTd>
-                    <MudTd DataLabel="UserName">@context.Email</MudTd>
-                    <MudTd DataLabel="UserName">@WriteHelper.WriteNullableField(context.FullName)</MudTd>
+                    <MudTd DataLabel="Email">@context.Email</MudTd>
+                    <MudTd DataLabel="FullName">@WriteHelper.WriteNullableField(context.FullName)</MudTd>
                 </RowTemplate>
             </MudTable>
         }
@@ -38,8 +40,8 @@
         }
     </DialogContent>
     <DialogActions>
-        <MudButton OnClick="Cancel">Close</MudButton>
-        <MudButton Color="Color.Primary" OnClick="Select">Select</MudButton>
+        <MudButton OnClick="Cancel">@L["CloseAction"]</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Select">@L["SelectAction"]</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -56,8 +58,14 @@
     private List<UserLightDTO> Users = new();
     private UserLightDTO? Selected = null;
     private bool IsLoading { get; set; } = false;
-    private string Message { get; set; } = "You need to search first.";
+    private string Message { get; set; } = string.Empty;
     private bool IsError { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Message = L["Message.Empty"];
+        base.OnInitialized();
+    }
 
     private async Task Fetch(string value)
     {
@@ -65,7 +73,7 @@
         {
             Users = new();
             Selected = null;
-            Message = "You need to search first.";
+            Message = L["Message.Empty"];
             IsError = false;
             return;
         }
@@ -75,7 +83,7 @@
         Users = await UserService.Search(value, true, Ignored);
         Selected = null;
         IsLoading = false;
-        Message = Users.Count() > 0 ? "" : "Couldn't find any user.";
+        Message = Users.Count() > 0 ? "" : L["Message.NotFound"];
         IsError = true;
         await InvokeAsync(StateHasChanged);
     }

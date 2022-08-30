@@ -51,4 +51,7 @@ public class GroupMemberController : ControllerBase
     {
         groupMemberService.UpdateByModel(id, model);
     }
+
+    [HttpGet("UserKeys")]
+    public List<string> GetMemberKeys([FromQuery] List<int> memberIds) => groupMemberService.GetMemberKeys(memberIds);
 }

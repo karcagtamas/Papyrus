@@ -71,9 +71,11 @@ public partial class GroupMembers : ComponentBase
             return;
         }
 
-        var parameters = new DialogParameters { { "Ignored", Table?.GetData().Select(x => x.ItemKey).ToList() ?? new() } };
+        var userKeys = await GroupMemberService.GetMemberKeys(Table?.GetData().Select(x => x.ItemKey).ToList() ?? new());
 
-        var dialog = DialogService.Show<UserSearchDialog>("Search User", parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
+        var parameters = new DialogParameters { { "Ignored", userKeys } };
+
+        var dialog = DialogService.Show<UserSearchDialog>(L["SearchUserTitle"], parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
         if (!result.Cancelled && result.Data is string userId)
         {

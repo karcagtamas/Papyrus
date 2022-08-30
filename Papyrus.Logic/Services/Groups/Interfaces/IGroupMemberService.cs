@@ -6,4 +6,5 @@ namespace Papyrus.Logic.Services.Groups.Interfaces;
 public interface IGroupMemberService : IMapperRepository<GroupMember, int>
 {
     void CreateFromModelWithDefaultRole<T>(T model);
+    List<string> GetMemberKeys(List<int> memberIds);
 }

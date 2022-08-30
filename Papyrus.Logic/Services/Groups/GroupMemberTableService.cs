@@ -28,26 +28,26 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
         var userId = utilsService.GetRequiredCurrentUserId();
         return Configuration<GroupMember, int>
             .Build("group-member-table")
-            .SetTitle("Group Members")
+            .SetTitle("Group Members", "Table.Title")
             .AddColumn(Column<GroupMember, int>.Build("user")
-                .SetTitle("User")
+                .SetTitle("User", "TableColumn.User")
                 .AddValueGetter(obj => obj.User.UserName)
                 .SetWidth(480))
             .AddColumn(Column<GroupMember, int>.Build("role")
-                .SetTitle("Role")
+                .SetTitle("Role", "TableColumn.Role")
                 .AddValueGetter(obj => obj.Role.Name))
             .AddColumn(Column<GroupMember, int>.Build("added-by")
-                .SetTitle("Added By")
+                .SetTitle("Added By", "TableColumn.AddedBy")
                 .AddValueGetter(obj => WriteHelper.WriteNullableField(obj.AddedBy?.UserName))
                 .SetWidth(320))
             .AddColumn(Column<GroupMember, int>.Build("join")
-                .SetTitle("Join")
+                .SetTitle("Join", "TableColumn.Join")
                 .AddValueGetter(obj => obj.Creation)
                 .SetFormatter(ColumnFormatter.Date)
                 .SetWidth(180))
             .DisableClickOn(obj => userId == obj.UserId)
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
-            .AddTagProvider((obj, col) => userId == obj.UserId ? Tags.CurrentUserTag : ""); // TODO: Table readonly => because of right
+            .AddTagProvider((obj, col) => userId == obj.UserId ? Tags.CurrentUserTag : "");
     }
 
     public override DataSource<GroupMember, int> BuildDataSource()
