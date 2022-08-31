@@ -7,16 +7,17 @@
 @using Papyrus.Shared.Models.Groups
 @using System.ComponentModel.DataAnnotations
 @using Papyrus.Shared.Models.Notes
+@inject IStringLocalizer<TagEditDialog> L
 
-<EditorDialog Model="TagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Tag" IsEdit="IsEdit">
+<EditorDialog Model="TagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="IsEdit">
     <MudText Class="@("text-center mt-3 mb-3 " + (IsEdit ? "hovered-text" : ""))" Color="Color.Primary" onclick="@(() => EditParent())"><b>@Path?.Path/</b></MudText>
-    <MudTextField Class="mb-5" T="string" Label="Caption" Variant="Variant.Text" Required="true"
+    <MudTextField Class="mb-5" T="string" Label="@L["Field.Caption"]" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Caption)" @bind-Value="Model.Caption" FullWidth="true" />
 
-    <MudTextField Class="mb-5" T="string" Label="Description" Variant="Variant.Text"
+    <MudTextField Class="mb-5" T="string" Label="@L["Field.Description"]" Variant="Variant.Text"
                   For="@(() => Model.Description)" @bind-Value="Model.Description" FullWidth="true" Lines="5" />
 
-    <MudColorPicker Class="mb-5" Label="Color" Variant="Variant.Text" @bind-Text="Model.Color" />
+    <MudColorPicker Class="mb-5" Label="@L["Field.Color"]" Variant="Variant.Text" @bind-Text="Model.Color" />
 </EditorDialog>
 
 @code {

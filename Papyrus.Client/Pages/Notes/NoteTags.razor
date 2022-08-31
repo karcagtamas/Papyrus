@@ -1,12 +1,13 @@
 ﻿@page "/notes/tags"
 @attribute [Authorize]
+@inject IStringLocalizer<NoteTags> L
 
-<ApplicationPageTitle PageName="Note Tags"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div class="page-div">
     <ActionBar>
-        <InfoButton Text="Tags are managed in tree hierarchy" />
-        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+        <InfoButton Text="@L["PageInfo"]" />
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
     </ActionBar>
     <TagTree @ref="TagTree" Fetcher="Fetcher" />
 </div>

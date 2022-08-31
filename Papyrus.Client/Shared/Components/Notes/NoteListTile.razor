@@ -1,5 +1,6 @@
 ﻿@using KarcagS.Shared.Helpers
 @using Papyrus.Shared.DTOs.Notes
+@inject IStringLocalizer<NoteListTile> L
 
 <MudCard Elevation="2">
     <div class="tile-content p-2">
@@ -11,7 +12,7 @@
         </MudText>
         <MudText Typo="Typo.body1">@Note.Creator</MudText>
         <MudSpacer />
-        <MudText Typo="Typo.body2"><b>Last Update:</b> @DateHelper.DateToString(Note.LastUpdate)</MudText>
+        <MudText Typo="Typo.body2"><b>@L["LastUpdate"]:</b> @DateHelper.DateToString(Note.LastUpdate)</MudText>
         <div class="desc-row mt-2">
             <div>
                 @foreach (var tag in Note.Tags)
@@ -19,7 +20,7 @@
                     <TagBox Tag="tag" />
                 }
             </div>
-            <MudTooltip Text="Open note in new tab">
+            <MudTooltip Text="@L["OpenButton.Info"]">
                 <MudIconButton Size="Size.Small" Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
             </MudTooltip>
         </div>

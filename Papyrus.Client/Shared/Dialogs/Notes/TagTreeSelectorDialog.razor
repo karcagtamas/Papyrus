@@ -1,8 +1,9 @@
 ﻿@using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.DTOs.Notes
+@inject IStringLocalizer<TagTreeSelectorDialog> L
 
-<TreeSelectorDialog TKey="int" T="TagTreeItemDTO" EntityName="Tag" BodyText="Persist empty selection to choose ROOT path" Fetcher="@Fetcher" ItemExtractor="@ItemExctractor" TitleGetter="@TitleGetter" MultiSelect="MultiSelect" DisabledIds="DisabledIds" />
+<TreeSelectorDialog TKey="int" T="TagTreeItemDTO" EntityName="@L["Entity"]" BodyText="@L["BodyText"]" Fetcher="@Fetcher" ItemExtractor="@ItemExctractor" TitleGetter="@TitleGetter" MultiSelect="MultiSelect" DisabledIds="DisabledIds" />
 
 @code {
     [Parameter]
@@ -20,18 +21,9 @@
     [Inject]
     private ITagService TagService { get; set; } = default!;
 
-    private Task<List<TagTreeItemDTO>> Fetcher()
-    {
-        return TagService.GetTree(GroupId, ParentId);
-    }
+    private Task<List<TagTreeItemDTO>> Fetcher() => TagService.GetTree(GroupId, ParentId);
 
-    private List<TagTreeItemDTO> ItemExctractor(TagTreeItemDTO obj)
-    {
-        return obj.Children;
-    }
+    private List<TagTreeItemDTO> ItemExctractor(TagTreeItemDTO obj) => obj.Children;
 
-    private string TitleGetter(TagTreeItemDTO obj)
-    {
-        return obj.Caption;
-    }
+    private string TitleGetter(TagTreeItemDTO obj) => obj.Caption;
 }

@@ -1,14 +1,15 @@
 ﻿@page "/groups/{GroupId:int}/notes/tags"
 @attribute [Authorize]
+@inject IStringLocalizer<GroupNoteTags> L
 
-<GroupPageTitle PageName="Note Tags" />
+<GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
     <ActionBar>
-        <InfoButton Text="Tags are managed in tree hierarchy" />
+        <InfoButton Text="@L["PageInfo"]" />
         @if (Rights.CanCreate)
         {
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
         }
     </ActionBar>
     <TagTree @ref="TagTree" Fetcher="Fetcher" GroupId="GroupId" CreateEnabled="Rights.CanCreate" EditEnabled="Rights.CanEdit" RemoveEnabled="Rights.CanRemove" />

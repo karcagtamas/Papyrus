@@ -1,19 +1,20 @@
 ﻿@page "/groups/{GroupId:int}/notes"
 @using Papyrus.Shared.Enums.Notes
 @attribute [Authorize]
+@inject IStringLocalizer<GroupNotes> L
 
-<GroupPageTitle PageName="Notes" />
+<GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
     <ActionBar>
         <div>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">Create</MudButton>
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
         </div>
         <MudSpacer />
         <MudRadioGroup Class="mr-3" T="NoteSearchType" SelectedOption="SearchType" SelectedOptionChanged="HandleSearchTypeChange">
-            <MudRadio Size="Size.Small" Option="NoteSearchType.All">All</MudRadio>
-            <MudRadio Size="Size.Small" Option="NoteSearchType.Published">Only Published</MudRadio>
-            <MudRadio Size="Size.Small" Option="NoteSearchType.NotPublished">Only Not Published</MudRadio>
+            <MudRadio Size="Size.Small" Option="NoteSearchType.All">@L["SearchType.All"]</MudRadio>
+            <MudRadio Size="Size.Small" Option="NoteSearchType.Published">@L["SearchType.Published"]</MudRadio>
+            <MudRadio Size="Size.Small" Option="NoteSearchType.NotPublished">@L["SearchType.NotPublished"]</MudRadio>
         </MudRadioGroup>
     </ActionBar>
     <div class="page-content">

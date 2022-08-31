@@ -1,5 +1,4 @@
-﻿using KarcagS.Shared.Helpers;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Notes;
