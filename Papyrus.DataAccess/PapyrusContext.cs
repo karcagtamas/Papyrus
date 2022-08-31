@@ -9,6 +9,7 @@ namespace Papyrus.DataAccess;
 
 public class PapyrusContext : IdentityDbContext<User, Role, string>
 {
+    public DbSet<Language> Languages { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupActionLog> GroupActionLogs { get; set; }
@@ -23,6 +24,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
 
     public PapyrusContext(DbContextOptions<PapyrusContext> options) : base(options)
     {
+        Languages = default!;
         RefreshTokens = default!;
         Groups = default!;
         GroupActionLogs = default!;
@@ -46,6 +48,17 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         modelBuilder.Entity<User>()
             .HasIndex(user => user.Email)
             .IsUnique();
+        modelBuilder.Entity<User>()
+            .HasOne(x => x.Language)
+            .WithMany(x => x.Users)
+            .OnDelete(DeleteBehavior.SetNull);
+
+        // Language
+        modelBuilder.Entity<Language>()
+            .HasIndex(x => x.ShortName)
+            .IsUnique();
+        modelBuilder.Entity<Language>()
+            .HasData(new List<Language> { new() { Id = 1, Name = "English", ShortName = "en-US" }, new() { Id = 2, Name = "Hungarian", ShortName = "hu-HU" } });
 
         // Refresh token
         modelBuilder.Entity<RefreshToken>()

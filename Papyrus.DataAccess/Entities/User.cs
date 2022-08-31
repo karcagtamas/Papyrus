@@ -29,8 +29,11 @@ public class User : IdentityUser<string>, IEntity<string>
 
     public string? ImageId { get; set; }
 
+    public int? LanguageId { get; set; }
+
     public bool IsOsirisConnected { get { return OsirisId != null; } }
 
+    public virtual Language? Language { get; set; }
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = default!;
     public virtual ICollection<Group> CreatedGroups { get; set; } = default!;
     public virtual ICollection<GroupMember> Groups { get; set; } = default!;

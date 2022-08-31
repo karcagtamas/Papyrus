@@ -73,6 +73,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILanguageService, LanguageService>();
 
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
@@ -129,17 +130,30 @@ var host = builder.Build();
 
 CultureInfo culture;
 var js = host.Services.GetRequiredService<IJSRuntime>();
-var result = await js.InvokeAsync<string>("blazorCulture.get");
+var langService = host.Services.GetRequiredService<ILanguageService>();
 
-if (result != null)
+var userLanguage = await langService.GetUserLanguage();
+
+if (userLanguage != null)
 {
-    culture = new CultureInfo(result);
+    culture = new CultureInfo(userLanguage.ShortName);
+    await js.InvokeVoidAsync("blazorCulture.set", userLanguage.ShortName);
 }
 else
 {
-    culture = new CultureInfo("en");
-    await js.InvokeVoidAsync("blazorCulture.set", "en-US");
+    var result = await js.InvokeAsync<string>("blazorCulture.get");
+
+    if (result != null)
+    {
+        culture = new CultureInfo(result);
+    }
+    else
+    {
+        culture = new CultureInfo("en-US");
+        await js.InvokeVoidAsync("blazorCulture.set", "en-US");
+    }
 }
+
 
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;

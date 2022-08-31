@@ -84,15 +84,7 @@
         var res = await AuthService.Login(Model);
         if (!string.IsNullOrEmpty(res))
         {
-            if (string.IsNullOrEmpty(redirectUri))
-            {
-
-                NavigationManager.NavigateTo("/dashboard");
-            }
-            else
-            {
-                NavigationManager.NavigateTo(redirectUri);
-            }
+            NavigationManager.NavigateTo(string.IsNullOrEmpty(redirectUri) ? "/dashboard" : redirectUri, true);
         }
     }
 

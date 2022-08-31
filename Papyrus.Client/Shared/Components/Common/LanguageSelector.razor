@@ -1,12 +1,15 @@
 ﻿@using System.Globalization
 @using MudBlazor.Utilities
+@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.DTOs
 @inject NavigationManager Navigator
 @inject IJSRuntime JS
+@inject ILanguageService LanguageService
 
-<MudMenu Label="@Culture.DisplayName" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
-    @foreach (var culture in supportedCultures)
+<MudMenu Label="@Current.ShortName" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+    @foreach (var lang in Languages)
     {
-        <MudMenuItem OnClick="@(() => Culture = culture)"><MudText Color="@(Culture.Equals(culture) ? Color.Primary : Color.Default)">@culture.DisplayName</MudText></MudMenuItem>
+        <MudMenuItem OnClick="@(() => UpdateLanguage(lang))"><MudText Color="@(Current.Id == lang.Id ? Color.Primary : Color.Default)">@lang.ShortName</MudText></MudMenuItem>
     }
 </MudMenu>
 
@@ -17,24 +20,28 @@
     [Parameter]
     public Variant Variant { get; set; } = Variant.Filled;
 
-    private CultureInfo[] supportedCultures = new[]
-    {
-        new CultureInfo("en-US"),
-        new CultureInfo("hu-HU"),
-    };
+    private List<LanguageDTO> Languages { get; set; } = new();
+    private LanguageDTO Current { get; set; } = new LanguageDTO { Id = 0, Name = "<NOT FOUND>", ShortName = "-" };
 
-    private CultureInfo Culture
+    protected override async void OnInitialized()
     {
-        get => CultureInfo.CurrentCulture;
-        set
-        {
-            if (CultureInfo.CurrentCulture != value)
-            {
-                var js = (IJSInProcessRuntime)JS;
-                js.InvokeVoid("blazorCulture.set", value.Name);
+        Languages = await LanguageService.GetAll<LanguageDTO>();
+        Console.WriteLine(CultureInfo.CurrentCulture.Name);
+        var current = Languages.FirstOrDefault(x => x.ShortName == CultureInfo.CurrentCulture.Name);
+        Console.WriteLine(current?.ShortName ?? "NEM");
 
-                Navigator.NavigateTo(Navigator.Uri, forceLoad: true);
-            }
-        }
+        ObjectHelper.WhenNotNull(current, c => Current = c);
+
+        base.OnInitialized();
+        StateHasChanged();
+    }
+
+    private async void UpdateLanguage(LanguageDTO language)
+    {
+        await LanguageService.SetUserLanguage(language.Id);
+        var js = (IJSInProcessRuntime)JS;
+        js.InvokeVoid("blazorCulture.set", language.ShortName);
+
+        Navigator.NavigateTo(Navigator.Uri, forceLoad: true);
     }
 }
