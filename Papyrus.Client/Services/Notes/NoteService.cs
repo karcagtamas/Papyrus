@@ -1,5 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
+using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Notes;
@@ -9,15 +10,20 @@ namespace Papyrus.Client.Services.Notes;
 
 public class NoteService : HttpCall<string>, INoteService
 {
-    public NoteService(IHttpService http) : base(http, $"{ApplicationSettings.BaseApiUrl}/Note", "Note")
+    private readonly IStringLocalizer<NoteService> localizer;
+
+    public NoteService(IHttpService http, IStringLocalizer<NoteService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Note", "Note", localizer)
     {
+        this.localizer = localizer;
     }
 
     public Task<NoteCreationDTO?> CreateEmpty(int? groupId)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url)).AddToaster("Note created");
+        var settings = new HttpSettings(Http.BuildUrl(Url))
+            .AddToaster(localizer["Toaster.Create"]);
 
-        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId }).ExecuteWithResult();
+        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId })
+            .ExecuteWithResult();
     }
 
     public Task<List<NoteLightDTO>> GetByGroup(int groupId, NoteSearchType searchType = NoteSearchType.All)

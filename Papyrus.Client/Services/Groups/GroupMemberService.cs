@@ -1,5 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
+using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 
@@ -7,7 +8,7 @@ namespace Papyrus.Client.Services.Groups;
 
 public class GroupMemberService : HttpCall<int>, IGroupMemberService
 {
-    public GroupMemberService(IHttpService http) : base(http, $"{ApplicationSettings.BaseApiUrl}/GroupMember", "Group Member")
+    public GroupMemberService(IHttpService http, IStringLocalizer<GroupMemberService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/GroupMember", "Group Member", localizer)
     {
     }
 

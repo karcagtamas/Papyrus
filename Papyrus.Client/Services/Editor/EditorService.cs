@@ -15,10 +15,10 @@ public class EditorService : IEditorService
         this.httpService = httpService;
     }
 
-    public async Task<List<UserLightDTO>> GetMembers(string id)
+    public Task<List<UserLightDTO>> GetMembers(string id)
     {
         var settings = new HttpSettings(httpService.BuildUrl(url, id, "Members"));
 
-        return await httpService.Get<List<UserLightDTO>>(settings).ExecuteWithResultOrElse(new());
+        return httpService.Get<List<UserLightDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 }

@@ -165,8 +165,38 @@
   <data name="Required" xml:space="preserve">
     <value>Mező kitöltése kötelező.</value>
   </data>
+  <data name="Selector.Action.Cancel" xml:space="preserve">
+    <value>Mégsem</value>
+  </data>
+  <data name="Selector.Action.Select" xml:space="preserve">
+    <value>Kiválaszt</value>
+  </data>
   <data name="Selector.SelectEntity" xml:space="preserve">
     <value>{0} Választása</value>
+  </data>
+  <data name="Server.Message.Fatal" xml:space="preserve">
+    <value>Valamilyen hiba történt. Kérjük próbálja újra késöbb.</value>
+  </data>
+  <data name="Server.Message.RequestCannotProcessed" xml:space="preserve">
+    <value>A kérés nem hajtható végre.</value>
+  </data>
+  <data name="Server.Message.ResourceNotFound" xml:space="preserve">
+    <value>Az erőforrás nem található.</value>
+  </data>
+  <data name="Server.Message.SuccessfullyAccomplished" xml:space="preserve">
+    <value>Az esemény sikeresen végrehajtódott.</value>
+  </data>
+  <data name="Server.Message.UnexpectedError" xml:space="preserve">
+    <value>Nem várt hiba.</value>
+  </data>
+  <data name="Server.Message.UserKeyNotFound" xml:space="preserve">
+    <value>Felhasználói kulcs nem található.</value>
+  </data>
+  <data name="Server.Message.UserNotFound" xml:space="preserve">
+    <value>Felhasználó nem található.</value>
+  </data>
+  <data name="Server.Message.Validation" xml:space="preserve">
+    <value>Validációs hiba.</value>
   </data>
   <data name="Table.Search" xml:space="preserve">
     <value>Keresés</value>

@@ -43,18 +43,15 @@ public class AuthService : IAuthService
         return user.UserId;
     }
 
-    public async Task<bool> Register(RegistrationModel model)
+    public Task<bool> Register(RegistrationModel model)
     {
         var settings = new HttpSettings(httpService.BuildUrl(Url, "Register"))
             .AddToaster("Registration");
 
-        return await httpService.Post(settings, model).Execute();
+        return httpService.Post(settings, model).Execute();
     }
 
-    public bool IsLoggedIn()
-    {
-        return tokenService.UserInStore();
-    }
+    public bool IsLoggedIn() => tokenService.UserInStore();
 
     public async void Logout(string? redirectUri = null)
     {
@@ -90,8 +87,5 @@ public class AuthService : IAuthService
         navigationManager.NavigateTo(QueryHelpers.AddQueryString("/login", query));
     }
 
-    public void Authorized()
-    {
-        navigationManager.NavigateTo("dashboard");
-    }
+    public void Authorized() => navigationManager.NavigateTo("dashboard");
 }

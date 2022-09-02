@@ -117,97 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Confirm.Action.Delete" xml:space="preserve">
-    <value>delete</value>
+  <data name="Entity" xml:space="preserve">
+    <value>Csoport Log</value>
   </data>
-  <data name="Confirm.Cancel" xml:space="preserve">
-    <value>Cancel</value>
+  <data name="Toaster.Add" xml:space="preserve">
+    <value>{0} hozzáadás</value>
   </data>
-  <data name="Confirm.Confirm" xml:space="preserve">
-    <value>Confirm</value>
+  <data name="Toaster.Delete" xml:space="preserve">
+    <value>{0} törlés</value>
   </data>
-  <data name="Confirm.Message" xml:space="preserve">
-    <value>Are you sure want to {0} {1}?</value>
-  </data>
-  <data name="Dialog.Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="Dialog.Save" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="Editor.Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="Editor.ConfirmDelete.Action" xml:space="preserve">
-    <value>Delete</value>
-  </data>
-  <data name="Editor.ConfirmDelete.Title" xml:space="preserve">
-    <value>Confirm Delete</value>
-  </data>
-  <data name="Editor.CreateEntity" xml:space="preserve">
-    <value>Create {0}</value>
-  </data>
-  <data name="Editor.EditEntity" xml:space="preserve">
-    <value>Edit {0}</value>
-  </data>
-  <data name="Editor.Remove" xml:space="preserve">
-    <value>Remove</value>
-  </data>
-  <data name="Editor.Save" xml:space="preserve">
-    <value>Save</value>
-  </data>
-  <data name="EmailAddress" xml:space="preserve">
-    <value>E-mail format must be valid.</value>
-  </data>
-  <data name="MaxLength" xml:space="preserve">
-    <value>Maximum length is {0}.</value>
-  </data>
-  <data name="Required" xml:space="preserve">
-    <value>Field is required.</value>
-  </data>
-  <data name="Selector.Action.Cancel" xml:space="preserve">
-    <value>Cancel</value>
-  </data>
-  <data name="Selector.Action.Select" xml:space="preserve">
-    <value>Select</value>
-  </data>
-  <data name="Selector.SelectEntity" xml:space="preserve">
-    <value>Select {0}</value>
-  </data>
-  <data name="Server.Message.Fatal" xml:space="preserve">
-    <value>Something bad happened. Please try again later.</value>
-  </data>
-  <data name="Server.Message.RequestCannotProcessed" xml:space="preserve">
-    <value>Request cannot be processed.</value>
-  </data>
-  <data name="Server.Message.ResourceNotFound" xml:space="preserve">
-    <value>Resource not found.</value>
-  </data>
-  <data name="Server.Message.SuccessfullyAccomplished" xml:space="preserve">
-    <value>Event successfully accomplished.</value>
-  </data>
-  <data name="Server.Message.UnexpectedError" xml:space="preserve">
-    <value>Unexpected Error.</value>
-  </data>
-  <data name="Server.Message.UserKeyNotFound" xml:space="preserve">
-    <value>User key not found.</value>
-  </data>
-  <data name="Server.Message.UserNotFound" xml:space="preserve">
-    <value>User not found.</value>
-  </data>
-  <data name="Server.Message.Validation" xml:space="preserve">
-    <value>Validation error.</value>
-  </data>
-  <data name="Table.Search" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="Uploader.Message.InvalidExtensions" xml:space="preserve">
-    <value>Invalid file extension [{0}]. Please try again with a correct type. [{1}]</value>
-  </data>
-  <data name="Uploader.Message.UploadingError" xml:space="preserve">
-    <value>Problem during the image uploading. Please try again later.</value>
-  </data>
-  <data name="Uploader.Upload" xml:space="preserve">
-    <value>Upload</value>
+  <data name="Toaster.Update" xml:space="preserve">
+    <value>{0} szerkesztés</value>
   </data>
 </root>

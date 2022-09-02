@@ -92,8 +92,5 @@ public class TokenService : ITokenService
 
     private async Task<string> GetRefreshToken() => await localStorageService.GetItemAsync<string>(RefreshTokenKey);
 
-    public async Task<string?> GetAccessTokenProvider()
-    {
-        return await localStorageService.GetItemAsync<string?>(AccessTokenKey);
-    }
+    public async Task<string?> GetAccessTokenProvider() => await localStorageService.GetItemAsync<string?>(AccessTokenKey);
 }

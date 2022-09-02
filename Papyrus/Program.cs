@@ -4,6 +4,7 @@ using KarcagS.Common.Middlewares;
 using KarcagS.Common.Tools;
 using KarcagS.Common.Tools.Authentication.JWT;
 using KarcagS.Common.Tools.HttpInterceptor;
+using KarcagS.Common.Tools.HttpInterceptor.Converters;
 using KarcagS.Common.Tools.Mongo;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Common.Tools.Table;

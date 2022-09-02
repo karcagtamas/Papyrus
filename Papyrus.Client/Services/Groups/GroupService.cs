@@ -1,5 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
+using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 
@@ -7,42 +8,48 @@ namespace Papyrus.Client.Services.Groups;
 
 public class GroupService : HttpCall<int>, IGroupService
 {
-    public GroupService(IHttpService http) : base(http, $"{ApplicationSettings.BaseApiUrl}/Group", "Group")
+    private readonly IStringLocalizer<GroupService> localizer;
+
+    public GroupService(IHttpService http, IStringLocalizer<GroupService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Group", "Group", localizer)
     {
+        this.localizer = localizer;
     }
 
-    public async Task<bool> Close(int id)
+    public Task<bool> Close(int id)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Close"));
+        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Close"))
+            .AddToaster(localizer["Toaster.Close"]);
 
-        return await Http.PutWithoutBody(settings).Execute();
+        return Http.PutWithoutBody(settings).Execute();
     }
 
-    public async Task<bool> Open(int id)
+    public Task<bool> Open(int id)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Open"));
+        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Open"))
+            .AddToaster(localizer["Toaster.Open"]);
 
-        return await Http.PutWithoutBody(settings).Execute();
+        return Http.PutWithoutBody(settings).Execute();
     }
 
-    public async Task<bool> Remove(int id)
+    public Task<bool> Remove(int id)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Remove"));
+        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Remove"))
+            .AddToaster(localizer["Toaster.Remove"]);
 
-        return await Http.PutWithoutBody(settings).Execute();
+        return Http.PutWithoutBody(settings).Execute();
     }
 
-    public async Task<List<GroupListDTO>> GetUserList(bool hideClosed = false)
+    public Task<List<GroupListDTO>> GetUserList(bool hideClosed = false)
     {
         var queryParams = HttpQueryParameters.Build()
             .Add("hideClosed", hideClosed);
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "User")).AddQueryParams(queryParams);
 
-        return await Http.Get<List<GroupListDTO>>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<List<GroupListDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public async Task<GroupRightsDTO> GetRights(int id)
+    public Task<GroupRightsDTO> GetRights(int id)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(id)
@@ -50,10 +57,10 @@ public class GroupService : HttpCall<int>, IGroupService
 
         var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
-        return await Http.Get<GroupRightsDTO>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<GroupRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public async Task<GroupRoleRightsDTO> GetRoleRights(int id)
+    public Task<GroupRoleRightsDTO> GetRoleRights(int id)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(id)
@@ -62,10 +69,10 @@ public class GroupService : HttpCall<int>, IGroupService
 
         var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
-        return await Http.Get<GroupRoleRightsDTO>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<GroupRoleRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public async Task<GroupTagRightsDTO> GetTagRights(int id)
+    public Task<GroupTagRightsDTO> GetTagRights(int id)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(id)
@@ -74,10 +81,10 @@ public class GroupService : HttpCall<int>, IGroupService
 
         var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
-        return await Http.Get<GroupTagRightsDTO>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<GroupTagRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public async Task<GroupMemberRightsDTO> GetMemberRights(int id)
+    public Task<GroupMemberRightsDTO> GetMemberRights(int id)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(id)
@@ -86,6 +93,6 @@ public class GroupService : HttpCall<int>, IGroupService
 
         var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
-        return await Http.Get<GroupMemberRightsDTO>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<GroupMemberRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
 }

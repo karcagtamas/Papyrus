@@ -1,6 +1,7 @@
 ﻿using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Shared.Helpers;
+using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 
@@ -8,21 +9,21 @@ namespace Papyrus.Client.Services.Notes;
 
 public class TagService : HttpCall<int>, ITagService
 {
-    public TagService(IHttpService http) : base(http, $"{ApplicationSettings.BaseApiUrl}/Tag", "Tag")
+    public TagService(IHttpService http, IStringLocalizer<TagService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Tag", "Tag", localizer)
     {
     }
 
-    public async Task<List<TagDTO>> GetByGroup(int groupId)
+    public Task<List<TagDTO>> GetByGroup(int groupId)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId);
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "Group")).AddPathParams(pathParams);
 
-        return await Http.Get<List<TagDTO>>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<List<TagDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public async Task<TagPathDTO> GetPath(int id)
+    public Task<TagPathDTO> GetPath(int id)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(id)
@@ -30,10 +31,10 @@ public class TagService : HttpCall<int>, ITagService
 
         var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
-        return await Http.Get<TagPathDTO>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<TagPathDTO>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public async Task<List<TagTreeItemDTO>> GetTree(int? groupId = null, int? filteredTag = null)
+    public Task<List<TagTreeItemDTO>> GetTree(int? groupId = null, int? filteredTag = null)
     {
         var queryParams = HttpQueryParameters.Build()
             .Add("filteredTag", filteredTag)
@@ -42,6 +43,6 @@ public class TagService : HttpCall<int>, ITagService
         var settings = new HttpSettings(Http.BuildUrl(Url, "Tree"))
             .AddQueryParams(queryParams);
 
-        return await Http.Get<List<TagTreeItemDTO>>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<List<TagTreeItemDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 }
