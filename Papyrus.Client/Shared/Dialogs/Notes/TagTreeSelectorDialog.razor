@@ -3,7 +3,7 @@
 @using Papyrus.Shared.DTOs.Notes
 @inject IStringLocalizer<TagTreeSelectorDialog> L
 
-<TreeSelectorDialog TKey="int" T="TagTreeItemDTO" EntityName="@L["Entity"]" BodyText="@L["BodyText"]" Fetcher="@Fetcher" ItemExtractor="@ItemExctractor" TitleGetter="@TitleGetter" MultiSelect="MultiSelect" DisabledIds="DisabledIds" />
+<TreeSelectorDialog TKey="int" T="TagTreeItemDTO" EntityName="@L["Entity"]" BodyText="@L["BodyText"]" Fetcher="@Fetcher" ItemExtractor="@ItemExctractor" TitleGetter="@TitleGetter" MultiSelect="MultiSelect" DisabledIds="AllDisabledIds" />
 
 @code {
     [Parameter]
@@ -11,6 +11,9 @@
 
     [Parameter]
     public int? ParentId { get; set; }
+
+    [Parameter]
+    public int? CurrentId { get; set; }
 
     [Parameter]
     public List<int> DisabledIds { get; set; } = new();
@@ -21,7 +24,9 @@
     [Inject]
     private ITagService TagService { get; set; } = default!;
 
-    private Task<List<TagTreeItemDTO>> Fetcher() => TagService.GetTree(GroupId, ParentId);
+    private List<int> AllDisabledIds { get => ObjectHelper.IsNull(ParentId) ? DisabledIds : DisabledIds.Concat(new List<int> { (int)ParentId }).ToList(); }
+
+    private Task<List<TagTreeItemDTO>> Fetcher() => TagService.GetTree(GroupId, CurrentId);
 
     private List<TagTreeItemDTO> ItemExctractor(TagTreeItemDTO obj) => obj.Children;
 

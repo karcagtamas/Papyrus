@@ -117,6 +117,6 @@
                 await InvokeAsync(StateHasChanged);
             }
         },
-        new DialogParameters { { "GroupId", GroupId }, { "ParentId", OriginalParentId is null ? TagId : OriginalParentId } });
+        new DialogParameters { { "GroupId", GroupId }, { "ParentId", OriginalParentId is null ? TagId : OriginalParentId }, { "CurrentId", TagId } });
     }
 }

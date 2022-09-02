@@ -36,7 +36,7 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
     public List<TagTreeItemDTO> GetTree(int? groupId, int? filteredTag = null)
     {
         string userId = Utils.GetRequiredCurrentUserId();
-        var tags = GetList(x => ((groupId != null && x.GroupId == groupId) || x.UserId == userId) && x.ParentId == null && (filteredTag == null || x.Id != filteredTag)); ;
+        var tags = GetList(x => ((groupId != null && x.GroupId == groupId) || x.UserId == userId) && x.ParentId == null && (filteredTag == null || x.Id != filteredTag));
 
         return tags.Select(x => Map(x, filteredTag)).ToList();
     }
