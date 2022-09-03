@@ -1,11 +1,7 @@
-﻿using KarcagS.Shared.Common;
+﻿namespace Papyrus.Shared.DTOs.Groups;
 
-namespace Papyrus.Shared.DTOs.Groups;
-
-public class GroupRoleDTO : IIdentified<int>
+public class GroupRoleDTO : GroupRoleLightDTO
 {
-    public int Id { get; set; }
-    public string Name { get; set; } = default!;
     public bool ReadOnly { get; set; }
 
     public bool GroupEdit { get; set; }

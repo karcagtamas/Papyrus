@@ -10,6 +10,7 @@ namespace Papyrus.DataAccess;
 public class PapyrusContext : IdentityDbContext<User, Role, string>
 {
     public DbSet<Language> Languages { get; set; }
+    public DbSet<Translation> Translations { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupActionLog> GroupActionLogs { get; set; }
@@ -25,6 +26,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public PapyrusContext(DbContextOptions<PapyrusContext> options) : base(options)
     {
         Languages = default!;
+        Translations = default!;
         RefreshTokens = default!;
         Groups = default!;
         GroupActionLogs = default!;
@@ -59,6 +61,30 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
             .IsUnique();
         modelBuilder.Entity<Language>()
             .HasData(new List<Language> { new() { Id = 1, Name = "English", ShortName = "en-US" }, new() { Id = 2, Name = "Hungarian", ShortName = "hu-HU" } });
+
+        // Translation
+        modelBuilder.Entity<Translation>()
+            .HasKey(x => new { x.Key, x.Segment, x.Language });
+        modelBuilder.Entity<Translation>()
+            .HasData(new List<Translation>
+            {
+                new() { Key = "Administrator", Segment = "Role", Language = "en-US", Value = "Administrator" },
+                new() { Key = "Administrator", Segment = "Role", Language = "hu-HU", Value = "Adminisztrátor" },
+                new() { Key = "Moderator", Segment = "Role", Language = "en-US", Value = "Moderator" },
+                new() { Key = "Moderator", Segment = "Role", Language = "hu-HU", Value = "Moderátor" },
+                new() { Key = "User", Segment = "Role", Language = "en-US", Value = "User" },
+                new() { Key = "User", Segment = "Role", Language = "hu-HU", Value = "Felhasználó" },
+                new() { Key = "English", Segment = "Language", Language = "en-US", Value = "English" },
+                new() { Key = "English", Segment = "Language", Language = "hu-HU", Value = "Angol" },
+                new() { Key = "Hungarian", Segment = "Language", Language = "en-US", Value = "Hungarian" },
+                new() { Key = "Hungarian", Segment = "Language", Language = "hu-HU", Value = "Magyar" },
+                new() { Key = "Administrator", Segment = "GroupRole", Language = "en-US", Value = "Administrator" },
+                new() { Key = "Administrator", Segment = "GroupRole", Language = "hu-HU", Value = "Adminisztrátor" },
+                new() { Key = "Moderator", Segment = "GroupRole", Language = "en-US", Value = "Moderator" },
+                new() { Key = "Moderator", Segment = "GroupRole", Language = "hu-HU", Value = "Moderátor" },
+                new() { Key = "Default", Segment = "GroupRole", Language = "en-US", Value = "Default" },
+                new() { Key = "Default", Segment = "GroupRole", Language = "hu-HU", Value = "Alapértelmezett" }
+            });
 
         // Refresh token
         modelBuilder.Entity<RefreshToken>()

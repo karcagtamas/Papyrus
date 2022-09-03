@@ -2,7 +2,7 @@ namespace Papyrus.DataAccess.Enums;
 
 public enum ServerRole
 {
-    Admin,
+    Administrator,
     Moderator,
     User
 }

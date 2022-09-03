@@ -24,8 +24,14 @@ public class GroupRoleController : ControllerBase
     [HttpGet("Group/{groupId}")]
     public List<GroupRoleDTO> GetByGroup(int groupId, string? textFilter = null) => groupRoleService.GetByGroup(groupId, textFilter);
 
+    [HttpGet("Group/{groupId}/Translated")]
+    public List<GroupRoleDTO> GetTranslatedByGroup(int groupId, [FromQuery] string? textFilter = null, [FromQuery] string? lang = null) => groupRoleService.GetTranslatedByGroup(groupId, textFilter, lang);
+
     [HttpGet("Group/{groupId}/Light")]
     public List<GroupRoleLightDTO> GetLightByGroup(int groupId) => groupRoleService.GetLightByGroup(groupId);
+
+    [HttpGet("Group/{groupId}/Light/Translated")]
+    public List<GroupRoleLightDTO> GetLightTranslatedByGroup(int groupId, [FromQuery] string? lang = null) => groupRoleService.GetLightTranslatedByGroup(groupId, lang);
 
     [HttpPost]
     public void Create([FromBody] GroupRoleModel model) => groupRoleService.CreateFromModel(model);

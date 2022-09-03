@@ -6,7 +6,7 @@ namespace Papyrus.Middlewares;
 
 public static class IdentityDataInitializer
 {
-    private static readonly List<ServerRole> ROLES = new() { ServerRole.Admin, ServerRole.Moderator, ServerRole.User };
+    private static readonly List<ServerRole> ROLES = new() { ServerRole.Administrator, ServerRole.Moderator, ServerRole.User };
 
     public static void SeedRoles(this WebApplication app)
     {
@@ -16,18 +16,22 @@ public static class IdentityDataInitializer
             var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
             ROLES.ForEach(roleName =>
             {
-                if (roleManager.RoleExistsAsync(roleName.ToString()).Result) return;
-                var role = new Role
+                var exists = roleManager.RoleExistsAsync(roleName.ToString()).Result;
+                if (!exists)
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = roleName.ToString()
-                };
-                _ = roleManager.CreateAsync(role).Result;
+                    var role = new Role
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = roleName.ToString()
+                    };
+                    var result = roleManager.CreateAsync(role).Result;
+                }
             });
         }
-        catch (Exception)
+        catch (Exception e)
         {
             // ignored
+            Console.WriteLine(e.Message);
         }
     }
 }

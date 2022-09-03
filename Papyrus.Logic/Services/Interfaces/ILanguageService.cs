@@ -8,4 +8,8 @@ public interface ILanguageService : IMapperRepository<Language, int>
 {
     LanguageDTO? GetUserLanguage();
     void SetUserLanguage(int id);
+    List<LanguageDTO> GetAllTranslated(string? lang = null);
+    Language Default();
+    T DefaultMapped<T>();
+    string GetUserLangOrDefault();
 }

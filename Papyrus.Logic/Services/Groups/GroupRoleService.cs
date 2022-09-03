@@ -1,9 +1,12 @@
 ﻿using AutoMapper;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
+using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.Enums.Groups;
 
@@ -12,10 +15,15 @@ namespace Papyrus.Logic.Services.Groups;
 public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroupRoleService
 {
     private readonly IGroupActionLogService groupActionLogService;
+    private readonly ILanguageService languageService;
+    private readonly ITranslationService translationService;
+    private readonly string TranslationSegment = "GroupRole";
 
-    public GroupRoleService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Group Role")
+    public GroupRoleService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, ILanguageService languageService, ITranslationService translationService) : base(context, loggerService, utilsService, mapper, "Group Role")
     {
         this.groupActionLogService = groupActionLogService;
+        this.languageService = languageService;
+        this.translationService = translationService;
     }
 
     public List<RoleCreationResultItem> CreateDefaultRoles(int groupId)
@@ -165,6 +173,33 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     }
 
     public bool Exists(int groupId, string name) => GetList(x => x.GroupId == groupId && x.Name == name).Any();
+
+    public List<GroupRoleDTO> GetTranslatedByGroup(int groupId, string? textFilter = null, string? lang = null)
+    {
+        var roles = GetByGroup(groupId, textFilter);
+
+        string current;
+        if (ObjectHelper.IsNull(lang))
+        {
+            current = languageService.GetUserLangOrDefault();
+        }
+        else
+        {
+            current = lang;
+        }
+
+        var translations = translationService.GetValues(TranslationSegment, current);
+
+        return roles.Select(role =>
+        {
+            var t = translations.Where(x => x.Key == role.Name).FirstOrDefault()?.Value ?? role.Name;
+            role.Name = t;
+
+            return role;
+        }).ToList();
+    }
+
+    public List<GroupRoleLightDTO> GetLightTranslatedByGroup(int groupId, string? lang = null) => GetTranslatedByGroup(groupId, null, lang).Select(x => new GroupRoleLightDTO { Id = x.Id, Name = x.Name }).ToList();
 
     public class RoleCreationResultItem
     {

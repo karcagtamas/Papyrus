@@ -5,6 +5,7 @@ using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table.Enums;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared;
 
 namespace Papyrus.Logic.Services.Groups;
@@ -12,21 +13,27 @@ namespace Papyrus.Logic.Services.Groups;
 public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTableService
 {
     private readonly IGroupRoleService groupRoleService;
+    private readonly ITranslationService translationService;
+    private readonly ILanguageService languageService;
+    private readonly string TranslationSegment = "GroupRole";
 
-    public GroupRoleTableService(IGroupRoleService groupRoleService)
+    public GroupRoleTableService(IGroupRoleService groupRoleService, ITranslationService translationService, ILanguageService languageService)
     {
         this.groupRoleService = groupRoleService;
+        this.translationService = translationService;
+        this.languageService = languageService;
         Initialize();
     }
 
     public override Configuration<GroupRole, int> BuildConfiguration()
     {
+        var current = languageService.GetUserLangOrDefault();
         return Configuration<GroupRole, int>
             .Build("group-role-table")
             .SetTitle("Management Roles", "Table.Title")
             .AddColumn(Column<GroupRole, int>.Build("name")
                 .SetTitle("Name", "TableColumn.Name")
-                .AddValueGetter(obj => obj.Name))
+                .AddValueGetter(obj => obj.IsDefault ? translationService.GetValue(obj.Name, TranslationSegment, current) : obj.Name))
             .AddColumn(Column<GroupRole, int>.Build("readonly")
                 .SetTitle("Read Only", "TableColumn.ReadOnly")
                 .AddValueGetter(obj => obj.ReadOnly)
@@ -80,7 +87,7 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
                     "edit-tags" => GetTag(obj.EditTagList),
                     _ => "",
                 };
-            }); // TODO: Table readonly => because of right
+            });
     }
 
     public override DataSource<GroupRole, int> BuildDataSource()

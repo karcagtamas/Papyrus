@@ -57,6 +57,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
+builder.Services.AddScoped<ITranslationService, TranslationService>();
 
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
@@ -90,6 +91,7 @@ var mapperConfig = new MapperConfiguration(conf =>
     conf.AddProfile<TagMapper>();
     conf.AddProfile<NoteMapper>();
     conf.AddProfile<LanguageMapper>();
+    conf.AddProfile<RoleMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 

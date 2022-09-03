@@ -20,6 +20,9 @@ public class LanguageController : ControllerBase
     [HttpGet]
     public List<LanguageDTO> GetAll() => languageService.GetAllMapped<LanguageDTO>().ToList();
 
+    [HttpGet("Translated")]
+    public List<LanguageDTO> GetAllTranslated([FromQuery] string? lang) => languageService.GetAllTranslated(lang);
+
     [HttpGet("User")]
     public LanguageDTO? GetUserLanguage() => languageService.GetUserLanguage();
 
