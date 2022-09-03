@@ -1,48 +1,49 @@
-﻿using AutoMapper;
-using KarcagS.Common.Tools.Repository;
-using KarcagS.Common.Tools.Services;
-using Papyrus.DataAccess;
-using Papyrus.DataAccess.Entities.Notes;
+﻿using Papyrus.DataAccess;
+using Papyrus.DataAccess.Entities;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
-using Papyrus.Shared.DTOs.Notes.ActionsLogs;
 using Papyrus.Shared.Enums.Notes;
 
 namespace Papyrus.Logic.Services.Notes;
 
-public class NoteActionLogService : MapperRepository<NoteActionLog, long, string>, INoteActionLogService
+public class NoteActionLogService : INoteActionLogService
 {
-    public NoteActionLogService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Note Action Log")
+    private readonly PapyrusContext context;
+    private readonly IActionLogService actionLogService;
+    private readonly ILanguageService languageService;
+    private readonly ITranslationService translationService;
+    private readonly string NoteSegment = "Note";
+
+    public NoteActionLogService(PapyrusContext context, IActionLogService actionLogService, ILanguageService languageService, ITranslationService translationService)
     {
+        this.context = context;
+        this.actionLogService = actionLogService;
+        this.languageService = languageService;
+        this.translationService = translationService;
     }
 
     public void AddActionLog(string note, string performer, NoteActionLogType type)
     {
-        var log = new NoteActionLog
-        {
-            NoteId = note,
-            PerformerId = performer,
-            Type = type,
-            Text = GetText(type)
-        };
+        var languages = languageService.GetAll();
 
-        Create(log);
+        var texts = new Dictionary<string, string>();
+
+        var typeKey = NoteActionLogTypeConverter.GetLogKey(type);
+
+        foreach (var lang in languages)
+        {
+            texts.Add(lang.ShortName, translationService.GetValue(typeKey, NoteSegment, lang.ShortName));
+        }
+
+        actionLogService.AddActionLog(note, NoteSegment, typeKey, performer, texts);
     }
 
-    public List<NoteActionLogDTO> GetByNote(string noteId) => GetMappedList<NoteActionLogDTO>(x => x.NoteId == noteId)
-            .OrderByDescending(x => x.Creation)
-            .ToList();
-
-    private static string GetText(NoteActionLogType type)
+    public IQueryable<ActionLog> GetQuery(string noteId)
     {
-        return type switch
-        {
-            NoteActionLogType.Create => "Note created",
-            NoteActionLogType.TitleEdit => "Note title is edited",
-            NoteActionLogType.ContentEdit => "Note content is edited",
-            NoteActionLogType.TagEdit => "Tag(s) added or removed",
-            NoteActionLogType.Delete => "Note deleted",
-            NoteActionLogType.Publish => "Note publish status changed",
-            _ => "",
-        };
+        var lang = languageService.GetUserLangOrDefault();
+
+        return context.Set<ActionLog>()
+            .AsQueryable()
+            .Where(x => x.Key == noteId && x.Segment == NoteSegment && x.Language == lang);
     }
 }

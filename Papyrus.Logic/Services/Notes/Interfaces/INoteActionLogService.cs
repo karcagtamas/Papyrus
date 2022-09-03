@@ -1,12 +1,10 @@
-﻿using KarcagS.Common.Tools.Repository;
-using Papyrus.DataAccess.Entities.Notes;
-using Papyrus.Shared.DTOs.Notes.ActionsLogs;
+﻿using Papyrus.DataAccess.Entities;
 using Papyrus.Shared.Enums.Notes;
 
 namespace Papyrus.Logic.Services.Notes.Interfaces;
 
-public interface INoteActionLogService : IMapperRepository<NoteActionLog, long>
+public interface INoteActionLogService
 {
     void AddActionLog(string note, string performer, NoteActionLogType type);
-    List<NoteActionLogDTO> GetByNote(string noteId);
+    IQueryable<ActionLog> GetQuery(string noteId);
 }

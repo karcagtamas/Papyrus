@@ -1,7 +1,7 @@
 ﻿using KarcagS.Common.Tools.Table;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Groups.Interfaces;
 
 namespace Papyrus.Controllers;
@@ -9,7 +9,7 @@ namespace Papyrus.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class GroupActionLogTableController : TableController<GroupActionLog, long>
+public class GroupActionLogTableController : TableController<ActionLog, long>
 {
     private readonly IGroupActionLogTableService service;
 
@@ -18,5 +18,5 @@ public class GroupActionLogTableController : TableController<GroupActionLog, lon
         this.service = service;
     }
 
-    protected override ITableService<GroupActionLog, long> GetService() => service;
+    protected override ITableService<ActionLog, long> GetService() => service;
 }

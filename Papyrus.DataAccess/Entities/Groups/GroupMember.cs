@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
-using KarcagS.Shared.Common;
 
 namespace Papyrus.DataAccess.Entities.Groups;
 
-public class GroupMember : IEntity<int>, IIdentified<int>, ICreationEntity
+public class GroupMember : IEntity<int>, ICreationEntity
 {
     [Key]
     [Required]

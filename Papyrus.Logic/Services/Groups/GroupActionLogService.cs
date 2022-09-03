@@ -1,71 +1,49 @@
-﻿using AutoMapper;
-using KarcagS.Common.Tools.Repository;
-using KarcagS.Common.Tools.Services;
-using KarcagS.Shared.Helpers;
-using KarcagS.Shared.Table;
-using Papyrus.DataAccess;
-using Papyrus.DataAccess.Entities.Groups;
+﻿using Papyrus.DataAccess;
+using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Groups.Interfaces;
-using Papyrus.Shared.DTOs.Groups.ActionsLogs;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.Logic.Services.Groups;
 
-public class GroupActionLogService : MapperRepository<GroupActionLog, long, string>, IGroupActionLogService
+public class GroupActionLogService : IGroupActionLogService
 {
-    public GroupActionLogService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Group Action Log")
+    private readonly PapyrusContext context;
+    private readonly IActionLogService actionLogService;
+    private readonly ILanguageService languageService;
+    private readonly ITranslationService translationService;
+    private readonly string GroupSegment = "Group";
+
+    public GroupActionLogService(PapyrusContext context, IActionLogService actionLogService, ILanguageService languageService, ITranslationService translationService) : base()
     {
+        this.context = context;
+        this.actionLogService = actionLogService;
+        this.languageService = languageService;
+        this.translationService = translationService;
     }
 
     public void AddActionLog(int group, string performer, GroupActionLogType type)
     {
-        var log = new GroupActionLog
+        var languages = languageService.GetAll();
+
+        var texts = new Dictionary<string, string>();
+
+        var typeKey = GroupActionLogTypeConverter.GetLogKey(type);
+
+        foreach (var lang in languages)
         {
-            GroupId = group,
-            PerformerId = performer,
-            Type = type,
-            Text = GetText(type)
-        };
-
-        Create(log);
-    }
-
-    public TableResult<GroupActionLogDTO> GetByGroup(int groupId, int? page = null, int? size = null)
-    {
-        IEnumerable<GroupActionLogDTO> items = GetMappedList<GroupActionLogDTO>(x => x.GroupId == groupId)
-            .OrderByDescending(x => x.Creation);
-
-        if (ObjectHelper.IsNotNull(page) && ObjectHelper.IsNotNull(size))
-        {
-            items = items.Skip((int)page * (int)size).Take((int)size);
+            texts.Add(lang.ShortName, translationService.GetValue(typeKey, GroupSegment, lang.ShortName));
         }
 
-        return new TableResult<GroupActionLogDTO>
-        {
-            Items = new(),
-            AllItemCount = Count(x => x.GroupId == groupId)
-        };
+        actionLogService.AddActionLog(group.ToString(), GroupSegment, typeKey, performer, texts);
     }
 
-    private static string GetText(GroupActionLogType type)
+    public IQueryable<ActionLog> GetQuery(int groupId)
     {
-        return type switch
-        {
-            GroupActionLogType.Create => "Group created",
-            GroupActionLogType.Close => "Group closed",
-            GroupActionLogType.Open => "Group opened",
-            GroupActionLogType.RoleCreate => "Role created",
-            GroupActionLogType.RoleEdit => "Role edited",
-            GroupActionLogType.RoleRemove => "Role removed",
-            GroupActionLogType.MemberAdd => "Member added",
-            GroupActionLogType.MemberEdit => "Member edited",
-            GroupActionLogType.MemberRemove => "Member removed",
-            GroupActionLogType.TagCreate => "Tag created",
-            GroupActionLogType.TagEdit => "Tag edited",
-            GroupActionLogType.TagRemove => "Tag removed",
-            GroupActionLogType.DataEdit => "Data edited",
-            GroupActionLogType.NoteCreate => "Note created",
-            _ => "",
-        };
+        var lang = languageService.GetUserLangOrDefault();
+
+        return context.Set<ActionLog>()
+            .AsQueryable()
+            .Where(x => x.Key == groupId.ToString() && x.Segment == GroupSegment && x.Language == lang);
     }
 }

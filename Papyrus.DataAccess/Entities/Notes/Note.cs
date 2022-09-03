@@ -45,7 +45,6 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     public virtual Group? Group { get; set; }
     public virtual User? Creator { get; set; }
     public virtual User? LastUpdater { get; set; }
-    public virtual ICollection<NoteActionLog> ActionLogs { get; set; } = default!;
     public virtual ICollection<NoteTag> Tags { get; set; } = default!;
     public virtual ICollection<EditorMember> EditorMemberships { get; set; } = default!;
 }

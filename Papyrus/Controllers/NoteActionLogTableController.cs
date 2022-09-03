@@ -1,7 +1,7 @@
 ﻿using KarcagS.Common.Tools.Table;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Notes.Interfaces;
 
 namespace Papyrus.Controllers;
@@ -9,7 +9,7 @@ namespace Papyrus.Controllers;
 [ApiController]
 [Route("api/[controller]")]
 [Authorize]
-public class NoteActionLogTableController : TableController<NoteActionLog, long>
+public class NoteActionLogTableController : TableController<ActionLog, long>
 {
     private readonly INoteActionLogTableService service;
 
@@ -18,5 +18,5 @@ public class NoteActionLogTableController : TableController<NoteActionLog, long>
         this.service = service;
     }
 
-    protected override ITableService<NoteActionLog, long> GetService() => service;
+    protected override ITableService<ActionLog, long> GetService() => service;
 }

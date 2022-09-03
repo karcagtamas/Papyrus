@@ -80,12 +80,10 @@ builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();
 builder.Services.AddScoped<IGroupRoleTableService, GroupRoleTableService>();
 builder.Services.AddScoped<IGroupMemberService, GroupMemberService>();
 builder.Services.AddScoped<IGroupMemberTableService, GroupMemberTableService>();
-builder.Services.AddScoped<IGroupActionLogService, GroupActionLogService>();
 builder.Services.AddScoped<IGroupActionLogTableService, GroupActionLogTableService>();
 
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<INoteService, NoteService>();
-builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
 builder.Services.AddScoped<INoteActionLogTableService, NoteActionLogTableService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();

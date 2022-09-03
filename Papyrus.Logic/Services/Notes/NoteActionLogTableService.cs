@@ -4,12 +4,12 @@ using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table.Enums;
-using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Notes.Interfaces;
 
 namespace Papyrus.Logic.Services.Notes;
 
-public class NoteActionLogTableService : TableService<NoteActionLog, long>, INoteActionLogTableService
+public class NoteActionLogTableService : TableService<ActionLog, long>, INoteActionLogTableService
 {
     private readonly INoteActionLogService noteActionLogService;
 
@@ -19,19 +19,19 @@ public class NoteActionLogTableService : TableService<NoteActionLog, long>, INot
         Initialize();
     }
 
-    public override Configuration<NoteActionLog, long> BuildConfiguration()
+    public override Configuration<ActionLog, long> BuildConfiguration()
     {
-        return Configuration<NoteActionLog, long>
+        return Configuration<ActionLog, long>
            .Build("note-log-table")
            .SetTitle("Performed Actions")
-           .AddColumn(Column<NoteActionLog, long>.Build("text")
+           .AddColumn(Column<ActionLog, long>.Build("text")
                .SetTitle("Text")
                .AddValueGetter(obj => obj.Text))
-           .AddColumn(Column<NoteActionLog, long>.Build("performer")
+           .AddColumn(Column<ActionLog, long>.Build("performer")
                .SetTitle("Performer")
                .AddValueGetter(obj => ObjectHelper.MapOrDefault(obj.Performer, p => p.UserName) ?? "N/A")
                .SetWidth(320))
-           .AddColumn(Column<NoteActionLog, long>.Build("creation")
+           .AddColumn(Column<ActionLog, long>.Build("creation")
                .SetTitle("Text")
                .AddValueGetter(obj => obj.Creation)
                .SetFormatter(ColumnFormatter.Date)
@@ -39,16 +39,16 @@ public class NoteActionLogTableService : TableService<NoteActionLog, long>, INot
            .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true));
     }
 
-    public override DataSource<NoteActionLog, long> BuildDataSource()
+    public override DataSource<ActionLog, long> BuildDataSource()
     {
-        return ListTableDataSource<NoteActionLog, long>.Build((query) => noteActionLogService.GetListAsQuery(x => x.NoteId == query.ExtraParams["noteId"].ToString()))
+        return ListTableDataSource<ActionLog, long>.Build((query) => noteActionLogService.GetQuery(query.ExtraParams["noteId"].ToString() ?? ""))
             .OrderBy(x => x.Creation, OrderDirection.Descend)
             .ApplyOrdering();
     }
 
-    public override Table<NoteActionLog, long> BuildTable()
+    public override Table<ActionLog, long> BuildTable()
     {
-        return ListTableBuilder<NoteActionLog, long>.Construct()
+        return ListTableBuilder<ActionLog, long>.Construct()
             .AddDataSource(BuildDataSource())
             .AddConfiguration(BuildConfiguration())
             .Build();
