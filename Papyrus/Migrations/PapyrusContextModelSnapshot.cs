@@ -1074,13 +1074,13 @@ namespace Papyrus.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.Role", null)
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Papyrus.DataAccess.Entities.User", null)
-                        .WithMany()
+                        .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1310,6 +1310,11 @@ namespace Papyrus.Migrations
                     b.Navigation("Notes");
                 });
 
+            modelBuilder.Entity("Papyrus.DataAccess.Entities.Role", b =>
+                {
+                    b.Navigation("Users");
+                });
+
             modelBuilder.Entity("Papyrus.DataAccess.Entities.User", b =>
                 {
                     b.Navigation("ActionLogs");
@@ -1329,6 +1334,8 @@ namespace Papyrus.Migrations
                     b.Navigation("Notes");
 
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Roles");
 
                     b.Navigation("Tags");
                 });

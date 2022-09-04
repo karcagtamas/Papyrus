@@ -28,8 +28,7 @@ public static class PapyrusMenu
             .AddResourceKey("Administration")
             .AddIcon(Icons.Filled.AdminPanelSettings)
             .AddIconColor(Color.Warning)
-            .AddItem(MenuItem.CreateItem("Users", "users").AddResourceKey("Users").AddIcon(Icons.Filled.ManageAccounts))
-            .AddItem(MenuItem.CreateItem("Roles", "roles").AddResourceKey("Roles").AddIcon(Icons.Filled.SettingsSuggest)),
+            .AddItem(MenuItem.CreateItem("Users", "users").AddResourceKey("Users").AddIcon(Icons.Filled.ManageAccounts)),
         MenuItem.CreateItem("About", "about")
             .AddResourceKey("About")
             .AddIcon(Icons.Filled.Web)

@@ -174,9 +174,6 @@
   <data name="Profile" xml:space="preserve">
     <value>Profil</value>
   </data>
-  <data name="Roles" xml:space="preserve">
-    <value>Szerepkörök</value>
-  </data>
   <data name="Search" xml:space="preserve">
     <value>Keresés</value>
   </data>

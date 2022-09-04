@@ -11,8 +11,8 @@ using Papyrus.DataAccess;
 namespace Papyrus.Migrations
 {
     [DbContext(typeof(PapyrusContext))]
-    [Migration("20220903174751_GlobalActionLog")]
-    partial class GlobalActionLog
+    [Migration("20220904130327_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -415,38 +415,6 @@ namespace Papyrus.Migrations
                     b.HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteActionLog", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("Creation")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("NoteId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("PerformerId")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("Type")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NoteId");
-
-                    b.HasIndex("PerformerId");
-
-                    b.ToTable("NoteActionLogs");
-                });
-
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteTag", b =>
                 {
                     b.Property<string>("NoteId")
@@ -701,196 +669,280 @@ namespace Papyrus.Migrations
                             Key = "Create",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Group created"
+                            Value = "Created"
                         },
                         new
                         {
                             Key = "Create",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Group created"
+                            Value = "Csoport létrehozva"
                         },
                         new
                         {
                             Key = "Close",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Group closed"
+                            Value = "Closed"
                         },
                         new
                         {
                             Key = "Close",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Group closed"
+                            Value = "Csoport lezárva"
                         },
                         new
                         {
                             Key = "Open",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Group opened"
+                            Value = "Opened"
                         },
                         new
                         {
                             Key = "Open",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Group opened"
+                            Value = "Csoport kinyitva"
                         },
                         new
                         {
                             Key = "RoleCreate",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Role created"
+                            Value = "Role is created"
                         },
                         new
                         {
                             Key = "RoleCreate",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Role created"
+                            Value = "Szerepkör létrehozva"
                         },
                         new
                         {
                             Key = "RoleEdit",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Role edited"
+                            Value = "Role is edited"
                         },
                         new
                         {
                             Key = "RoleEdit",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Role edited"
+                            Value = "Szerepkör szerkesztve"
                         },
                         new
                         {
                             Key = "RoleRemove",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Role removed"
+                            Value = "Role is removed"
                         },
                         new
                         {
                             Key = "RoleRemove",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Role removed"
+                            Value = "Szerepkör törölve"
                         },
                         new
                         {
                             Key = "MemberAdd",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Member added"
+                            Value = "Member is added"
                         },
                         new
                         {
                             Key = "MemberAdd",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Member added"
+                            Value = "Tag hozzáadva"
                         },
                         new
                         {
                             Key = "MemberEdit",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Member edited"
+                            Value = "Member is edited"
                         },
                         new
                         {
                             Key = "MemberEdit",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Member edited"
+                            Value = "Tag szerkesztve"
                         },
                         new
                         {
                             Key = "MemberRemove",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Member removed"
+                            Value = "Member is removed"
                         },
                         new
                         {
                             Key = "MemberRemove",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Member removed"
+                            Value = "Tag törölve"
                         },
                         new
                         {
                             Key = "TagCreate",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Tag created"
+                            Value = "Tag is created"
                         },
                         new
                         {
                             Key = "TagCreate",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Tag created"
+                            Value = "Címke létrehozva"
                         },
                         new
                         {
                             Key = "TagEdite",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Tag edited"
+                            Value = "Tag is edited"
                         },
                         new
                         {
                             Key = "TagEdite",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Tag edited"
+                            Value = "Címke szerkesztve"
                         },
                         new
                         {
                             Key = "TagRemove",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Tag removed"
+                            Value = "Tag is removed"
                         },
                         new
                         {
                             Key = "TagRemove",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Tag removed"
+                            Value = "Címke törölve"
                         },
                         new
                         {
                             Key = "DataEdit",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Data edited"
+                            Value = "Data is edited"
                         },
                         new
                         {
                             Key = "DataEdit",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Data edited"
+                            Value = "Adatok szerkesztve"
                         },
                         new
                         {
                             Key = "NoteCreate",
                             Segment = "Group",
                             Language = "en-US",
-                            Value = "Note created"
+                            Value = "Note is created"
                         },
                         new
                         {
                             Key = "NoteCreate",
                             Segment = "Group",
                             Language = "hu-HU",
-                            Value = "Note created"
+                            Value = "Jegyzet létrehozva"
+                        },
+                        new
+                        {
+                            Key = "Create",
+                            Segment = "Note",
+                            Language = "en-US",
+                            Value = "Created"
+                        },
+                        new
+                        {
+                            Key = "Create",
+                            Segment = "Note",
+                            Language = "hu-HU",
+                            Value = "Létrehozva"
+                        },
+                        new
+                        {
+                            Key = "TitleEdit",
+                            Segment = "Note",
+                            Language = "en-US",
+                            Value = "Title is edited"
+                        },
+                        new
+                        {
+                            Key = "TitleEdit",
+                            Segment = "Note",
+                            Language = "hu-HU",
+                            Value = "Cím szerkesztve"
+                        },
+                        new
+                        {
+                            Key = "ContentEdit",
+                            Segment = "Note",
+                            Language = "en-US",
+                            Value = "Content is edited"
+                        },
+                        new
+                        {
+                            Key = "ContentEdit",
+                            Segment = "Note",
+                            Language = "hu-HU",
+                            Value = "Tartalom szerkesztve"
+                        },
+                        new
+                        {
+                            Key = "TagEdit",
+                            Segment = "Note",
+                            Language = "en-US",
+                            Value = "Tag(s) added or removed"
+                        },
+                        new
+                        {
+                            Key = "TagEdit",
+                            Segment = "Note",
+                            Language = "hu-HU",
+                            Value = "Címke/Címkék hozzáadva vagy törölve"
+                        },
+                        new
+                        {
+                            Key = "Delete",
+                            Segment = "Note",
+                            Language = "en-US",
+                            Value = "Deleted"
+                        },
+                        new
+                        {
+                            Key = "Delete",
+                            Segment = "Note",
+                            Language = "hu-HU",
+                            Value = "Törölve"
+                        },
+                        new
+                        {
+                            Key = "Publish",
+                            Segment = "Note",
+                            Language = "en-US",
+                            Value = "Public status is changed"
+                        },
+                        new
+                        {
+                            Key = "Publish",
+                            Segment = "Note",
+                            Language = "hu-HU",
+                            Value = "Nyílvános státusz megváltoztatva"
                         });
                 });
 
@@ -1024,13 +1076,13 @@ namespace Papyrus.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.Role", null)
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Papyrus.DataAccess.Entities.User", null)
-                        .WithMany()
+                        .WithMany("Roles")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1161,24 +1213,6 @@ namespace Papyrus.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteActionLog", b =>
-                {
-                    b.HasOne("Papyrus.DataAccess.Entities.Notes.Note", "Note")
-                        .WithMany("ActionLogs")
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Papyrus.DataAccess.Entities.User", "Performer")
-                        .WithMany("PerformedNoteActionLogs")
-                        .HasForeignKey("PerformerId")
-                        .OnDelete(DeleteBehavior.SetNull);
-
-                    b.Navigation("Note");
-
-                    b.Navigation("Performer");
-                });
-
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteTag", b =>
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.Notes.Note", "Note")
@@ -1266,8 +1300,6 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Note", b =>
                 {
-                    b.Navigation("ActionLogs");
-
                     b.Navigation("EditorMemberships");
 
                     b.Navigation("Tags");
@@ -1278,6 +1310,11 @@ namespace Papyrus.Migrations
                     b.Navigation("Children");
 
                     b.Navigation("Notes");
+                });
+
+            modelBuilder.Entity("Papyrus.DataAccess.Entities.Role", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.User", b =>
@@ -1298,9 +1335,9 @@ namespace Papyrus.Migrations
 
                     b.Navigation("Notes");
 
-                    b.Navigation("PerformedNoteActionLogs");
-
                     b.Navigation("RefreshTokens");
+
+                    b.Navigation("Roles");
 
                     b.Navigation("Tags");
                 });

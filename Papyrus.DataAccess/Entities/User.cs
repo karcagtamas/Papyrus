@@ -44,4 +44,6 @@ public class User : IdentityUser<string>, IEntity<string>
     public virtual ICollection<Note> LastUpdatedNotes { get; set; } = default!;
     public virtual ICollection<EditorMember> EditorMemberships { get; set; } = default!;
     public virtual ICollection<ActionLog> ActionLogs { get; set; } = default!;
+
+    public virtual ICollection<IdentityUserRole<string>> Roles { get; set; } = default!;
 }

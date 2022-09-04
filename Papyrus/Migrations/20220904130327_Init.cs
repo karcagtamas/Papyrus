@@ -33,6 +33,67 @@ namespace Papyrus.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
+                name: "Languages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ShortName = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Languages", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "Translations",
+                columns: table => new
+                {
+                    Key = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Segment = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Language = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Value = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Translations", x => new { x.Key, x.Segment, x.Language });
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "AspNetRoleClaims",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    RoleId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClaimType = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ClaimValue = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AspNetRoles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -47,9 +108,9 @@ namespace Papyrus.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     BirthDay = table.Column<DateTime>(type: "datetime(6)", nullable: true),
                     Disabled = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    ImageTitle = table.Column<string>(type: "longtext", nullable: true)
+                    ImageId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageData = table.Column<byte[]>(type: "longblob", nullable: true),
+                    LanguageId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     NormalizedUserName = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: true)
@@ -76,31 +137,44 @@ namespace Papyrus.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Languages_LanguageId",
+                        column: x => x.LanguageId,
+                        principalTable: "Languages",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "AspNetRoleClaims",
+                name: "ActionLogs",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<string>(type: "varchar(255)", nullable: false)
+                    Key = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimType = table.Column<string>(type: "longtext", nullable: true)
+                    Segment = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ClaimValue = table.Column<string>(type: "longtext", nullable: true)
+                    Language = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Type = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Text = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Creation = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    PerformerId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AspNetRoleClaims", x => x.Id);
+                    table.PrimaryKey("PK_ActionLogs", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AspNetRoleClaims_AspNetRoles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "AspNetRoles",
+                        name: "FK_ActionLogs_AspNetUsers_PerformerId",
+                        column: x => x.PerformerId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -260,38 +334,6 @@ namespace Papyrus.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "GroupActionLogs",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    GroupId = table.Column<int>(type: "int", nullable: false),
-                    Creation = table.Column<DateTime>(type: "datetime(6)", nullable: false),
-                    Type = table.Column<int>(type: "int", nullable: false),
-                    Text = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    PerformerId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_GroupActionLogs", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_GroupActionLogs_AspNetUsers_PerformerId",
-                        column: x => x.PerformerId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                    table.ForeignKey(
-                        name: "FK_GroupActionLogs_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                })
-                .Annotation("MySql:CharSet", "utf8mb4");
-
-            migrationBuilder.CreateTable(
                 name: "GroupRoles",
                 columns: table => new
                 {
@@ -339,8 +381,6 @@ namespace Papyrus.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Content = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
                     UserId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     GroupId = table.Column<int>(type: "int", nullable: true),
@@ -350,7 +390,11 @@ namespace Papyrus.Migrations
                     CreatorId = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     LastUpdaterId = table.Column<string>(type: "varchar(255)", nullable: true)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Deleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    ContentId = table.Column<string>(type: "longtext", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ContentLastEdit = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -471,24 +515,140 @@ namespace Papyrus.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "NoteActionLogs",
+                name: "EditorMembers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    UserId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
                     NoteId = table.Column<string>(type: "varchar(255)", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4")
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    ConnectionId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Date = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_NoteActionLogs", x => x.Id);
+                    table.PrimaryKey("PK_EditorMembers", x => x.Id);
+                    table.UniqueConstraint("AK_EditorMembers_UserId_NoteId_ConnectionId", x => new { x.UserId, x.NoteId, x.ConnectionId });
                     table.ForeignKey(
-                        name: "FK_NoteActionLogs_Notes_NoteId",
+                        name: "FK_EditorMembers_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_EditorMembers_Notes_NoteId",
                         column: x => x.NoteId,
                         principalTable: "Notes",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "NoteTags",
+                columns: table => new
+                {
+                    NoteId = table.Column<string>(type: "varchar(255)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    TagId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_NoteTags", x => new { x.NoteId, x.TagId });
+                    table.ForeignKey(
+                        name: "FK_NoteTags_Notes_NoteId",
+                        column: x => x.NoteId,
+                        principalTable: "Notes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_NoteTags_Tags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.InsertData(
+                table: "Languages",
+                columns: new[] { "Id", "Name", "ShortName" },
+                values: new object[,]
+                {
+                    { 1, "English", "en-US" },
+                    { 2, "Hungarian", "hu-HU" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Translations",
+                columns: new[] { "Key", "Language", "Segment", "Value" },
+                values: new object[,]
+                {
+                    { "Administrator", "en-US", "GroupRole", "Administrator" },
+                    { "Administrator", "hu-HU", "GroupRole", "Adminisztrátor" },
+                    { "Administrator", "en-US", "Role", "Administrator" },
+                    { "Administrator", "hu-HU", "Role", "Adminisztrátor" },
+                    { "Close", "en-US", "Group", "Closed" },
+                    { "Close", "hu-HU", "Group", "Csoport lezárva" },
+                    { "ContentEdit", "en-US", "Note", "Content is edited" },
+                    { "ContentEdit", "hu-HU", "Note", "Tartalom szerkesztve" },
+                    { "Create", "en-US", "Group", "Created" },
+                    { "Create", "hu-HU", "Group", "Csoport létrehozva" },
+                    { "Create", "en-US", "Note", "Created" },
+                    { "Create", "hu-HU", "Note", "Létrehozva" },
+                    { "DataEdit", "en-US", "Group", "Data is edited" },
+                    { "DataEdit", "hu-HU", "Group", "Adatok szerkesztve" },
+                    { "Default", "en-US", "GroupRole", "Default" },
+                    { "Default", "hu-HU", "GroupRole", "Alapértelmezett" },
+                    { "Delete", "en-US", "Note", "Deleted" },
+                    { "Delete", "hu-HU", "Note", "Törölve" },
+                    { "English", "en-US", "Language", "English" },
+                    { "English", "hu-HU", "Language", "Angol" },
+                    { "Hungarian", "en-US", "Language", "Hungarian" },
+                    { "Hungarian", "hu-HU", "Language", "Magyar" },
+                    { "MemberAdd", "en-US", "Group", "Member is added" },
+                    { "MemberAdd", "hu-HU", "Group", "Tag hozzáadva" },
+                    { "MemberEdit", "en-US", "Group", "Member is edited" },
+                    { "MemberEdit", "hu-HU", "Group", "Tag szerkesztve" },
+                    { "MemberRemove", "en-US", "Group", "Member is removed" },
+                    { "MemberRemove", "hu-HU", "Group", "Tag törölve" },
+                    { "Moderator", "en-US", "GroupRole", "Moderator" },
+                    { "Moderator", "hu-HU", "GroupRole", "Moderátor" },
+                    { "Moderator", "en-US", "Role", "Moderator" },
+                    { "Moderator", "hu-HU", "Role", "Moderátor" },
+                    { "NoteCreate", "en-US", "Group", "Note is created" },
+                    { "NoteCreate", "hu-HU", "Group", "Jegyzet létrehozva" },
+                    { "Open", "en-US", "Group", "Opened" },
+                    { "Open", "hu-HU", "Group", "Csoport kinyitva" },
+                    { "Publish", "en-US", "Note", "Public status is changed" },
+                    { "Publish", "hu-HU", "Note", "Nyílvános státusz megváltoztatva" },
+                    { "RoleCreate", "en-US", "Group", "Role is created" },
+                    { "RoleCreate", "hu-HU", "Group", "Szerepkör létrehozva" },
+                    { "RoleEdit", "en-US", "Group", "Role is edited" },
+                    { "RoleEdit", "hu-HU", "Group", "Szerepkör szerkesztve" },
+                    { "RoleRemove", "en-US", "Group", "Role is removed" },
+                    { "RoleRemove", "hu-HU", "Group", "Szerepkör törölve" },
+                    { "TagCreate", "en-US", "Group", "Tag is created" },
+                    { "TagCreate", "hu-HU", "Group", "Címke létrehozva" },
+                    { "TagEdit", "en-US", "Note", "Tag(s) added or removed" },
+                    { "TagEdit", "hu-HU", "Note", "Címke/Címkék hozzáadva vagy törölve" },
+                    { "TagEdite", "en-US", "Group", "Tag is edited" },
+                    { "TagEdite", "hu-HU", "Group", "Címke szerkesztve" },
+                    { "TagRemove", "en-US", "Group", "Tag is removed" },
+                    { "TagRemove", "hu-HU", "Group", "Címke törölve" },
+                    { "TitleEdit", "en-US", "Note", "Title is edited" },
+                    { "TitleEdit", "hu-HU", "Note", "Cím szerkesztve" },
+                    { "User", "en-US", "Role", "User" },
+                    { "User", "hu-HU", "Role", "Felhasználó" }
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ActionLogs_PerformerId",
+                table: "ActionLogs",
+                column: "PerformerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -528,6 +688,11 @@ namespace Papyrus.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_LanguageId",
+                table: "AspNetUsers",
+                column: "LanguageId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AspNetUsers_UserName",
                 table: "AspNetUsers",
                 column: "UserName",
@@ -540,14 +705,9 @@ namespace Papyrus.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_GroupActionLogs_GroupId",
-                table: "GroupActionLogs",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_GroupActionLogs_PerformerId",
-                table: "GroupActionLogs",
-                column: "PerformerId");
+                name: "IX_EditorMembers_NoteId",
+                table: "EditorMembers",
+                column: "NoteId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_GroupMembers_AddedById",
@@ -570,9 +730,10 @@ namespace Papyrus.Migrations
                 column: "OwnerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_NoteActionLogs_NoteId",
-                table: "NoteActionLogs",
-                column: "NoteId");
+                name: "IX_Languages_ShortName",
+                table: "Languages",
+                column: "ShortName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Notes_CreatorId",
@@ -593,6 +754,11 @@ namespace Papyrus.Migrations
                 name: "IX_Notes_UserId",
                 table: "Notes",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_NoteTags_TagId",
+                table: "NoteTags",
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_Token",
@@ -624,6 +790,9 @@ namespace Papyrus.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "ActionLogs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoleClaims");
 
             migrationBuilder.DropTable(
@@ -639,19 +808,19 @@ namespace Papyrus.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "GroupActionLogs");
+                name: "EditorMembers");
 
             migrationBuilder.DropTable(
                 name: "GroupMembers");
 
             migrationBuilder.DropTable(
-                name: "NoteActionLogs");
+                name: "NoteTags");
 
             migrationBuilder.DropTable(
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "Translations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -663,10 +832,16 @@ namespace Papyrus.Migrations
                 name: "Notes");
 
             migrationBuilder.DropTable(
+                name: "Tags");
+
+            migrationBuilder.DropTable(
                 name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Languages");
         }
     }
 }

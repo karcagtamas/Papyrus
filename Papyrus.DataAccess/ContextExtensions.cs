@@ -13,16 +13,29 @@ public static class ContextExtensions
     public static ModelBuilder RegisterCommonEntities(this ModelBuilder builder)
     {
         // User
-        builder.Entity<User>()
-            .HasIndex(user => user.UserName)
-            .IsUnique();
-        builder.Entity<User>()
-            .HasIndex(user => user.Email)
-            .IsUnique();
-        builder.Entity<User>()
-            .HasOne(x => x.Language)
-            .WithMany(x => x.Users)
-            .OnDelete(DeleteBehavior.SetNull);
+        builder.Entity<User>(b =>
+        {
+            b.HasIndex(user => user.UserName)
+                .IsUnique();
+            b.HasIndex(user => user.Email)
+                .IsUnique();
+            b.HasOne(x => x.Language)
+                .WithMany(x => x.Users)
+                .OnDelete(DeleteBehavior.SetNull);
+            b.HasMany(e => e.Roles)
+                .WithOne()
+                .HasForeignKey(x => x.UserId)
+                .IsRequired();
+        });
+
+        // User Roles
+        builder.Entity<Role>(b =>
+        {
+            b.HasMany(e => e.Users)
+                .WithOne()
+                .HasForeignKey(x => x.RoleId)
+                .IsRequired();
+        });
 
         // Language
         builder.Entity<Language>()
