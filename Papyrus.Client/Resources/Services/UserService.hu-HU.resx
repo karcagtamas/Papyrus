@@ -126,14 +126,14 @@
   <data name="Toaster.Delete" xml:space="preserve">
     <value>{0} törlés</value>
   </data>
-  <data name="Toaster.Disable" xml:space="preserve">
-    <value>Tiltás</value>
-  </data>
   <data name="Toaster.ImageUpdate" xml:space="preserve">
     <value>Kép szerkesztés</value>
   </data>
   <data name="Toaster.PasswordUpdate" xml:space="preserve">
     <value>Jelszó szerkesztés</value>
+  </data>
+  <data name="Toaster.SettingsUpdate" xml:space="preserve">
+    <value>Felhasználói beállítások szerkesztése</value>
   </data>
   <data name="Toaster.Update" xml:space="preserve">
     <value>{0} szerkesztés</value>

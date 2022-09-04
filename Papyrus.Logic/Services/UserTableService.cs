@@ -81,7 +81,8 @@ public class UserTableService : TableService<User, string>, IUserTableService
 
                return "";
            })
-           .AddTagProvider((obj, col) => userId == obj.Id ? Tags.CurrentUserTag : "");
+           .AddTagProvider((obj, col) => userId == obj.Id ? Tags.CurrentUserTag : "")
+           .DisableClickOn(obj => obj.Id == userId);
     }
 
     public override DataSource<User, string> BuildDataSource()

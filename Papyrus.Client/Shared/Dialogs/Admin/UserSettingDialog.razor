@@ -1,0 +1,59 @@
+﻿@using KarcagS.Blazor.Common.Services.Interfaces
+@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.DTOs
+@using Papyrus.Shared.Models
+@using Papyrus.Shared.Models.Admin
+@inject IStringLocalizer<UserSettingDialog> L
+@inject IUserService UserService
+@inject IRoleService RoleService
+@inject IConfirmService ConfirmService
+
+<EditorDialog Model="UserSettingModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="true" Submit="Submit" FormValidator="ValidateForm">
+    <MudSelect T="string" @bind-Value="Model.RoleId" Label="@L["Field.Role"]" Variant="Variant.Text" For="@(() => Model.RoleId)" FullWidth="true">
+        @foreach (var role in Roles)
+        {
+            <MudSelectItem Value="@role.Id">@role.Name</MudSelectItem>
+        }
+    </MudSelect>
+    <MudCheckBox Class="mt-3" T="bool" @bind-Checked="Model.Disabled" Label="@L["Field.Disabled"]" For="@(() => Model.Disabled)" />
+</EditorDialog>
+
+@code {
+    [Parameter]
+    public string UserId { get; set; } = default!;
+
+    private UserSettingDTO? DTO { get; set; }
+    private UserSettingModel Model { get; set; } = new();
+    private List<RoleDTO> Roles { get; set; } = new();
+
+    protected override async void OnInitialized()
+    {
+        Roles = await RoleService.GetAllTranslated();
+        DTO = await UserService.GetSettings(UserId);
+        await InvokeAsync(StateHasChanged);
+
+
+        ObjectHelper.WhenNotNull(DTO, dto =>
+        {
+            Model = new UserSettingModel { RoleId = dto.RoleId, Disabled = dto.Disabled };
+            StateHasChanged();
+        });
+
+        base.OnInitialized();
+    }
+
+    private Task<bool> Submit() => UserService.UpdateSettings(UserId, Model);
+
+    private async Task<bool> ValidateForm(UserSettingModel model, ISnackbar snackbar)
+    {
+        if (DTO?.Disabled != model.Disabled)
+        {
+            if (!await ConfirmService.Open(new ConfirmDialogInput { Message = L["Confirm.Disable.Message"] }, L["Confirm.Disable.Title"]))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}

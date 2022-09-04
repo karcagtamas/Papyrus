@@ -45,20 +45,13 @@
                 {
                     RoleId = Member.Role.Id,
                 };
+            await InvokeAsync(StateHasChanged);
         }
-
-        await InvokeAsync(StateHasChanged);
 
         base.OnInitialized();
     }
 
-    private Task<bool> Submit()
-    {
-        return GroupMemberService.Update(MemberId, Model);
-    }
+    private Task<bool> Submit() => GroupMemberService.Update(MemberId, Model);
 
-    private Task<bool> Remove()
-    {
-        return GroupMemberService.Delete(MemberId);
-    }
+    private Task<bool> Remove() => GroupMemberService.Delete(MemberId);
 }

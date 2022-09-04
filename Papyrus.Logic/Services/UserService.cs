@@ -13,6 +13,7 @@ using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Mongo.DataAccess.Enums;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
+using Papyrus.Shared.Models.Admin;
 
 namespace Papyrus.Logic.Services;
 
@@ -124,5 +125,43 @@ public class UserService : MapperRepository<User, string, string>, IUserService
         var userId = Utils.GetCurrentUserId();
         var term = searchTerm.ToLower();
         return GetMappedList<UserLightDTO>(x => !x.Disabled && (!ignoreCurrent || x.Id != userId) && !ignored.Contains(x.Id) && (x.UserName.ToLower().Contains(searchTerm) || x.Email.ToLower().Contains(searchTerm) || (x.FullName != null && x.FullName.ToLower().Contains(searchTerm))), 5).ToList();
+    }
+
+    public UserSettingDTO GetSettings(string id)
+    {
+        var user = Get(id);
+
+        return new UserSettingDTO
+        {
+            Id = id,
+            Disabled = user.Disabled,
+            RoleId = user.Roles.FirstOrDefault()?.RoleId ?? ""
+        };
+    }
+
+    public void UpdateSettings(string id, UserSettingModel model)
+    {
+        var user = Get(id);
+
+        if (user.Disabled != model.Disabled)
+        {
+            user.Disabled = model.Disabled;
+
+            Update(user, false);
+        }
+
+        var roleId = user.Roles.FirstOrDefault()?.RoleId;
+
+        if (roleId != model.RoleId)
+        {
+            user.Roles = new List<IdentityUserRole<string>>()
+            {
+                new() { RoleId = model.RoleId, UserId = user.Id }
+            };
+
+            Update(user, false);
+        }
+
+        Persist();
     }
 }

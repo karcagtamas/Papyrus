@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
+using Papyrus.Shared.Models.Admin;
 
 namespace Papyrus.Controllers;
 
@@ -19,62 +20,35 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
-    public List<UserListDTO> GetAll()
-    {
-        return userService.GetAllMapped<UserListDTO>().ToList();
-    }
+    public List<UserListDTO> GetAll() => userService.GetAllMapped<UserListDTO>().ToList();
 
     [HttpGet("{id}")]
-    public UserDTO Get(string id)
-    {
-        return userService.GetMapped<UserDTO>(id);
-    }
+    public UserDTO Get(string id) => userService.GetMapped<UserDTO>(id);
 
     [HttpGet("{id}/Light")]
-    public UserLightDTO GetLight(string id)
-    {
-        return userService.GetMapped<UserLightDTO>(id);
-    }
+    public UserLightDTO GetLight(string id) => userService.GetMapped<UserLightDTO>(id);
+
+    [HttpGet("{id}/Settings")]
+    public UserSettingDTO GetSetting(string id) => userService.GetSettings(id);
 
     [HttpPut("{id}")]
-    public void Update(string id, [FromBody] UserModel model)
-    {
-        userService.Update(id, model);
-    }
+    public void Update(string id, [FromBody] UserModel model) => userService.Update(id, model);
 
     [HttpGet("Current")]
-    public UserDTO Current()
-    {
-        return userService.GetCurrent<UserDTO>();
-    }
+    public UserDTO Current() => userService.GetCurrent<UserDTO>();
 
     [HttpGet("Exists")]
-    public bool Exists([FromQuery] string userName, [FromQuery] string email)
-    {
-        return userService.IsExist(userName, email, true);
-    }
-
-    [HttpPost("Disable")]
-    public void DisableUsers([FromBody] UserDisableStatusModel statusModel)
-    {
-        userService.SetDisableStatus(statusModel);
-    }
+    public bool Exists([FromQuery] string userName, [FromQuery] string email) => userService.IsExist(userName, email, true);
 
     [HttpPut("Image")]
-    public void UpdateImage([FromBody] ImageModel model)
-    {
-        userService.UpdateImage(model);
-    }
+    public void UpdateImage([FromBody] ImageModel model) => userService.UpdateImage(model);
 
     [HttpPut("Password")]
-    public async Task UpdatePassword([FromBody] UserPasswordModel model)
-    {
-        await userService.UpdatePassword(model);
-    }
+    public async Task UpdatePassword([FromBody] UserPasswordModel model) => await userService.UpdatePassword(model);
+
+    [HttpPut("{id}/Settings")]
+    public void UpdateSettings(string id, [FromBody] UserSettingModel model) => userService.UpdateSettings(id, model);
 
     [HttpGet("Search")]
-    public List<UserLightDTO> Search([FromQuery] string searchTerm, [FromQuery] bool ignoreCurrent, [FromQuery] List<string> ignored)
-    {
-        return userService.Search(searchTerm, ignoreCurrent, ignored);
-    }
+    public List<UserLightDTO> Search([FromQuery] string searchTerm, [FromQuery] bool ignoreCurrent, [FromQuery] List<string> ignored) => userService.Search(searchTerm, ignoreCurrent, ignored);
 }

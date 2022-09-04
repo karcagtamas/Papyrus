@@ -4,6 +4,7 @@ using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
+using Papyrus.Shared.Models.Admin;
 
 namespace Papyrus.Client.Services;
 
@@ -35,6 +36,13 @@ public class UserService : HttpCall<string>, IUserService
         return Http.GetBool(settings).ExecuteWithResult();
     }
 
+    public Task<UserSettingDTO?> GetSettings(string id)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, id, "Settings"));
+
+        return Http.Get<UserSettingDTO>(settings).ExecuteWithResult();
+    }
+
     public Task<UserLightDTO?> Light(string id)
     {
         var pathParams = HttpPathParameters.Build()
@@ -59,23 +67,26 @@ public class UserService : HttpCall<string>, IUserService
         return Http.Get<List<UserLightDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public Task<bool> SetDisableStatus(List<string> ids, bool status)
-    {
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Disable")).AddToaster(localizer["Toaster.Disable"]);
-
-        return Http.Post(settings, new UserDisableStatusModel { Ids = ids, Status = status }).Execute();
-    }
-
     public Task<bool> UpdateImage(ImageModel model)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Image")).AddToaster(localizer["Toaster.ImageUpdate"]);
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Image"))
+            .AddToaster(localizer["Toaster.ImageUpdate"]);
 
         return Http.Put(settings, model).Execute();
     }
 
     public Task<bool> UpdatePassword(UserPasswordModel model)
     {
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Password")).AddToaster(localizer["Toaster.ImageUpdate"]);
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Password"))
+            .AddToaster(localizer["Toaster.ImageUpdate"]);
+
+        return Http.Put(settings, model).Execute();
+    }
+
+    public Task<bool> UpdateSettings(string id, UserSettingModel model)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, id, "Settings"))
+            .AddToaster(localizer["Toaster.SettingsUpdate"]);
 
         return Http.Put(settings, model).Execute();
     }

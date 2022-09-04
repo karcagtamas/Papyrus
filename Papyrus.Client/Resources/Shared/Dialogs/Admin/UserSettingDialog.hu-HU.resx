@@ -117,25 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Confirm.Disable.Message" xml:space="preserve">
+    <value>Biztosan szeretné megváltoztatni a tiltási státuszt ehhez a felhasználóhoz?</value>
+  </data>
+  <data name="Confirm.Disable.Title" xml:space="preserve">
+    <value>Engdélyezés/Tiltás Megerősítése</value>
+  </data>
   <data name="Entity" xml:space="preserve">
-    <value>User</value>
+    <value>Felhasználói Beállítások</value>
   </data>
-  <data name="Toaster.Add" xml:space="preserve">
-    <value>{0} adding</value>
+  <data name="Field.Disabled" xml:space="preserve">
+    <value>Tiltott</value>
   </data>
-  <data name="Toaster.Delete" xml:space="preserve">
-    <value>{0} deleting</value>
-  </data>
-  <data name="Toaster.ImageUpdate" xml:space="preserve">
-    <value>Image updating</value>
-  </data>
-  <data name="Toaster.PasswordUpdate" xml:space="preserve">
-    <value>Password updating</value>
-  </data>
-  <data name="Toaster.SettingsUpdate" xml:space="preserve">
-    <value>User settings update</value>
-  </data>
-  <data name="Toaster.Update" xml:space="preserve">
-    <value>{0} updating</value>
+  <data name="Field.Role" xml:space="preserve">
+    <value>Szerepkör</value>
   </data>
 </root>

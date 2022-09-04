@@ -1,5 +1,8 @@
 @page "/users"
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using KarcagS.Shared.Table
 @using Papyrus.Client.Services.Interfaces
+@using Papyrus.Client.Shared.Dialogs.Admin
 @using Papyrus.Shared
 @using Papyrus.Shared.DTOs
 @using Microsoft.IdentityModel.Tokens
@@ -7,15 +10,17 @@
 @attribute [Authorize]
 @inject IStringLocalizer<Users> L
 @inject IUserTableService UserTableService
+@inject IHelperService HelperService
 
 <ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div class="page-div">
-    <Table Service="UserTableService" Localizer="L" Style="Style" />
+    <Table @ref="Table" TKey="string" Service="UserTableService" Localizer="L" Style="Style" OnRowClick="RowClickHandler" />
 </div>
 
 
 @code {
+    private Table<string>? Table { get; set; }
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
 
     protected override void OnInitialized()
@@ -39,6 +44,13 @@
         });
 
         base.OnInitialized();
+    }
+
+    private async Task RowClickHandler(ResultRowItem<string> item)
+    {
+        var parameters = new DialogParameters { { "UserId", item.ItemKey } };
+
+        await HelperService.OpenEditorDialog<UserSettingDialog>("User Settings", (res) => Table?.Refresh(), parameters);
     }
 
 }
