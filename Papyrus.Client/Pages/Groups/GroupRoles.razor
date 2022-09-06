@@ -12,5 +12,5 @@
             <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
         </ActionBar>
     }
-    <Table @ref="Table" TKey="int" ReadOnly="!Rights.CanEdit" Service="GroupRoleTableService" ExtraParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" Localizer="L" />
+    <Table @ref="Table" TKey="int" ReadOnly="!Rights.CanEdit" Service="GroupRoleTableService" InitialParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" Localizer="L" />
 </div>
