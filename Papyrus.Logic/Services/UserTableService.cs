@@ -87,7 +87,15 @@ public class UserTableService : TableService<User, string>, IUserTableService
 
     public override DataSource<User, string> BuildDataSource()
     {
-        return ListTableDataSource<User, string>.Build((query) => userService.GetAllAsQuery())
+        return ListTableDataSource<User, string>.Build((query) =>
+        {
+            if (query.ExtraParams.ContainsKey("role"))
+            {
+                return userService.GetListAsQuery(x => x.Roles.Any(r => r.RoleId == query.ExtraParams["role"].ToString()));
+            }
+
+            return userService.GetAllAsQuery();
+        })
             .OrderBy(x => x.UserName)
             .ThenBy(x => x.Id)
             .ApplyOrdering()

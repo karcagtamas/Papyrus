@@ -123,6 +123,9 @@
   <data name="PageName" xml:space="preserve">
     <value>Felhasználók</value>
   </data>
+  <data name="Table.Filter.Role" xml:space="preserve">
+    <value>Szerepkör</value>
+  </data>
   <data name="Table.Title" xml:space="preserve">
     <value>Felhasználók</value>
   </data>

@@ -11,19 +11,32 @@
 @inject IStringLocalizer<Users> L
 @inject IUserTableService UserTableService
 @inject IHelperService HelperService
+@inject IRoleService RoleService
 
 <ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div class="page-div">
-    <Table @ref="Table" TKey="string" Service="UserTableService" Localizer="L" Style="Style" OnRowClick="RowClickHandler" />
+    <Table @ref="Table" TKey="string" Service="UserTableService" Localizer="L" Style="Style" OnRowClick="RowClickHandler">
+
+        <FilterRow>
+            <MudSelect Style="width: 240px;" T="string" ValueChanged="@(args => context("role", string.IsNullOrEmpty(args) ? null : args))" Label="@L["Table.Filter.Role"]" Placeholder="@L["Table.Filter.Role"]" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense" Clearable="true">
+                @foreach (var role in Roles)
+                {
+                    <MudSelectItem Value="role.Id">@role.Name</MudSelectItem>
+                }
+            </MudSelect>
+        </FilterRow>
+
+    </Table>
 </div>
 
 
 @code {
     private Table<string>? Table { get; set; }
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
+    private List<RoleDTO> Roles { get; set; } = new();
 
-    protected override void OnInitialized()
+    protected override async void OnInitialized()
     {
         Style.AddColorGetter(item =>
         {
@@ -43,7 +56,11 @@
             return Color.Default;
         });
 
+
         base.OnInitialized();
+
+        Roles = await RoleService.GetAllTranslated();
+        await InvokeAsync(StateHasChanged);
     }
 
     private async Task RowClickHandler(ResultRowItem<string> item)
