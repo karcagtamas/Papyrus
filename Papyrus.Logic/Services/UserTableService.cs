@@ -82,6 +82,23 @@ public class UserTableService : TableService<User, string>, IUserTableService
                return "";
            })
            .AddTagProvider((obj, col) => userId == obj.Id ? Tags.CurrentUserTag : "")
+           .AddTagProvider((obj, col) =>
+           {
+               if (col.Key == "role")
+               {
+                   var mappedRoles = obj.Roles.Select(x => translatedRoles.First(r => r.Id == x.RoleId)).ToList();
+                   if (mappedRoles.Any(x => x.IsAdmin))
+                   {
+                       return Tags.AdminRole;
+                   }
+                   else if (mappedRoles.Any(x => x.IsModerator))
+                   {
+                       return Tags.ModeratorRole;
+                   }
+               }
+
+               return "";
+           })
            .DisableClickOn(obj => obj.Id == userId);
     }
 

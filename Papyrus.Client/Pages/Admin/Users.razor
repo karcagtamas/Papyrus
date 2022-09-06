@@ -48,6 +48,14 @@
             {
                 return Color.Success;
             }
+            else if (item.Tags.Contains(Tags.AdminRole))
+            {
+                return Color.Error;
+            }
+            else if (item.Tags.Contains(Tags.ModeratorRole))
+            {
+                return Color.Warning;
+            }
             else if (item.Tags.Contains(Tags.CurrentUserTag))
             {
                 return Color.Secondary;

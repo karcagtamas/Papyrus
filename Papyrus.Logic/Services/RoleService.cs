@@ -42,6 +42,7 @@ public class RoleService : MapperRepository<Role, string, string>, IRoleService
 
             var t = translations.Where(x => x.Key == role.Name).FirstOrDefault()?.Value ?? role.Name;
             dto.Name = t;
+            dto.NameEN = role.Name;
 
             return dto;
         }).ToList();
