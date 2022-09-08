@@ -1,13 +1,13 @@
 ﻿using KarcagS.Blazor.Common.Components.Menu;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
-using Papyrus.Client.Services.Interfaces;
 
 namespace Papyrus.Client.Shared;
 
 public static class PapyrusMenu
 {
-    public static List<MenuItem> BuildMenuItems(ICommonService commonService, AuthenticationState state)
+    public static List<MenuItem> BuildMenuItems(IHelperService helper, AuthenticationState state)
     {
         var items = new List<MenuItem>();
 
@@ -32,7 +32,7 @@ public static class PapyrusMenu
                 .AddItem(MenuItem.CreateItem("Tags", "notes/tags").AddResourceKey("NoteTags").AddIcon(Icons.Filled.Tag)),
         });
 
-        if (commonService.IsInRole(state, "Administrator", "Moderator"))
+        if (helper.IsInRole(state, "Administrator", "Moderator"))
         {
             items.Add(
                 MenuItem.CreateGroupItem("Administration")

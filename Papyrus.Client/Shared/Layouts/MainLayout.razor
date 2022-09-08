@@ -1,4 +1,5 @@
 @using KarcagS.Blazor.Common
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Blazor.Common.Store
 @using KarcagS.Shared.Helpers
 @using Papyrus.Client.Services.Auth.Interfaces
@@ -17,7 +18,7 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IStoreService store
 @inject IGroupService groupService
-@inject ICommonService CommonService
+@inject IHelperService Helper
 
 <MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
 <MudDialogProvider CloseButton="true" />
@@ -87,7 +88,7 @@
         authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
         navigator.LocationChanged += HandleLocationChange;
 
-        MenuItems = PapyrusMenu.BuildMenuItems(CommonService, await authenticationStateTask);
+        MenuItems = PapyrusMenu.BuildMenuItems(Helper, await authenticationStateTask);
 
         await base.OnInitializedAsync();
     }

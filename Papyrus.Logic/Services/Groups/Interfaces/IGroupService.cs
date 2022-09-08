@@ -11,6 +11,7 @@ public interface IGroupService : IMapperRepository<Group, int>
     GroupTagRightsDTO GetTagRights(int id);
     GroupMemberRightsDTO GetMemberRights(int id);
     GroupRoleRightsDTO GetRoleRights(int id);
+    GroupRole? GetUserRole(int id);
     void Close(int id);
     void Open(int id);
     void Remove(int id);

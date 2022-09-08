@@ -164,4 +164,9 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     private static bool IsOpenableForUser(Group group, string userId) => group.OwnerId == userId && group.IsClosed;
     private static bool IsRemovableForUser(Group group, string userId) => group.OwnerId == userId;
 
+    public GroupRole? GetUserRole(int id)
+    {
+        var userId = Utils.GetRequiredCurrentUserId();
+        return Get(id).Members.FirstOrDefault(x => x.UserId == userId)?.Role;
+    }
 }

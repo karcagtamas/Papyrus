@@ -12,7 +12,7 @@
 @inject IUserTableService UserTableService
 @inject IHelperService HelperService
 @inject IRoleService RoleService
-@inject ICommonService CommonService
+@inject IHelperService Helper
 
 <ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
@@ -43,7 +43,7 @@
 
     protected override async void OnInitialized()
     {
-        HasWriteRight = await CommonService.IsInRole(authStateTask, "Administrator");
+        HasWriteRight = await Helper.IsInRole(authStateTask, "Administrator");
         Style.AddColorGetter(item =>
         {
             if (item.Tags.Contains(Tags.TrueValue))

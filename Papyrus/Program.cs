@@ -9,10 +9,12 @@ using KarcagS.Common.Tools.Mongo;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Common.Tools.Table;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Papyrus.Authorization;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Hubs;
@@ -129,6 +131,9 @@ builder.Services.AddIdentity<User, Role>(options =>
     .AddDefaultTokenProviders();
 
 builder.Services.AddModelValidatedControllers();
+
+// Auth Handlers
+builder.Services.AddTransient<IAuthorizationHandler, GroupHandler>();
 
 // Auth
 builder.Services
