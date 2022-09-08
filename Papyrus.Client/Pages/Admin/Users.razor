@@ -7,16 +7,17 @@
 @using Papyrus.Shared.DTOs
 @using Microsoft.IdentityModel.Tokens
 @using KarcagS.Shared.Helpers
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Administrator,Moderator")]
 @inject IStringLocalizer<Users> L
 @inject IUserTableService UserTableService
 @inject IHelperService HelperService
 @inject IRoleService RoleService
+@inject ICommonService CommonService
 
 <ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div class="page-div">
-    <Table @ref="Table" TKey="string" Service="UserTableService" Localizer="L" Style="Style" OnRowClick="RowClickHandler">
+    <Table @ref="Table" TKey="string" Service="UserTableService" Localizer="L" Style="Style" OnRowClick="RowClickHandler" ReadOnly="!HasWriteRight">
 
         <FilterRow>
             <MudSelect Style="width: 240px;" T="string" ValueChanged="@(args => context("role", string.IsNullOrEmpty(args) ? null : args))" Label="@L["Table.Filter.Role"]" Placeholder="@L["Table.Filter.Role"]" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense" Clearable="true">
@@ -32,12 +33,17 @@
 
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; } = default!;
+
     private Table<string>? Table { get; set; }
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
     private List<RoleDTO> Roles { get; set; } = new();
+    private bool HasWriteRight { get; set; } = false;
 
     protected override async void OnInitialized()
     {
+        HasWriteRight = await CommonService.IsInRole(authStateTask, "Administrator");
         Style.AddColorGetter(item =>
         {
             if (item.Tags.Contains(Tags.TrueValue))
@@ -73,6 +79,11 @@
 
     private async Task RowClickHandler(ResultRowItem<string> item)
     {
+        if (!HasWriteRight)
+        {
+            return;
+        }
+
         var parameters = new DialogParameters { { "UserId", item.ItemKey } };
 
         await HelperService.OpenEditorDialog<UserSettingDialog>("User Settings", (res) => Table?.Refresh(), parameters);

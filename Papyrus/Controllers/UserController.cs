@@ -20,6 +20,7 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "Administration")]
     public List<UserListDTO> GetAll() => userService.GetAllMapped<UserListDTO>().ToList();
 
     [HttpGet("{id}")]
@@ -29,6 +30,7 @@ public class UserController : ControllerBase
     public UserLightDTO GetLight(string id) => userService.GetMapped<UserLightDTO>(id);
 
     [HttpGet("{id}/Settings")]
+    [Authorize(Roles = "Administration")]
     public UserSettingDTO GetSetting(string id) => userService.GetSettings(id);
 
     [HttpPut("{id}")]
@@ -47,6 +49,7 @@ public class UserController : ControllerBase
     public async Task UpdatePassword([FromBody] UserPasswordModel model) => await userService.UpdatePassword(model);
 
     [HttpPut("{id}/Settings")]
+    [Authorize(Roles = "Administration")]
     public void UpdateSettings(string id, [FromBody] UserSettingModel model) => userService.UpdateSettings(id, model);
 
     [HttpGet("Search")]

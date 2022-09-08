@@ -29,7 +29,6 @@ using Microsoft.Extensions.Localization;
 using Papyrus.Shared.Localization;
 using KarcagS.Blazor.Common.Localization;
 using KarcagS.Blazor.Common.Services.Interfaces;
-using KarcagS.Shared.Localization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");

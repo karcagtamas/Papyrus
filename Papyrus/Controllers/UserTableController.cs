@@ -8,7 +8,7 @@ namespace Papyrus.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+[Authorize(Roles = "Administrator,Moderator")]
 public class UserTableController : TableController<User, string>
 {
     private readonly IUserTableService service;

@@ -17,6 +17,7 @@
 @inject AuthenticationStateProvider authStateProvider
 @inject IStoreService store
 @inject IGroupService groupService
+@inject ICommonService CommonService
 
 <MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
 <MudDialogProvider CloseButton="true" />
@@ -62,6 +63,9 @@
 </MudLayout>
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; } = default!;
+
     private UserDTO? User { get; set; }
     private int? GroupId { get; set; }
     private string GroupTitle { get; set; } = "";
@@ -83,7 +87,7 @@
         authStateProvider.AuthenticationStateChanged += HandleAuthStateChange;
         navigator.LocationChanged += HandleLocationChange;
 
-        MenuItems = PapyrusMenu.Items;
+        MenuItems = PapyrusMenu.BuildMenuItems(CommonService, await authenticationStateTask);
 
         await base.OnInitializedAsync();
     }
@@ -155,7 +159,7 @@
 
         if (!isAuthenticated)
         {
-            var inTree = UriIsAuthenticated(PapyrusMenu.Items, uri);
+            var inTree = UriIsAuthenticated(MenuItems, uri);
 
             if (inTree)
             {

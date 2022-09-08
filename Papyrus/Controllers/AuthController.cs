@@ -21,27 +21,14 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("Login")]
-    public async Task<TokenDTO> Login([FromBody] LoginModel model)
-    {
-        return await authService.Login(model);
-    }
+    public async Task<TokenDTO> Login([FromBody] LoginModel model) => await authService.Login(model);
 
     [HttpPost("Register")]
-    public async Task Register([FromBody] RegistrationModel model)
-    {
-        await authService.Register(model);
-    }
+    public async Task Register([FromBody] RegistrationModel model) => await authService.Register(model);
 
     [HttpPut("Logout")]
-    public void Logout([FromBody] string clientId)
-    {
-        authService.Logout(clientId);
-    }
+    public void Logout([FromBody] string clientId) => authService.Logout(clientId);
 
-    [AllowAnonymous]
     [HttpGet("Refresh")]
-    public async Task<TokenDTO> Refresh([FromQuery] string refreshToken, [FromQuery] string clientId)
-    {
-        return await tokenService.Refresh(refreshToken, clientId);
-    }
+    public async Task<TokenDTO> Refresh([FromQuery] string refreshToken, [FromQuery] string clientId) => await tokenService.Refresh(refreshToken, clientId);
 }
