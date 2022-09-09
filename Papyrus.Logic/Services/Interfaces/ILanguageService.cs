@@ -12,4 +12,5 @@ public interface ILanguageService : IMapperRepository<Language, int>
     Language Default();
     T DefaultMapped<T>();
     string GetUserLangOrDefault();
+    string GetLangOrUserLang(string? lang);
 }

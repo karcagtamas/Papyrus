@@ -5,7 +5,6 @@ public class GroupRoleDTO : GroupRoleLightDTO
     public bool ReadOnly { get; set; }
 
     public bool GroupEdit { get; set; }
-    public bool GroupClose { get; set; }
 
     public bool ReadNoteList { get; set; }
     public bool ReadNote { get; set; }

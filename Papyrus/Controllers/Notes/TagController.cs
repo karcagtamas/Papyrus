@@ -4,7 +4,7 @@ using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
 
-namespace Papyrus.Controllers;
+namespace Papyrus.Controllers.Notes;
 
 [ApiController]
 [Route("api/[controller]")]

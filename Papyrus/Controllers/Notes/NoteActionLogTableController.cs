@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Notes.Interfaces;
 
-namespace Papyrus.Controllers;
+namespace Papyrus.Controllers.Notes;
 
 [ApiController]
 [Route("api/[controller]")]

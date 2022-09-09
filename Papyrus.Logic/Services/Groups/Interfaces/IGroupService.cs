@@ -12,6 +12,7 @@ public interface IGroupService : IMapperRepository<Group, int>
     GroupMemberRightsDTO GetMemberRights(int id);
     GroupRoleRightsDTO GetRoleRights(int id);
     GroupRole? GetUserRole(int id);
+    bool IsOwner(int id);
     void Close(int id);
     void Open(int id);
     void Remove(int id);

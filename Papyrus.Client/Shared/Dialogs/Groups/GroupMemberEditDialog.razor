@@ -35,7 +35,7 @@
 
     protected override async void OnInitialized()
     {
-        Roles = await GroupRoleService.GetLightByGroup(GroupId);
+        Roles = await GroupRoleService.GetLightTranslatedByGroup(GroupId);
         Member = await GroupMemberService.Get<GroupMemberDTO>(MemberId);
         await InvokeAsync(StateHasChanged);
 

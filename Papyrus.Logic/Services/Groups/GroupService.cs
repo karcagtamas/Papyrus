@@ -169,4 +169,18 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         var userId = Utils.GetRequiredCurrentUserId();
         return Get(id).Members.FirstOrDefault(x => x.UserId == userId)?.Role;
     }
+
+    public bool IsOwner(int id)
+    {
+        var group = Get(id);
+
+        var userId = Utils.GetCurrentUserId();
+
+        if (ObjectHelper.IsNull(userId))
+        {
+            return false;
+        }
+
+        return group.OwnerId == userId;
+    }
 }

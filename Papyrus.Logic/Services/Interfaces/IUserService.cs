@@ -14,6 +14,7 @@ public interface IUserService : IMapperRepository<User, string>
     User? GetByRefreshToken(string token, string clientId);
     T GetCurrent<T>();
     UserSettingDTO GetSettings(string id);
+    Task<bool> IsAdministrator();
     bool IsExist(string userName, string email, bool ignoreCurrent);
     void SetDisableStatus(UserDisableStatusModel statusModel);
     void UpdateImage(ImageModel model);

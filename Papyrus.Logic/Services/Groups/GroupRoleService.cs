@@ -71,7 +71,6 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             ReadOnly = true,
             IsDefault = false,
             GroupEdit = true,
-            GroupClose = true,
             ReadNoteList = true,
             ReadNote = true,
             CreateNote = true,
@@ -99,7 +98,6 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             ReadOnly = true,
             IsDefault = false,
             GroupEdit = true,
-            GroupClose = false,
             ReadNoteList = true,
             ReadNote = true,
             CreateNote = true,
@@ -127,7 +125,6 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             ReadOnly = true,
             IsDefault = true,
             GroupEdit = false,
-            GroupClose = false,
             ReadNoteList = true,
             ReadNote = true,
             CreateNote = true,
@@ -178,15 +175,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     {
         var roles = GetByGroup(groupId, textFilter);
 
-        string current;
-        if (ObjectHelper.IsNull(lang))
-        {
-            current = languageService.GetUserLangOrDefault();
-        }
-        else
-        {
-            current = lang;
-        }
+        string current = languageService.GetLangOrUserLang(lang);
 
         var translations = translationService.GetValues(TranslationSegment, current);
 
@@ -200,6 +189,19 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     }
 
     public List<GroupRoleLightDTO> GetLightTranslatedByGroup(int groupId, string? lang = null) => GetTranslatedByGroup(groupId, null, lang).Select(x => new GroupRoleLightDTO { Id = x.Id, Name = x.Name }).ToList();
+
+    public GroupRoleLightDTO GetLightTranslated(int id, string? lang = null)
+    {
+        var role = GetMapped<GroupRoleLightDTO>(id);
+
+        string current = languageService.GetLangOrUserLang(lang);
+
+        var translation = translationService.GetValue(role.Name, TranslationSegment, current);
+
+        role.Name = translation;
+
+        return role;
+    }
 
     public class RoleCreationResultItem
     {

@@ -1,11 +1,12 @@
-﻿using Papyrus.Shared.DTOs.Groups;
+﻿using Papyrus.Shared.Attributes;
+using Papyrus.Shared.DTOs.Groups;
 using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.Shared.Models.Groups;
 
 public class GroupRoleModel
 {
-    [Required(ErrorMessage = "Field is required")]
+    [LocalizedRequired(ErrorMessage = "Field is required")]
     public string Name { get; set; } = default!;
 
     [Required]
@@ -14,9 +15,6 @@ public class GroupRoleModel
 
     [Required]
     public bool GroupEdit { get; set; }
-
-    [Required]
-    public bool GroupClose { get; set; }
 
 
 
@@ -83,7 +81,6 @@ public class GroupRoleModel
         Name = dto.Name;
 
         GroupEdit = dto.GroupEdit;
-        GroupClose = dto.GroupClose;
 
         ReadNoteList = dto.ReadNoteList;
         ReadNote = dto.ReadNote;

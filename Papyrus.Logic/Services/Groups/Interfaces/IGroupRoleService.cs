@@ -12,5 +12,6 @@ public interface IGroupRoleService : IMapperRepository<GroupRole, int>
     List<GroupRoleDTO> GetTranslatedByGroup(int groupId, string? textFilter = null, string? lang = null);
     List<GroupRoleLightDTO> GetLightByGroup(int groupId);
     List<GroupRoleLightDTO> GetLightTranslatedByGroup(int groupId, string? lang = null);
+    GroupRoleLightDTO GetLightTranslated(int id, string? lang = null);
     bool Exists(int groupId, string name);
 }

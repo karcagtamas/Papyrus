@@ -71,7 +71,7 @@ public partial class GroupMembers : ComponentBase
             return;
         }
 
-        var userKeys = await GroupMemberService.GetMemberKeys(Table?.GetData().Select(x => x.ItemKey).ToList() ?? new());
+        var userKeys = await GroupMemberService.GetMemberKeys(GroupId, Table?.GetData().Select(x => x.ItemKey).ToList() ?? new());
 
         var parameters = new DialogParameters { { "Ignored", userKeys } };
 

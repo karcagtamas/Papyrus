@@ -27,12 +27,12 @@ public class GroupMemberService : HttpCall<int>, IGroupMemberService
         return Http.Get<List<GroupMemberDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public Task<List<string>> GetMemberKeys(List<int> memberIds)
+    public Task<List<string>> GetMemberKeys(int groupId, List<int> memberIds)
     {
         var queryParams = HttpQueryParameters.Build()
             .AddMultiple("memberIds", memberIds);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "UserKeys"))
+        var settings = new HttpSettings(Http.BuildUrl(Url, "UserKeys", groupId.ToString()))
             .AddQueryParams(queryParams);
 
         return Http.Get<List<string>>(settings).ExecuteWithResultOrElse(new());

@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.Authorization;
+using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.Models.Groups;
 
-namespace Papyrus.Controllers;
+namespace Papyrus.Controllers.Groups;
 
 [ApiController]
 [Route("api/[controller]")]
@@ -28,12 +28,12 @@ public class GroupController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<GroupDTO>> Get(int id)
     {
-        var group = groupService.GetMapped<GroupDTO>(id);
-
-        if (!await ReadCheck(group.Id))
+        if (!await ReadCheck(id))
         {
             return new EmptyResult();
         }
+
+        var group = groupService.GetMapped<GroupDTO>(id);
 
         return group;
     }

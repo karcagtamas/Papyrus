@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 
-namespace Papyrus.Controllers;
+namespace Papyrus.Controllers.Groups;
 
 [ApiController]
 [Route("api/[controller]")]

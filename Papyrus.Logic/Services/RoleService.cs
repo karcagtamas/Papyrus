@@ -24,15 +24,8 @@ public class RoleService : MapperRepository<Role, string, string>, IRoleService
     public List<RoleDTO> GetAllTranslated(string? lang = null)
     {
         var roles = GetAll();
-        string current;
-        if (ObjectHelper.IsNull(lang))
-        {
-            current = languageService.GetUserLangOrDefault();
-        }
-        else
-        {
-            current = lang;
-        }
+
+        string current = languageService.GetLangOrUserLang(lang);
 
         var translations = translationService.GetValues(TranslationSegment, current);
 

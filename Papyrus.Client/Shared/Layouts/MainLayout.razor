@@ -90,6 +90,8 @@
 
         MenuItems = PapyrusMenu.BuildMenuItems(Helper, await authenticationStateTask);
 
+        await InvokeAsync(StateHasChanged);
+
         await base.OnInitializedAsync();
     }
 

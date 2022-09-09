@@ -164,4 +164,16 @@ public class UserService : MapperRepository<User, string, string>, IUserService
 
         Persist();
     }
+
+    public async Task<bool> IsAdministrator()
+    {
+        var user = Utils.GetCurrentUser<User>();
+
+        if (ObjectHelper.IsNull(user))
+        {
+            return false;
+        }
+
+        return await userManager.IsInRoleAsync(user, "Administrator");
+    }
 }

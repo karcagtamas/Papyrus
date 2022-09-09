@@ -29,15 +29,8 @@ public class LanguageService : MapperRepository<Language, int, string>, ILanguag
     public List<LanguageDTO> GetAllTranslated(string? lang = null)
     {
         var languages = GetAll();
-        string current;
-        if (ObjectHelper.IsNull(lang))
-        {
-            current = GetUserLangOrDefault();
-        }
-        else
-        {
-            current = lang;
-        }
+
+        string current = GetLangOrUserLang(lang);
 
         var translations = translationService.GetValues(TranslationSegment, current);
 
@@ -53,6 +46,8 @@ public class LanguageService : MapperRepository<Language, int, string>, ILanguag
     }
 
     public string GetUserLangOrDefault() => GetUserLanguage()?.ShortName ?? Default().ShortName;
+
+    public string GetLangOrUserLang(string? lang) => ObjectHelper.OrElse(lang, GetUserLangOrDefault());
 
     public LanguageDTO? GetUserLanguage()
     {

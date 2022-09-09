@@ -1,10 +1,14 @@
-﻿using KarcagS.Common.Tools.Table;
+﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Helpers;
+using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities;
+using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
 
 namespace Papyrus.Logic.Services.Groups;
@@ -12,10 +16,14 @@ namespace Papyrus.Logic.Services.Groups;
 public class GroupActionLogTableService : TableService<ActionLog, long>, IGroupActionLogTableService
 {
     private readonly IGroupActionLogService groupActionLogService;
+    private readonly IAuthorizationService authorization;
+    private readonly IUtilsService<string> utils;
 
-    public GroupActionLogTableService(IGroupActionLogService groupActionLogService)
+    public GroupActionLogTableService(IGroupActionLogService groupActionLogService, IAuthorizationService authorization, IUtilsService<string> utils)
     {
         this.groupActionLogService = groupActionLogService;
+        this.authorization = authorization;
+        this.utils = utils;
         Initialize();
     }
 
@@ -41,7 +49,7 @@ public class GroupActionLogTableService : TableService<ActionLog, long>, IGroupA
 
     public override DataSource<ActionLog, long> BuildDataSource()
     {
-        return ListTableDataSource<ActionLog, long>.Build((query) => groupActionLogService.GetQuery(int.Parse(query.ExtraParams["groupId"].ToString() ?? "0")))
+        return ListTableDataSource<ActionLog, long>.Build((query) => groupActionLogService.GetQuery(ExtractGroupId(query)))
             .OrderBy(x => x.Creation, OrderDirection.Descend)
             .ApplyOrdering();
     }
@@ -53,4 +61,14 @@ public class GroupActionLogTableService : TableService<ActionLog, long>, IGroupA
             .AddConfiguration(BuildConfiguration())
             .Build();
     }
+    public override Task<bool> Authorize(QueryModel query) => ReadCheck(ExtractGroupId(query));
+
+    private async Task<bool> ReadCheck(int id)
+    {
+        var result = await authorization.AuthorizeAsync(utils.GetRequiredUserPrincipal(), id, GroupPolicies.ReadGroupLogs.Requirements);
+
+        return result.Succeeded;
+    }
+
+    private static int ExtractGroupId(QueryModel query) => int.Parse(query.ExtraParams["groupId"].ToString() ?? "0");
 }

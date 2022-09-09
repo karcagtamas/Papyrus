@@ -24,10 +24,11 @@ public class GroupRoleService : HttpCall<int>, IGroupRoleService
         return Http.Get<bool>(settings).ExecuteWithResultOrElse(false);
     }
 
-    public Task<List<GroupRoleDTO>> GetByGroup(int groupId, string? textFilter = null)
+    public Task<List<GroupRoleDTO>> GetTranslatedByGroup(int groupId, string? textFilter = null, string? lang = null)
     {
         var pathParams = HttpPathParameters.Build()
-            .Add(groupId);
+            .Add(groupId)
+            .Add("Translated");
 
         var queryParams = HttpQueryParameters.Build()
             .Add("textFilter", textFilter);
@@ -39,15 +40,29 @@ public class GroupRoleService : HttpCall<int>, IGroupRoleService
         return Http.Get<List<GroupRoleDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public Task<List<GroupRoleLightDTO>> GetLightByGroup(int groupId)
+    public Task<List<GroupRoleLightDTO>> GetLightTranslatedByGroup(int groupId, string? lang = null)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId)
-            .Add("Light");
+            .Add("Light")
+            .Add("Translated");
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
             .AddPathParams(pathParams);
 
         return Http.Get<List<GroupRoleLightDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
+
+    public Task<GroupRoleLightDTO?> GetLightTranslated(int id, string? lang = null)
+    {
+        var pathParams = HttpPathParameters.Build()
+            .Add(id)
+            .Add("Light")
+            .Add("Translated");
+
+        var settings = new HttpSettings(Http.BuildUrl(Url))
+            .AddPathParams(pathParams);
+
+        return Http.Get<GroupRoleLightDTO>(settings).ExecuteWithResult();
     }
 }

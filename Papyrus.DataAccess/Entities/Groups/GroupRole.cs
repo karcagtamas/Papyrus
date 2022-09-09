@@ -27,9 +27,6 @@ public class GroupRole : IEntity<int>
     [Required]
     public bool GroupEdit { get; set; }
 
-    [Required]
-    public bool GroupClose { get; set; }
-
 
 
     [Required]

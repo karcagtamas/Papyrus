@@ -1,9 +1,14 @@
-﻿using KarcagS.Common.Tools.Table;
+﻿using DocumentFormat.OpenXml.Drawing;
+using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
+using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared;
@@ -15,13 +20,17 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
     private readonly IGroupRoleService groupRoleService;
     private readonly ITranslationService translationService;
     private readonly ILanguageService languageService;
+    private readonly IAuthorizationService authorization;
+    private readonly IUtilsService<string> utils;
     private readonly string TranslationSegment = "GroupRole";
 
-    public GroupRoleTableService(IGroupRoleService groupRoleService, ITranslationService translationService, ILanguageService languageService)
+    public GroupRoleTableService(IGroupRoleService groupRoleService, ITranslationService translationService, ILanguageService languageService, IAuthorizationService authorization, IUtilsService<string> utils)
     {
         this.groupRoleService = groupRoleService;
         this.translationService = translationService;
         this.languageService = languageService;
+        this.authorization = authorization;
+        this.utils = utils;
         Initialize();
     }
 
@@ -41,7 +50,6 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
                 .SetAlignment(Alignment.Center)
                 .SetWidth(40))
             .AddColumn(BuildColumn("group-edit", "Group Edit", (obj) => obj.GroupEdit, "TableColumn.GroupEdit"))
-            .AddColumn(BuildColumn("group-close", "Group Close", (obj) => obj.GroupClose, "TableColumn.GroupClose"))
             .AddColumn(BuildColumn("listing-notes", "Listing Notes", (obj) => obj.ReadNoteList, "TableColumn.ReadNotes"))
             .AddColumn(BuildColumn("read-note", "Read Note", (obj) => obj.ReadNote, "TableColumn.ReadNote"))
             .AddColumn(BuildColumn("create-note", "Create Note", (obj) => obj.CreateNote, "TableColumn.CreateNote"))
@@ -71,7 +79,6 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
                 return col.Key switch
                 {
                     "group-edit" => GetTag(obj.GroupEdit),
-                    "group-close" => GetTag(obj.GroupClose),
                     "listing-notes" => GetTag(obj.ReadNoteList),
                     "read-note" => GetTag(obj.ReadNote),
                     "create-note" => GetTag(obj.CreateNote),
@@ -92,7 +99,7 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
 
     public override DataSource<GroupRole, int> BuildDataSource()
     {
-        return ListTableDataSource<GroupRole, int>.Build((query) => groupRoleService.GetListAsQuery(x => x.GroupId == int.Parse(query.ExtraParams["groupId"].ToString() ?? "0")))
+        return ListTableDataSource<GroupRole, int>.Build((query) => groupRoleService.GetListAsQuery(x => x.GroupId == ExtractGroupId(query)))
             .OrderBy(x => x.ReadOnly, OrderDirection.Descend)
             .ThenBy(x => x.Id)
             .ApplyOrdering()
@@ -106,6 +113,17 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
             .AddConfiguration(BuildConfiguration())
             .Build();
     }
+
+    public override Task<bool> Authorize(QueryModel query) => ReadCheck(ExtractGroupId(query));
+
+    private async Task<bool> ReadCheck(int id)
+    {
+        var result = await authorization.AuthorizeAsync(utils.GetRequiredUserPrincipal(), id, GroupPolicies.ReadGroupRoles.Requirements);
+
+        return result.Succeeded;
+    }
+
+    private static int ExtractGroupId(QueryModel query) => int.Parse(query.ExtraParams["groupId"].ToString() ?? "0");
 
     private static Column<GroupRole, int> BuildColumn(string key, string title, Func<GroupRole, object> getter, string? resourceKey = null)
     {
