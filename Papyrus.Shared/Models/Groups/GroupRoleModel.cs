@@ -19,10 +19,10 @@ public class GroupRoleModel
 
 
     [Required]
-    public bool ReadNoteList { get; set; }
+    public bool ReadNoteList { get; set; } = true;
 
     [Required]
-    public bool ReadNote { get; set; }
+    public bool ReadNote { get; set; } = true;
 
     [Required]
     public bool CreateNote { get; set; }
@@ -36,7 +36,7 @@ public class GroupRoleModel
 
 
     [Required]
-    public bool ReadMemberList { get; set; }
+    public bool ReadMemberList { get; set; } = true;
 
     [Required]
     public bool EditMemberList { get; set; }
@@ -60,7 +60,7 @@ public class GroupRoleModel
 
 
     [Required]
-    public bool ReadTagList { get; set; }
+    public bool ReadTagList { get; set; } = true;
 
     [Required]
     public bool EditTagList { get; set; }

@@ -8,36 +8,42 @@
     <MudTextField Class="mb-5" T="string" Label="@L["Field.Name"]" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
     <MudDivider />
+    <MudText Class="mt-1">@L["Group.Group"]</MudText>
     <div class="d-flex flex-row">
         <MudCheckBox Label="@L["Field.GroupEdit"]" For="@(() => Model.GroupEdit)" @bind-Checked="Model.GroupEdit" />
     </div>
     <MudDivider />
+    <MudText Class="mt-1">@L["Group.Notes"]</MudText>
     <div class="d-flex flex-row">
         <MudCheckBox Label="@L["Field.ReadNotes"]" For="@(() => Model.ReadNoteList)" @bind-Checked="Model.ReadNoteList" />
-        <MudCheckBox Label="@L["Field.ReadNote"]" For="@(() => Model.ReadNote)" @bind-Checked="Model.ReadNote" />
-        <MudCheckBox Label="@L["Field.CreateNote"]" For="@(() => Model.CreateNote)" @bind-Checked="Model.CreateNote" />
-        <MudCheckBox Label="@L["Field.DeleteNote"]" For="@(() => Model.DeleteNote)" @bind-Checked="Model.DeleteNote" />
-        <MudCheckBox Label="@L["Field.EditNote"]" For="@(() => Model.EditNote)" @bind-Checked="Model.EditNote" />
+        <MudCheckBox T="bool" Label="@L["Field.ReadNote"]" For="@(() => Model.ReadNote)" Checked="Model.ReadNote" CheckedChanged="ChangeNoteReadStatus" />
+        <MudCheckBox T="bool" Label="@L["Field.CreateNote"]" For="@(() => Model.CreateNote)" Checked="Model.CreateNote" CheckedChanged="@((v) => ChangeNoteEditStatus(v, "create"))" />
+        <MudCheckBox T="bool" Label="@L["Field.EditNote"]" For="@(() => Model.EditNote)" Checked="Model.EditNote" CheckedChanged="@((v) => ChangeNoteEditStatus(v, "edit"))" />
+        <MudCheckBox T="bool" Label="@L["Field.DeleteNote"]" For="@(() => Model.DeleteNote)" Checked="Model.DeleteNote" CheckedChanged="@((v) => ChangeNoteEditStatus(v, "delete"))" />
     </div>
     <MudDivider />
+    <MudText Class="mt-1">@L["Group.Members"]</MudText>
     <div class="d-flex flex-row">
-        <MudCheckBox Label="@L["Field.ReadMembers"]" For="@(() => Model.ReadMemberList)" @bind-Checked="Model.ReadMemberList" />
-        <MudCheckBox Label="@L["Field.EditMembers"]" For="@(() => Model.EditMemberList)" @bind-Checked="Model.EditMemberList" />
+        <MudCheckBox T="bool" Label="@L["Field.ReadMembers"]" For="@(() => Model.ReadMemberList)" Checked="Model.ReadMemberList" CheckedChanged="ChangeMemberReadStatus" />
+        <MudCheckBox T="bool" Label="@L["Field.EditMembers"]" For="@(() => Model.EditMemberList)" Checked="Model.EditMemberList" CheckedChanged="ChangeMemberEditStatus" />
     </div>
     <MudDivider />
+    <MudText Class="mt-1">@L["Group.Roles"]</MudText>
     <div class="d-flex flex-row">
-        <MudCheckBox Label="@L["Field.ReadRoles"]" For="@(() => Model.ReadRoleList)" @bind-Checked="Model.ReadRoleList" />
-        <MudCheckBox Label="@L["Field.EditRoles"]" For="@(() => Model.EditRoleList)" @bind-Checked="Model.EditRoleList" />
+        <MudCheckBox T="bool" Label="@L["Field.ReadRoles"]" For="@(() => Model.ReadRoleList)" Checked="Model.ReadRoleList" CheckedChanged="ChangeRoleReadStatus" />
+        <MudCheckBox T="bool" Label="@L["Field.EditRoles"]" For="@(() => Model.EditRoleList)" Checked="Model.EditRoleList" CheckedChanged="ChangeRoleEditStatus" />
     </div>
     <MudDivider />
+    <MudText Class="mt-1">@L["Group.Logs"]</MudText>
     <div class="d-flex flex-row">
         <MudCheckBox Label="@L["Field.ReadLogs"]" For="@(() => Model.ReadGroupActionLog)" @bind-Checked="Model.ReadGroupActionLog" />
         <MudCheckBox Label="@L["Field.ReadNoteLogs"]" For="@(() => Model.ReadNoteActionLog)" @bind-Checked="Model.ReadNoteActionLog" />
     </div>
     <MudDivider />
+    <MudText Class="mt-1">@L["Group.Tags"]</MudText>
     <div class="d-flex flex-row">
-        <MudCheckBox Label="@L["Field.ReadTags"]" For="@(() => Model.ReadTagList)" @bind-Checked="Model.ReadTagList" />
-        <MudCheckBox Label="@L["Field.EditTags"]" For="@(() => Model.EditTagList)" @bind-Checked="Model.EditTagList" />
+        <MudCheckBox T="bool" Label="@L["Field.ReadTags"]" For="@(() => Model.ReadTagList)" Checked="Model.ReadTagList" CheckedChanged="ChangeTagReadStatus" />
+        <MudCheckBox T="bool" Label="@L["Field.EditTags"]" For="@(() => Model.EditTagList)" Checked="Model.EditTagList" CheckedChanged="ChangeTagEditStatus" />
     </div>
 </EditorDialog>
 
@@ -102,5 +108,97 @@
         }
 
         return true;
+    }
+
+    private void ChangeNoteReadStatus(bool value)
+    {
+        Model.ReadNote = value;
+        if (!value && (Model.EditNote || Model.CreateNote || Model.DeleteNote))
+        {
+            Model.EditNote = value;
+            Model.CreateNote = value;
+            Model.DeleteNote = value;
+        }
+    }
+
+    private void ChangeNoteEditStatus(bool value, string field)
+    {
+        switch (field)
+        {
+            case "edit":
+                Model.EditNote = value;
+                break;
+            case "delete":
+                Model.DeleteNote = value;
+                break;
+            case "create":
+                Model.CreateNote = value;
+                break;
+        }
+
+        if (value && !Model.ReadNote)
+        {
+            Model.ReadNote = value;
+        }
+    }
+
+    private void ChangeMemberReadStatus(bool value)
+    {
+        Model.ReadMemberList = value;
+
+        if (!value)
+        {
+            Model.EditMemberList = false;
+        }
+    }
+
+    private void ChangeMemberEditStatus(bool value)
+    {
+        Model.EditMemberList = value;
+
+        if (value)
+        {
+            Model.ReadMemberList = true;
+        }
+    }
+
+    private void ChangeRoleReadStatus(bool value)
+    {
+        Model.ReadRoleList = value;
+
+        if (!value)
+        {
+            Model.EditRoleList = false;
+        }
+    }
+
+    private void ChangeRoleEditStatus(bool value)
+    {
+        Model.EditRoleList = value;
+
+        if (value)
+        {
+            Model.ReadRoleList = true;
+        }
+    }
+
+    private void ChangeTagReadStatus(bool value)
+    {
+        Model.ReadTagList = value;
+
+        if (!value)
+        {
+            Model.EditTagList = false;
+        }
+    }
+
+    private void ChangeTagEditStatus(bool value)
+    {
+        Model.EditTagList = value;
+
+        if (value)
+        {
+            Model.ReadTagList = true;
+        }
     }
 }

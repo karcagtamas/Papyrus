@@ -168,6 +168,24 @@
   <data name="Field.ReadTags" xml:space="preserve">
     <value>Címkék Olvasása</value>
   </data>
+  <data name="Group.Group" xml:space="preserve">
+    <value>Fő Jogosultságok</value>
+  </data>
+  <data name="Group.Logs" xml:space="preserve">
+    <value>Log Jogosultságok</value>
+  </data>
+  <data name="Group.Members" xml:space="preserve">
+    <value>Tag Jogosultságok</value>
+  </data>
+  <data name="Group.Notes" xml:space="preserve">
+    <value>Jegyzet Jogosultságok</value>
+  </data>
+  <data name="Group.Roles" xml:space="preserve">
+    <value>Szerepkör Jogosultságok</value>
+  </data>
+  <data name="Group.Tags" xml:space="preserve">
+    <value>Címke Jogosultságok</value>
+  </data>
   <data name="Message.AlreadyExists" xml:space="preserve">
     <value>Csoport Szerepkör már létezik ezzel a névvel [{0}]</value>
   </data>

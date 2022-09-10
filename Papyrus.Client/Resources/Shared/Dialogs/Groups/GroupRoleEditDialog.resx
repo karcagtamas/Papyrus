@@ -168,6 +168,24 @@
   <data name="Field.ReadTags" xml:space="preserve">
     <value>Read Tags</value>
   </data>
+  <data name="Group.Group" xml:space="preserve">
+    <value>Main Rights</value>
+  </data>
+  <data name="Group.Logs" xml:space="preserve">
+    <value>Action Log Rights</value>
+  </data>
+  <data name="Group.Members" xml:space="preserve">
+    <value>Member Rights</value>
+  </data>
+  <data name="Group.Notes" xml:space="preserve">
+    <value>Note Rights</value>
+  </data>
+  <data name="Group.Roles" xml:space="preserve">
+    <value>Role Rights</value>
+  </data>
+  <data name="Group.Tags" xml:space="preserve">
+    <value>Tag Rights</value>
+  </data>
   <data name="Message.AlreadyExists" xml:space="preserve">
     <value>Group Role is already exists with this name [{0}]</value>
   </data>
