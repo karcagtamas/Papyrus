@@ -1,4 +1,5 @@
-﻿using Papyrus.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
@@ -44,6 +45,7 @@ public class NoteActionLogService : INoteActionLogService
 
         return context.Set<ActionLog>()
             .AsQueryable()
-            .Where(x => x.Key == noteId && x.Segment == NoteSegment && x.Language == lang);
+            .Where(x => x.Key == noteId && x.Segment == NoteSegment && x.Language == lang)
+            .Include(x => x.Performer);
     }
 }

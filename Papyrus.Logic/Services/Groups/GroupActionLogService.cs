@@ -1,4 +1,5 @@
-﻿using Papyrus.DataAccess;
+﻿using Microsoft.EntityFrameworkCore;
+using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
@@ -44,6 +45,7 @@ public class GroupActionLogService : IGroupActionLogService
 
         return context.Set<ActionLog>()
             .AsQueryable()
-            .Where(x => x.Key == groupId.ToString() && x.Segment == GroupSegment && x.Language == lang);
+            .Where(x => x.Key == groupId.ToString() && x.Segment == GroupSegment && x.Language == lang)
+            .Include(x => x.Performer);
     }
 }
