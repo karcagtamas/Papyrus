@@ -139,17 +139,22 @@
             GroupMenuItems = new();
             store.Remove("GroupId");
             store.Remove("GroupTitle");
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
         }
         else
         {
-            GroupId = id;
-            var group = await groupService.Get<GroupDTO>((int)GroupId);
-            GroupTitle = group?.Name ?? "";
-            GroupMenuItems = PapyrusMenu.BuildGroupItems((int)GroupId);
-            store.Add("GroupId", (int)GroupId);
-            store.Add("GroupTitle", group?.Name ?? "Group");
-            StateHasChanged();
+            if (GroupId != id)
+            {
+                GroupId = id;
+                var group = await groupService.Get<GroupDTO>((int)GroupId);
+                GroupTitle = group?.Name ?? "";
+
+                var rights = await groupService.GetPageRights((int)GroupId);
+                GroupMenuItems = PapyrusMenu.BuildGroupItems((int)GroupId, rights);
+                store.Add("GroupId", (int)GroupId);
+                store.Add("GroupTitle", group?.Name ?? "Group");
+                await InvokeAsync(StateHasChanged);
+            }
         }
     }
 

@@ -1,16 +1,24 @@
 ﻿@page "/groups/{GroupId:int}/roles"
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
+@using Papyrus.Client.Services.Groups.Interfaces
 @attribute [Authorize]
 @inject IStringLocalizer<GroupRoles> L
+@inject IGroupService GroupService
+@inject IGroupRoleTableService GroupRoleTableService
+@inject IHelperService HelperService
 
 <GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    @if (Rights.CanCreate)
+    @if (PageEnabled)
     {
-        <ActionBar>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
-        </ActionBar>
+        @if (Rights.CanCreate)
+        {
+            <ActionBar>
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
+            </ActionBar>
+        }
+        <Table @ref="Table" TKey="int" ReadOnly="!Rights.CanEdit" Service="GroupRoleTableService" InitialParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" Localizer="L" />
     }
-    <Table @ref="Table" TKey="int" ReadOnly="!Rights.CanEdit" Service="GroupRoleTableService" InitialParams="ExtraParams" Style="Style" OnRowClick="RowClickHandler" Localizer="L" />
 </div>

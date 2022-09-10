@@ -177,6 +177,18 @@
   <data name="Server.Message.Fatal" xml:space="preserve">
     <value>Something bad happened. Please try again later.</value>
   </data>
+  <data name="Server.Message.MissingCloseRight" xml:space="preserve">
+    <value>Not have permission to Close this group.</value>
+  </data>
+  <data name="Server.Message.MissingOpenRight" xml:space="preserve">
+    <value>Not have permission to Open this group.</value>
+  </data>
+  <data name="Server.Message.MissingRemoveRight" xml:space="preserve">
+    <value>Not have permission to Remove this group.</value>
+  </data>
+  <data name="Server.Message.NotAuthorized" xml:space="preserve">
+    <value>Not authorized.</value>
+  </data>
   <data name="Server.Message.RequestCannotProcessed" xml:space="preserve">
     <value>Request cannot be processed.</value>
   </data>

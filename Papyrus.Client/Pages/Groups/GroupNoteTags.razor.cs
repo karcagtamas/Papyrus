@@ -2,7 +2,7 @@
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Client.Shared.Components.Notes;
-using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.DTOs.Notes;
 
 namespace Papyrus.Client.Pages.Groups;

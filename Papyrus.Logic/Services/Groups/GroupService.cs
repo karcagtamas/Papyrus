@@ -7,7 +7,9 @@ using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.Logic.Services.Groups;
@@ -17,12 +19,14 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     private readonly IGroupRoleService groupRoleService;
     private readonly IGroupMemberService groupMemberService;
     private readonly IGroupActionLogService groupActionLogService;
+    private readonly IUserService userService;
 
-    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService, IGroupMemberService groupMemberService, IGroupActionLogService groupActionLogService) : base(context, loggerService, utilsService, mapper, "Group")
+    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService, IGroupMemberService groupMemberService, IGroupActionLogService groupActionLogService, IUserService userService) : base(context, loggerService, utilsService, mapper, "Group")
     {
         this.groupRoleService = groupRoleService;
         this.groupMemberService = groupMemberService;
         this.groupActionLogService = groupActionLogService;
+        this.userService = userService;
     }
 
     public List<GroupListDTO> GetUserList(bool hideClosed = false)
@@ -41,7 +45,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         var id = base.CreateFromModel(model, doPersist);
 
         var result = groupRoleService.CreateDefaultRoles(id);
-        var admin = ObjectHelper.OrElseThrow(result.FirstOrDefault(x => x.IsAdministration), () => new ServerException("Admin role not found"));
+        var admin = ObjectHelper.OrElseThrow(result.FirstOrDefault(x => x.IsAdministration), () => new ArgumentException("Admin role not found"));
 
         // Add current user as administrator
         var member = new GroupMember
@@ -74,13 +78,12 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         groupActionLogService.AddActionLog(entity.Id, userId, GroupActionLogType.DataEdit);
     }
 
-    public void Close(int id)
+    public async Task Close(int id)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
 
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
-
-        ExceptionHelper.Check(IsClosableForUser(group, userId), "Not have permission to Close this group.");
+        ExceptionHelper.Check(!group.IsClosed && await HasFullAccess(group, userId), "Not have permission to Close this group.", "Server.Message.MissingCloseRight");
 
         group.IsClosed = true;
         Update(group);
@@ -88,27 +91,29 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Close);
     }
 
-    public GroupRightsDTO GetRights(int id)
+    public async Task<GroupRightsDTO> GetRights(int id)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
+        var hasFullAccess = await HasFullAccess(group, userId);
 
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+        var role = GetGroupRole(group, userId);
 
         return new GroupRightsDTO
         {
-            CanClose = IsClosableForUser(group, userId),
-            CanOpen = IsOpenableForUser(group, userId),
-            CanRemove = IsRemovableForUser(group, userId)
+            CanClose = hasFullAccess && !group.IsClosed,
+            CanOpen = hasFullAccess && group.IsClosed,
+            CanRemove = hasFullAccess,
+            CanEdit = !group.IsClosed && (hasFullAccess || (role?.GroupEdit ?? false))
         };
     }
 
-    public void Open(int id)
+    public async Task Open(int id)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
 
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
-
-        ExceptionHelper.Check(IsOpenableForUser(group, userId), "Not have permission to Open this group.");
+        ExceptionHelper.Check(group.IsClosed && await HasFullAccess(group, userId), "Not have permission to Open this group.", "Server.Message.MissingOpenRight");
 
         group.IsClosed = false;
         Update(group);
@@ -116,53 +121,106 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Open);
     }
 
-    public void Remove(int id)
+    public async Task Remove(int id)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
 
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
-
-        ExceptionHelper.Check(IsRemovableForUser(group, userId), "Not have permission to Remove this group.");
+        ExceptionHelper.Check(await HasFullAccess(group, userId), "Not have permission to Remove this group.", "Server.Message.MissingRemoveRight");
 
         Delete(group);
     }
-    public GroupTagRightsDTO GetTagRights(int id)
+    public async Task<GroupTagRightsDTO> GetTagRights(int id)
     {
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+        var userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
+
+        if (await HasFullAccess(group, userId))
+        {
+            return new GroupTagRightsDTO
+            {
+                CanCreate = !group.IsClosed,
+                CanEdit = !group.IsClosed,
+                CanRemove = !group.IsClosed,
+                CanView = true
+            };
+        }
+
+        var role = GetGroupRole(group, userId);
+
+        if (ObjectHelper.IsNull(role))
+        {
+            return new GroupTagRightsDTO();
+        }
 
         return new GroupTagRightsDTO
         {
-            CanCreate = !group.IsClosed,
-            CanEdit = !group.IsClosed,
-            CanRemove = !group.IsClosed
+            CanCreate = !group.IsClosed && role.EditTagList,
+            CanEdit = !group.IsClosed && role.EditTagList,
+            CanRemove = !group.IsClosed && role.EditTagList,
+            CanView = role.ReadTagList || role.EditTagList
         };
     }
 
-    public GroupMemberRightsDTO GetMemberRights(int id)
+    public async Task<GroupMemberRightsDTO> GetMemberRights(int id)
     {
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+        var userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
+
+        if (await HasFullAccess(group, userId))
+        {
+            return new GroupMemberRightsDTO
+            {
+                CanAdd = !group.IsClosed,
+                CanEdit = !group.IsClosed,
+                CanView = true
+            };
+        }
+
+        var role = GetGroupRole(group, userId);
+
+        if (ObjectHelper.IsNull(role))
+        {
+            return new GroupMemberRightsDTO();
+        }
 
         return new GroupMemberRightsDTO
         {
-            CanAdd = !group.IsClosed,
-            CanEdit = !group.IsClosed
+            CanAdd = !group.IsClosed && role.EditMemberList,
+            CanEdit = !group.IsClosed && role.EditMemberList,
+            CanView = role.ReadMemberList || role.EditMemberList
         };
     }
 
-    public GroupRoleRightsDTO GetRoleRights(int id)
+    public async Task<GroupRoleRightsDTO> GetRoleRights(int id)
     {
-        Group group = ObjectHelper.OrElseThrow(Get(id), () => new ServerException("Group not found"));
+        var userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
+
+        if (await HasFullAccess(group, userId))
+        {
+            return new GroupRoleRightsDTO
+            {
+                CanCreate = !group.IsClosed,
+                CanEdit = !group.IsClosed,
+                CanView = true,
+            };
+        }
+
+        var role = GetGroupRole(group, userId);
+
+        if (ObjectHelper.IsNull(role))
+        {
+            return new GroupRoleRightsDTO();
+        }
 
         return new GroupRoleRightsDTO
         {
-            CanCreate = !group.IsClosed,
-            CanEdit = !group.IsClosed
+            CanCreate = !group.IsClosed && role.EditRoleList,
+            CanEdit = !group.IsClosed && role.EditRoleList,
+            CanView = role.ReadRoleList || role.EditRoleList
         };
     }
-
-    private static bool IsClosableForUser(Group group, string userId) => group.OwnerId == userId && !group.IsClosed;
-    private static bool IsOpenableForUser(Group group, string userId) => group.OwnerId == userId && group.IsClosed;
-    private static bool IsRemovableForUser(Group group, string userId) => group.OwnerId == userId;
 
     public GroupRole? GetUserRole(int id)
     {
@@ -170,7 +228,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         return Get(id).Members.FirstOrDefault(x => x.UserId == userId)?.Role;
     }
 
-    public bool IsOwner(int id)
+    public bool IsCurrentOwner(int id)
     {
         var group = Get(id);
 
@@ -182,5 +240,49 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         }
 
         return group.OwnerId == userId;
+    }
+
+    public async Task<GroupPageRightsDTO> GetPageRights(int id)
+    {
+        var userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
+
+        if (await HasFullAccess(group, userId))
+        {
+            return new GroupPageRightsDTO(true);
+        }
+
+        var role = GetGroupRole(group, userId);
+
+        if (ObjectHelper.IsNull(role))
+        {
+            return new GroupPageRightsDTO();
+        }
+
+        return new GroupPageRightsDTO
+        {
+            LogPageEnabled = role.ReadGroupActionLog,
+            MemberPageEnabled = role.ReadMemberList || role.EditMemberList,
+            RolePageEnabled = role.ReadRoleList || role.EditRoleList
+        };
+    }
+
+    private GroupRole? GetGroupRole(Group group, string userId)
+    {
+        var roleId = group.Members.FirstOrDefault(x => x.UserId == userId)?.RoleId;
+
+        if (ObjectHelper.IsNull(roleId))
+        {
+            return null;
+        }
+
+        return groupRoleService.Get((int)roleId);
+    }
+
+    private async Task<bool> HasFullAccess(Group group, string userId)
+    {
+        var admin = await userService.IsAdministrator();
+
+        return admin || group.OwnerId == userId;
     }
 }

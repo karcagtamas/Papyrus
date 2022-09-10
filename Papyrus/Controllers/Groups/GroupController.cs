@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.Models.Groups;
 
 namespace Papyrus.Controllers.Groups;
@@ -57,6 +58,17 @@ public class GroupController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("{id}/Rights/Pages")]
+    public async Task<ActionResult<GroupPageRightsDTO>> GetPageRights(int id)
+    {
+        if (!await ReadCheck(id))
+        {
+            return new EmptyResult();
+        }
+
+        return await groupService.GetPageRights(id);
+    }
+
     [HttpGet("{id}/Rights")]
     public async Task<ActionResult<GroupRightsDTO>> GetRights(int id)
     {
@@ -65,7 +77,7 @@ public class GroupController : ControllerBase
             return new EmptyResult();
         }
 
-        return groupService.GetRights(id);
+        return await groupService.GetRights(id);
     }
 
     [HttpGet("{id}/Rights/Tag")]
@@ -76,7 +88,7 @@ public class GroupController : ControllerBase
             return new EmptyResult();
         }
 
-        return groupService.GetTagRights(id);
+        return await groupService.GetTagRights(id);
     }
 
     [HttpGet("{id}/Rights/Member")]
@@ -87,7 +99,7 @@ public class GroupController : ControllerBase
             return new EmptyResult();
         }
 
-        return groupService.GetMemberRights(id);
+        return await groupService.GetMemberRights(id);
     }
 
     [HttpGet("{id}/Rights/Role")]
@@ -98,7 +110,7 @@ public class GroupController : ControllerBase
             return new EmptyResult();
         }
 
-        return groupService.GetRoleRights(id);
+        return await groupService.GetRoleRights(id);
     }
 
     [HttpPut("{id}/Close")]
@@ -109,7 +121,7 @@ public class GroupController : ControllerBase
             return new EmptyResult();
         }
 
-        groupService.Close(id);
+        await groupService.Close(id);
 
         return Ok();
     }
@@ -122,7 +134,7 @@ public class GroupController : ControllerBase
             return new EmptyResult();
         }
 
-        groupService.Open(id);
+        await groupService.Open(id);
 
         return Ok();
     }
@@ -135,7 +147,7 @@ public class GroupController : ControllerBase
             return new EmptyResult();
         }
 
-        groupService.Remove(id);
+        await groupService.Remove(id);
 
         return Ok();
     }

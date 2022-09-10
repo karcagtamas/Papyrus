@@ -1,6 +1,12 @@
 ﻿@page "/groups/{GroupId:int}"
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using Papyrus.Client.Services.Groups.Interfaces
 @attribute [Authorize]
 @inject IStringLocalizer<GroupData> L
+@inject IGroupService GroupService
+@inject IConfirmService ConfirmService
+@inject IHelperService HelperService
+@inject NavigationManager Navigation
 
 <GroupPageTitle PageName="@L["PageName"]" />
 
@@ -14,7 +20,7 @@
             }
             else
             {
-                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">@L["EditAction"]</MudButton>
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit" Disabled="!Rights.CanEdit">@L["EditAction"]</MudButton>
                 <MudButton Color="Color.Warning" Variant="Variant.Filled" Disabled="!Rights.CanClose" OnClick="Close">@L["CloseAction"]</MudButton>
             }
             <MudButton Color="Color.Error" Variant="Variant.Filled" Disabled="!Rights.CanRemove" OnClick="Remove">@L["RemoveAction"]</MudButton>

@@ -1,12 +1,10 @@
 ﻿using KarcagS.Blazor.Common.Components.Table;
-using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Groups;
 using Papyrus.Shared;
-using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 
 namespace Papyrus.Client.Pages.Groups;
 
@@ -15,25 +13,21 @@ public partial class GroupRoles : ComponentBase
     [Parameter]
     public int GroupId { get; set; }
 
-    [Inject]
-    private IGroupRoleTableService GroupRoleTableService { get; set; } = default!;
-
     private Dictionary<string, object> ExtraParams { get; set; } = new();
-
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
-
-    [Inject]
-    private IGroupService GroupService { get; set; } = default!;
-
-    [Inject]
-    private IHelperService HelperService { get; set; } = default!;
-
     private Table<int>? Table { get; set; }
-
     private GroupRoleRightsDTO Rights { get; set; } = new();
+    private bool PageEnabled { get; set; } = false;
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
+        if (!await SetPageStatus())
+        {
+            return;
+        }
+
         ExtraParams = new Dictionary<string, object>
         {
             { "groupId", GroupId }
@@ -65,8 +59,20 @@ public partial class GroupRoles : ComponentBase
         });
 
         await Refresh(false);
+    }
 
-        base.OnInitialized();
+    private async Task<bool> SetPageStatus()
+    {
+        var rights = await GroupService.GetPageRights(GroupId);
+
+        if (!rights.RolePageEnabled)
+        {
+            GroupService.NavigateToBase(GroupId);
+            return false;
+        }
+
+        PageEnabled = true;
+        return true;
     }
 
     private async Task Refresh(bool tableRefresh = true)

@@ -6,7 +6,7 @@ using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
-using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 
 namespace Papyrus.Logic.Authorization;
 
@@ -77,14 +77,14 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
     {
         var admin = await userService.IsAdministrator();
 
-        if (admin || groupService.IsOwner(resource))
+        if (admin || groupService.IsCurrentOwner(resource))
         {
             context.Succeed(requirement);
             return;
         }
 
         var rights = groupService.GetUserRole(resource);
-        var groupRights = groupService.GetRights(resource);
+        var groupRights = await groupService.GetRights(resource);
 
         if (ObjectHelper.IsNull(rights))
         {

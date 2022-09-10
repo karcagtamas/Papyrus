@@ -7,7 +7,7 @@ using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Common;
 using Papyrus.Client.Shared.Dialogs.Groups;
 using Papyrus.Shared;
-using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.Models.Groups;
 
 namespace Papyrus.Client.Pages.Groups;
@@ -17,39 +17,42 @@ public partial class GroupMembers : ComponentBase
     [Parameter]
     public int GroupId { get; set; }
 
-    [Inject]
-    private IGroupMemberTableService GroupMemberTableService { get; set; } = default!;
-
-    private Dictionary<string, object> ExtraParams { get; set; } = new();
-
+    private Dictionary<string, object> TableParams { get; set; } = new();
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
-
-    [Inject]
-    private IGroupService GroupService { get; set; } = default!;
-
-    [Inject]
-    private IGroupMemberService GroupMemberService { get; set; } = default!;
-
-    [Inject]
-    private IDialogService DialogService { get; set; } = default!;
-
-    [Inject]
-    private IHelperService HelperService { get; set; } = default!;
-
     private Table<int>? Table { get; set; }
     private GroupMemberRightsDTO Rights { get; set; } = new();
+    private bool PageEnabled { get; set; } = false;
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        ExtraParams = new Dictionary<string, object>
+        await base.OnInitializedAsync();
+
+        if (!await SetPageStatus())
+        {
+            return;
+        }
+
+        TableParams = new Dictionary<string, object>
         {
             { "groupId", GroupId }
         };
         Style.AddColorGetter(value => value.Tags.Contains(Tags.CurrentUserTag) ? Color.Error : Color.Default);
 
         await Refresh(false);
+    }
 
-        base.OnInitialized();
+    private async Task<bool> SetPageStatus()
+    {
+        var rights = await GroupService.GetPageRights(GroupId);
+
+        if (!rights.MemberPageEnabled)
+        {
+            GroupService.NavigateToBase(GroupId);
+            return false;
+        }
+
+        PageEnabled = true;
+        return true;
     }
 
     private async Task Refresh(bool tableRefresh = true)

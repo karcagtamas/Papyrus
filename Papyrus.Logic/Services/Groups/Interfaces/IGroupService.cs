@@ -1,19 +1,21 @@
 ﻿using KarcagS.Common.Tools.Repository;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 
 namespace Papyrus.Logic.Services.Groups.Interfaces;
 
 public interface IGroupService : IMapperRepository<Group, int>
 {
     List<GroupListDTO> GetUserList(bool hideClosed = false);
-    GroupRightsDTO GetRights(int id);
-    GroupTagRightsDTO GetTagRights(int id);
-    GroupMemberRightsDTO GetMemberRights(int id);
-    GroupRoleRightsDTO GetRoleRights(int id);
+    Task<GroupPageRightsDTO> GetPageRights(int id);
+    Task<GroupRightsDTO> GetRights(int id);
+    Task<GroupTagRightsDTO> GetTagRights(int id);
+    Task<GroupMemberRightsDTO> GetMemberRights(int id);
+    Task<GroupRoleRightsDTO> GetRoleRights(int id);
     GroupRole? GetUserRole(int id);
-    bool IsOwner(int id);
-    void Close(int id);
-    void Open(int id);
-    void Remove(int id);
+    bool IsCurrentOwner(int id);
+    Task Close(int id);
+    Task Open(int id);
+    Task Remove(int id);
 }

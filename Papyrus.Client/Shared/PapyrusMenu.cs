@@ -2,6 +2,7 @@
 using KarcagS.Blazor.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor;
+using Papyrus.Shared.DTOs.Groups.Rights;
 
 namespace Papyrus.Client.Shared;
 
@@ -53,28 +54,43 @@ public static class PapyrusMenu
         return items;
     }
 
-    public static List<MenuItem> BuildGroupItems(int groupId)
+    public static List<MenuItem> BuildGroupItems(int groupId, GroupPageRightsDTO rights)
     {
-        return new()
+        var items = new List<MenuItem>
         {
             MenuItem.CreateItem("Data", $"groups/{groupId}")
                 .AddResourceKey("GroupData")
                 .AddIcon(Icons.Filled.Info),
+
             MenuItem.CreateGroupItem("Notes")
                 .AddResourceKey("GroupNotes")
                 .AddIcon(Icons.Filled.Notes)
                 .AddItem(MenuItem.CreateItem("List", $"groups/{groupId}/notes").AddResourceKey("GroupNoteList").AddIcon(Icons.Filled.NoteAlt))
-                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddResourceKey("GroupNoteTags").AddIcon(Icons.Filled.Tag)),
-            MenuItem.CreateItem("Members", $"groups/{groupId}/members")
+                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddResourceKey("GroupNoteTags").AddIcon(Icons.Filled.Tag))
+        };
+
+        if (rights.MemberPageEnabled)
+        {
+            items.Add(MenuItem.CreateItem("Members", $"groups/{groupId}/members")
                 .AddResourceKey("GroupMembers")
-                .AddIcon(Icons.Filled.People),
-            MenuItem.CreateItem("Roles", $"groups/{groupId}/roles")
+                .AddIcon(Icons.Filled.People));
+        }
+
+        if (rights.RolePageEnabled)
+        {
+            items.Add(MenuItem.CreateItem("Roles", $"groups/{groupId}/roles")
                 .AddResourceKey("GroupRoles")
-                .AddIcon(Icons.Filled.SettingsSuggest),
-            MenuItem.CreateItem("Logs", $"groups/{groupId}/logs")
+                .AddIcon(Icons.Filled.SettingsSuggest));
+        }
+
+        if (rights.LogPageEnabled)
+        {
+            items.Add(MenuItem.CreateItem("Logs", $"groups/{groupId}/logs")
                 .AddResourceKey("GroupLogs")
                 .AddIcon(Icons.Filled.History)
-                .AddIconColor(Color.Warning)
-        };
+                .AddIconColor(Color.Warning));
+        }
+
+        return items;
     }
 }

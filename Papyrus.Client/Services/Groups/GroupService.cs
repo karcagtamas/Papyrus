@@ -1,18 +1,22 @@
 ﻿using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.DTOs.Groups.Rights;
 
 namespace Papyrus.Client.Services.Groups;
 
 public class GroupService : HttpCall<int>, IGroupService
 {
     private readonly IStringLocalizer<GroupService> localizer;
+    private readonly NavigationManager navigation;
 
-    public GroupService(IHttpService http, IStringLocalizer<GroupService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Group", "Group", localizer)
+    public GroupService(IHttpService http, IStringLocalizer<GroupService> localizer, NavigationManager navigation) : base(http, $"{ApplicationSettings.BaseApiUrl}/Group", "Group", localizer)
     {
         this.localizer = localizer;
+        this.navigation = navigation;
     }
 
     public Task<bool> Close(int id)
@@ -95,4 +99,18 @@ public class GroupService : HttpCall<int>, IGroupService
 
         return Http.Get<GroupMemberRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
+
+    public Task<GroupPageRightsDTO> GetPageRights(int id)
+    {
+        var pathParams = HttpPathParameters.Build()
+            .Add(id)
+            .Add("Rights")
+            .Add("Pages");
+
+        var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
+
+        return Http.Get<GroupPageRightsDTO>(settings).ExecuteWithResultOrElse(new());
+    }
+
+    public void NavigateToBase(int id) => navigation.NavigateTo($"groups/{id}");
 }

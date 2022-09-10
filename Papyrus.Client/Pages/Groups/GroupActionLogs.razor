@@ -1,10 +1,16 @@
 ﻿@page "/groups/{GroupId:int}/logs"
 @using KarcagS.Shared.Helpers
+@using Papyrus.Client.Services.Groups.Interfaces
 @attribute [Authorize]
 @inject IStringLocalizer<GroupActionLogs> L
+@inject IGroupService GroupService
+@inject IGroupActionLogTableService GroupActionLogTableService
 
 <GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    <Table TKey="long" Service="GroupActionLogTableService" InitialParams="ExtraParams" Localizer="L" />
+    @if (PageEnabled)
+    {
+        <Table TKey="long" Service="GroupActionLogTableService" InitialParams="TableParams" Localizer="L" />
+    }
 </div>

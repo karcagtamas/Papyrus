@@ -177,6 +177,18 @@
   <data name="Server.Message.Fatal" xml:space="preserve">
     <value>Valamilyen hiba történt. Kérjük próbálja újra késöbb.</value>
   </data>
+  <data name="Server.Message.MissingCloseRight" xml:space="preserve">
+    <value>Nincs jogosultsága Lezárni ezt a csoportot.</value>
+  </data>
+  <data name="Server.Message.MissingOpenRight" xml:space="preserve">
+    <value>Nincs jogosultsága Kinyitni ezt a csoportot.</value>
+  </data>
+  <data name="Server.Message.MissingRemoveRight" xml:space="preserve">
+    <value>Nincs jogosultsága Törölni ezt a csoportot.</value>
+  </data>
+  <data name="Server.Message.NotAuthorized" xml:space="preserve">
+    <value>Nem megfelelő jogosultság.</value>
+  </data>
   <data name="Server.Message.RequestCannotProcessed" xml:space="preserve">
     <value>A kérés nem hajtható végre.</value>
   </data>

@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using KarcagS.Common.Tools.Services;
+﻿using KarcagS.Common.Tools.Services;
 using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
@@ -8,11 +7,11 @@ using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Shared;
-using System.Net;
 
 namespace Papyrus.Logic.Services.Groups;
 
@@ -54,14 +53,14 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
                 .AddValueGetter(obj => obj.Creation)
                 .SetFormatter(ColumnFormatter.Date)
                 .SetWidth(180))
-            .DisableClickOn(obj => userId == obj.UserId)
+            .DisableClickOn(obj => userId == obj.UserId || obj.Group.OwnerId == obj.UserId)
             .AddFilter(FilterConfiguration.Build().IsTextFilterEnabled(true))
             .AddTagProvider((obj, col) => userId == obj.UserId ? Tags.CurrentUserTag : "");
     }
 
     public override DataSource<GroupMember, int> BuildDataSource()
     {
-        return ListTableDataSource<GroupMember, int>.Build((query) => groupMemberService.GetListAsQuery(x => x.GroupId == ExtractGroupId(query)))
+        return ListTableDataSource<GroupMember, int>.Build((query) => groupMemberService.GetListAsQuery(x => x.GroupId == ExtractGroupId(query)).Include(x => x.Group))
             .OrderBy(x => x.RoleId, OrderDirection.Descend)
             .ApplyOrdering()
             .SetEFFilteredEntries("User.UserName", "Role.Name", "AddedBy.UserName");
