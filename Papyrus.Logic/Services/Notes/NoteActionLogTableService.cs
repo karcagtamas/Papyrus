@@ -1,21 +1,29 @@
-﻿using KarcagS.Common.Tools.Table;
+﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Helpers;
+using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities;
+using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Notes.Interfaces;
 
 namespace Papyrus.Logic.Services.Notes;
 
 public class NoteActionLogTableService : TableService<ActionLog, long>, INoteActionLogTableService
 {
+    private readonly IAuthorizationService authorization;
     private readonly INoteActionLogService noteActionLogService;
+    private readonly IUtilsService<string> utils;
 
-    public NoteActionLogTableService(INoteActionLogService noteActionLogService)
+    public NoteActionLogTableService(IAuthorizationService authorization, INoteActionLogService noteActionLogService, IUtilsService<string> utils)
     {
+        this.authorization = authorization;
         this.noteActionLogService = noteActionLogService;
+        this.utils = utils;
         Initialize();
     }
 
@@ -41,7 +49,7 @@ public class NoteActionLogTableService : TableService<ActionLog, long>, INoteAct
 
     public override DataSource<ActionLog, long> BuildDataSource()
     {
-        return ListTableDataSource<ActionLog, long>.Build((query) => noteActionLogService.GetQuery(query.ExtraParams["noteId"].ToString() ?? ""))
+        return ListTableDataSource<ActionLog, long>.Build((query) => noteActionLogService.GetQuery(ExtractNoteId(query)))
             .OrderBy(x => x.Creation, OrderDirection.Descend)
             .ApplyOrdering();
     }
@@ -53,4 +61,14 @@ public class NoteActionLogTableService : TableService<ActionLog, long>, INoteAct
             .AddConfiguration(BuildConfiguration())
             .Build();
     }
+
+    public override Task<bool> Authorize(QueryModel query) => ReadCheck(ExtractNoteId(query));
+    private async Task<bool> ReadCheck(string id)
+    {
+        var result = await authorization.AuthorizeAsync(utils.GetRequiredUserPrincipal(), id, NotePolicies.ReadNoteLogs.Requirements);
+
+        return result.Succeeded;
+    }
+
+    private static string ExtractNoteId(QueryModel query) => query.ExtraParams["noteId"].ToString() ?? "";
 }

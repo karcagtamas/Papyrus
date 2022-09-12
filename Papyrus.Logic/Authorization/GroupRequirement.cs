@@ -18,6 +18,8 @@ public static class GroupOperations
     public static readonly GroupRequirement EditGroupRolesRequirement = new() { Name = "EditGroupRoles" };
     public static readonly GroupRequirement ReadGroupMembersRequirement = new() { Name = "ReadGroupMembers" };
     public static readonly GroupRequirement EditGroupMembersRequirement = new() { Name = "EditGroupMembers" };
+    public static readonly GroupRequirement ReadNotesRequirement = new() { Name = "ReadNotes" };
+    public static readonly GroupRequirement CreateNoteRequirement = new() { Name = "CreateNote" };
 }
 
 public static class GroupPolicies
@@ -48,5 +50,11 @@ public static class GroupPolicies
            .Build();
     public static readonly AuthorizationPolicy EditGroupMembers = new AuthorizationPolicyBuilder()
            .AddRequirements(GroupOperations.EditGroupMembersRequirement)
+           .Build();
+    public static readonly AuthorizationPolicy ReadNotes = new AuthorizationPolicyBuilder()
+           .AddRequirements(GroupOperations.ReadNotesRequirement)
+           .Build();
+    public static readonly AuthorizationPolicy CreateNote = new AuthorizationPolicyBuilder()
+           .AddRequirements(GroupOperations.CreateNoteRequirement)
            .Build();
 }

@@ -1,8 +1,6 @@
-﻿using KarcagS.Common.Tools.HttpInterceptor;
-using KarcagS.Common.Tools.Services;
+﻿using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
-using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
@@ -14,12 +12,14 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
 {
     private readonly IGroupService groupService;
     private readonly IUserService userService;
+    private readonly ILoggerService logger;
     private static readonly List<GroupAuthorization> checkers = new();
 
-    public GroupHandler(IGroupService groupService, IUserService userService)
+    public GroupHandler(IGroupService groupService, IUserService userService, ILoggerService logger)
     {
         this.groupService = groupService;
         this.userService = userService;
+        this.logger = logger;
         RegisterCheckers();
     }
 
@@ -71,35 +71,54 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
             Requirement = GroupOperations.EditGroupMembersRequirement,
             Checker = (input) => input.GroupRole.EditMemberList
         });
+        checkers.Add(new GroupAuthorization
+        {
+            Requirement = GroupOperations.ReadNotesRequirement,
+            Checker = (input) => input.GroupRole.ReadNoteList || input.GroupRole.ReadNote || input.GroupRole.EditNote || input.GroupRole.DeleteNote
+        });
+        checkers.Add(new GroupAuthorization
+        {
+            Requirement = GroupOperations.CreateNoteRequirement,
+            Checker = (input) => input.GroupRole.EditNote || input.GroupRole.DeleteNote
+        });
     }
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, GroupRequirement requirement, int resource)
     {
-        var admin = await userService.IsAdministrator();
-
-        if (admin || groupService.IsCurrentOwner(resource))
+        try
         {
-            context.Succeed(requirement);
-            return;
-        }
+            var admin = await userService.IsAdministrator();
 
-        var rights = groupService.GetUserRole(resource);
-        var groupRights = await groupService.GetRights(resource);
-
-        if (ObjectHelper.IsNull(rights))
-        {
-            return;
-        }
-
-        var check = checkers.FirstOrDefault(x => x.Requirement == requirement);
-
-        ObjectHelper.WhenNotNull(check, c =>
-        {
-            if (c.Checker(new GroupAuthorizationInput { GroupRole = rights, GroupRights = groupRights }))
+            if (admin || groupService.IsCurrentOwner(resource))
             {
-                context.Succeed(c.Requirement);
+                context.Succeed(requirement);
+                return;
             }
-        });
+
+            var rights = groupService.GetUserRole(resource);
+            var groupRights = await groupService.GetRights(resource);
+
+            if (ObjectHelper.IsNull(rights))
+            {
+                context.Fail();
+                return;
+            }
+
+            var check = checkers.FirstOrDefault(x => x.Requirement == requirement);
+
+            ObjectHelper.WhenNotNull(check, c =>
+            {
+                if (c.Checker(new GroupAuthorizationInput { GroupRole = rights, GroupRights = groupRights }))
+                {
+                    context.Succeed(c.Requirement);
+                }
+            });
+        }
+        catch (Exception e)
+        {
+            logger.LogError(e);
+            context.Fail();
+        }
     }
 
     public class GroupAuthorization

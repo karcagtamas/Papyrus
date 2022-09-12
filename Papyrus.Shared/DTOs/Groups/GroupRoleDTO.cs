@@ -8,7 +8,6 @@ public class GroupRoleDTO : GroupRoleLightDTO
 
     public bool ReadNoteList { get; set; }
     public bool ReadNote { get; set; }
-    public bool CreateNote { get; set; }
     public bool DeleteNote { get; set; }
     public bool EditNote { get; set; }
 

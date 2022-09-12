@@ -36,9 +36,6 @@ public class GroupRole : IEntity<int>
     public bool ReadNote { get; set; }
 
     [Required]
-    public bool CreateNote { get; set; }
-
-    [Required]
     public bool DeleteNote { get; set; }
 
     [Required]

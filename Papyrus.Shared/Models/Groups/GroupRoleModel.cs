@@ -25,9 +25,6 @@ public class GroupRoleModel
     public bool ReadNote { get; set; } = true;
 
     [Required]
-    public bool CreateNote { get; set; }
-
-    [Required]
     public bool DeleteNote { get; set; }
 
     [Required]
@@ -84,7 +81,6 @@ public class GroupRoleModel
 
         ReadNoteList = dto.ReadNoteList;
         ReadNote = dto.ReadNote;
-        CreateNote = dto.CreateNote;
         EditNote = dto.EditNote;
         DeleteNote = dto.DeleteNote;
 

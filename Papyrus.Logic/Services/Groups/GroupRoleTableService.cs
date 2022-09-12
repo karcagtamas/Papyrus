@@ -52,7 +52,6 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
             .AddColumn(BuildColumn("group-edit", "Group Edit", (obj) => obj.GroupEdit, "TableColumn.GroupEdit"))
             .AddColumn(BuildColumn("listing-notes", "Listing Notes", (obj) => obj.ReadNoteList, "TableColumn.ReadNotes"))
             .AddColumn(BuildColumn("read-note", "Read Note", (obj) => obj.ReadNote, "TableColumn.ReadNote"))
-            .AddColumn(BuildColumn("create-note", "Create Note", (obj) => obj.CreateNote, "TableColumn.CreateNote"))
             .AddColumn(BuildColumn("delete-note", "Delete Note", (obj) => obj.DeleteNote, "TableColumn.DeleteNote"))
             .AddColumn(BuildColumn("edit-note", "Edit Note", (obj) => obj.EditNote, "TableColumn.EditNote"))
             .AddColumn(BuildColumn("read-members", "Read Members", (obj) => obj.ReadMemberList, "TableColumn.ReadMembers"))
@@ -81,7 +80,6 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
                     "group-edit" => GetTag(obj.GroupEdit),
                     "listing-notes" => GetTag(obj.ReadNoteList),
                     "read-note" => GetTag(obj.ReadNote),
-                    "create-note" => GetTag(obj.CreateNote),
                     "delete-note" => GetTag(obj.DeleteNote),
                     "edit-note" => GetTag(obj.EditNote),
                     "read-members" => GetTag(obj.ReadMemberList),

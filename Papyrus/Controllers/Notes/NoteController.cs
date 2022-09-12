@@ -1,5 +1,7 @@
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Notes;
@@ -12,31 +14,122 @@ namespace Papyrus.Controllers.Notes;
 [Authorize]
 public class NoteController : ControllerBase
 {
+    private readonly IAuthorizationService authorization;
     private readonly INoteService noteService;
 
-    public NoteController(INoteService noteService)
+    public NoteController(IAuthorizationService authorization, INoteService noteService)
     {
+        this.authorization = authorization;
         this.noteService = noteService;
     }
 
     [HttpGet("{id}")]
-    public NoteDTO Get(string id) => noteService.GetMapped<NoteDTO>(id);
+    public async Task<ActionResult<NoteDTO>> Get(string id)
+    {
+        if (!await ReadCheck(id))
+        {
+            return new EmptyResult();
+        }
+
+        return noteService.GetMapped<NoteDTO>(id);
+    }
 
     [HttpGet("Light/{id}")]
-    public NoteLightDTO GetLight(string id) => noteService.GetMapped<NoteLightDTO>(id);
+    public async Task<ActionResult<NoteLightDTO>> GetLight(string id)
+    {
+        if (!await ReadCheck(id))
+        {
+            return new EmptyResult();
+        }
+
+        return noteService.GetMapped<NoteLightDTO>(id);
+    }
 
     [HttpGet("Group/{groupId}")]
-    public List<NoteLightDTO> GetByGroup(int groupId, [FromQuery] NoteSearchType searchType = NoteSearchType.All) => noteService.GetByGroup(groupId, searchType);
+    public async Task<ActionResult<List<NoteLightDTO>>> GetByGroup(int groupId, [FromQuery] NoteSearchType searchType = NoteSearchType.All)
+    {
+        if (!await ReadListCheck(groupId))
+        {
+            return new EmptyResult();
+        }
+
+        return noteService.GetByGroup(groupId, searchType);
+    }
 
     [HttpGet("User")]
     public List<NoteLightDTO> GetByUser([FromQuery] NoteSearchType searchType = NoteSearchType.All) => noteService.GetByUser(searchType);
 
     [HttpPost]
-    public NoteCreationDTO CreateEmpty([FromBody] NoteCreateModel model) => noteService.CreateEmpty(model.GroupId);
+    public async Task<ActionResult<NoteCreationDTO>> CreateEmpty([FromBody] NoteCreateModel model)
+    {
+        var groupId = model.GroupId;
+
+        if (ObjectHelper.IsNotNull(groupId) && !await CreateCheck((int)groupId))
+        {
+            return new EmptyResult();
+        }
+
+        return noteService.CreateEmpty(model.GroupId);
+    }
 
     [HttpPut("{id}")]
-    public void Update(string id, [FromBody] NoteModel model) => noteService.UpdateWithTags(id, model);
+    public async Task<ActionResult> Update(string id, [FromBody] NoteModel model)
+    {
+        if (!await EditCheck(id))
+        {
+            return new EmptyResult();
+        }
+
+        noteService.UpdateWithTags(id, model);
+
+        return Ok();
+    }
 
     [HttpDelete("{id}")]
-    public void Delete(string id) => noteService.Delete(id);
+    public async Task<ActionResult> Delete(string id)
+    {
+        if (!await DeleteCheck(id))
+        {
+            return new EmptyResult();
+        }
+
+        noteService.Delete(id);
+
+        return Ok();
+    }
+
+    private async Task<bool> ReadCheck(string id)
+    {
+        var result = await authorization.AuthorizeAsync(User, id, NotePolicies.ReadNote.Requirements);
+
+        return result.Succeeded;
+    }
+
+    private async Task<bool> EditCheck(string id)
+    {
+        var result = await authorization.AuthorizeAsync(User, id, NotePolicies.EditNote.Requirements);
+
+        return result.Succeeded;
+    }
+
+    private async Task<bool> DeleteCheck(string id)
+    {
+        var result = await authorization.AuthorizeAsync(User, id, NotePolicies.DeleteNote.Requirements);
+
+        return result.Succeeded;
+    }
+
+    private async Task<bool> CreateCheck(int id)
+    {
+        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.CreateNote.Requirements);
+
+        return result.Succeeded;
+    }
+
+    private async Task<bool> ReadListCheck(int id)
+    {
+        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.ReadNotes.Requirements);
+
+        return result.Succeeded;
+    }
 }

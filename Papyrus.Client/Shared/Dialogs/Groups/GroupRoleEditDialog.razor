@@ -17,9 +17,8 @@
     <div class="d-flex flex-row">
         <MudCheckBox Label="@L["Field.ReadNotes"]" For="@(() => Model.ReadNoteList)" @bind-Checked="Model.ReadNoteList" />
         <MudCheckBox T="bool" Label="@L["Field.ReadNote"]" For="@(() => Model.ReadNote)" Checked="Model.ReadNote" CheckedChanged="ChangeNoteReadStatus" />
-        <MudCheckBox T="bool" Label="@L["Field.CreateNote"]" For="@(() => Model.CreateNote)" Checked="Model.CreateNote" CheckedChanged="@((v) => ChangeNoteEditStatus(v, "create"))" />
-        <MudCheckBox T="bool" Label="@L["Field.EditNote"]" For="@(() => Model.EditNote)" Checked="Model.EditNote" CheckedChanged="@((v) => ChangeNoteEditStatus(v, "edit"))" />
-        <MudCheckBox T="bool" Label="@L["Field.DeleteNote"]" For="@(() => Model.DeleteNote)" Checked="Model.DeleteNote" CheckedChanged="@((v) => ChangeNoteEditStatus(v, "delete"))" />
+        <MudCheckBox T="bool" Label="@L["Field.EditNote"]" For="@(() => Model.EditNote)" Checked="Model.EditNote" CheckedChanged="ChangeNoteEditStatus" />
+        <MudCheckBox T="bool" Label="@L["Field.DeleteNote"]" For="@(() => Model.DeleteNote)" Checked="Model.DeleteNote" CheckedChanged="ChangeNoteDeleteStatus" />
     </div>
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Members"]</MudText>
@@ -113,32 +112,36 @@
     private void ChangeNoteReadStatus(bool value)
     {
         Model.ReadNote = value;
-        if (!value && (Model.EditNote || Model.CreateNote || Model.DeleteNote))
+        if (!value && (Model.EditNote || Model.DeleteNote))
         {
-            Model.EditNote = value;
-            Model.CreateNote = value;
-            Model.DeleteNote = value;
+            Model.EditNote = false;
+            Model.DeleteNote = false;
         }
     }
 
-    private void ChangeNoteEditStatus(bool value, string field)
+    private void ChangeNoteEditStatus(bool value)
     {
-        switch (field)
-        {
-            case "edit":
-                Model.EditNote = value;
-                break;
-            case "delete":
-                Model.DeleteNote = value;
-                break;
-            case "create":
-                Model.CreateNote = value;
-                break;
-        }
+        Model.EditNote = value;
 
         if (value && !Model.ReadNote)
         {
-            Model.ReadNote = value;
+            Model.ReadNote = true;
+        }
+
+        if (!value && Model.DeleteNote)
+        {
+            Model.DeleteNote = false;
+        }
+    }
+
+    private void ChangeNoteDeleteStatus(bool value)
+    {
+        Model.DeleteNote = value;
+
+        if (value && (!Model.ReadNote || !Model.EditNote))
+        {
+            Model.ReadNote = true;
+            Model.EditNote = true;
         }
     }
 
