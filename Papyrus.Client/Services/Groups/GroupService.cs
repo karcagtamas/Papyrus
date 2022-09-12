@@ -113,4 +113,16 @@ public class GroupService : HttpCall<int>, IGroupService
     }
 
     public void NavigateToBase(int id) => navigation.NavigateTo($"groups/{id}");
+
+    public Task<GroupNoteRightsDTO> GetNoteRights(int id)
+    {
+        var pathParams = HttpPathParameters.Build()
+             .Add(id)
+             .Add("Rights")
+             .Add("Note");
+
+        var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
+
+        return Http.Get<GroupNoteRightsDTO>(settings).ExecuteWithResultOrElse(new());
+    }
 }

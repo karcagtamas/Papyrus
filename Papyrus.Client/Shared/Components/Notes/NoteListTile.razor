@@ -31,6 +31,9 @@
     [Parameter, EditorRequired]
     public NoteLightDTO Note { get; set; } = default!;
 
+    [Parameter]
+    public bool OpenDisabled { get; set; } = false;
+
     [Inject]
     private IJSRuntime JSRuntime { get; set; } = default!;
 

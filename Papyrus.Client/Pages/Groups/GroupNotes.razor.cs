@@ -1,10 +1,8 @@
-﻿using KarcagS.Shared.Helpers;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using Papyrus.Client.Services.Notes.Interfaces;
+using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Notes;
-using System;
 
 namespace Papyrus.Client.Pages.Groups;
 
@@ -13,23 +11,41 @@ public partial class GroupNotes : ComponentBase
     [Parameter]
     public int GroupId { get; set; }
 
-    [Inject]
-    private INoteService NoteService { get; set; } = default!;
-
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
-
+    private GroupNoteRightsDTO Rights { get; set; } = new();
     private List<NoteLightDTO> Notes { get; set; } = new();
-    private NoteSearchType SearchType { get; set; } = NoteSearchType.All; 
+    private NoteSearchType SearchType { get; set; } = NoteSearchType.All;
+    private bool PageEnabled { get; set; } = false;
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
+        if (!await SetPageStatus())
+        {
+            return;
+        }
+
         await Refresh();
-        base.OnInitialized();
+    }
+
+    private async Task<bool> SetPageStatus()
+    {
+        var rights = await GroupService.GetPageRights(GroupId);
+
+        if (!rights.NotePageEnabled)
+        {
+            GroupService.NavigateToBase(GroupId);
+            return false;
+        }
+
+        PageEnabled = true;
+        return true;
     }
 
     private async Task Refresh()
     {
+        Rights = await GroupService.GetNoteRights(GroupId);
+
         Notes = await NoteService.GetByGroup(GroupId, SearchType);
 
         await InvokeAsync(StateHasChanged);

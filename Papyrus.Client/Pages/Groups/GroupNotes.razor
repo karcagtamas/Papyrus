@@ -1,28 +1,39 @@
 ﻿@page "/groups/{GroupId:int}/notes"
+@using Papyrus.Client.Services.Groups.Interfaces
+@using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.Enums.Notes
 @attribute [Authorize]
 @inject IStringLocalizer<GroupNotes> L
+@inject IGroupService GroupService
+@inject INoteService NoteService
+@inject IJSRuntime JSRuntime
 
 <GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    <ActionBar>
-        <div>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
+    @if (PageEnabled)
+    {
+        <ActionBar>
+            <div>
+                @if (Rights.CanCreate)
+                {
+                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
+                }
+            </div>
+            <MudSpacer />
+            <MudRadioGroup Class="mr-3" T="NoteSearchType" SelectedOption="SearchType" SelectedOptionChanged="HandleSearchTypeChange">
+                <MudRadio Size="Size.Small" Option="NoteSearchType.All">@L["SearchType.All"]</MudRadio>
+                <MudRadio Size="Size.Small" Option="NoteSearchType.Published">@L["SearchType.Published"]</MudRadio>
+                <MudRadio Size="Size.Small" Option="NoteSearchType.NotPublished">@L["SearchType.NotPublished"]</MudRadio>
+            </MudRadioGroup>
+        </ActionBar>
+        <div class="page-content">
+            <div class="notes">
+                @foreach (var note in Notes)
+                {
+                    <NoteListTile Note="note" OpenDisabled="Rights.CanOpen" />
+                }
+            </div>
         </div>
-        <MudSpacer />
-        <MudRadioGroup Class="mr-3" T="NoteSearchType" SelectedOption="SearchType" SelectedOptionChanged="HandleSearchTypeChange">
-            <MudRadio Size="Size.Small" Option="NoteSearchType.All">@L["SearchType.All"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="NoteSearchType.Published">@L["SearchType.Published"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="NoteSearchType.NotPublished">@L["SearchType.NotPublished"]</MudRadio>
-        </MudRadioGroup>
-    </ActionBar>
-    <div class="page-content">
-        <div class="notes">
-            @foreach (var note in Notes)
-            {
-                <NoteListTile Note="note" />
-            }
-        </div>
-    </div>
+    }
 </div>

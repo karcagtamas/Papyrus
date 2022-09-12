@@ -113,6 +113,17 @@ public class GroupController : ControllerBase
         return await groupService.GetRoleRights(id);
     }
 
+    [HttpGet("{id}/Rights/Note")]
+    public async Task<ActionResult<GroupNoteRightsDTO>> GetNoteRights(int id)
+    {
+        if (!await ReadCheck(id))
+        {
+            return new EmptyResult();
+        }
+
+        return await groupService.GetNoteRights(id);
+    }
+
     [HttpPut("{id}/Close")]
     public async Task<ActionResult> Close(int id)
     {

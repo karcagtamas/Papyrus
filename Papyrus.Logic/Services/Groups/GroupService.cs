@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using KarcagS.Common.Helpers;
-using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
@@ -263,7 +262,9 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         {
             LogPageEnabled = role.ReadGroupActionLog,
             MemberPageEnabled = role.ReadMemberList || role.EditMemberList,
-            RolePageEnabled = role.ReadRoleList || role.EditRoleList
+            RolePageEnabled = role.ReadRoleList || role.EditRoleList,
+            NotePageEnabled = role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
+            TagPageEnabled = role.ReadTagList || role.EditTagList
         };
     }
 
@@ -284,5 +285,35 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         var admin = await userService.IsAdministrator();
 
         return admin || group.OwnerId == userId;
+    }
+
+    public async Task<GroupNoteRightsDTO> GetNoteRights(int id)
+    {
+        var userId = Utils.GetRequiredCurrentUserId();
+        var group = Get(id);
+
+        if (await HasFullAccess(group, userId))
+        {
+            return new GroupNoteRightsDTO
+            {
+                CanCreate = !group.IsClosed,
+                CanView = true,
+                CanOpen = true,
+            };
+        }
+
+        var role = GetGroupRole(group, userId);
+
+        if (ObjectHelper.IsNull(role))
+        {
+            return new GroupNoteRightsDTO();
+        }
+
+        return new GroupNoteRightsDTO
+        {
+            CanCreate = !group.IsClosed && role.CreateNote,
+            CanView = role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
+            CanOpen = role.ReadNote,
+        };
     }
 }

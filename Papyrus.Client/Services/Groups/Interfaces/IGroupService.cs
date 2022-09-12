@@ -13,6 +13,7 @@ public interface IGroupService : IHttpCall<int>
     Task<GroupRoleRightsDTO> GetRoleRights(int id);
     Task<GroupTagRightsDTO> GetTagRights(int id);
     Task<GroupMemberRightsDTO> GetMemberRights(int id);
+    Task<GroupNoteRightsDTO> GetNoteRights(int id);
     Task<bool> Close(int id);
     Task<bool> Open(int id);
     Task<bool> Remove(int id);

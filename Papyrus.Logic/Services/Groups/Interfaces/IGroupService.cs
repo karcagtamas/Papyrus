@@ -13,6 +13,7 @@ public interface IGroupService : IMapperRepository<Group, int>
     Task<GroupTagRightsDTO> GetTagRights(int id);
     Task<GroupMemberRightsDTO> GetMemberRights(int id);
     Task<GroupRoleRightsDTO> GetRoleRights(int id);
+    Task<GroupNoteRightsDTO> GetNoteRights(int id);
     GroupRole? GetUserRole(int id);
     bool IsCurrentOwner(int id);
     Task Close(int id);
