@@ -11,7 +11,7 @@
 <GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    @if (ObjectHelper.IsNotNull(Group))
+    @if (PageEnabled && ObjectHelper.IsNotNull(Group))
     {
         <ActionBar>
             @if (Group.IsClosed)

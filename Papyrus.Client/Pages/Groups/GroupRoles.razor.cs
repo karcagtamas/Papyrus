@@ -67,7 +67,7 @@ public partial class GroupRoles : ComponentBase
 
         if (!rights.RolePageEnabled)
         {
-            GroupService.NavigateToBase(GroupId);
+            GroupService.NavigateToBase(GroupId, !rights.DataPageEnabled);
             return false;
         }
 

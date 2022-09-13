@@ -260,6 +260,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
 
         return new GroupPageRightsDTO
         {
+            DataPageEnabled = true,
             LogPageEnabled = role.ReadGroupActionLog,
             MemberPageEnabled = role.ReadMemberList || role.EditMemberList,
             RolePageEnabled = role.ReadRoleList || role.EditRoleList,

@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddAction" xml:space="preserve">
+    <value>Új címke létrehozása {0} címke alá</value>
+  </data>
+  <data name="ColorBox" xml:space="preserve">
+    <value>{0} a címke színe</value>
+  </data>
+  <data name="EditAction" xml:space="preserve">
+    <value>{0} címke szerkesztése</value>
+  </data>
   <data name="Entity" xml:space="preserve">
     <value>Címke</value>
+  </data>
+  <data name="RemoveAction" xml:space="preserve">
+    <value>{0} címke törlése</value>
   </data>
   <data name="RemoveConfirm.Title" xml:space="preserve">
     <value>Törlés Megerősítése</value>

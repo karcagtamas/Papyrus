@@ -20,11 +20,32 @@ public partial class GroupNoteTags : ComponentBase
 
     private GroupTagRightsDTO Rights { get; set; } = new();
     private TagTree? TagTree { get; set; }
+    private bool PageEnabled { get; set; }
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
+
+        if (!await SetPageStatus())
+        {
+            return;
+        }
+
         await Refresh();
-        base.OnInitialized();
+    }
+
+    private async Task<bool> SetPageStatus()
+    {
+        var rights = await GroupService.GetPageRights(GroupId);
+
+        if (!rights.NotePageEnabled)
+        {
+            GroupService.NavigateToBase(GroupId, !rights.DataPageEnabled);
+            return false;
+        }
+
+        PageEnabled = true;
+        return true;
     }
 
     private async Task Refresh()

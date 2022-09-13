@@ -117,8 +117,20 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddAction" xml:space="preserve">
+    <value>Add new Tag under {0}</value>
+  </data>
+  <data name="ColorBox" xml:space="preserve">
+    <value>Tag color is {0}</value>
+  </data>
+  <data name="EditAction" xml:space="preserve">
+    <value>Edit {0} tag</value>
+  </data>
   <data name="Entity" xml:space="preserve">
     <value>Tag</value>
+  </data>
+  <data name="RemoveAction" xml:space="preserve">
+    <value>Remove {0} tag</value>
   </data>
   <data name="RemoveConfirm.Title" xml:space="preserve">
     <value>Confirm Delete</value>

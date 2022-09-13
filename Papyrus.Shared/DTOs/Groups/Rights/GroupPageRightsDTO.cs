@@ -2,6 +2,7 @@
 
 public class GroupPageRightsDTO
 {
+    public bool DataPageEnabled { get; set; }
     public bool LogPageEnabled { get; set; }
     public bool RolePageEnabled { get; set; }
     public bool MemberPageEnabled { get; set; }
@@ -15,6 +16,7 @@ public class GroupPageRightsDTO
 
     public GroupPageRightsDTO(bool value)
     {
+        DataPageEnabled = value;
         LogPageEnabled = value;
         RolePageEnabled = value;
         MemberPageEnabled = value;

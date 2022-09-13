@@ -5,12 +5,15 @@
 <GroupPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    <ActionBar>
-        <InfoButton Text="@L["PageInfo"]" />
-        @if (Rights.CanCreate)
-        {
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
-        }
-    </ActionBar>
-    <TagTree @ref="TagTree" Fetcher="Fetcher" GroupId="GroupId" CreateEnabled="Rights.CanCreate" EditEnabled="Rights.CanEdit" RemoveEnabled="Rights.CanRemove" />
+    @if (PageEnabled)
+    {
+        <ActionBar>
+            <InfoButton Text="@L["PageInfo"]" />
+            @if (Rights.CanCreate)
+            {
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
+            }
+        </ActionBar>
+        <TagTree @ref="TagTree" Fetcher="Fetcher" GroupId="GroupId" CreateEnabled="Rights.CanCreate" EditEnabled="Rights.CanEdit" RemoveEnabled="Rights.CanRemove" />
+    }
 </div>

@@ -77,7 +77,10 @@ public static class PapyrusMenu
             noteItem = noteItem.AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddResourceKey("GroupNoteTags").AddIcon(Icons.Filled.Tag));
         }
 
-        items.Add(noteItem);
+        if (rights.NotePageEnabled || rights.TagPageEnabled)
+        {
+            items.Add(noteItem);
+        }
 
         if (rights.MemberPageEnabled)
         {

@@ -47,7 +47,7 @@ public partial class GroupMembers : ComponentBase
 
         if (!rights.MemberPageEnabled)
         {
-            GroupService.NavigateToBase(GroupId);
+            GroupService.NavigateToBase(GroupId, !rights.DataPageEnabled);
             return false;
         }
 

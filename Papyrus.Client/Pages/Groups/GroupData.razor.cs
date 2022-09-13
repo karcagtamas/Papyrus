@@ -16,12 +16,33 @@ public partial class GroupData : ComponentBase
 
     private GroupDTO? Group { get; set; } = default!;
     private GroupRightsDTO Rights { get; set; } = new();
+    private bool PageEnabled { get; set; } = false;
+
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
+        if (!await SetPageStatus())
+        {
+            return;
+        }
+
         await GetGroup();
+    }
+
+    private async Task<bool> SetPageStatus()
+    {
+        var rights = await GroupService.GetPageRights(GroupId);
+
+        if (!rights.DataPageEnabled)
+        {
+            GroupService.NavigateToBase(GroupId, true);
+            return false;
+        }
+
+        PageEnabled = true;
+        return true;
     }
 
     private async Task GetGroup()

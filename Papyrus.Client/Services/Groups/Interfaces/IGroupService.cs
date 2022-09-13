@@ -6,7 +6,7 @@ namespace Papyrus.Client.Services.Groups.Interfaces;
 
 public interface IGroupService : IHttpCall<int>
 {
-    void NavigateToBase(int id);
+    void NavigateToBase(int id, bool redirectToList);
     Task<List<GroupListDTO>> GetUserList(bool hideClosed = false);
     Task<GroupPageRightsDTO> GetPageRights(int id);
     Task<GroupRightsDTO> GetRights(int id);

@@ -34,7 +34,7 @@ public partial class GroupNotes : ComponentBase
 
         if (!rights.NotePageEnabled)
         {
-            GroupService.NavigateToBase(GroupId);
+            GroupService.NavigateToBase(GroupId, !rights.DataPageEnabled);
             return false;
         }
 

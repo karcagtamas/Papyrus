@@ -33,7 +33,7 @@ public partial class GroupActionLogs : ComponentBase
 
         if (!rights.LogPageEnabled)
         {
-            GroupService.NavigateToBase(GroupId);
+            GroupService.NavigateToBase(GroupId, !rights.DataPageEnabled);
             return false;
         }
 

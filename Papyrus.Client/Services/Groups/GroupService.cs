@@ -112,7 +112,7 @@ public class GroupService : HttpCall<int>, IGroupService
         return Http.Get<GroupPageRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public void NavigateToBase(int id) => navigation.NavigateTo($"groups/{id}");
+    public void NavigateToBase(int id, bool redirectToList) => navigation.NavigateTo(redirectToList ? "my-groups" : $"groups/{id}");
 
     public Task<GroupNoteRightsDTO> GetNoteRights(int id)
     {
