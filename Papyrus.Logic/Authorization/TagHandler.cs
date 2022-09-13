@@ -8,21 +8,21 @@ using Papyrus.Logic.Services.Notes.Interfaces;
 
 namespace Papyrus.Logic.Authorization;
 
-public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
+public class TagHandler : AuthorizationHandler<TagRequirement, int>
 {
     private readonly IUserService userService;
     private readonly IUtilsService<string> utils;
-    private readonly INoteService noteService;
+    private readonly ITagService tagService;
     private readonly IGroupService groupService;
     private readonly ILoggerService logger;
-    private static readonly List<NoteAuthorization> checkers = new();
+    private static readonly List<TagAuthorization> checkers = new();
 
-    public NoteHandler(IUserService userService, IUtilsService<string> utils, INoteService noteService, IGroupService groupService, ILoggerService logger)
+    public TagHandler(IUserService userService, IUtilsService<string> utils, ITagService tagService, IGroupService groupService, ILoggerService logger)
     {
         RegisterCheckers();
         this.userService = userService;
         this.utils = utils;
-        this.noteService = noteService;
+        this.tagService = tagService;
         this.groupService = groupService;
         this.logger = logger;
     }
@@ -30,29 +30,19 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
     private static void RegisterCheckers()
     {
         checkers.Clear();
-        checkers.Add(new NoteAuthorization
+        checkers.Add(new TagAuthorization
         {
-            Requirement = NoteOperations.ReadNoteRequirement,
-            Checker = (input) => input.ReadNote || input.EditNote || input.DeleteNote
+            Requirement = TagOperations.ReadTagRequirement,
+            Checker = (input) => true
         });
-        checkers.Add(new NoteAuthorization
+        checkers.Add(new TagAuthorization
         {
-            Requirement = NoteOperations.EditNoteRequirement,
-            Checker = (input) => input.EditNote || input.DeleteNote
-        });
-        checkers.Add(new NoteAuthorization
-        {
-            Requirement = NoteOperations.DeleteNoteRequirement,
-            Checker = (input) => input.DeleteNote
-        });
-        checkers.Add(new NoteAuthorization
-        {
-            Requirement = NoteOperations.ReadNoteLogsRequirement,
-            Checker = (input) => input.ReadNoteActionLog
+            Requirement = TagOperations.EditTagRequirement,
+            Checker = (input) => input.EditTagList
         });
     }
 
-    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, NoteRequirement requirement, string resource)
+    protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, TagRequirement requirement, int resource)
     {
         try
         {
@@ -62,24 +52,24 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
                 return;
             }
 
-            var note = noteService.Get(resource);
+            var tag = tagService.Get(resource);
             var userId = utils.GetRequiredCurrentUserId();
 
-            if (ObjectHelper.IsNotNull(note.UserId) && note.UserId == userId)
+            if (ObjectHelper.IsNotNull(tag.UserId) && tag.UserId == userId)
             {
                 context.Succeed(requirement);
                 return;
             }
 
-            if (ObjectHelper.IsNotNull(note.GroupId))
+            if (ObjectHelper.IsNotNull(tag.GroupId))
             {
-                if (groupService.IsCurrentOwner((int)note.GroupId))
+                if (groupService.IsCurrentOwner((int)tag.GroupId))
                 {
                     context.Succeed(requirement);
                     return;
                 }
 
-                var rights = groupService.GetUserRole((int)note.GroupId);
+                var rights = groupService.GetUserRole((int)tag.GroupId);
 
                 if (ObjectHelper.IsNull(rights))
                 {
@@ -105,9 +95,9 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
         }
     }
 
-    public class NoteAuthorization
+    public class TagAuthorization
     {
-        public NoteRequirement Requirement { get; set; } = default!;
+        public TagRequirement Requirement { get; set; } = default!;
         public Func<GroupRole, bool> Checker { get; set; } = (input) => true;
     }
 }

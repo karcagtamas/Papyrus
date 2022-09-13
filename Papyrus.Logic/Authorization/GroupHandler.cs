@@ -81,6 +81,16 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
             Requirement = GroupOperations.CreateNoteRequirement,
             Checker = (input) => input.GroupRole.EditNote || input.GroupRole.DeleteNote
         });
+        checkers.Add(new GroupAuthorization
+        {
+            Requirement = GroupOperations.ReadTagsRequirement,
+            Checker = (input) => input.GroupRole.ReadTagList || input.GroupRole.EditTagList
+        });
+        checkers.Add(new GroupAuthorization
+        {
+            Requirement = GroupOperations.CreateTagRequirement,
+            Checker = (input) => input.GroupRole.EditTagList
+        });
     }
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, GroupRequirement requirement, int resource)

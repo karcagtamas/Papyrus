@@ -19,5 +19,6 @@ public class GroupPageRightsDTO
         RolePageEnabled = value;
         MemberPageEnabled = value;
         NotePageEnabled = value;
+        TagPageEnabled = value;
     }
 }

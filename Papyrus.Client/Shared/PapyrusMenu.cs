@@ -61,13 +61,23 @@ public static class PapyrusMenu
             MenuItem.CreateItem("Data", $"groups/{groupId}")
                 .AddResourceKey("GroupData")
                 .AddIcon(Icons.Filled.Info),
-
-            MenuItem.CreateGroupItem("Notes")
-                .AddResourceKey("GroupNotes")
-                .AddIcon(Icons.Filled.Notes)
-                .AddItem(MenuItem.CreateItem("List", $"groups/{groupId}/notes").AddResourceKey("GroupNoteList").AddIcon(Icons.Filled.NoteAlt))
-                .AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddResourceKey("GroupNoteTags").AddIcon(Icons.Filled.Tag))
         };
+
+        var noteItem = MenuItem.CreateGroupItem("Notes")
+                .AddResourceKey("GroupNotes")
+                .AddIcon(Icons.Filled.Notes);
+
+        if (rights.NotePageEnabled)
+        {
+            noteItem = noteItem.AddItem(MenuItem.CreateItem("List", $"groups/{groupId}/notes").AddResourceKey("GroupNoteList").AddIcon(Icons.Filled.NoteAlt));
+        }
+
+        if (rights.TagPageEnabled)
+        {
+            noteItem = noteItem.AddItem(MenuItem.CreateItem("Tags", $"groups/{groupId}/notes/tags").AddResourceKey("GroupNoteTags").AddIcon(Icons.Filled.Tag));
+        }
+
+        items.Add(noteItem);
 
         if (rights.MemberPageEnabled)
         {

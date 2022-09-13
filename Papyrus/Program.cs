@@ -135,6 +135,7 @@ builder.Services.AddModelValidatedControllers();
 // Auth Handlers
 builder.Services.AddTransient<IAuthorizationHandler, GroupHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, NoteHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, TagHandler>();
 
 // Auth
 builder.Services
