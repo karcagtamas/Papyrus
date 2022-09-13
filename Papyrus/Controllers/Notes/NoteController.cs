@@ -98,6 +98,17 @@ public class NoteController : ControllerBase
         return Ok();
     }
 
+    [HttpGet("{id}/Rights")]
+    public async Task<ActionResult<NoteRightsDTO>> GetRights(string id)
+    {
+        if (!await ReadCheck(id))
+        {
+            return new EmptyResult();
+        }
+
+        return await noteService.GetRights(id);
+    }
+
     private async Task<bool> ReadCheck(string id)
     {
         var result = await authorization.AuthorizeAsync(User, id, NotePolicies.ReadNote.Requirements);

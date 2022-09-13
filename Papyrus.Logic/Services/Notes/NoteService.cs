@@ -5,8 +5,10 @@ using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Mongo.DataAccess.Entities;
+using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
 using Papyrus.Shared.Enums.Notes;
@@ -19,12 +21,16 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     private readonly IGroupActionLogService groupActionLogService;
     private readonly INoteActionLogService noteActionLogService;
     private readonly INoteContentService noteContentService;
+    private readonly IUserService userService;
+    private readonly IGroupService groupService;
 
-    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService, INoteContentService noteContentService) : base(context, loggerService, utilsService, mapper, "Note")
+    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService, INoteContentService noteContentService, IUserService userService, IGroupService groupService) : base(context, loggerService, utilsService, mapper, "Note")
     {
         this.groupActionLogService = groupActionLogService;
         this.noteActionLogService = noteActionLogService;
         this.noteContentService = noteContentService;
+        this.userService = userService;
+        this.groupService = groupService;
     }
 
     public NoteCreationDTO CreateEmpty(int? groupId)
@@ -167,5 +173,42 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         note.Deleted = true;
 
         Update(note);
+    }
+
+    public async Task<NoteRightsDTO> GetRights(string id)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        var isAdmin = await userService.IsAdministrator();
+        var note = Get(id);
+
+        if (isAdmin || ObjectHelper.IsNotNull(note.UserId) && note.UserId == userId)
+        {
+            return new NoteRightsDTO(true);
+        }
+
+        if (ObjectHelper.IsNotNull(note.GroupId))
+        {
+            var group = groupService.Get((int)note.GroupId);
+
+            if (await groupService.HasFullAccess(group, userId))
+            {
+                return new NoteRightsDTO(true);
+            }
+
+            var role = groupService.GetGroupRole(group, userId);
+
+            if (ObjectHelper.IsNotNull(role))
+            {
+                return new NoteRightsDTO
+                {
+                    CanView = role.ReadNote || role.EditNote || role.DeleteNote,
+                    CanEdit = role.EditNote || role.DeleteNote,
+                    CanDelete = role.DeleteNote,
+                    CanViewLogs = role.ReadNoteActionLog
+                };
+            }
+        }
+
+        return new NoteRightsDTO();
     }
 }

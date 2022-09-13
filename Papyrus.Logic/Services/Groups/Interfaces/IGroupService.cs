@@ -19,4 +19,6 @@ public interface IGroupService : IMapperRepository<Group, int>
     Task Close(int id);
     Task Open(int id);
     Task Remove(int id);
+    GroupRole? GetGroupRole(Group group, string userId);
+    Task<bool> HasFullAccess(Group group, string userId);
 }

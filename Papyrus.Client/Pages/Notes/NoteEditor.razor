@@ -1,12 +1,22 @@
 ﻿@page "/notes/editor/{Id}"
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
 @using Microsoft.AspNetCore.SignalR.Client
+@using Papyrus.Client.Services.Auth.Interfaces
+@using Papyrus.Client.Services.Editor.Interfaces
+@using Papyrus.Client.Services.Notes.Interfaces
+@inject IStringLocalizer<NoteEditor> L
+@inject NavigationManager Navigation
+@inject IHelperService Helper
+@inject IToasterService Toaster
+@inject ITokenService TokenService
+@inject INoteService NoteService
+@inject IEditorService EditorService
 
 <ApplicationPageTitle PageName="@PageTitle"></ApplicationPageTitle>
 
 <div class="page-div p-2">
-
-    @if (ObjectHelper.IsNotNull(Note))
+    @if (PageLoaded && ObjectHelper.IsNotNull(Note))
     {
         <MudCard Elevation="2" Class="p-2 m-3 mb-1 mt-1">
             <div class="d-flex flex-row align-items-center">
@@ -20,21 +30,21 @@
                 </div>
                 <MudSpacer />
                 <div>
-                    <MudTooltip Text="Edit note data">
+                    <MudTooltip Text="@L["EditAction.Tooltip"]">
                         <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" Disabled="Note.Deleted" />
                     </MudTooltip>
-                    <MudTooltip Text="Open note history">
+                    <MudTooltip Text="@L["OpenLogsAction.Tooltip"]">
                         <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenLogs" />
                     </MudTooltip>
 
                     @if (ObjectHelper.IsNotNull(Note.GroupId))
                     {
-                        <MudTooltip Text="Back to group">
-                            <MudIconButton Size="Size.Small" Color="Color.Primary" Icon="@Icons.Filled.Group" Class="mr-3 ml-3" OnClick="@(() => NavigationManager.NavigateTo($"/groups/{Note.GroupId}") )" />
+                        <MudTooltip Text="@L["BackAction.Tooltip"]">
+                            <MudIconButton Size="Size.Small" Color="Color.Primary" Icon="@Icons.Filled.Group" Class="mr-3 ml-3" OnClick="@(() => Navigation.NavigateTo($"/groups/{Note.GroupId}") )" />
                         </MudTooltip>
                     }
 
-                    <MudTooltip Text="@(DataCollapsed ? "Expand data" : "Collapse data")">
+                    <MudTooltip Text="@(DataCollapsed ? L["ExpandAction.Tooltip"] : L["CollapseAction.Tooltip"])">
                         <MudIconButton Size="Size.Small" Icon="@(DataCollapsed ? Icons.Filled.ExpandMore : Icons.Filled.ExpandLess)" Class="mr-3 ml-3" OnClick="@(() => DataCollapsed = !DataCollapsed)" />
                     </MudTooltip>
                 </div>
@@ -44,20 +54,20 @@
                 <MudDivider Class="mt-2 mb-2" />
                 <div class="d-flex flex-row">
                     <div class="flex-grow-1">
-                        <DateDataRow Title="Creation" Date="@Note.Creation" OneRow="true" />
+                        <DateDataRow Title="@L["Creation.Title"]" Date="@Note.Creation" OneRow="true" />
                     </div>
                     <div class="flex-grow-1">
-                        <DateDataRow Title="Last Update" Date="@Note.LastUpdate" OneRow="true" />
+                        <DateDataRow Title="@L["LastUpdate.Title"]" Date="@Note.LastUpdate" OneRow="true" />
                     </div>
                     <div class="flex-grow-1">
-                        <DataRow Title="Creator" Value="@Note.Creator" OneRow="true" />
+                        <DataRow Title="@L["Creator.Title"]" Value="@Note.Creator" OneRow="true" />
                     </div>
                     <div class="flex-grow-1">
-                        <DataRow Title="Last Updater" Value="@Note.LastUpdater" OneRow="true" />
+                        <DataRow Title="@L["LastUpdater.Title"]" Value="@Note.LastUpdater" OneRow="true" />
                     </div>
                 </div>
-                <LogicDataRow Title="Is Public" Value="Note.Public" TrueValue="Yes" FalseValue="No" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
-                <LogicDataRow Title="Is Deleted" Value="Note.Deleted" TrueValue="Yes" FalseValue="No" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
+                <LogicDataRow Title="@L["IsPublic.Title"]" Value="Note.Public" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
+                <LogicDataRow Title="@L["IsDelete.Title"]" Value="Note.Deleted" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
             }
         </MudCard>
         <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange" Disabled="Note.Deleted">
@@ -84,7 +94,7 @@
                             </MudTooltip>
                         }
                     }
-                    <MudTooltip Text="@(ObjectHelper.OrElse(hub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? "Connection active" : "Connection inactive")">
+                    <MudTooltip Text="@(ObjectHelper.OrElse(hub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? L["Connection.Active.Tooltip"] : L["Connection.Inactive.Tooltip"])">
                         <MudIcon Icon="@(ObjectHelper.OrElse(hub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? Icons.Filled.Cloud : Icons.Filled.CloudOff)" Color="Color.Primary" />
                     </MudTooltip>
                 </div>

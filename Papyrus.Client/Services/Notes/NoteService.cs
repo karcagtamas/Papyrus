@@ -62,4 +62,11 @@ public class NoteService : HttpCall<string>, INoteService
 
         return Http.Get<NoteLightDTO>(settings).ExecuteWithResult();
     }
+
+    public Task<NoteRightsDTO> GetRights(string id)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, id.ToString(), "Rights"));
+
+        return Http.Get<NoteRightsDTO>(settings).ExecuteWithResultOrElse(new());
+    }
 }

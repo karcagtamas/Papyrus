@@ -269,7 +269,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         };
     }
 
-    private GroupRole? GetGroupRole(Group group, string userId)
+    public GroupRole? GetGroupRole(Group group, string userId)
     {
         var roleId = group.Members.FirstOrDefault(x => x.UserId == userId)?.RoleId;
 
@@ -281,7 +281,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         return groupRoleService.Get((int)roleId);
     }
 
-    private async Task<bool> HasFullAccess(Group group, string userId)
+    public async Task<bool> HasFullAccess(Group group, string userId)
     {
         var admin = await userService.IsAdministrator();
 

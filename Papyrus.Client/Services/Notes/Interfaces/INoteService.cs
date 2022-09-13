@@ -10,4 +10,5 @@ public interface INoteService : IHttpCall<string>
     Task<List<NoteLightDTO>> GetByUser(NoteSearchType searchType = NoteSearchType.All);
     Task<NoteCreationDTO?> CreateEmpty(int? groupId);
     Task<NoteLightDTO?> GetLight(string id);
+    Task<NoteRightsDTO> GetRights(string id);
 }

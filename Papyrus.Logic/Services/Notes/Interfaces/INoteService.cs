@@ -11,6 +11,7 @@ public interface INoteService : IMapperRepository<Note, string>
     List<NoteLightDTO> GetByGroup(int groupId, NoteSearchType searchType = NoteSearchType.All);
     List<NoteLightDTO> GetByUser(NoteSearchType searchType = NoteSearchType.All);
     NoteCreationDTO CreateEmpty(int? groupId);
+    Task<NoteRightsDTO> GetRights(string id);
     void UpdateWithTags(string id, NoteModel model);
     void Delete(string id);
 }
