@@ -120,19 +120,13 @@
   <data name="Entity" xml:space="preserve">
     <value>Jegyzet</value>
   </data>
-  <data name="NoteTitle" xml:space="preserve">
-    <value>Új Dokumentum</value>
+  <data name="Field.IsPublic" xml:space="preserve">
+    <value>Publikus-e</value>
   </data>
-  <data name="Toaster.Add" xml:space="preserve">
-    <value>{0} hozzáadás</value>
+  <data name="Field.Title" xml:space="preserve">
+    <value>Cím</value>
   </data>
-  <data name="Toaster.Create" xml:space="preserve">
-    <value>Új jegyzet készítés</value>
-  </data>
-  <data name="Toaster.Delete" xml:space="preserve">
-    <value>{0} törlés</value>
-  </data>
-  <data name="Toaster.Update" xml:space="preserve">
-    <value>{0} szerkesztés</value>
+  <data name="Tooltip.Add" xml:space="preserve">
+    <value>Címkék hozzáadása</value>
   </data>
 </root>

@@ -14,9 +14,9 @@ public class NoteRightsDTO
 
     public NoteRightsDTO(bool value)
     {
-        CanView = true;
-        CanEdit = true;
-        CanDelete = true;
-        CanViewLogs = true;
+        CanView = value;
+        CanEdit = value;
+        CanDelete = value;
+        CanViewLogs = value;
     }
 }

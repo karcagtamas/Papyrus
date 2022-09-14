@@ -30,12 +30,18 @@
                 </div>
                 <MudSpacer />
                 <div>
-                    <MudTooltip Text="@L["EditAction.Tooltip"]">
-                        <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" Disabled="Note.Deleted" />
-                    </MudTooltip>
-                    <MudTooltip Text="@L["OpenLogsAction.Tooltip"]">
-                        <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenLogs" />
-                    </MudTooltip>
+                    @if (NoteRights.CanEdit)
+                    {
+                        <MudTooltip Text="@L["EditAction.Tooltip"]">
+                            <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" Disabled="Note.Deleted" />
+                        </MudTooltip>
+                    }
+                    @if (NoteRights.CanViewLogs)
+                    {
+                        <MudTooltip Text="@L["OpenLogsAction.Tooltip"]">
+                            <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenLogs" />
+                        </MudTooltip>
+                    }
 
                     @if (ObjectHelper.IsNotNull(Note.GroupId))
                     {
@@ -67,10 +73,10 @@
                     </div>
                 </div>
                 <LogicDataRow Title="@L["IsPublic.Title"]" Value="Note.Public" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
-                <LogicDataRow Title="@L["IsDelete.Title"]" Value="Note.Deleted" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
+                <LogicDataRow Title="@L["IsDeleted.Title"]" Value="Note.Deleted" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
             }
         </MudCard>
-        <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange" Disabled="Note.Deleted">
+        <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange" Disabled="!NoteRights.CanEdit || Note.Deleted">
             <RightToolbar>
                 <div class="d-flex flex-row align-items-center gap-3">
                     @foreach (var user in Users)
@@ -89,8 +95,8 @@
                         }
                         else
                         {
-                            <MudTooltip Text="Save content">
-                                <MudIconButton Icon="@Icons.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="!Editor?.IsDirty ?? true" />
+                            <MudTooltip Text="@L["SaveContent.Tooltip"]">
+                                <MudIconButton Icon="@Icons.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="@(!NoteRights.CanEdit || (!Editor?.IsDirty ?? true))" />
                             </MudTooltip>
                         }
                     }

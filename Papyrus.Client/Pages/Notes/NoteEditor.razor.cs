@@ -163,7 +163,12 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     private async Task OpenEdit()
     {
-        var parameters = new DialogParameters { { "NoteId", Id } };
+        if (!NoteRights.CanEdit)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters { { "NoteId", Id }, { "Rights", NoteRights } };
 
         await Helper.OpenEditorDialog<NoteEditDialog>("Edit Note", async (res) =>
         {
@@ -209,6 +214,11 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     private async Task OpenLogs()
     {
+        if (!NoteRights.CanViewLogs)
+        {
+            return;
+        }
+
         var parameters = new DialogParameters { { "NoteId", Id } };
 
         var options = new DialogOptions { FullScreen = true };

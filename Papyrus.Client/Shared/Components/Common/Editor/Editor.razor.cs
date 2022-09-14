@@ -22,9 +22,6 @@ public partial class Editor : ComponentBase, IDisposable
     [Parameter]
     public bool Disabled { get; set; } = false;
 
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
-
     private bool ColorPickerOpened { get; set; }
     private EditorAction? ColorAction { get; set; }
     private MudColor SelectedColor { get; set; } = new MudColor("#FF1212FF");

@@ -69,7 +69,7 @@ public class NoteController : ControllerBase
             return new EmptyResult();
         }
 
-        return noteService.CreateEmpty(model.GroupId);
+        return noteService.CreateEmpty(model);
     }
 
     [HttpPut("{id}")]

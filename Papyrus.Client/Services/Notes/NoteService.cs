@@ -22,7 +22,7 @@ public class NoteService : HttpCall<string>, INoteService
         var settings = new HttpSettings(Http.BuildUrl(Url))
             .AddToaster(localizer["Toaster.Create"]);
 
-        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId })
+        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId, Title = localizer["NoteTitle"] })
             .ExecuteWithResult();
     }
 

@@ -120,6 +120,9 @@
   <data name="Entity" xml:space="preserve">
     <value>Note</value>
   </data>
+  <data name="NoteTitle" xml:space="preserve">
+    <value>New Document</value>
+  </data>
   <data name="Toaster.Add" xml:space="preserve">
     <value>{0} adding</value>
   </data>

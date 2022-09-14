@@ -1,18 +1,19 @@
 ﻿@using KarcagS.Shared.Helpers
 @using KarcagS.Shared.Table
 @using Papyrus.Client.Services.Notes.Interfaces
+@inject IStringLocalizer<NoteActionLogDialog> L
 @inject INoteActionLogTableService NoteActionLogTableService
 
 <MudDialog ClassContent="d-flex flex-column flex-grow-1">
-    <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">Action Logs</MudText></TitleContent>
+    <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">@L["Title"]</MudText></TitleContent>
     <DialogContent>
         <div class="d-flex" style="max-height: 84vh; overflow: hidden; padding: 1rem;">
-            <Table TKey="long" Service="NoteActionLogTableService" InitialParams="ExtraParams" />
+            <Table TKey="long" Service="NoteActionLogTableService" InitialParams="ExtraParams" Localizer="L" />
         </div>
     </DialogContent>
     <DialogActions>
         <MudSpacer />
-        <MudButton Color="Color.Primary" OnClick="@(() => Dialog.Close())">Ok</MudButton>
+        <MudButton Color="Color.Primary" OnClick="@(() => Dialog.Close())">@L["Action.OK"]</MudButton>
     </DialogActions>
 </MudDialog>
 
@@ -27,10 +28,11 @@
 
     protected override void OnInitialized()
     {
+        base.OnInitialized();
+
         ExtraParams = new Dictionary<string, object>
         {
             { "noteId", NoteId }
         };
-        base.OnInitialized();
     }
 }

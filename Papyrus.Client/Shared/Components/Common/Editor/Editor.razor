@@ -1,14 +1,26 @@
+@inject IStringLocalizer<Editor> L
+@inject IJSRuntime JSRuntime
+
 <div id="rt-editor-box" class="mud-elevation-2">
     <div id="rt-editor-actions">
         <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
-            <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))" Disabled="Disabled"></MudIconButton>
-            <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))" Disabled="Disabled"></MudIconButton>
-            <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))" Disabled="Disabled"></MudIconButton>
-            <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))" Disabled="Disabled"></MudIconButton>
+            <MudTooltip Text="@L["BoldAction.Tooltip"]">
+                <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))" Disabled="Disabled" />
+            </MudTooltip>
+            <MudTooltip Text="@L["ItalicAction.Tooltip"]">
+                <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))" Disabled="Disabled" />
+            </MudTooltip>
+            <MudTooltip Text="@L["UnderlinedAction.Tooltip"]">
+                <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))" Disabled="Disabled" />
+            </MudTooltip>
+            <MudTooltip Text="@L["StrikeThroughAction.Tooltip"]">
+                <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))" Disabled="Disabled" />
+            </MudTooltip>
         </MudButtonGroup>
         <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
-            <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))">
-            </MudIconButton>
+            <MudTooltip Text="@L["FontColorAction.Tooltip"]">
+                <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))" />
+            </MudTooltip>
             <MudPopover Open="@ColorPickerOpened" AnchorOrigin="Origin.BottomCenter">
                 <div class="p-1">
                     <MudColorPicker PickerVariant="PickerVariant.Static" @bind-Value="SelectedColor" />
@@ -19,7 +31,9 @@
                     </div>
                 </div>
             </MudPopover>
-            <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))"></MudIconButton>
+            <MudTooltip Text="@L["BackgroundColorAction.Tooltip"]">
+                <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))" />
+            </MudTooltip>
         </MudButtonGroup>
         <MudSpacer />
 

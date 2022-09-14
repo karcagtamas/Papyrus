@@ -117,22 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Entity" xml:space="preserve">
-    <value>Jegyzet</value>
+  <data name="BackgroundColorAction.Tooltip" xml:space="preserve">
+    <value>Background color</value>
   </data>
-  <data name="NoteTitle" xml:space="preserve">
-    <value>Új Dokumentum</value>
+  <data name="BoldAction.Tooltip" xml:space="preserve">
+    <value>Bold</value>
   </data>
-  <data name="Toaster.Add" xml:space="preserve">
-    <value>{0} hozzáadás</value>
+  <data name="FontColorAction.Tooltip" xml:space="preserve">
+    <value>Foreground color</value>
   </data>
-  <data name="Toaster.Create" xml:space="preserve">
-    <value>Új jegyzet készítés</value>
+  <data name="ItalicAction.Tooltip" xml:space="preserve">
+    <value>Italic</value>
   </data>
-  <data name="Toaster.Delete" xml:space="preserve">
-    <value>{0} törlés</value>
+  <data name="StrikeThroughAction.Tooltip" xml:space="preserve">
+    <value>Strike through</value>
   </data>
-  <data name="Toaster.Update" xml:space="preserve">
-    <value>{0} szerkesztés</value>
+  <data name="UnderlinedAction.Tooltip" xml:space="preserve">
+    <value>Underlined</value>
   </data>
 </root>

@@ -20,10 +20,10 @@ public partial class Notes : ComponentBase
     private List<NoteLightDTO> NoteList { get; set; } = new();
     private NoteSearchType SearchType { get; set; } = NoteSearchType.All;
 
-    protected override async void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        await base.OnInitializedAsync();
         await Refresh();
-        base.OnInitialized();
     }
 
     private async Task Refresh()
@@ -39,6 +39,7 @@ public partial class Notes : ComponentBase
 
         if (ObjectHelper.IsNotNull(result))
         {
+            await Refresh();
             await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
         }
     }

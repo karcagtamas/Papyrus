@@ -8,7 +8,6 @@ using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Mongo.DataAccess.Entities;
-using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
 using Papyrus.Shared.Enums.Notes;
@@ -33,19 +32,19 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         this.groupService = groupService;
     }
 
-    public NoteCreationDTO CreateEmpty(int? groupId)
+    public NoteCreationDTO CreateEmpty(NoteCreateModel model)
     {
         var note = new Note
         {
-            Title = "New Document"
+            Title = model.Title
         };
 
         var userId = Utils.GetRequiredCurrentUserId();
 
-        if (ObjectHelper.IsNotNull(groupId))
+        if (ObjectHelper.IsNotNull(model.GroupId))
         {
-            note.GroupId = groupId;
-            groupActionLogService.AddActionLog((int)groupId, userId, GroupActionLogType.NoteCreate);
+            note.GroupId = model.GroupId;
+            groupActionLogService.AddActionLog((int)model.GroupId, userId, GroupActionLogType.NoteCreate);
         }
         else
         {

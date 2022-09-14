@@ -57,6 +57,7 @@ public partial class GroupNotes : ComponentBase
 
         if (ObjectHelper.IsNotNull(result))
         {
+            await Refresh();
             await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
         }
     }

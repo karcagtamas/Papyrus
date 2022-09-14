@@ -9,9 +9,10 @@
 }
 
 #rt-editor-actions {
-    margin-bottom: 1rem;
+    margin-bottom: .6rem;
     display: flex;
     flex-direction: row;
+    align-items: center;
 }
 
 #rt-editor {

@@ -3,17 +3,24 @@
 @using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Shared.Models.Notes
+@inject IStringLocalizer<NoteEditDialog> L
+@inject IHelperService Helper
+@inject INoteService NoteService
 
-<EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="Note" IsEdit="true">
-    <MudTextField Class="mb-5" T="string" Label="Title" Variant="Variant.Text" Required="true"
+<EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="true">
+    <MudTextField Class="mb-5" T="string" Label="@L["Field.Title"]" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth="true" />
-    <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="Is Public" For="@(() => Model.Public)" @bind-Checked="Model.Public" />
+    <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsPublic"]" For="@(() => Model.Public)" @bind-Checked="Model.Public" />
     <div>
         @foreach (var tag in Tags)
         {
             <TagBox Tag="tag" OnClose="@(() => RemoveTag(tag.Id))" />
         }
-        <MudChip Style="height: 1.6rem;" Label="true" OnClick="AddTags"><MudIcon Size="Size.Small" Icon="@Icons.Filled.Add" /></MudChip>
+        <MudChip Style="height: 1.6rem;" Label="true" OnClick="AddTags">
+            <MudTooltip Text="@L["Tooltip.Add"]">
+                <MudIcon Size="Size.Small" Icon="@Icons.Filled.Add" />
+            </MudTooltip>
+        </MudChip>
     </div>
 </EditorDialog>
 
@@ -21,15 +28,13 @@
     [Parameter]
     public string NoteId { get; set; } = default!;
 
-    [Inject]
-    private IHelperService HelperService { get; set; } = default!;
-
-    [Inject]
-    private INoteService NoteService { get; set; } = default!;
+    [Parameter]
+    public NoteRightsDTO Rights { get; set; } = new();
 
     private NoteLightDTO? Note { get; set; }
     private NoteModel Model { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();
+    private Func<Task<bool>>? Remove { get; set; }
 
     protected override async void OnInitialized()
     {
@@ -40,6 +45,12 @@
             Model = new(Note);
             Tags = Note.Tags;
             Model.Tags = Tags.Select(x => x.Id).ToList();
+
+            if (Rights.CanEdit)
+            {
+                Remove = () => NoteService.Delete(NoteId);
+            }
+
             await InvokeAsync(StateHasChanged);
         }
 
@@ -48,8 +59,6 @@
 
     private Task<bool> Submit() => NoteService.Update(NoteId, Model);
 
-    private Task<bool> Remove() => NoteService.Delete(NoteId);
-
     private async Task AddTags()
     {
         if (ObjectHelper.IsNull(Note))
@@ -57,7 +66,7 @@
             return;
         }
 
-        var result = await HelperService.OpenDialog<TagTreeSelectorDialog, List<TagTreeItemDTO>>("Select Tag", (data) =>
+        var result = await Helper.OpenDialog<TagTreeSelectorDialog, List<TagTreeItemDTO>>("Select Tag", (data) =>
         {
             if (ObjectHelper.IsNotEmpty(data))
             {

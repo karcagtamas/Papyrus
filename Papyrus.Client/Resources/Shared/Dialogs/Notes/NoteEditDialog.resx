@@ -118,21 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Entity" xml:space="preserve">
-    <value>Jegyzet</value>
+    <value>Note</value>
   </data>
-  <data name="NoteTitle" xml:space="preserve">
-    <value>Új Dokumentum</value>
+  <data name="Field.IsPublic" xml:space="preserve">
+    <value>Is Public</value>
   </data>
-  <data name="Toaster.Add" xml:space="preserve">
-    <value>{0} hozzáadás</value>
+  <data name="Field.Title" xml:space="preserve">
+    <value>Title</value>
   </data>
-  <data name="Toaster.Create" xml:space="preserve">
-    <value>Új jegyzet készítés</value>
-  </data>
-  <data name="Toaster.Delete" xml:space="preserve">
-    <value>{0} törlés</value>
-  </data>
-  <data name="Toaster.Update" xml:space="preserve">
-    <value>{0} szerkesztés</value>
+  <data name="Tooltip.Add" xml:space="preserve">
+    <value>Add tags</value>
   </data>
 </root>
