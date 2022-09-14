@@ -22,4 +22,6 @@ public class NoteChangeEventArgs
     public string Title { get; set; } = default!;
     public List<NoteTagDTO> Tags { get; set; } = new();
     public bool Public { get; set; }
+    public string? LastUpdater { get; set; }
+    public DateTime LastUpdate { get; set; }
 }

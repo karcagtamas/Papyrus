@@ -117,6 +117,8 @@ public partial class NoteEditor : ComponentBase, IDisposable
                 Note.Title = args.Title;
                 Note.Tags = args.Tags;
                 Note.Public = args.Public;
+                Note.LastUpdate = args.LastUpdate;
+                Note.LastUpdater = args.LastUpdater;
                 UpdatePageTitle();
                 await InvokeAsync(StateHasChanged);
             }
@@ -194,7 +196,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
                         }
 
                         // Notify other clients
-                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags, Public = n.Public });
+                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags, Public = n.Public, LastUpdate = n.LastUpdate, LastUpdater = n.LastUpdater });
 
                         if (ObjectHelper.IsNotNull(Note))
                         {
@@ -202,6 +204,8 @@ public partial class NoteEditor : ComponentBase, IDisposable
                             Note.Title = n.Title;
                             Note.Tags = n.Tags;
                             Note.Public = n.Public;
+                            Note.LastUpdate = n.LastUpdate;
+                            Note.LastUpdater = n.LastUpdater;
                         }
                         UpdatePageTitle();
                         await InvokeAsync(StateHasChanged);
