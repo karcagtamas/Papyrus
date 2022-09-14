@@ -36,10 +36,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
         PageTitle = L["Title", L["DefaultTitle"]];
         DataCollapsed = true;
+        ClientId = await TokenService.GetClientId();
 
         await Refresh();
-
-        ClientId = await TokenService.GetClientId();
 
         InitHub();
 

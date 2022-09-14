@@ -57,8 +57,14 @@ public partial class Editor : ComponentBase, IDisposable
             Diff.ApplyDiffs(Content, diffs, async (res) =>
             {
                 Content = res;
+
+                if (!Content.Contains("‎"))
+                {
+                    Content += "‎";
+                }
+
                 await SetEditorValue(Content, ClientId);
-                Console.WriteLine($"Content changed to:\n {Content}");
+                Console.WriteLine($"Content changed to:\n{Content}");
             });
         }
     }

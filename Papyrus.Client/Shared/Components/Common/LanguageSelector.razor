@@ -26,9 +26,7 @@
     protected override async void OnInitialized()
     {
         Languages = await LanguageService.GetAll<LanguageDTO>();
-        Console.WriteLine(CultureInfo.CurrentCulture.Name);
         var current = Languages.FirstOrDefault(x => x.ShortName == CultureInfo.CurrentCulture.Name);
-        Console.WriteLine(current?.ShortName ?? "NEM");
 
         ObjectHelper.WhenNotNull(current, c => Current = c);
 
