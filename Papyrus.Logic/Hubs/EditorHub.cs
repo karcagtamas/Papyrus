@@ -1,6 +1,8 @@
-﻿using KarcagS.Shared.Helpers;
+﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Editor.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
@@ -17,13 +19,17 @@ public class EditorHub : Hub
     private readonly IEditorService editorService;
     private readonly IUserService userService;
     private readonly INoteContentService noteContentService;
+    private readonly IAuthorizationService authorization;
+    private readonly IUtilsService<string> utils;
 
-    public EditorHub(INoteService noteService, IEditorService editorService, IUserService userService, INoteContentService noteContentService)
+    public EditorHub(INoteService noteService, IEditorService editorService, IUserService userService, INoteContentService noteContentService, IAuthorizationService authorization, IUtilsService<string> utils)
     {
         this.noteService = noteService;
         this.editorService = editorService;
         this.userService = userService;
         this.noteContentService = noteContentService;
+        this.authorization = authorization;
+        this.utils = utils;
     }
 
     [Authorize]
@@ -37,11 +43,16 @@ public class EditorHub : Hub
     }
 
     [Authorize]
-    public void Share(string editor, byte[] value)
+    public async Task Share(string editor, byte[] value)
     {
         var note = noteService.GetOptional(editor);
 
         if (ObjectHelper.IsNull(note))
+        {
+            return;
+        }
+
+        if (!(await authorization.AuthorizeAsync(utils.GetRequiredUserPrincipal(), note.Id, NotePolicies.EditNote.Requirements)).Succeeded)
         {
             return;
         }
