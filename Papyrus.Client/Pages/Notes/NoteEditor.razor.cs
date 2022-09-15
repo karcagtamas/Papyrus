@@ -85,7 +85,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
     private void InitHub()
     {
         hub = new HubConnectionBuilder()
-            .WithUrl($"{ApplicationSettings.BaseUrl}/editor", options =>
+            .WithUrl($"{ApplicationSettings.BaseUrl}/editor?Editor={Id}", options =>
             {
                 options.AccessTokenProvider = () => TokenService.GetAccessTokenProvider();
             })
@@ -127,11 +127,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
         hub?.On(EditorHubEvents.EditorNoteDeleted, () => HandleDeleteAction());
 
-        ObjectHelper.WhenNotNull(hub, async (h) =>
-        {
-            await h.StartAsync();
-            await h.SendAsync(EditorHubEvents.EditorConnect, Id);
-        });
+        ObjectHelper.WhenNotNull(hub, async (h) => await h.StartAsync());
     }
 
     private void SaveDirtyState() => ObjectHelper.WhenNotNull(Editor, async e => await e.SaveDirtyState());
@@ -254,13 +250,6 @@ public partial class NoteEditor : ComponentBase, IDisposable
         Navigation.NavigateTo(url);
     }
 
-    public async void Dispose()
-    {
-        if (ObjectHelper.IsNotNull(hub))
-        {
-            await hub.SendAsync(EditorHubEvents.EditorDisconnect, Id);
-            await hub.DisposeAsync();
-        }
-    }
+    public void Dispose() => ObjectHelper.WhenNotNull(hub, async h => await h.DisposeAsync());
 
 }
