@@ -126,6 +126,9 @@
   <data name="CreateAction" xml:space="preserve">
     <value>Create</value>
   </data>
+  <data name="DateFilter.Placeholder" xml:space="preserve">
+    <value>Until Filter</value>
+  </data>
   <data name="PublishType.All" xml:space="preserve">
     <value>All</value>
   </data>
@@ -134,5 +137,11 @@
   </data>
   <data name="PublishType.Published" xml:space="preserve">
     <value>Only Published</value>
+  </data>
+  <data name="TagFilter.Placeholder" xml:space="preserve">
+    <value>Tag Filter</value>
+  </data>
+  <data name="TextFilter.Placeholder" xml:space="preserve">
+    <value>Text Filter</value>
   </data>
 </root>

@@ -22,7 +22,11 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
         this.groupActionLogService = groupActionLogService;
     }
 
-    public List<TagDTO> GetByGroup(int groupId) => GetMappedList<TagDTO>(x => x.GroupId == groupId).ToList();
+    public List<NoteTagDTO> GetList(int? groupId)
+    {
+        string userId = Utils.GetRequiredCurrentUserId();
+        return GetMappedList<NoteTagDTO>(x => (groupId != null && x.GroupId == groupId) || x.UserId == userId).ToList();
+    }
 
     public TagPathDTO GetPath(int id)
     {

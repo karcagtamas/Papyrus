@@ -21,15 +21,15 @@ public class TagController : ControllerBase
         this.tagService = tagService;
     }
 
-    [HttpGet("Group/{groupId}")]
-    public async Task<ActionResult<List<TagDTO>>> GetByGroup(int groupId)
+    [HttpGet]
+    public async Task<ActionResult<List<NoteTagDTO>>> GetList([FromQuery] int? groupId)
     {
-        if (!await ReadListCheck(groupId))
+        if (ObjectHelper.IsNotNull(groupId) && !await ReadListCheck((int)groupId))
         {
             return new EmptyResult();
         }
 
-        return tagService.GetByGroup(groupId);
+        return tagService.GetList(groupId);
     }
 
     [HttpGet("Tree")]

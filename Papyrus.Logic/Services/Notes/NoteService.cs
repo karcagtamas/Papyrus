@@ -218,8 +218,12 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
                 .Where(x => !x.Deleted)
                 .Where(x => query.PublishType == NotePublishType.All || (query.PublishType == NotePublishType.Published && x.Public) || (query.PublishType == NotePublishType.NotPublished && !x.Public))
                 .Where(x => (query.ArchivedStatus && x.Archived) || (!query.ArchivedStatus && !x.Archived))
+                .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
+                .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
+                .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
                 .OrderByDescending(x => x.LastUpdate)
                 .Include(x => x.Tags)
+                .Include(x => x.Creator)
                 .ToList()
             );
     }

@@ -6,7 +6,7 @@ namespace Papyrus.Logic.Services.Notes.Interfaces;
 
 public interface ITagService : IMapperRepository<Tag, int>
 {
-    List<TagDTO> GetByGroup(int groupId);
+    List<NoteTagDTO> GetList(int? groupId);
     List<TagTreeItemDTO> GetTree(int? groupId, int? filteredTag = null);
     TagPathDTO GetPath(int id);
 }

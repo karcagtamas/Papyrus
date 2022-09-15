@@ -10,6 +10,7 @@ public class TagMapper : Profile
 	public TagMapper()
 	{
 		CreateMap<Tag, TagDTO>();
+		CreateMap<Tag, NoteTagDTO>();
 		CreateMap<TagModel, Tag>();
     }
 }

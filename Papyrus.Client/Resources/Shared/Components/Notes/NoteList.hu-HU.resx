@@ -126,6 +126,9 @@
   <data name="CreateAction" xml:space="preserve">
     <value>Létrehozás</value>
   </data>
+  <data name="DateFilter.Placeholder" xml:space="preserve">
+    <value>Amíg Szűrés</value>
+  </data>
   <data name="PublishType.All" xml:space="preserve">
     <value>Mind</value>
   </data>
@@ -134,5 +137,11 @@
   </data>
   <data name="PublishType.Published" xml:space="preserve">
     <value>Csak Nyílvánosak</value>
+  </data>
+  <data name="TagFilter.Placeholder" xml:space="preserve">
+    <value>Címke Szűrés</value>
+  </data>
+  <data name="TextFilter.Placeholder" xml:space="preserve">
+    <value>Szöveg Szűrés</value>
   </data>
 </root>
