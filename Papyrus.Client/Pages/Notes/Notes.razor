@@ -1,32 +1,12 @@
 ﻿@page "/notes"
+@using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.Enums.Notes
 @attribute [Authorize]
 @inject IStringLocalizer<Notes> L
+@inject INoteService NoteService
 
 <ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
 
 <div class="page-div">
-    <ActionBar>
-        <div>
-            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
-        </div>
-        <MudSpacer />
-        <MudRadioGroup Class="mr-3" T="bool" SelectedOption="ArchivedStatus" SelectedOptionChanged="HandleArchivedStatusChange">
-            <MudRadio Size="Size.Small" Option="true">@L["ArchivedStatus.Archived"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="false">@L["ArchivedStatus.NotArchived"]</MudRadio>
-        </MudRadioGroup>
-        <MudRadioGroup Class="mr-3" T="NotePublishType" SelectedOption="PublishType" SelectedOptionChanged="HandlePublishTypeChange">
-            <MudRadio Size="Size.Small" Option="NotePublishType.All">@L["PublishType.All"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="NotePublishType.Published">@L["PublishType.Published"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="NotePublishType.NotPublished">@L["PublishType.NotPublished"]</MudRadio>
-        </MudRadioGroup>
-    </ActionBar>
-    <div class="page-content">
-        <div class="notes">
-            @foreach (var note in NoteList)
-            {
-                <NoteListTile Note="note" />
-            }
-        </div>
-    </div>
+    <NoteList Fetcher="Fetcher" />
 </div>

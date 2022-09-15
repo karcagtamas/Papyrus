@@ -13,31 +13,6 @@
 <div class="page-div">
     @if (PageEnabled)
     {
-        <ActionBar>
-            <div>
-                @if (Rights.CanCreate)
-                {
-                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
-                }
-            </div>
-            <MudSpacer />
-            <MudRadioGroup Class="mr-3" T="bool" SelectedOption="ArchivedStatus" SelectedOptionChanged="HandleArchivedStatusChange">
-                <MudRadio Size="Size.Small" Option="true">@L["ArchivedStatus.Archived"]</MudRadio>
-                <MudRadio Size="Size.Small" Option="false">@L["ArchivedStatus.NotArchived"]</MudRadio>
-            </MudRadioGroup>
-            <MudRadioGroup Class="mr-3" T="NotePublishType" SelectedOption="PublishType" SelectedOptionChanged="HandlePublishTypeChange">
-                <MudRadio Size="Size.Small" Option="NotePublishType.All">@L["PublishType.All"]</MudRadio>
-                <MudRadio Size="Size.Small" Option="NotePublishType.Published">@L["PublishType.Published"]</MudRadio>
-                <MudRadio Size="Size.Small" Option="NotePublishType.NotPublished">@L["PublishType.NotPublished"]</MudRadio>
-            </MudRadioGroup>
-        </ActionBar>
-        <div class="page-content">
-            <div class="notes">
-                @foreach (var note in Notes)
-                {
-                    <NoteListTile Note="note" OpenDisabled="Rights.CanOpen" />
-                }
-            </div>
-        </div>
+        <NoteList Fetcher="Fetcher" GroupId="GroupId" CreateEnabled="Rights.CanCreate" OpenDisabled="Rights.CanOpen" />
     }
 </div>

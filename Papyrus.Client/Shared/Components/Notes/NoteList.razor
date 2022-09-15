@@ -1,0 +1,97 @@
+﻿@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Shared.DTOs.Notes
+@using Papyrus.Shared.Enums.Notes
+@using Papyrus.Shared.Models.Notes
+@inject IStringLocalizer<NoteList> L
+@inject INoteService NoteService
+@inject IJSRuntime JSRuntime
+
+<ActionBar>
+    <div>
+        @if (CreateEnabled)
+        {
+            <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
+        }
+    </div>
+    <MudSpacer />
+    <MudRadioGroup Class="mr-3" T="bool" SelectedOption="QueryModel.ArchivedStatus" SelectedOptionChanged="HandleArchivedStatusChange">
+        <MudRadio Size="Size.Small" Option="true">@L["ArchivedStatus.Archived"]</MudRadio>
+        <MudRadio Size="Size.Small" Option="false">@L["ArchivedStatus.NotArchived"]</MudRadio>
+    </MudRadioGroup>
+    <MudRadioGroup Class="mr-3" T="NotePublishType" SelectedOption="QueryModel.PublishType" SelectedOptionChanged="HandlePublishTypeChange">
+        <MudRadio Size="Size.Small" Option="NotePublishType.All">@L["PublishType.All"]</MudRadio>
+        <MudRadio Size="Size.Small" Option="NotePublishType.Published">@L["PublishType.Published"]</MudRadio>
+        <MudRadio Size="Size.Small" Option="NotePublishType.NotPublished">@L["PublishType.NotPublished"]</MudRadio>
+    </MudRadioGroup>
+</ActionBar>
+<div class="page-content">
+    <div class="notes">
+        @foreach (var note in List)
+        {
+            <NoteListTile @key="note.Id" Note="note" />
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public int? GroupId { get; set; } = null;
+
+    [Parameter, EditorRequired]
+    public Func<NoteFilterQueryModel, Task<List<NoteLightDTO>>> Fetcher { get; set; } = (query) => Task.FromResult(new List<NoteLightDTO>());
+
+    [Parameter]
+    public EventCallback Refreshed { get; set; }
+
+    [Parameter]
+    public bool CreateEnabled { get; set; } = true;
+
+    [Parameter]
+    public bool OpenDisabled { get; set; } = false;
+
+    private NoteFilterQueryModel QueryModel { get; set; } = new();
+    private List<NoteLightDTO> List { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Refresh();
+    }
+
+    private async Task Refresh()
+    {
+        List = await Fetcher(QueryModel);
+        await Refreshed.InvokeAsync();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task Create()
+    {
+        if (!CreateEnabled)
+        {
+            return;
+        }
+
+        var result = await NoteService.CreateEmpty(GroupId);
+
+        if (ObjectHelper.IsNotNull(result))
+        {
+            await Refreshed.InvokeAsync();
+            await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
+        }
+    }
+
+    private async Task HandlePublishTypeChange(NotePublishType publishType)
+    {
+        QueryModel.PublishType = publishType;
+        await Refresh();
+    }
+
+    private async Task HandleArchivedStatusChange(bool status)
+    {
+        QueryModel.ArchivedStatus = status;
+        await Refresh();
+    }
+}

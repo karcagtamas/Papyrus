@@ -2,6 +2,7 @@
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
+using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Groups.Interfaces;
@@ -74,24 +75,13 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return id;
     }
 
-    public List<NoteLightDTO> GetByGroup(int groupId, NotePublishType publishType = NotePublishType.All, bool archiveStatus = false)
-    {
-        return GetMappedList<NoteLightDTO>(x => x.GroupId == groupId && !x.Deleted
-            && (publishType == NotePublishType.All || (publishType == NotePublishType.Published && x.Public) || (publishType == NotePublishType.NotPublished && !x.Public))
-            && ((archiveStatus && x.Archived) || (!archiveStatus && !x.Archived)))
-            .OrderByDescending(x => x.LastUpdate)
-            .ToList();
-    }
+    public List<NoteLightDTO> GetByGroup(int groupId, NoteFilterQueryModel query) => GetFilteredList(GetListAsQuery(x => x.GroupId == groupId), query);
 
-    public List<NoteLightDTO> GetByUser(NotePublishType publishType = NotePublishType.All, bool archiveStatus = false)
+    public List<NoteLightDTO> GetByUser(NoteFilterQueryModel query)
     {
         var userId = Utils.GetRequiredCurrentUserId();
 
-        return GetMappedList<NoteLightDTO>(x => x.UserId == userId && !x.Deleted
-            && (publishType == NotePublishType.All || (publishType == NotePublishType.Published && x.Public) || (publishType == NotePublishType.NotPublished && !x.Public))
-            && ((archiveStatus && x.Archived) || (!archiveStatus && !x.Archived)))
-            .OrderByDescending(x => x.LastUpdate)
-            .ToList();
+        return GetFilteredList(GetListAsQuery(x => x.UserId == userId), query);
     }
 
     public override T GetMapped<T>(string id)
@@ -219,5 +209,18 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         }
 
         return new NoteRightsDTO();
+    }
+
+    private List<NoteLightDTO> GetFilteredList(IQueryable<Note> queryable, NoteFilterQueryModel query)
+    {
+        return Mapper.Map<List<NoteLightDTO>>(
+            queryable
+                .Where(x => !x.Deleted)
+                .Where(x => query.PublishType == NotePublishType.All || (query.PublishType == NotePublishType.Published && x.Public) || (query.PublishType == NotePublishType.NotPublished && !x.Public))
+                .Where(x => (query.ArchivedStatus && x.Archived) || (!query.ArchivedStatus && !x.Archived))
+                .OrderByDescending(x => x.LastUpdate)
+                .Include(x => x.Tags)
+                .ToList()
+            );
     }
 }

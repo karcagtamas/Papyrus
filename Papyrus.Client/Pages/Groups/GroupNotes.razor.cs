@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
 using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.DTOs.Notes;
-using Papyrus.Shared.Enums.Notes;
+using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Client.Pages.Groups;
 
@@ -12,10 +11,7 @@ public partial class GroupNotes : ComponentBase
     public int GroupId { get; set; }
 
     private GroupNoteRightsDTO Rights { get; set; } = new();
-    private List<NoteLightDTO> Notes { get; set; } = new();
-    private NotePublishType PublishType { get; set; } = NotePublishType.All;
-    private bool ArchivedStatus { get; set; } = false;
-    private bool PageEnabled { get; set; } = false;
+    private bool PageEnabled { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,6 +24,8 @@ public partial class GroupNotes : ComponentBase
 
         await Refresh();
     }
+
+    private Task<List<NoteLightDTO>> Fetcher(NoteFilterQueryModel query) => NoteService.GetByGroup(GroupId, query);
 
     private async Task<bool> SetPageStatus()
     {
@@ -47,31 +45,6 @@ public partial class GroupNotes : ComponentBase
     {
         Rights = await GroupService.GetNoteRights(GroupId);
 
-        Notes = await NoteService.GetByGroup(GroupId, PublishType, ArchivedStatus);
-
         await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task Create()
-    {
-        var result = await NoteService.CreateEmpty(GroupId);
-
-        if (ObjectHelper.IsNotNull(result))
-        {
-            await Refresh();
-            await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
-        }
-    }
-
-    private async Task HandlePublishTypeChange(NotePublishType publishType)
-    {
-        PublishType = publishType;
-        await Refresh();
-    }
-
-    private async Task HandleArchivedStatusChange(bool status)
-    {
-        ArchivedStatus = status;
-        await Refresh();
     }
 }
