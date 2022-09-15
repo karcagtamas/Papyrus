@@ -120,6 +120,9 @@
   <data name="Entity" xml:space="preserve">
     <value>Note</value>
   </data>
+  <data name="Field.IsArchived" xml:space="preserve">
+    <value>Is Archived</value>
+  </data>
   <data name="Field.IsPublic" xml:space="preserve">
     <value>Is Public</value>
   </data>

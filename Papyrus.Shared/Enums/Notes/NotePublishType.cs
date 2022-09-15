@@ -1,6 +1,6 @@
 ﻿namespace Papyrus.Shared.Enums.Notes;
 
-public enum NoteSearchType
+public enum NotePublishType
 {
     All,
     Published,

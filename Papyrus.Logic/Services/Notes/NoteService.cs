@@ -63,6 +63,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             Title = note.Title
         };
     }
+
     public override string Create(Note entity, bool doPersist = true)
     {
         string userId = Utils.GetRequiredCurrentUserId();
@@ -73,18 +74,22 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return id;
     }
 
-    public List<NoteLightDTO> GetByGroup(int groupId, NoteSearchType searchType = NoteSearchType.All)
+    public List<NoteLightDTO> GetByGroup(int groupId, NotePublishType publishType = NotePublishType.All, bool archiveStatus = false)
     {
-        return GetMappedList<NoteLightDTO>(x => x.GroupId == groupId && !x.Deleted && (searchType == NoteSearchType.All || (searchType == NoteSearchType.Published && x.Public) || (searchType == NoteSearchType.NotPublished && !x.Public)))
+        return GetMappedList<NoteLightDTO>(x => x.GroupId == groupId && !x.Deleted
+            && (publishType == NotePublishType.All || (publishType == NotePublishType.Published && x.Public) || (publishType == NotePublishType.NotPublished && !x.Public))
+            && ((archiveStatus && x.Archived) || (!archiveStatus && !x.Archived)))
             .OrderByDescending(x => x.LastUpdate)
             .ToList();
     }
 
-    public List<NoteLightDTO> GetByUser(NoteSearchType searchType = NoteSearchType.All)
+    public List<NoteLightDTO> GetByUser(NotePublishType publishType = NotePublishType.All, bool archiveStatus = false)
     {
         var userId = Utils.GetRequiredCurrentUserId();
 
-        return GetMappedList<NoteLightDTO>(x => x.UserId == userId && !x.Deleted && (searchType == NoteSearchType.All || (searchType == NoteSearchType.Published && x.Public) || (searchType == NoteSearchType.NotPublished && !x.Public)))
+        return GetMappedList<NoteLightDTO>(x => x.UserId == userId && !x.Deleted
+            && (publishType == NotePublishType.All || (publishType == NotePublishType.Published && x.Public) || (publishType == NotePublishType.NotPublished && !x.Public))
+            && ((archiveStatus && x.Archived) || (!archiveStatus && !x.Archived)))
             .OrderByDescending(x => x.LastUpdate)
             .ToList();
     }
@@ -154,6 +159,11 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             if (o["Public"] as bool? != entity.Public)
             {
                 noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Publish);
+            }
+
+            if (o["Archived"] as bool? != entity.Archived)
+            {
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Archived);
             }
 
             if (o["Deleted"] as bool? != entity.Deleted)

@@ -21,10 +21,14 @@
                 }
             </div>
             <MudSpacer />
-            <MudRadioGroup Class="mr-3" T="NoteSearchType" SelectedOption="SearchType" SelectedOptionChanged="HandleSearchTypeChange">
-                <MudRadio Size="Size.Small" Option="NoteSearchType.All">@L["SearchType.All"]</MudRadio>
-                <MudRadio Size="Size.Small" Option="NoteSearchType.Published">@L["SearchType.Published"]</MudRadio>
-                <MudRadio Size="Size.Small" Option="NoteSearchType.NotPublished">@L["SearchType.NotPublished"]</MudRadio>
+            <MudRadioGroup Class="mr-3" T="bool" SelectedOption="ArchivedStatus" SelectedOptionChanged="HandleArchivedStatusChange">
+                <MudRadio Size="Size.Small" Option="true">@L["ArchivedStatus.Archived"]</MudRadio>
+                <MudRadio Size="Size.Small" Option="false">@L["ArchivedStatus.NotArchived"]</MudRadio>
+            </MudRadioGroup>
+            <MudRadioGroup Class="mr-3" T="NotePublishType" SelectedOption="PublishType" SelectedOptionChanged="HandlePublishTypeChange">
+                <MudRadio Size="Size.Small" Option="NotePublishType.All">@L["PublishType.All"]</MudRadio>
+                <MudRadio Size="Size.Small" Option="NotePublishType.Published">@L["PublishType.Published"]</MudRadio>
+                <MudRadio Size="Size.Small" Option="NotePublishType.NotPublished">@L["PublishType.NotPublished"]</MudRadio>
             </MudRadioGroup>
         </ActionBar>
         <div class="page-content">

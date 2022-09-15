@@ -22,6 +22,9 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     public bool Public { get; set; }
 
     [Required]
+    public bool Archived { get; set; }
+
+    [Required]
     public DateTime Creation { get; set; }
 
     [Required]

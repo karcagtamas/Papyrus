@@ -18,7 +18,8 @@ public partial class Notes : ComponentBase
     private IJSRuntime JSRuntime { get; set; } = default!;
 
     private List<NoteLightDTO> NoteList { get; set; } = new();
-    private NoteSearchType SearchType { get; set; } = NoteSearchType.All;
+    private NotePublishType PublishType { get; set; } = NotePublishType.All;
+    private bool ArchivedStatus { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -28,7 +29,7 @@ public partial class Notes : ComponentBase
 
     private async Task Refresh()
     {
-        NoteList = await NoteService.GetByUser(SearchType);
+        NoteList = await NoteService.GetByUser(PublishType, ArchivedStatus);
 
         await InvokeAsync(StateHasChanged);
     }
@@ -44,9 +45,15 @@ public partial class Notes : ComponentBase
         }
     }
 
-    private async Task HandleSearchTypeChange(NoteSearchType searchType)
+    private async Task HandlePublishTypeChange(NotePublishType publishType)
     {
-        SearchType = searchType;
+        PublishType = publishType;
+        await Refresh();
+    }
+
+    private async Task HandleArchivedStatusChange(bool status)
+    {
+        ArchivedStatus = status;
         await Refresh();
     }
 }

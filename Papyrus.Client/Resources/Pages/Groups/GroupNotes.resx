@@ -117,19 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArchivedStatus.Archived" xml:space="preserve">
+    <value>Archived</value>
+  </data>
+  <data name="ArchivedStatus.NotArchived" xml:space="preserve">
+    <value>Not Archived</value>
+  </data>
   <data name="CreateAction" xml:space="preserve">
     <value>Create</value>
   </data>
   <data name="PageName" xml:space="preserve">
     <value>Notes</value>
   </data>
-  <data name="SearchType.All" xml:space="preserve">
+  <data name="PublishType.All" xml:space="preserve">
     <value>All</value>
   </data>
-  <data name="SearchType.NotPublished" xml:space="preserve">
+  <data name="PublishType.NotPublished" xml:space="preserve">
     <value>Only Not Published</value>
   </data>
-  <data name="SearchType.Published" xml:space="preserve">
+  <data name="PublishType.Published" xml:space="preserve">
     <value>Only Published</value>
   </data>
 </root>

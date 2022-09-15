@@ -26,13 +26,14 @@ public class NoteService : HttpCall<string>, INoteService
             .ExecuteWithResult();
     }
 
-    public Task<List<NoteLightDTO>> GetByGroup(int groupId, NoteSearchType searchType = NoteSearchType.All)
+    public Task<List<NoteLightDTO>> GetByGroup(int groupId, NotePublishType publishType = NotePublishType.All, bool archiveStatus = false)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId);
 
         var queryParams = HttpQueryParameters.Build()
-            .Add("searchType", searchType);
+            .Add("publishType", publishType)
+            .Add("archiveStatus", archiveStatus);
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
             .AddPathParams(pathParams)
@@ -41,10 +42,11 @@ public class NoteService : HttpCall<string>, INoteService
         return Http.Get<List<NoteLightDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public Task<List<NoteLightDTO>> GetByUser(NoteSearchType searchType = NoteSearchType.All)
+    public Task<List<NoteLightDTO>> GetByUser(NotePublishType publishType = NotePublishType.All, bool archiveStatus = false)
     {
         var queryParams = HttpQueryParameters.Build()
-            .Add("searchType", searchType);
+            .Add("publishType", publishType)
+            .Add("archiveStatus", archiveStatus);
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "User"))
             .AddQueryParams(queryParams);

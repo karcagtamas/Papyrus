@@ -13,7 +13,8 @@ public partial class GroupNotes : ComponentBase
 
     private GroupNoteRightsDTO Rights { get; set; } = new();
     private List<NoteLightDTO> Notes { get; set; } = new();
-    private NoteSearchType SearchType { get; set; } = NoteSearchType.All;
+    private NotePublishType PublishType { get; set; } = NotePublishType.All;
+    private bool ArchivedStatus { get; set; } = false;
     private bool PageEnabled { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
@@ -46,7 +47,7 @@ public partial class GroupNotes : ComponentBase
     {
         Rights = await GroupService.GetNoteRights(GroupId);
 
-        Notes = await NoteService.GetByGroup(GroupId, SearchType);
+        Notes = await NoteService.GetByGroup(GroupId, PublishType, ArchivedStatus);
 
         await InvokeAsync(StateHasChanged);
     }
@@ -62,9 +63,15 @@ public partial class GroupNotes : ComponentBase
         }
     }
 
-    private async Task HandleSearchTypeChange(NoteSearchType searchType)
+    private async Task HandlePublishTypeChange(NotePublishType publishType)
     {
-        SearchType = searchType;
+        PublishType = publishType;
+        await Refresh();
+    }
+
+    private async Task HandleArchivedStatusChange(bool status)
+    {
+        ArchivedStatus = status;
         await Refresh();
     }
 }

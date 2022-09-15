@@ -7,5 +7,6 @@ public enum NoteActionLogType
     ContentEdit,
     TagEdit,
     Delete,
-    Publish
+    Publish,
+    Archived
 }

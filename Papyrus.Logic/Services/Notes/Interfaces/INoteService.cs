@@ -8,8 +8,8 @@ namespace Papyrus.Logic.Services.Notes.Interfaces;
 
 public interface INoteService : IMapperRepository<Note, string>
 {
-    List<NoteLightDTO> GetByGroup(int groupId, NoteSearchType searchType = NoteSearchType.All);
-    List<NoteLightDTO> GetByUser(NoteSearchType searchType = NoteSearchType.All);
+    List<NoteLightDTO> GetByGroup(int groupId, NotePublishType publishType = NotePublishType.All, bool archiveStatus = false);
+    List<NoteLightDTO> GetByUser(NotePublishType publishType = NotePublishType.All, bool archiveStatus = false);
     NoteCreationDTO CreateEmpty(NoteCreateModel model);
     Task<NoteRightsDTO> GetRights(string id);
     void UpdateWithTags(string id, NoteModel model);

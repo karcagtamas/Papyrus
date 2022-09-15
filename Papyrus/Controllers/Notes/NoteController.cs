@@ -46,18 +46,18 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("Group/{groupId}")]
-    public async Task<ActionResult<List<NoteLightDTO>>> GetByGroup(int groupId, [FromQuery] NoteSearchType searchType = NoteSearchType.All)
+    public async Task<ActionResult<List<NoteLightDTO>>> GetByGroup(int groupId, [FromQuery] NotePublishType publishType = NotePublishType.All, [FromQuery] bool archiveStatus = false)
     {
         if (!await ReadListCheck(groupId))
         {
             return new EmptyResult();
         }
 
-        return noteService.GetByGroup(groupId, searchType);
+        return noteService.GetByGroup(groupId, publishType, archiveStatus);
     }
 
     [HttpGet("User")]
-    public List<NoteLightDTO> GetByUser([FromQuery] NoteSearchType searchType = NoteSearchType.All) => noteService.GetByUser(searchType);
+    public List<NoteLightDTO> GetByUser([FromQuery] NotePublishType publishType = NotePublishType.All, [FromQuery] bool archiveStatus = false) => noteService.GetByUser(publishType, archiveStatus);
 
     [HttpPost]
     public async Task<ActionResult<NoteCreationDTO>> CreateEmpty([FromBody] NoteCreateModel model)
