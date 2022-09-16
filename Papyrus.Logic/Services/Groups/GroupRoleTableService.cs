@@ -1,14 +1,10 @@
-﻿using DocumentFormat.OpenXml.Drawing;
-using KarcagS.Common.Tools.Services;
-using KarcagS.Common.Tools.Table;
+﻿using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
-using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities.Groups;
-using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared;
@@ -20,17 +16,15 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
     private readonly IGroupRoleService groupRoleService;
     private readonly ITranslationService translationService;
     private readonly ILanguageService languageService;
-    private readonly IAuthorizationService authorization;
-    private readonly IUtilsService<string> utils;
+    private readonly IRightService rightService;
     private readonly string TranslationSegment = "GroupRole";
 
-    public GroupRoleTableService(IGroupRoleService groupRoleService, ITranslationService translationService, ILanguageService languageService, IAuthorizationService authorization, IUtilsService<string> utils)
+    public GroupRoleTableService(IGroupRoleService groupRoleService, ITranslationService translationService, ILanguageService languageService, IRightService rightService)
     {
         this.groupRoleService = groupRoleService;
         this.translationService = translationService;
         this.languageService = languageService;
-        this.authorization = authorization;
-        this.utils = utils;
+        this.rightService = rightService;
         Initialize();
     }
 
@@ -112,14 +106,7 @@ public class GroupRoleTableService : TableService<GroupRole, int>, IGroupRoleTab
             .Build();
     }
 
-    public override Task<bool> Authorize(QueryModel query) => ReadCheck(ExtractGroupId(query));
-
-    private async Task<bool> ReadCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(utils.GetRequiredUserPrincipal(), id, GroupPolicies.ReadGroupRoles.Requirements);
-
-        return result.Succeeded;
-    }
+    public override Task<bool> Authorize(QueryModel query) => rightService.HasGroupRoleListReadRight(ExtractGroupId(query));
 
     private static int ExtractGroupId(QueryModel query) => int.Parse(query.ExtraParams["groupId"].ToString() ?? "0");
 

@@ -6,11 +6,10 @@ using KarcagS.Shared.Enums;
 using KarcagS.Shared.Helpers;
 using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess.Entities.Groups;
-using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared;
 
 namespace Papyrus.Logic.Services.Groups;
@@ -19,15 +18,13 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
 {
     private readonly IUtilsService<string> utilsService;
     private readonly IGroupMemberService groupMemberService;
-    private readonly IAuthorizationService authorization;
-    private readonly IUtilsService<string> utils;
+    private readonly IRightService rightService;
 
-    public GroupMemberTableService(IUtilsService<string> utilsService, IGroupMemberService groupMemberService, IAuthorizationService authorization, IUtilsService<string> utils) : base()
+    public GroupMemberTableService(IUtilsService<string> utilsService, IGroupMemberService groupMemberService, IRightService rightService) : base()
     {
         this.utilsService = utilsService;
         this.groupMemberService = groupMemberService;
-        this.authorization = authorization;
-        this.utils = utils;
+        this.rightService = rightService;
         Initialize();
     }
 
@@ -74,13 +71,7 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
             .Build();
     }
 
-    public override Task<bool> Authorize(QueryModel query) => ReadCheck(ExtractGroupId(query));
-
-    private async Task<bool> ReadCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(utils.GetRequiredUserPrincipal(), id, GroupPolicies.ReadGroupMembers.Requirements);
-        return result.Succeeded;
-    }
+    public override Task<bool> Authorize(QueryModel query) => rightService.HasGroupMemberListReadRight(ExtractGroupId(query));
 
     private static int ExtractGroupId(QueryModel query) => int.Parse(query.ExtraParams["groupId"].ToString() ?? "0");
 }

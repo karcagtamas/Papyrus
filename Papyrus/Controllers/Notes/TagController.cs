@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.Logic.Authorization;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
@@ -12,19 +12,19 @@ namespace Papyrus.Controllers.Notes;
 [Authorize]
 public class TagController : ControllerBase
 {
-    private readonly IAuthorizationService authorization;
     private readonly ITagService tagService;
+    private readonly IRightService rightService;
 
-    public TagController(IAuthorizationService authorization, ITagService tagService)
+    public TagController(ITagService tagService, IRightService rightService)
     {
-        this.authorization = authorization;
         this.tagService = tagService;
+        this.rightService = rightService;
     }
 
     [HttpGet]
     public async Task<ActionResult<List<NoteTagDTO>>> GetList([FromQuery] int? groupId)
     {
-        if (ObjectHelper.IsNotNull(groupId) && !await ReadListCheck((int)groupId))
+        if (ObjectHelper.IsNotNull(groupId) && !await rightService.HasGroupTagListReadRight((int)groupId))
         {
             return new EmptyResult();
         }
@@ -35,7 +35,7 @@ public class TagController : ControllerBase
     [HttpGet("Tree")]
     public async Task<ActionResult<List<TagTreeItemDTO>>> GetTree([FromQuery] int? groupId, [FromQuery] int? filteredTag)
     {
-        if (ObjectHelper.IsNotNull(groupId) && !await ReadListCheck((int)groupId))
+        if (ObjectHelper.IsNotNull(groupId) && !await rightService.HasGroupTagListReadRight((int)groupId))
         {
             return new EmptyResult();
         }
@@ -46,7 +46,7 @@ public class TagController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TagDTO>> Get(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasTagReadRight(id))
         {
             return new EmptyResult();
         }
@@ -57,7 +57,7 @@ public class TagController : ControllerBase
     [HttpGet("{id}/Path")]
     public async Task<ActionResult<TagPathDTO>> GetPath(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasTagReadRight(id))
         {
             return new EmptyResult();
         }
@@ -68,7 +68,7 @@ public class TagController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] TagModel model)
     {
-        if (ObjectHelper.IsNotNull(model.GroupId) && !await CreateCheck((int)model.GroupId))
+        if (ObjectHelper.IsNotNull(model.GroupId) && !await rightService.HasGroupTagCreateRight((int)model.GroupId))
         {
             return new EmptyResult();
         }
@@ -81,7 +81,7 @@ public class TagController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] TagModel model)
     {
-        if (!await EditCheck(id))
+        if (!await rightService.HasTagEditRight(id))
         {
             return new EmptyResult();
         }
@@ -94,7 +94,7 @@ public class TagController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<ActionResult> Remove(int id)
     {
-        if (!await EditCheck(id))
+        if (!await rightService.HasTagEditRight(id))
         {
             return new EmptyResult();
         }
@@ -102,33 +102,5 @@ public class TagController : ControllerBase
         tagService.DeleteById(id);
 
         return Ok();
-    }
-
-    private async Task<bool> EditCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, TagPolicies.EditTag.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> CreateCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.CreateTag.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> ReadListCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.ReadTags.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> ReadCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, TagPolicies.ReadTag.Requirements);
-
-        return result.Succeeded;
     }
 }
