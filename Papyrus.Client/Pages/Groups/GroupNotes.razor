@@ -1,7 +1,6 @@
 ﻿@page "/groups/{GroupId:int}/notes"
 @using Papyrus.Client.Services.Groups.Interfaces
 @using Papyrus.Client.Services.Notes.Interfaces
-@using Papyrus.Shared.Enums.Notes
 @attribute [Authorize]
 @inject IStringLocalizer<GroupNotes> L
 @inject IGroupService GroupService

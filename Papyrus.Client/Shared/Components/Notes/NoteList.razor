@@ -33,10 +33,10 @@
             @if (ObjectHelper.IsNotEmpty(Tags))
             {
                 <div class="mr-3">
-                    <MudSelect T="int" Style="width: 420px;" SelectedValues="QueryModel.Tags.AsEnumerable()" SelectedValuesChanged="HandleTagFilterChange" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable MultiSelection MultiSelectionTextFunc="ConstructTagText" Placeholder="@L["TagFilter.Placeholder"]">
+                    <MudSelect T="int" Style="width: 420px;" SelectedValues="QueryModel.Tags.AsEnumerable()" SelectedValuesChanged="HandleTagFilterChange" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense" Clearable MultiSelection MultiSelectionTextFunc="ConstructTagText" Placeholder="@L["TagFilter.Placeholder"]">
                         @foreach (var tag in Tags)
                         {
-                            <MudSelectItem @key="tag.Id" Value="tag.Id">@tag.Caption</MudSelectItem>
+                            <MudSelectItem @key="tag.Id" Value="tag.Id"><TagBox Tag="tag" /></MudSelectItem>
                         }
                     </MudSelect>
                 </div>
@@ -114,7 +114,8 @@
 
     private string ConstructTagText(List<string> list)
     {
-        return string.Join(",", list);
+        var ids = list.Select(x => int.Parse(x)).ToList();
+        return string.Join(", ", Tags.Where(x => ids.Contains(x.Id)).Select(x => x.Caption).ToList());
     }
 
     private async Task HandlePublishTypeChange(NotePublishType publishType)
