@@ -1,5 +1,4 @@
 ﻿@using System.Globalization
-@using MudBlazor.Utilities
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.DTOs
 @inject NavigationManager Navigator
@@ -34,7 +33,7 @@
         StateHasChanged();
     }
 
-    private async void UpdateLanguage(LanguageDTO language)
+    private async Task UpdateLanguage(LanguageDTO language)
     {
         await LanguageService.SetUserLanguage(language.Id);
         var js = (IJSInProcessRuntime)JS;

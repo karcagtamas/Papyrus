@@ -1,0 +1,46 @@
+﻿@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.Enums
+@inject NavigationManager Navigator
+@inject IJSRuntime JS
+@inject ILanguageService LanguageService
+
+<MudMenu Label="@Current.ToString()" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+    @foreach (var theme in Themes)
+    {
+        <MudMenuItem OnClick="@(() => UpdateLanguage(theme))"><MudText Color="@(Current == theme ? Color.Primary : Color.Default)">@(theme.ToString())</MudText></MudMenuItem>
+    }
+</MudMenu>
+
+@code {
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
+    [Parameter]
+    public Variant Variant { get; set; } = Variant.Filled;
+
+    private List<Theme> Themes { get; set; } = new();
+    private Theme Current { get; set; } = Theme.Light;
+
+    protected override async void OnInitialized()
+    {
+        Themes = new List<Theme> { Theme.Light, Theme.Dark };
+        var current = Theme.Light; // TODO: Get from cache
+
+        ObjectHelper.WhenNotNull(current, c => Current = c);
+
+        base.OnInitialized();
+        StateHasChanged();
+    }
+
+    private Task UpdateLanguage(Theme theme)
+    {
+        return Task.CompletedTask;
+        /*
+        await LanguageService.SetUserLanguage(language.Id);
+        var js = (IJSInProcessRuntime)JS;
+        js.InvokeVoid("blazorCulture.set", language.ShortName);
+
+        Navigator.NavigateTo(Navigator.Uri, forceLoad: true);
+        */
+    }
+}

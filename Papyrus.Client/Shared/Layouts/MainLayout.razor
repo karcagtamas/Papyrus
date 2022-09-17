@@ -9,7 +9,6 @@
 @using Papyrus.Client.Services.Interfaces
 @using System.Text.RegularExpressions
 @using Papyrus.Shared.DTOs.Groups
-@using static Papyrus.Client.Shared.PapyrusMenu
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject IUserService userService
@@ -20,7 +19,7 @@
 @inject IGroupService groupService
 @inject IHelperService Helper
 
-<MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
+<MudThemeProvider Theme="@PapyrusTheme.GetTheme()" IsDarkMode="true" />
 <MudDialogProvider CloseButton="true" />
 <MudSnackbarProvider />
 
@@ -29,7 +28,7 @@
         <AuthorizeView>
             <Authorized>
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-                               OnClick="@((_) => DrawerToggle())" Class="mr-5" />
+                                OnClick="@((_) => DrawerToggle())" Class="mr-5" />
             </Authorized>
         </AuthorizeView>
         <MudLink Color="Color.Inherit" Class="mr-5 ml-5 mud-nav-link-text appbar-title" Href="/home">
@@ -48,6 +47,7 @@
             </Authorized>
         </AuthorizeView>
         <div class="ml-3 d-flex flex-row align-items-center">
+            <ThemeSelector />
             <LanguageSelector />
         </div>
     </MudAppBar>
