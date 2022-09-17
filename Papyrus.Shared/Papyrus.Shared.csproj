@@ -7,8 +7,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="KarcagS.Shared" Version="2.7.7" />
-		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.8" />
+		<PackageReference Include="KarcagS.Shared" Version="2.7.9" />
+		<PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.9" />
 	</ItemGroup>
 
 </Project>

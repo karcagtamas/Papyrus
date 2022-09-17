@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
@@ -24,7 +25,7 @@ public class GroupController : ControllerBase
 
     [HttpGet]
     [Authorize(Roles = "Administrator")]
-    public List<GroupListDTO> GetAll() => groupService.GetAllMapped<GroupListDTO>().ToList();
+    public List<GroupListDTO> GetAll() => groupService.MapFromQuery<GroupListDTO>(groupService.GetAllAsQuery().Include(x => x.Owner)).ToList();
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GroupDTO>> Get(int id)

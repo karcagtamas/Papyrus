@@ -13,8 +13,5 @@ public class NoteContentService : MongoCollectionService<NoteContent, Collection
     {
     }
 
-    public void UpdateContent(string id, string content)
-    {
-        Collection.UpdateOne(Builders<NoteContent>.Filter.Eq(x => x.Id, id), Builders<NoteContent>.Update.Set(x => x.Content, content));
-    }
+    public void UpdateContent(string id, string content) => Collection.UpdateOne(Builders<NoteContent>.Filter.Eq(x => x.Id, id), Builders<NoteContent>.Update.Set(x => x.Content, content));
 }

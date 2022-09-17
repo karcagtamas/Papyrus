@@ -1,4 +1,3 @@
-using System.Globalization;
 using AutoMapper;
 using KarcagS.Common.Tools.HttpInterceptor;
 using KarcagS.Common.Tools.Repository;
@@ -43,19 +42,6 @@ public class UserService : MapperRepository<User, string, string>, IUserService
         return userManager.Users
             .Where(user => ignoreCurrent && user.Id != Utils.GetCurrentUserId())
             .Any(user => user.Email == email || user.UserName == userName);
-    }
-
-    public void SetDisableStatus(UserDisableStatusModel statusModel)
-    {
-        var list = GetList(x => statusModel.Ids.Contains(x.Id)).ToList();
-
-        list.ForEach(x =>
-        {
-            x.Disabled = statusModel.Status;
-            Update(x, false);
-        });
-
-        Persist();
     }
 
     public void UpdateImage(ImageModel model)

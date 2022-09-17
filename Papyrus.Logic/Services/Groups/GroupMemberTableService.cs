@@ -57,7 +57,12 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
 
     public override DataSource<GroupMember, int> BuildDataSource()
     {
-        return ListTableDataSource<GroupMember, int>.Build((query) => groupMemberService.GetListAsQuery(x => x.GroupId == ExtractGroupId(query)).Include(x => x.Group))
+        return ListTableDataSource<GroupMember, int>.Build((query) =>
+            groupMemberService.GetListAsQuery(x => x.GroupId == ExtractGroupId(query))
+                .Include(x => x.User)
+                .Include(x => x.Role)
+                .Include(x => x.AddedBy)
+                .Include(x => x.Group))
             .OrderBy(x => x.RoleId, OrderDirection.Descend)
             .ApplyOrdering()
             .SetEFFilteredEntries("User.UserName", "Role.Name", "AddedBy.UserName");

@@ -19,10 +19,6 @@ public class UserController : ControllerBase
         this.userService = userService;
     }
 
-    [HttpGet]
-    [Authorize(Roles = "Administration")]
-    public List<UserListDTO> GetAll() => userService.GetAllMapped<UserListDTO>().ToList();
-
     [HttpGet("{id}")]
     public UserDTO Get(string id) => userService.GetMapped<UserDTO>(id);
 
