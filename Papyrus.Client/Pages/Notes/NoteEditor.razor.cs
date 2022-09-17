@@ -1,4 +1,5 @@
-﻿using KarcagS.Blazor.Common.Components.Dialogs;
+﻿using System.Text;
+using KarcagS.Blazor.Common.Components.Dialogs;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
@@ -9,7 +10,6 @@ using Papyrus.Client.Shared.Dialogs.Notes;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.HubEvents;
-using System.Text;
 
 namespace Papyrus.Client.Pages.Notes;
 
@@ -127,7 +127,18 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
         hub?.On(EditorHubEvents.EditorNoteDeleted, () => HandleDeleteAction());
 
-        ObjectHelper.WhenNotNull(hub, async (h) => await h.StartAsync());
+        ObjectHelper.WhenNotNull(hub, async (h) =>
+        {
+            try
+            {
+                await h.StartAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                hub = null;
+            }
+        });
     }
 
     private void SaveDirtyState() => ObjectHelper.WhenNotNull(Editor, async e => await e.SaveDirtyState());
