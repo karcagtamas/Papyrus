@@ -3,6 +3,7 @@ using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
+using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
@@ -32,9 +33,11 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     {
         string userId = Utils.GetRequiredCurrentUserId();
 
-        return GetMappedList<GroupListDTO>(x => (x.OwnerId == userId || x.Members.Any(m => m.UserId == userId)) && (!hideClosed || !x.IsClosed))
-            .OrderBy(x => x.IsClosed)
-            .ThenByDescending(x => x.Creation)
+        return MapFromQuery<GroupListDTO>(
+            GetListAsQuery(x => (x.OwnerId == userId || x.Members.Any(m => m.UserId == userId)) && (!hideClosed || !x.IsClosed))
+                .Include(x => x.Owner)
+                .OrderBy(x => x.IsClosed)
+                .ThenByDescending(x => x.Creation))
             .ToList();
     }
 
@@ -44,7 +47,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         var id = base.CreateFromModel(model, doPersist);
 
         var result = groupRoleService.CreateDefaultRoles(id);
-        var admin = ObjectHelper.OrElseThrow(result.FirstOrDefault(x => x.IsAdministration), () => new ArgumentException("Admin role not found"));
+        var admin = ObjectHelper.OrElseThrow(result.FirstOrDefault(x => x.IsAdministrator), () => new ArgumentException("Admin role not found"));
 
         // Add current user as administrator
         var member = new GroupMember

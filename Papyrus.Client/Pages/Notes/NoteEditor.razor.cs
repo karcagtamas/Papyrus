@@ -1,4 +1,5 @@
-﻿using KarcagS.Blazor.Common.Components.Dialogs;
+﻿using System.Text;
+using KarcagS.Blazor.Common.Components.Dialogs;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
@@ -9,7 +10,6 @@ using Papyrus.Client.Shared.Dialogs.Notes;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.HubEvents;
-using System.Text;
 
 namespace Papyrus.Client.Pages.Notes;
 
@@ -36,10 +36,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
         PageTitle = L["Title", L["DefaultTitle"]];
         DataCollapsed = true;
+        ClientId = await TokenService.GetClientId();
 
         await Refresh();
-
-        ClientId = await TokenService.GetClientId();
 
         InitHub();
 
@@ -86,7 +85,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
     private void InitHub()
     {
         hub = new HubConnectionBuilder()
-            .WithUrl($"{ApplicationSettings.BaseUrl}/editor", options =>
+            .WithUrl($"{ApplicationSettings.BaseUrl}/editor?Editor={Id}", options =>
             {
                 options.AccessTokenProvider = () => TokenService.GetAccessTokenProvider();
             })
@@ -118,6 +117,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
                 Note.Title = args.Title;
                 Note.Tags = args.Tags;
                 Note.Public = args.Public;
+                Note.Archived = args.Archived;
+                Note.LastUpdate = args.LastUpdate;
+                Note.LastUpdater = args.LastUpdater;
                 UpdatePageTitle();
                 await InvokeAsync(StateHasChanged);
             }
@@ -127,8 +129,15 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
         ObjectHelper.WhenNotNull(hub, async (h) =>
         {
-            await h.StartAsync();
-            await h.SendAsync(EditorHubEvents.EditorConnect, Id);
+            try
+            {
+                await h.StartAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                hub = null;
+            }
         });
     }
 
@@ -195,7 +204,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
                         }
 
                         // Notify other clients
-                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags, Public = n.Public });
+                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags, Public = n.Public, Archived = n.Archived, LastUpdate = n.LastUpdate, LastUpdater = n.LastUpdater });
 
                         if (ObjectHelper.IsNotNull(Note))
                         {
@@ -203,6 +212,9 @@ public partial class NoteEditor : ComponentBase, IDisposable
                             Note.Title = n.Title;
                             Note.Tags = n.Tags;
                             Note.Public = n.Public;
+                            Note.Archived = n.Archived;
+                            Note.LastUpdate = n.LastUpdate;
+                            Note.LastUpdater = n.LastUpdater;
                         }
                         UpdatePageTitle();
                         await InvokeAsync(StateHasChanged);
@@ -249,13 +261,6 @@ public partial class NoteEditor : ComponentBase, IDisposable
         Navigation.NavigateTo(url);
     }
 
-    public async void Dispose()
-    {
-        if (ObjectHelper.IsNotNull(hub))
-        {
-            await hub.SendAsync(EditorHubEvents.EditorDisconnect, Id);
-            await hub.DisposeAsync();
-        }
-    }
+    public void Dispose() => ObjectHelper.WhenNotNull(hub, async h => await h.DisposeAsync());
 
 }

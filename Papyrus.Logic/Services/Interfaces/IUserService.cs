@@ -16,7 +16,6 @@ public interface IUserService : IMapperRepository<User, string>
     UserSettingDTO GetSettings(string id);
     Task<bool> IsAdministrator();
     bool IsExist(string userName, string email, bool ignoreCurrent);
-    void SetDisableStatus(UserDisableStatusModel statusModel);
     void UpdateImage(ImageModel model);
     Task UpdatePassword(UserPasswordModel model);
     void Update(string id, UserModel model);

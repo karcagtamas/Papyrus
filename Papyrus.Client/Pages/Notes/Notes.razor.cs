@@ -1,52 +1,10 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.JSInterop;
-using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
-using Papyrus.Shared.Enums.Notes;
+using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Client.Pages.Notes;
 
 public partial class Notes : ComponentBase
 {
-    [Parameter]
-    public int GroupId { get; set; }
-
-    [Inject]
-    private INoteService NoteService { get; set; } = default!;
-
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
-
-    private List<NoteLightDTO> NoteList { get; set; } = new();
-    private NoteSearchType SearchType { get; set; } = NoteSearchType.All;
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        await Refresh();
-    }
-
-    private async Task Refresh()
-    {
-        NoteList = await NoteService.GetByUser(SearchType);
-
-        await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task Create()
-    {
-        var result = await NoteService.CreateEmpty(null);
-
-        if (ObjectHelper.IsNotNull(result))
-        {
-            await Refresh();
-            await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
-        }
-    }
-
-    private async Task HandleSearchTypeChange(NoteSearchType searchType)
-    {
-        SearchType = searchType;
-        await Refresh();
-    }
+    private Task<List<NoteLightDTO>> Fetcher(NoteFilterQueryModel query) => NoteService.GetByUser(query);
 }

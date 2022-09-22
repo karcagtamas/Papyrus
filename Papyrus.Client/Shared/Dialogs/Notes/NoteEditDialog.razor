@@ -11,6 +11,7 @@
     <MudTextField Class="mb-5" T="string" Label="@L["Field.Title"]" Variant="Variant.Text" Required="true"
                   For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth="true" />
     <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsPublic"]" For="@(() => Model.Public)" @bind-Checked="Model.Public" />
+    <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsArchived"]" For="@(() => Model.Archived)" @bind-Checked="Model.Archived" />
     <div>
         @foreach (var tag in Tags)
         {

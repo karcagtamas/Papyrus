@@ -32,14 +32,17 @@ public class EditorHub : Hub
         this.utils = utils;
     }
 
-    [Authorize]
-    public async Task Connect(string editor)
+    public override async Task OnConnectedAsync()
     {
+        var editor = ExtractEditorKey(true);
+
         await Groups.AddToGroupAsync(Context.ConnectionId, editor);
         editorService.AddMember(Context.UserIdentifier!, editor, Context.ConnectionId);
         var user = userService.GetMapped<UserLightDTO>(Context.UserIdentifier!);
 
         await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberJoined, user);
+
+        await base.OnConnectedAsync();
     }
 
     [Authorize]
@@ -86,12 +89,30 @@ public class EditorHub : Hub
     [Authorize]
     public async Task DeleteNote(string editor) => await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorNoteDeleted);
 
-    [Authorize]
-    public async Task Disconnect(string editor)
+    public override async Task OnDisconnectedAsync(Exception? exception)
     {
-        await Groups.RemoveFromGroupAsync(Context.ConnectionId, editor);
-        editorService.RemoveMember(Context.UserIdentifier!, editor, Context.ConnectionId);
+        var editor = ExtractEditorKey();
 
-        await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberLeft, Context.UserIdentifier);
+        if (!string.IsNullOrEmpty(editor))
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, editor);
+            editorService.RemoveMember(Context.UserIdentifier!, editor, Context.ConnectionId);
+
+            await Clients.Group(editor).SendAsync(EditorHubEvents.EditorMemberLeft, Context.UserIdentifier);
+        }
+
+        await base.OnDisconnectedAsync(exception);
+    }
+
+    private string ExtractEditorKey(bool required = false)
+    {
+        var editor = Context.GetHttpContext()?.Request.Query["Editor"];
+
+        if (required && ObjectHelper.IsNull(editor))
+        {
+            throw new ArgumentNullException("Editor key is required field in request query");
+        }
+
+        return editor ?? string.Empty;
     }
 }

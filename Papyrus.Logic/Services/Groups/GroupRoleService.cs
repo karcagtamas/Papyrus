@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
-using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
-using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.Enums.Groups;
 
@@ -32,17 +30,17 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             new RoleCreationResultItem
             {
                 Id = CreateAdminRole(groupId),
-                IsAdministration = true
+                IsAdministrator = true
             },
             new RoleCreationResultItem
             {
                 Id = CreateModeratorRole(groupId),
-                IsAdministration = false
+                IsAdministrator = false
             },
             new RoleCreationResultItem
             {
                 Id = CreateDefaultRole(groupId),
-                IsAdministration = false
+                IsAdministrator = false
             },
         };
     }
@@ -203,7 +201,6 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public class RoleCreationResultItem
     {
         public int Id { get; set; }
-        public bool IsAdministration { get; set; }
+        public bool IsAdministrator { get; set; }
     }
-
 }

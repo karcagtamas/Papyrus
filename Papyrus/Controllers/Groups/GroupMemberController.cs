@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.Models.Groups;
 
@@ -13,12 +13,12 @@ namespace Papyrus.Controllers.Groups;
 public class GroupMemberController : ControllerBase
 {
     private readonly IGroupMemberService groupMemberService;
-    private readonly IAuthorizationService authorization;
+    private readonly IRightService rightService;
 
-    public GroupMemberController(IGroupMemberService groupMemberService, IAuthorizationService authorization)
+    public GroupMemberController(IGroupMemberService groupMemberService, IRightService rightService)
     {
+        this.rightService = rightService;
         this.groupMemberService = groupMemberService;
-        this.authorization = authorization;
     }
 
     [HttpGet("{id}")]
@@ -26,7 +26,7 @@ public class GroupMemberController : ControllerBase
     {
         var member = groupMemberService.GetMapped<GroupMemberDTO>(id);
 
-        if (!await ReadCheck(member.GroupId))
+        if (!await rightService.HasGroupMemberListReadRight(member.GroupId))
         {
             return new EmptyResult();
         }
@@ -37,7 +37,7 @@ public class GroupMemberController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> AddMember([FromBody] GroupMemberCreateModel model)
     {
-        if (!await EditCheck(model.GroupId))
+        if (!await rightService.HasGroupMemberListEditRight(model.GroupId))
         {
             return new EmptyResult();
         }
@@ -52,7 +52,7 @@ public class GroupMemberController : ControllerBase
     {
         var member = groupMemberService.Get(id);
 
-        if (!await EditCheck(member.GroupId))
+        if (!await rightService.HasGroupMemberListEditRight(member.GroupId))
         {
             return new EmptyResult();
         }
@@ -67,7 +67,7 @@ public class GroupMemberController : ControllerBase
     {
         var member = groupMemberService.Get(id);
 
-        if (!await EditCheck(member.GroupId))
+        if (!await rightService.HasGroupMemberListEditRight(member.GroupId))
         {
             return new EmptyResult();
         }
@@ -80,25 +80,11 @@ public class GroupMemberController : ControllerBase
     [HttpGet("UserKeys/{groupId}")]
     public async Task<ActionResult<List<string>>> GetMemberKeys(int groupId, [FromQuery] List<int> memberIds)
     {
-        if (!await ReadCheck(groupId))
+        if (!await rightService.HasGroupMemberListReadRight(groupId))
         {
             return new EmptyResult();
         }
 
         return groupMemberService.GetMemberKeys(groupId, memberIds);
-    }
-
-    private async Task<bool> ReadCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.ReadGroupRoles.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> EditCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.EditGroupRoles.Requirements);
-
-        return result.Succeeded;
     }
 }

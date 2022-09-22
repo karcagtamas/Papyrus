@@ -84,7 +84,7 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
         checkers.Add(new GroupAuthorization
         {
             Requirement = GroupOperations.ReadTagsRequirement,
-            Checker = (input) => input.GroupRole.ReadTagList || input.GroupRole.EditTagList
+            Checker = (input) => input.GroupRole.ReadTagList || input.GroupRole.EditTagList || input.GroupRole.ReadNoteList
         });
         checkers.Add(new GroupAuthorization
         {

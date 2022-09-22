@@ -16,7 +16,7 @@ namespace Papyrus.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.8")
+                .HasAnnotation("ProductVersion", "6.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -356,6 +356,9 @@ namespace Papyrus.Migrations
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(255)");
+
+                    b.Property<bool>("Archived")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<string>("ContentId")
                         .IsRequired()
@@ -935,6 +938,48 @@ namespace Papyrus.Migrations
                             Segment = "Note",
                             Language = "hu-HU",
                             Value = "Nyílvános státusz megváltoztatva"
+                        },
+                        new
+                        {
+                            Key = "Archived",
+                            Segment = "Note",
+                            Language = "en-US",
+                            Value = "Archived status is changed"
+                        },
+                        new
+                        {
+                            Key = "Archived",
+                            Segment = "Note",
+                            Language = "hu-HU",
+                            Value = "Archivált státusz megváltoztatva"
+                        },
+                        new
+                        {
+                            Key = "0",
+                            Segment = "Theme",
+                            Language = "en-US",
+                            Value = "Light Theme"
+                        },
+                        new
+                        {
+                            Key = "0",
+                            Segment = "Theme",
+                            Language = "hu-HU",
+                            Value = "Világos Téma"
+                        },
+                        new
+                        {
+                            Key = "1",
+                            Segment = "Theme",
+                            Language = "en-US",
+                            Value = "Dark Theme"
+                        },
+                        new
+                        {
+                            Key = "1",
+                            Segment = "Theme",
+                            Language = "hu-HU",
+                            Value = "Sötét Téma"
                         });
                 });
 
@@ -1010,6 +1055,9 @@ namespace Papyrus.Migrations
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("longtext");
+
+                    b.Property<int>("Theme")
+                        .HasColumnType("int");
 
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("tinyint(1)");

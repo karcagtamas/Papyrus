@@ -12,6 +12,7 @@ public static class NoteActionLogTypeConverter
             NoteActionLogType.TagEdit => "TagEdit",
             NoteActionLogType.Delete => "Delete",
             NoteActionLogType.Publish => "Publish",
+            NoteActionLogType.Archived => "Archived",
             _ => "",
         };
     }

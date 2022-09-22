@@ -120,9 +120,6 @@
   <data name="Dashboard" xml:space="preserve">
     <value>Írányítópult</value>
   </data>
-  <data name="Image" xml:space="preserve">
-    <value>Alkalmazás Logo</value>
-  </data>
   <data name="LoggedInText" xml:space="preserve">
     <value>Már be vagy jelentkezve. A folytatáshoz kattints az &lt;b&gt;Írányítópult&lt;/b&gt; gombra.</value>
   </data>

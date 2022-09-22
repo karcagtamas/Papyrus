@@ -1,6 +1,6 @@
 ﻿getEditorValueByReference = function (element, withCursorLocation) {
     if (withCursorLocation) {
-        updateCursor();
+        updateCursor(element);
     }
     var content = element.innerHTML;
 
@@ -8,7 +8,14 @@
 }
 
 setEditorValueByReference = function (element, value, clientId) {
-    var modifiedValue = value.replace("‎", "<span id='" + clientId + "'></span>");
+    var modifiedValue = value;
+
+    if (value.includes("‎")) {
+        modifiedValue = value.replace("‎", "<span id='" + clientId + "'></span>");
+    } else {
+        modifiedValue += "<span id='" + clientId + "'></span>";
+    }
+
     element.innerHTML = modifiedValue;
 
     // Refocus
@@ -21,7 +28,7 @@ setEditorValueByReference = function (element, value, clientId) {
     }
 }
 
-updateCursor = function () {
+updateCursor = function (el) {
     try {
         var range = window.getSelection().getRangeAt(0);
         var container = range.startContainer;
@@ -31,7 +38,7 @@ updateCursor = function () {
             container.insertData(pos, "‎");
         }
     } catch (err) {
-        console.log("CURSOR CANNOT BE UPDATED", err);
+        console.log("CURSOR CANNOT BE UPDATED\n", err);
     }
 }
 

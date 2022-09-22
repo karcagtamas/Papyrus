@@ -1,5 +1,4 @@
-﻿using KarcagS.Common.Tools.Services;
-using KarcagS.Common.Tools.Table;
+﻿using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
@@ -8,43 +7,41 @@ using KarcagS.Shared.Table;
 using KarcagS.Shared.Table.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities;
-using Papyrus.Logic.Authorization;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 
 namespace Papyrus.Logic.Services.Notes;
 
 public class NoteActionLogTableService : TableService<ActionLog, long>, INoteActionLogTableService
 {
-    private readonly IAuthorizationService authorization;
     private readonly INoteActionLogService noteActionLogService;
-    private readonly IUtilsService<string> utils;
+    private readonly IRightService rightService;
 
-    public NoteActionLogTableService(IAuthorizationService authorization, INoteActionLogService noteActionLogService, IUtilsService<string> utils)
+    public NoteActionLogTableService(IAuthorizationService authorization, INoteActionLogService noteActionLogService, IRightService rightService)
     {
-        this.authorization = authorization;
         this.noteActionLogService = noteActionLogService;
-        this.utils = utils;
+        this.rightService = rightService;
         Initialize();
     }
 
     public override Configuration<ActionLog, long> BuildConfiguration()
     {
         return Configuration<ActionLog, long>
-           .Build("note-log-table")
-           .SetTitle("Performed Actions", "Table.Title")
-           .AddColumn(Column<ActionLog, long>.Build("text")
-               .SetTitle("Text", "TableColumn.Text")
-               .AddValueGetter(obj => obj.Text))
-           .AddColumn(Column<ActionLog, long>.Build("performer")
-               .SetTitle("Performer", "TableColumn.Performer")
-               .AddValueGetter(obj => ObjectHelper.MapOrDefault(obj.Performer, p => p.UserName) ?? "N/A")
-               .SetWidth(320))
-           .AddColumn(Column<ActionLog, long>.Build("creation")
-               .SetTitle("Creation", "TableColumn.Creation")
-               .AddValueGetter(obj => obj.Creation)
-               .SetFormatter(ColumnFormatter.Date)
-               .SetWidth(180))
-           .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true));
+            .Build("note-log-table")
+            .SetTitle("Performed Actions", "Table.Title")
+            .AddColumn(Column<ActionLog, long>.Build("text")
+                .SetTitle("Text", "TableColumn.Text")
+                .AddValueGetter(obj => obj.Text))
+            .AddColumn(Column<ActionLog, long>.Build("performer")
+                .SetTitle("Performer", "TableColumn.Performer")
+                .AddValueGetter(obj => ObjectHelper.MapOrDefault(obj.Performer, p => p.UserName) ?? "N/A")
+                .SetWidth(320))
+            .AddColumn(Column<ActionLog, long>.Build("creation")
+                .SetTitle("Creation", "TableColumn.Creation")
+                .AddValueGetter(obj => obj.Creation)
+                .SetFormatter(ColumnFormatter.Date)
+                .SetWidth(180))
+            .AddPagination(PaginationConfiguration.Build().IsPaginationEnabled(true));
     }
 
     public override DataSource<ActionLog, long> BuildDataSource()
@@ -62,13 +59,7 @@ public class NoteActionLogTableService : TableService<ActionLog, long>, INoteAct
             .Build();
     }
 
-    public override Task<bool> Authorize(QueryModel query) => ReadCheck(ExtractNoteId(query));
-    private async Task<bool> ReadCheck(string id)
-    {
-        var result = await authorization.AuthorizeAsync(utils.GetRequiredUserPrincipal(), id, NotePolicies.ReadNoteLogs.Requirements);
-
-        return result.Succeeded;
-    }
+    public override Task<bool> Authorize(QueryModel query) => rightService.HasNoteLogListReadRight(ExtractNoteId(query));
 
     private static string ExtractNoteId(QueryModel query) => query.ExtraParams["noteId"].ToString() ?? "";
 }

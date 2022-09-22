@@ -13,14 +13,14 @@ public class TagService : HttpCall<int>, ITagService
     {
     }
 
-    public Task<List<TagDTO>> GetByGroup(int groupId)
+    public Task<List<NoteTagDTO>> GetList(int? groupId)
     {
-        var pathParams = HttpPathParameters.Build()
-            .Add(groupId);
+        var queryParams = HttpQueryParameters.Build()
+            .Add("groupId", groupId);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group")).AddPathParams(pathParams);
+        var settings = new HttpSettings(Http.BuildUrl(Url)).AddQueryParams(queryParams);
 
-        return Http.Get<List<TagDTO>>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<List<NoteTagDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
     public Task<TagPathDTO> GetPath(int id)

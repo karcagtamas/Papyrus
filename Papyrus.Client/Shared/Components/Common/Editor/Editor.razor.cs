@@ -1,10 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
+using Papyrus.Client.Utils;
 using Papyrus.Shared.DiffMatchPatch;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 namespace Papyrus.Client.Shared.Components.Common.Editor;
 
@@ -35,7 +36,7 @@ public partial class Editor : ComponentBase, IDisposable
 
     protected override void OnInitialized()
     {
-        disposable = subject.Throttle(TimeSpan.FromMilliseconds(700))
+        disposable = subject.ThrottleMax(TimeSpan.FromMilliseconds(200), TimeSpan.FromMilliseconds(800))
             .Subscribe(async (e) => await OnContentChange.InvokeAsync(e));
         base.OnInitialized();
     }
@@ -57,8 +58,14 @@ public partial class Editor : ComponentBase, IDisposable
             Diff.ApplyDiffs(Content, diffs, async (res) =>
             {
                 Content = res;
+
+                if (!Content.Contains("‎"))
+                {
+                    Content += "‎";
+                }
+
                 await SetEditorValue(Content, ClientId);
-                Console.WriteLine($"Content changed to:\n {Content}");
+                Console.WriteLine($"Content changed to:\n{Content}");
             });
         }
     }

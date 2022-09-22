@@ -1,14 +1,19 @@
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
 using KarcagS.Blazor.Common;
 using KarcagS.Blazor.Common.Http;
+using KarcagS.Blazor.Common.Localization;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Blazor.Common.Store;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Localization;
+using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Services;
 using Papyrus.Client;
@@ -23,12 +28,8 @@ using Papyrus.Client.Services.Interfaces;
 using Papyrus.Client.Services.Notes;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
-using System.Globalization;
-using Microsoft.JSInterop;
-using Microsoft.Extensions.Localization;
+using Papyrus.Shared.Enums;
 using Papyrus.Shared.Localization;
-using KarcagS.Blazor.Common.Localization;
-using KarcagS.Blazor.Common.Services.Interfaces;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -54,12 +55,20 @@ builder.Services.AddHttpService(config =>
 });
 builder.Services.AddStoreService(async (storeService, localStorage) =>
 {
-    var user = await localStorage.GetItemAsync<TokenDTO>("user");
+    const string userKey = "user";
+    var user = await localStorage.GetItemAsync<TokenDTO>(userKey);
 
-    if (user != null)
+    if (ObjectHelper.IsNotNull(user))
     {
-        storeService.Add("user", user);
+        storeService.Add(userKey, user);
     }
+
+    ObjectHelper.WhenNotNull(user, u => storeService.Add(userKey, u));
+
+    const string themeKey = "uitheme";
+    var theme = await localStorage.GetItemAsync<int>(themeKey);
+
+    ObjectHelper.WhenNotNull(theme, t => storeService.Add("theme", t));
 });
 
 builder.Services.AddScoped<ICommonService, CommonService>();
@@ -127,6 +136,8 @@ ApplicationContext.ApplicationName = "Papyrus";
 
 var host = builder.Build();
 
+
+// Set local language
 CultureInfo culture;
 var js = host.Services.GetRequiredService<IJSRuntime>();
 var langService = host.Services.GetRequiredService<ILanguageService>();
@@ -153,10 +164,22 @@ else
     }
 }
 
-
 CultureInfo.DefaultThreadCurrentCulture = culture;
 CultureInfo.DefaultThreadCurrentUICulture = culture;
 
+// Set local theme
+var commonService = host.Services.GetRequiredService<ICommonService>();
+try
+{
+    var theme = await commonService.GetUserTheme();
+    await commonService.SetLocalTheme(theme, false);
+}
+catch (Exception)
+{
+    await commonService.SetLocalTheme((int)Theme.Light);
+}
+
+// Set logging
 var localizerFactory = host.Services.GetRequiredService<IStringLocalizerFactory>();
 var localizer = localizerFactory.Create(typeof(Program));
 ErrorMessageLocalizer.GetInstance().AddLocalizer(localizer);

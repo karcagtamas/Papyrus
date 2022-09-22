@@ -5,7 +5,7 @@ namespace Papyrus.Client.Services.Notes.Interfaces;
 
 public interface ITagService : IHttpCall<int>
 {
-    Task<List<TagDTO>> GetByGroup(int groupId);
+    Task<List<NoteTagDTO>> GetList(int? groupId);
     Task<List<TagTreeItemDTO>> GetTree(int? groupId = null, int? filteredTag = null);
     Task<TagPathDTO> GetPath(int id);
 }

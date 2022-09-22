@@ -27,7 +27,7 @@
             </div>
             @if (ObjectHelper.IsNotNull(Image))
             {
-                <div class="p-2 text-center profile-pic" style="border-color: @PapyrusTheme.AppTheme.ColorPalette.MainColorValue">
+                <div class="p-2 text-center profile-pic" style="@($"border-color: {Colors.Yellow.Darken4}")">
                     <img src="@Image" alt="@User.UserName" />
                 </div>
             }

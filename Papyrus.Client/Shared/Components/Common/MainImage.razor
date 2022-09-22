@@ -1,0 +1,45 @@
+@using KarcagS.Blazor.Common.Store
+@using Papyrus.Shared.Enums
+@implements IDisposable
+@inject IStringLocalizer<MainImage> L
+@inject IStoreService Store
+
+<div id="main-image" class="@Class">
+    <img style="width: @(Width)px;" src="@ImageSource" alt="@L["Image"]" />
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public int Width { get; set; }
+
+    [Parameter]
+    public string Class { get; set; } = default!;
+
+    private string ImageSource { get => $"assets/images/{ImageName}.svg"; }
+    private string ImageName { get => CurrentTheme == Theme.Dark ? "main-dark" : "main"; }
+    private Theme CurrentTheme { get; set; } = Theme.Light;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Store.Changed += HandleStoreChange;
+
+        var theme = Store.Get<int>("theme");
+        CurrentTheme = (Theme)theme;
+    }
+
+    private void HandleStoreChange(object? sender, StoreEventArgs args) {
+        if (args.Key == "theme" && args.Type == StoreEvent.Add) {
+            CurrentTheme = (Theme)Store.Get<int>("theme");
+            StateHasChanged();
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        Store.Changed -= HandleStoreChange;
+    }
+}
+
+

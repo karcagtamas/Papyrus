@@ -1,0 +1,62 @@
+﻿@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.DTOs
+@using KarcagS.Blazor.Common.Store
+@inject NavigationManager Navigator
+@inject IStoreService StoreService
+@inject ICommonService CommonService
+
+<MudMenu Class="@Class" Label="@Current.Text" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Style" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+    @foreach (var theme in Themes)
+    {
+        <MudMenuItem OnClick="@(() => UpdateTheme(theme))"><MudText Color="@(Current.Key == theme.Key ? Color.Primary : Color.Default)">@theme.Text</MudText></MudMenuItem>
+    }
+</MudMenu>
+
+@code {
+    [Parameter]
+    public Color Color { get; set; } = Color.Primary;
+
+    [Parameter]
+    public Variant Variant { get; set; } = Variant.Filled;
+
+    [Parameter]
+    public bool PostChange { get; set; } = true;
+
+    [Parameter]
+    public string Class { get; set; } = default!;
+
+    private List<ThemeDTO> Themes { get; set; } = new();
+    private ThemeDTO Current { get; set; } = new ThemeDTO { Key = 0, Text = "Light" };
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        Themes = await CommonService.GetThemeList();
+
+        if (StoreService.IsExists("theme")) {
+            var theme = StoreService.Get<int>("theme");
+
+            var dto = Themes.FirstOrDefault(x => x.Key == theme);
+
+            if (ObjectHelper.IsNull(dto))
+            {
+                await CommonService.SetLocalTheme(Themes.First().Key, PostChange);
+                Current = Themes.First();
+            }
+            else
+            {
+                Current = dto;
+            }
+        }
+
+        StateHasChanged();
+    }
+
+    private async Task UpdateTheme(ThemeDTO theme)
+    {
+        Current = theme;
+        await CommonService.SetLocalTheme(theme.Key, PostChange);
+
+        await InvokeAsync(StateHasChanged);
+    }
+}

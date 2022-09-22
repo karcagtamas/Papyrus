@@ -1,7 +1,5 @@
 @page "/register"
 @using KarcagS.Shared.Helpers
-@using Papyrus.Client.Services.Interfaces
-@using Papyrus.Shared.Models
 @using Papyrus.Shared.Models.Auth
 @using Papyrus.Client.Services.Auth.Interfaces
 @layout AuthLayout
@@ -15,9 +13,7 @@
     <MudPaper Class="p-4" Elevation="4">
         <MudText Typo="Typo.h4" Color="Color.Primary">@L["Title"]</MudText>
 
-        <div id="image">
-            <img src="assets/images/main.svg" alt="@L["Image"]" />
-        </div>
+        <MainImage Width="300" Class="mt-3 text-center" />
 
         <MudForm @ref="form">
             <MudTextField T="string" Label="@L["Field.UserName"]" Variant="Variant.Text" Required="true"

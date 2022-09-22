@@ -3,9 +3,7 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
-using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Interfaces;
-using Papyrus.Shared.Enums.Groups;
 
 namespace Papyrus.Logic.Services;
 
@@ -15,7 +13,7 @@ public class ActionLogService : MapperRepository<ActionLog, long, string>, IActi
     {
     }
 
-    public void AddActionLog(string key, string segment, string type, string? performer, Dictionary<string, string> texts)
+    public void AddActionLog(string key, string segment, string type, string? performer, Dictionary<string, string> texts, bool doPersist = false)
     {
         var creation = DateTime.Now;
         foreach (var text in texts)
@@ -31,7 +29,7 @@ public class ActionLogService : MapperRepository<ActionLog, long, string>, IActi
                 Creation = creation
             };
 
-            Create(log);
+            Create(log, doPersist);
         }
     }
 }

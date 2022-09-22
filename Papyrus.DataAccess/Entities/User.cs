@@ -31,6 +31,9 @@ public class User : IdentityUser<string>, IEntity<string>
 
     public int? LanguageId { get; set; }
 
+    [Required]
+    public int Theme { get; set; }
+
     public bool IsOsirisConnected { get { return OsirisId != null; } }
 
     public virtual Language? Language { get; set; }

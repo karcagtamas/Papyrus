@@ -117,19 +117,25 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArchivedStatus.Archived" xml:space="preserve">
+    <value>Archivált</value>
+  </data>
+  <data name="ArchivedStatus.NotArchived" xml:space="preserve">
+    <value>Nem Archivált</value>
+  </data>
   <data name="CreateAction" xml:space="preserve">
     <value>Létrehozás</value>
   </data>
   <data name="PageName" xml:space="preserve">
     <value>Jegyzetek</value>
   </data>
-  <data name="SearchType.All" xml:space="preserve">
+  <data name="PublishType.All" xml:space="preserve">
     <value>Mind</value>
   </data>
-  <data name="SearchType.NotPublished" xml:space="preserve">
+  <data name="PublishType.NotPublished" xml:space="preserve">
     <value>Csak Nem Nyílvánosak</value>
   </data>
-  <data name="SearchType.Published" xml:space="preserve">
+  <data name="PublishType.Published" xml:space="preserve">
     <value>Csak Nyílvánosak</value>
   </data>
 </root>

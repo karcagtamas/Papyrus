@@ -120,6 +120,9 @@
   <data name="Entity" xml:space="preserve">
     <value>Jegyzet</value>
   </data>
+  <data name="Field.IsArchived" xml:space="preserve">
+    <value>Archivált-e</value>
+  </data>
   <data name="Field.IsPublic" xml:space="preserve">
     <value>Publikus-e</value>
   </data>

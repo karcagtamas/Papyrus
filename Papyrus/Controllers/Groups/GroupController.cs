@@ -1,7 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.Logic.Authorization;
+using Microsoft.EntityFrameworkCore;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.Models.Groups;
@@ -13,23 +14,23 @@ namespace Papyrus.Controllers.Groups;
 [Authorize]
 public class GroupController : ControllerBase
 {
-    private readonly IAuthorizationService authorization;
     private readonly IGroupService groupService;
+    private readonly IRightService rightService;
 
-    public GroupController(IAuthorizationService authorization, IGroupService groupService)
+    public GroupController(IGroupService groupService, IRightService rightService)
     {
-        this.authorization = authorization;
+        this.rightService = rightService;
         this.groupService = groupService;
     }
 
     [HttpGet]
     [Authorize(Roles = "Administrator")]
-    public List<GroupListDTO> GetAll() => groupService.GetAllMapped<GroupListDTO>().ToList();
+    public List<GroupListDTO> GetAll() => groupService.MapFromQuery<GroupListDTO>(groupService.GetAllAsQuery().Include(x => x.Owner)).ToList();
 
     [HttpGet("{id}")]
     public async Task<ActionResult<GroupDTO>> Get(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasGroupReadRight(id))
         {
             return new EmptyResult();
         }
@@ -48,7 +49,7 @@ public class GroupController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] GroupModel model)
     {
-        if (!await EditCheck(id))
+        if (!await rightService.HasGroupEditRight(id))
         {
             return new EmptyResult();
         }
@@ -61,7 +62,7 @@ public class GroupController : ControllerBase
     [HttpGet("{id}/Rights/Pages")]
     public async Task<ActionResult<GroupPageRightsDTO>> GetPageRights(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasGroupReadRight(id))
         {
             return new EmptyResult();
         }
@@ -72,7 +73,7 @@ public class GroupController : ControllerBase
     [HttpGet("{id}/Rights")]
     public async Task<ActionResult<GroupRightsDTO>> GetRights(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasGroupReadRight(id))
         {
             return new EmptyResult();
         }
@@ -83,7 +84,7 @@ public class GroupController : ControllerBase
     [HttpGet("{id}/Rights/Tag")]
     public async Task<ActionResult<GroupTagRightsDTO>> GetTagRights(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasGroupReadRight(id))
         {
             return new EmptyResult();
         }
@@ -94,7 +95,7 @@ public class GroupController : ControllerBase
     [HttpGet("{id}/Rights/Member")]
     public async Task<ActionResult<GroupMemberRightsDTO>> GetMemberRights(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasGroupReadRight(id))
         {
             return new EmptyResult();
         }
@@ -105,7 +106,7 @@ public class GroupController : ControllerBase
     [HttpGet("{id}/Rights/Role")]
     public async Task<ActionResult<GroupRoleRightsDTO>> GetRoleRights(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasGroupReadRight(id))
         {
             return new EmptyResult();
         }
@@ -116,7 +117,7 @@ public class GroupController : ControllerBase
     [HttpGet("{id}/Rights/Note")]
     public async Task<ActionResult<GroupNoteRightsDTO>> GetNoteRights(int id)
     {
-        if (!await ReadCheck(id))
+        if (!await rightService.HasGroupReadRight(id))
         {
             return new EmptyResult();
         }
@@ -127,7 +128,7 @@ public class GroupController : ControllerBase
     [HttpPut("{id}/Close")]
     public async Task<ActionResult> Close(int id)
     {
-        if (!await CloseOpenCheck(id))
+        if (!await rightService.HasGroupCloseOpenRight(id))
         {
             return new EmptyResult();
         }
@@ -140,7 +141,7 @@ public class GroupController : ControllerBase
     [HttpPut("{id}/Open")]
     public async Task<ActionResult> Open(int id)
     {
-        if (!await CloseOpenCheck(id))
+        if (!await rightService.HasGroupCloseOpenRight(id))
         {
             return new EmptyResult();
         }
@@ -153,7 +154,7 @@ public class GroupController : ControllerBase
     [HttpPut("{id}/Remove")]
     public async Task<ActionResult> Remove(int id)
     {
-        if (!await RemoveCheck(id))
+        if (!await rightService.HasGroupRemoveRight(id))
         {
             return new EmptyResult();
         }
@@ -161,33 +162,5 @@ public class GroupController : ControllerBase
         await groupService.Remove(id);
 
         return Ok();
-    }
-
-    private async Task<bool> ReadCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.ReadGroup.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> EditCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.EditGroup.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> CloseOpenCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.CloseOpenGroup.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> RemoveCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.RemoveGroup.Requirements);
-
-        return result.Succeeded;
     }
 }

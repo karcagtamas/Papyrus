@@ -118,6 +118,16 @@ public static class ContextExtensions
                 new() { Key = NoteActionLogTypeConverter.GetLogKey(NoteActionLogType.Delete), Segment = "Note", Language = "hu-HU", Value = "Törölve" },
                 new() { Key = NoteActionLogTypeConverter.GetLogKey(NoteActionLogType.Publish), Segment = "Note", Language = "en-US", Value = "Public status is changed" },
                 new() { Key = NoteActionLogTypeConverter.GetLogKey(NoteActionLogType.Publish), Segment = "Note", Language = "hu-HU", Value = "Nyílvános státusz megváltoztatva" },
+                new() { Key = NoteActionLogTypeConverter.GetLogKey(NoteActionLogType.Archived), Segment = "Note", Language = "en-US", Value = "Archived status is changed" },
+                new() { Key = NoteActionLogTypeConverter.GetLogKey(NoteActionLogType.Archived), Segment = "Note", Language = "hu-HU", Value = "Archivált státusz megváltoztatva" },
+            });
+        builder.Entity<Translation>()
+            .HasData(new List<Translation>
+            {
+                new() { Key = "0", Segment = "Theme", Language = "en-US", Value = "Light Theme" },
+                new() { Key = "0", Segment = "Theme", Language = "hu-HU", Value = "Világos Téma" },
+                new() { Key = "1", Segment = "Theme", Language = "en-US", Value = "Dark Theme" },
+                new() { Key = "1", Segment = "Theme", Language = "hu-HU", Value = "Sötét Téma" },
             });
 
         // Refresh token

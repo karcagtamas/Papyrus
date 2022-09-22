@@ -23,7 +23,7 @@ public class GroupActionLogService : IGroupActionLogService
         this.translationService = translationService;
     }
 
-    public void AddActionLog(int group, string performer, GroupActionLogType type)
+    public void AddActionLog(int group, string performer, GroupActionLogType type, bool doPersist = false)
     {
         var languages = languageService.GetAll();
 
@@ -36,7 +36,7 @@ public class GroupActionLogService : IGroupActionLogService
             texts.Add(lang.ShortName, translationService.GetValue(typeKey, GroupSegment, lang.ShortName));
         }
 
-        actionLogService.AddActionLog(group.ToString(), GroupSegment, typeKey, performer, texts);
+        actionLogService.AddActionLog(group.ToString(), GroupSegment, typeKey, performer, texts, doPersist);
     }
 
     public IQueryable<ActionLog> GetQuery(int groupId)

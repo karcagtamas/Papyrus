@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Services.Groups.Interfaces;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.Models.Groups;
 
@@ -13,12 +14,12 @@ namespace Papyrus.Controllers.Groups;
 public class GroupRoleController : ControllerBase
 {
     private readonly IGroupRoleService groupRoleService;
-    private readonly IAuthorizationService authorization;
+    private readonly IRightService rightService;
 
-    public GroupRoleController(IGroupRoleService groupRoleService, IAuthorizationService authorization)
+    public GroupRoleController(IGroupRoleService groupRoleService, IRightService rightService)
     {
         this.groupRoleService = groupRoleService;
-        this.authorization = authorization;
+        this.rightService = rightService;
     }
 
     [HttpGet("{id}")]
@@ -26,7 +27,7 @@ public class GroupRoleController : ControllerBase
     {
         var role = groupRoleService.GetMapped<GroupRoleDTO>(id);
 
-        if (!await ReadCheck(role.GroupId))
+        if (!await rightService.HasGroupRoleListReadRight(role.GroupId))
         {
             return new EmptyResult();
         }
@@ -37,7 +38,7 @@ public class GroupRoleController : ControllerBase
     [HttpGet("Group/{groupId}/Translated")]
     public async Task<ActionResult<List<GroupRoleDTO>>> GetTranslatedByGroup(int groupId, [FromQuery] string? textFilter = null, [FromQuery] string? lang = null)
     {
-        if (!await ReadCheck(groupId))
+        if (!await rightService.HasGroupRoleListReadRight(groupId))
         {
             return new EmptyResult();
         }
@@ -48,7 +49,7 @@ public class GroupRoleController : ControllerBase
     [HttpGet("Group/{groupId}/Light/Translated")]
     public async Task<ActionResult<List<GroupRoleLightDTO>>> GetLightTranslatedByGroup(int groupId, [FromQuery] string? lang = null)
     {
-        if (!await ReadCheck(groupId))
+        if (!await rightService.HasGroupRoleListReadRight(groupId))
         {
             return new EmptyResult();
         }
@@ -61,7 +62,7 @@ public class GroupRoleController : ControllerBase
     {
         var role = groupRoleService.GetLightTranslated(id, lang);
 
-        if (!await ReadCheck(role.GroupId))
+        if (!await rightService.HasGroupRoleListReadRight(role.GroupId))
         {
             return new EmptyResult();
         }
@@ -72,7 +73,7 @@ public class GroupRoleController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> Create([FromBody] GroupRoleModel model)
     {
-        if (!await EditCheck(model.GroupId))
+        if (!await rightService.HasGroupRoleListEditRight(model.GroupId))
         {
             return new EmptyResult();
         }
@@ -85,7 +86,7 @@ public class GroupRoleController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult> Update(int id, [FromBody] GroupRoleModel model)
     {
-        if (!await EditCheck(model.GroupId))
+        if (!await rightService.HasGroupRoleListEditRight(model.GroupId))
         {
             return new EmptyResult();
         }
@@ -100,7 +101,7 @@ public class GroupRoleController : ControllerBase
     {
         var role = groupRoleService.Get(id);
 
-        if (!await EditCheck(role.GroupId))
+        if (!await rightService.HasGroupRoleListEditRight(role.GroupId))
         {
             return new EmptyResult();
         }
@@ -112,18 +113,4 @@ public class GroupRoleController : ControllerBase
 
     [HttpGet("Exists")]
     public bool Exists([FromQuery] int groupId, [FromQuery] string name) => groupRoleService.Exists(groupId, name);
-
-    private async Task<bool> ReadCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.ReadGroupRoles.Requirements);
-
-        return result.Succeeded;
-    }
-
-    private async Task<bool> EditCheck(int id)
-    {
-        var result = await authorization.AuthorizeAsync(User, id, GroupPolicies.EditGroupRoles.Requirements);
-
-        return result.Succeeded;
-    }
 }

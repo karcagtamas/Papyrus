@@ -1,10 +1,15 @@
+@using KarcagS.Blazor.Common.Store
+@using Papyrus.Shared.Enums
 @inherits LayoutComponentBase
+@implements IDisposable
+@inject IStoreService store
 
-<MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
+<MudThemeProvider Theme="@PapyrusTheme.GetTheme()" IsDarkMode="@(CurrentTheme == Theme.Dark)" />
 <MudSnackbarProvider />
 
 <div class="page">
     <div class="culture-selector">
+        <ThemeSelector Variant="Variant.Text" PostChange="false" Class="mr-3" />
         <LanguageSelector Variant="Variant.Text" />
     </div>
     <AuthorizeView>
@@ -18,5 +23,28 @@
 </div>
 
 @code {
+    private Theme CurrentTheme { get; set; } = Theme.Light;
 
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        store.Changed += HandleStoreChange;
+
+        var theme = store.Get<int>("theme");
+        CurrentTheme = (Theme)theme;
+    }
+
+    private void HandleStoreChange(object? sender, StoreEventArgs args)
+    {
+        if (args.Key == "theme" && args.Type == StoreEvent.Add) {
+            CurrentTheme = (Theme)store.Get<int>("theme");
+            StateHasChanged();
+        }
+    }
+
+    void IDisposable.Dispose()
+    {
+        store.Changed -= HandleStoreChange;
+    }
 }

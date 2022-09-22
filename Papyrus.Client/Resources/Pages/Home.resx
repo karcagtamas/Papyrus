@@ -120,9 +120,6 @@
   <data name="Dashboard" xml:space="preserve">
     <value>Dashboard</value>
   </data>
-  <data name="Image" xml:space="preserve">
-    <value>Application Logo</value>
-  </data>
   <data name="LoggedInText" xml:space="preserve">
     <value>You are logged in. For the continuing click on the &lt;b&gt;Dashboard&lt;/b&gt; button.</value>
   </data>

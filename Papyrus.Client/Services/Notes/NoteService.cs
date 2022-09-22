@@ -2,8 +2,8 @@
 using KarcagS.Blazor.Common.Models;
 using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Notes.Interfaces;
+using Papyrus.Client.Utils;
 using Papyrus.Shared.DTOs.Notes;
-using Papyrus.Shared.Enums.Notes;
 using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Client.Services.Notes;
@@ -26,13 +26,13 @@ public class NoteService : HttpCall<string>, INoteService
             .ExecuteWithResult();
     }
 
-    public Task<List<NoteLightDTO>> GetByGroup(int groupId, NoteSearchType searchType = NoteSearchType.All)
+    public Task<List<NoteLightDTO>> GetByGroup(int groupId, NoteFilterQueryModel query)
     {
         var pathParams = HttpPathParameters.Build()
             .Add(groupId);
 
         var queryParams = HttpQueryParameters.Build()
-            .Add("searchType", searchType);
+            .AddNoteFilters(query);
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
             .AddPathParams(pathParams)
@@ -41,10 +41,10 @@ public class NoteService : HttpCall<string>, INoteService
         return Http.Get<List<NoteLightDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public Task<List<NoteLightDTO>> GetByUser(NoteSearchType searchType = NoteSearchType.All)
+    public Task<List<NoteLightDTO>> GetByUser(NoteFilterQueryModel query)
     {
         var queryParams = HttpQueryParameters.Build()
-            .Add("searchType", searchType);
+            .AddNoteFilters(query);
 
         var settings = new HttpSettings(Http.BuildUrl(Url, "User"))
             .AddQueryParams(queryParams);

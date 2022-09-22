@@ -9,7 +9,7 @@
 @using Papyrus.Client.Services.Interfaces
 @using System.Text.RegularExpressions
 @using Papyrus.Shared.DTOs.Groups
-@using static Papyrus.Client.Shared.PapyrusMenu
+@using Papyrus.Shared.Enums
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject IUserService userService
@@ -20,7 +20,7 @@
 @inject IGroupService groupService
 @inject IHelperService Helper
 
-<MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
+<MudThemeProvider Theme="@PapyrusTheme.GetTheme()" IsDarkMode="@(CurrentTheme == Theme.Dark)" />
 <MudDialogProvider CloseButton="true" />
 <MudSnackbarProvider />
 
@@ -29,7 +29,7 @@
         <AuthorizeView>
             <Authorized>
                 <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start"
-                               OnClick="@((_) => DrawerToggle())" Class="mr-5" />
+                                OnClick="@((_) => DrawerToggle())" Class="mr-5" />
             </Authorized>
         </AuthorizeView>
         <MudLink Color="Color.Inherit" Class="mr-5 ml-5 mud-nav-link-text appbar-title" Href="/home">
@@ -48,6 +48,7 @@
             </Authorized>
         </AuthorizeView>
         <div class="ml-3 d-flex flex-row align-items-center">
+            <ThemeSelector Class="mr-1" />
             <LanguageSelector />
         </div>
     </MudAppBar>
@@ -72,6 +73,7 @@
     private string GroupTitle { get; set; } = "";
     private List<MenuItem> MenuItems { get; set; } = new();
     private List<MenuItem> GroupMenuItems { get; set; } = new();
+    private Theme CurrentTheme { get; set; } = Theme.Light;
 
     bool drawerOpen = true;
 
@@ -82,6 +84,13 @@
 
     protected override async void OnInitialized()
     {
+        await base.OnInitializedAsync();
+
+        store.Changed += HandleStoreChange;
+
+        var theme = store.Get<int>("theme");
+        CurrentTheme = (Theme)theme;
+
         HandleAuthStateChange(authStateProvider.GetAuthenticationStateAsync());
         await SetGroupMenuItemsByLocation(navigator.Uri);
 
@@ -91,8 +100,6 @@
         MenuItems = PapyrusMenu.BuildMenuItems(Helper, await authenticationStateTask);
 
         await InvokeAsync(StateHasChanged);
-
-        await base.OnInitializedAsync();
     }
 
     private async void HandleLocationChange(object? sender, LocationChangedEventArgs e)
@@ -192,10 +199,18 @@
         }
     }
 
+    private void HandleStoreChange(object? sender, StoreEventArgs args) {
+        if (args.Key == "theme" && args.Type == StoreEvent.Add) {
+            CurrentTheme = (Theme)store.Get<int>("theme");
+            StateHasChanged();
+        }
+    }
+
     void IDisposable.Dispose()
     {
         authStateProvider.AuthenticationStateChanged -= HandleAuthStateChange;
         navigator.LocationChanged -= HandleLocationChange;
+        store.Changed -= HandleStoreChange;
     }
 
 }

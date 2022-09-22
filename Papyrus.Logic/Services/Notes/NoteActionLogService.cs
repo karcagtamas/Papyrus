@@ -23,7 +23,7 @@ public class NoteActionLogService : INoteActionLogService
         this.translationService = translationService;
     }
 
-    public void AddActionLog(string note, string performer, NoteActionLogType type)
+    public void AddActionLog(string note, string performer, NoteActionLogType type, bool doPersist)
     {
         var languages = languageService.GetAll();
 
@@ -36,7 +36,7 @@ public class NoteActionLogService : INoteActionLogService
             texts.Add(lang.ShortName, translationService.GetValue(typeKey, NoteSegment, lang.ShortName));
         }
 
-        actionLogService.AddActionLog(note, NoteSegment, typeKey, performer, texts);
+        actionLogService.AddActionLog(note, NoteSegment, typeKey, performer, texts, doPersist);
     }
 
     public IQueryable<ActionLog> GetQuery(string noteId)

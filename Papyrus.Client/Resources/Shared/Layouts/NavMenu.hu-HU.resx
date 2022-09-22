@@ -150,9 +150,6 @@
   <data name="GroupTitle" xml:space="preserve">
     <value>Csoport Menü</value>
   </data>
-  <data name="Image" xml:space="preserve">
-    <value>Alkalmazás Logó</value>
-  </data>
   <data name="LogOut" xml:space="preserve">
     <value>Kijelentkezés</value>
   </data>
