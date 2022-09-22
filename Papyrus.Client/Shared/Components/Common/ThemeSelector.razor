@@ -1,13 +1,14 @@
 ﻿@using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.Enums
+@using KarcagS.Blazor.Common.Store
 @inject NavigationManager Navigator
-@inject IJSRuntime JS
-@inject ILanguageService LanguageService
+@inject IStoreService StoreService
+@inject ICommonService CommonService
 
 <MudMenu Label="@Current.ToString()" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
     @foreach (var theme in Themes)
     {
-        <MudMenuItem OnClick="@(() => UpdateLanguage(theme))"><MudText Color="@(Current == theme ? Color.Primary : Color.Default)">@(theme.ToString())</MudText></MudMenuItem>
+        <MudMenuItem OnClick="@(() => UpdateTheme(theme))"><MudText Color="@(Current == theme ? Color.Primary : Color.Default)">@(theme.ToString())</MudText></MudMenuItem>
     }
 </MudMenu>
 
@@ -23,24 +24,23 @@
 
     protected override async void OnInitialized()
     {
-        Themes = new List<Theme> { Theme.Light, Theme.Dark };
-        var current = Theme.Light; // TODO: Get from cache
-
-        ObjectHelper.WhenNotNull(current, c => Current = c);
-
         base.OnInitialized();
+        Themes = new List<Theme> { Theme.Light, Theme.Dark };
+
+        var theme = StoreService.Get<int>("theme");
+
+        if (theme != (int)Theme.Light && theme != (int)Theme.Dark)
+        {
+            await CommonService.SetLocalTheme((int)Theme.Light);
+        }
+
+        Current = (Theme)theme;
+
         StateHasChanged();
     }
 
-    private Task UpdateLanguage(Theme theme)
+    private async Task UpdateTheme(Theme theme)
     {
-        return Task.CompletedTask;
-        /*
-        await LanguageService.SetUserLanguage(language.Id);
-        var js = (IJSInProcessRuntime)JS;
-        js.InvokeVoid("blazorCulture.set", language.ShortName);
-
-        Navigator.NavigateTo(Navigator.Uri, forceLoad: true);
-        */
+        await CommonService.SetLocalTheme((int)theme);
     }
 }
