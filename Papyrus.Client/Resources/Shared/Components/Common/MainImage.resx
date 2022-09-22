@@ -117,64 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="About" xml:space="preserve">
-    <value>Rólunk</value>
-  </data>
-  <data name="Administration" xml:space="preserve">
-    <value>Adminisztráció</value>
-  </data>
-  <data name="Dashboard" xml:space="preserve">
-    <value>Irányítópult</value>
-  </data>
-  <data name="GroupData" xml:space="preserve">
-    <value>Adatok</value>
-  </data>
-  <data name="GroupLogs" xml:space="preserve">
-    <value>Logok</value>
-  </data>
-  <data name="GroupMembers" xml:space="preserve">
-    <value>Tagok</value>
-  </data>
-  <data name="GroupNoteList" xml:space="preserve">
-    <value>Lista</value>
-  </data>
-  <data name="GroupNotes" xml:space="preserve">
-    <value>Jegyzetek</value>
-  </data>
-  <data name="GroupNoteTags" xml:space="preserve">
-    <value>Címkék</value>
-  </data>
-  <data name="GroupRoles" xml:space="preserve">
-    <value>Szerepkörök</value>
-  </data>
-  <data name="GroupTitle" xml:space="preserve">
-    <value>Csoport Menü</value>
-  </data>
-  <data name="LogOut" xml:space="preserve">
-    <value>Kijelentkezés</value>
-  </data>
-  <data name="MainTitle" xml:space="preserve">
-    <value>Menü</value>
-  </data>
-  <data name="MyGroups" xml:space="preserve">
-    <value>Csoportjaim</value>
-  </data>
-  <data name="NoteList" xml:space="preserve">
-    <value>Lista</value>
-  </data>
-  <data name="Notes" xml:space="preserve">
-    <value>Jegyzetek</value>
-  </data>
-  <data name="NoteTags" xml:space="preserve">
-    <value>Címkék</value>
-  </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Profil</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Keresés</value>
-  </data>
-  <data name="Users" xml:space="preserve">
-    <value>Felhasználók</value>
+  <data name="Image" xml:space="preserve">
+    <value>Application Logo</value>
   </data>
 </root>

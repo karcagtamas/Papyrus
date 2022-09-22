@@ -5,7 +5,7 @@
 @inject IJSRuntime JS
 @inject ILanguageService LanguageService
 
-<MudMenu Label="@Current.ShortName" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+<MudMenu Class="@Class" Label="@Current.ShortName" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
     @foreach (var lang in Languages)
     {
         <MudMenuItem OnClick="@(() => UpdateLanguage(lang))"><MudText Color="@(Current.Id == lang.Id ? Color.Primary : Color.Default)">@lang.ShortName</MudText></MudMenuItem>
@@ -18,6 +18,9 @@
 
     [Parameter]
     public Variant Variant { get; set; } = Variant.Filled;
+
+    [Parameter]
+    public string Class { get; set; } = default!;
 
     private List<LanguageDTO> Languages { get; set; } = new();
     private LanguageDTO Current { get; set; } = new LanguageDTO { Id = 0, Name = "<NOT FOUND>", ShortName = "-" };

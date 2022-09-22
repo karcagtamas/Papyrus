@@ -5,7 +5,7 @@
 @inject IStoreService StoreService
 @inject ICommonService CommonService
 
-<MudMenu Label="@Current.Text" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Style" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+<MudMenu Class="@Class" Label="@Current.Text" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Style" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
     @foreach (var theme in Themes)
     {
         <MudMenuItem OnClick="@(() => UpdateTheme(theme))"><MudText Color="@(Current.Key == theme.Key ? Color.Primary : Color.Default)">@theme.Text</MudText></MudMenuItem>
@@ -21,6 +21,9 @@
 
     [Parameter]
     public bool PostChange { get; set; } = true;
+
+    [Parameter]
+    public string Class { get; set; } = default!;
 
     private List<ThemeDTO> Themes { get; set; } = new();
     private ThemeDTO Current { get; set; } = new ThemeDTO { Key = 0, Text = "Light" };

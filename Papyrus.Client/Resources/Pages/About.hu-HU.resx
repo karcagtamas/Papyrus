@@ -120,9 +120,6 @@
   <data name="Copyright" xml:space="preserve">
     <value>Copyright &lt;em&gt;2022-2023&lt;/em&gt; - &lt;small&gt;Karcag Tamas, Minden jog fentartva&lt;/small&gt;</value>
   </data>
-  <data name="Image" xml:space="preserve">
-    <value>Application Logo</value>
-  </data>
   <data name="PageName" xml:space="preserve">
     <value>About</value>
   </data>

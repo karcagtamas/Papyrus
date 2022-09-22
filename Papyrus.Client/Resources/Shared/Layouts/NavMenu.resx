@@ -150,9 +150,6 @@
   <data name="GroupTitle" xml:space="preserve">
     <value>Group Menu</value>
   </data>
-  <data name="Image" xml:space="preserve">
-    <value>Application Logo</value>
-  </data>
   <data name="LogOut" xml:space="preserve">
     <value>Log Out</value>
   </data>

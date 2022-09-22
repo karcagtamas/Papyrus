@@ -126,9 +126,6 @@
   <data name="Field.UserName" xml:space="preserve">
     <value>User Name</value>
   </data>
-  <data name="Image" xml:space="preserve">
-    <value>Application Logo</value>
-  </data>
   <data name="PageName" xml:space="preserve">
     <value>Login</value>
   </data>

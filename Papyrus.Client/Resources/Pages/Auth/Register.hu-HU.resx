@@ -132,9 +132,6 @@
   <data name="Field.UserName" xml:space="preserve">
     <value>Felhasználó Név</value>
   </data>
-  <data name="Image" xml:space="preserve">
-    <value>Alkalmazás Logo</value>
-  </data>
   <data name="PageName" xml:space="preserve">
     <value>Regisztráció</value>
   </data>

@@ -2,9 +2,7 @@
 @inject IAuthService authService
 @inject IStringLocalizer<NavMenu> L
 
-<div class="d-flex align-items-center justify-content-center">
-    <img class="text-center" src="assets/images/main.svg" width="180" alt="@L["Image"]" />
-</div>
+<MainImage Width="180" Class="d-flex align-items-center justify-content-center" />
 <MudDivider />
 <MudNavMenu Dense="true" Color="Color.Secondary" Margin="Margin.Dense" Rounded="true" Class="pa-2">
     <AuthorizeView>
