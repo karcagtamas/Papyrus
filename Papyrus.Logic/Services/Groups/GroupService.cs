@@ -47,7 +47,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         var id = base.CreateFromModel(model, doPersist);
 
         var result = groupRoleService.CreateDefaultRoles(id);
-        var admin = ObjectHelper.OrElseThrow(result.FirstOrDefault(x => x.IsAdministration), () => new ArgumentException("Admin role not found"));
+        var admin = ObjectHelper.OrElseThrow(result.FirstOrDefault(x => x.IsAdministrator), () => new ArgumentException("Admin role not found"));
 
         // Add current user as administrator
         var member = new GroupMember

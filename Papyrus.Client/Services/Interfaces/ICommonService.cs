@@ -8,5 +8,5 @@ public interface ICommonService
     Task<List<ThemeDTO>> GetThemeList(string? lang = null);
     Task<int> GetUserTheme();
     Task SetUserTheme(int key);
-    Task SetLocalTheme(int key);
+    Task SetLocalTheme(int key, bool post = true);
 }

@@ -30,17 +30,17 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
             new RoleCreationResultItem
             {
                 Id = CreateAdminRole(groupId),
-                IsAdministration = true
+                IsAdministrator = true
             },
             new RoleCreationResultItem
             {
                 Id = CreateModeratorRole(groupId),
-                IsAdministration = false
+                IsAdministrator = false
             },
             new RoleCreationResultItem
             {
                 Id = CreateDefaultRole(groupId),
-                IsAdministration = false
+                IsAdministrator = false
             },
         };
     }
@@ -201,6 +201,6 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public class RoleCreationResultItem
     {
         public int Id { get; set; }
-        public bool IsAdministration { get; set; }
+        public bool IsAdministrator { get; set; }
     }
 }

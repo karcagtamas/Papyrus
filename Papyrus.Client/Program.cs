@@ -58,10 +58,17 @@ builder.Services.AddStoreService(async (storeService, localStorage) =>
     const string userKey = "user";
     var user = await localStorage.GetItemAsync<TokenDTO>(userKey);
 
-    if (user != null)
+    if (ObjectHelper.IsNotNull(user))
     {
         storeService.Add(userKey, user);
     }
+
+    ObjectHelper.WhenNotNull(user, u => storeService.Add(userKey, u));
+
+    const string themeKey = "uitheme";
+    var theme = await localStorage.GetItemAsync<int>(themeKey);
+
+    ObjectHelper.WhenNotNull(theme, t => storeService.Add("theme", t));
 });
 
 builder.Services.AddScoped<ICommonService, CommonService>();
@@ -165,7 +172,7 @@ var commonService = host.Services.GetRequiredService<ICommonService>();
 try
 {
     var theme = await commonService.GetUserTheme();
-    await commonService.SetLocalTheme(theme);
+    await commonService.SetLocalTheme(theme, false);
 }
 catch (Exception)
 {

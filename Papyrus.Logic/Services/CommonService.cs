@@ -1,4 +1,5 @@
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs;
@@ -22,9 +23,19 @@ public class CommonService : ICommonService
         this.translationService = translationService;
     }
 
-    public int GetUserTheme() => utils.GetCurrentUser<User>().Theme;
+    public int GetUserTheme()
+    {
+        var userId = utils.GetCurrentUserId();
 
-    public List<ThemeDTO> GetTranslatedThemeList(string? lang = null) => translationService.GetValues(ThemeSegment, languageService.GetLangOrUserLang(lang)).Select(x => new ThemeDTO { Key = int.Parse(x.Key), Text = x.Value }).ToList();
+        if (ObjectHelper.IsNull(userId))
+        {
+            return (int)Theme.Light;
+        }
+
+        return utils.GetCurrentUser<User>().Theme;
+    }
+
+    public List<ThemeDTO> GetTranslatedThemeList(string? lang = null) => translationService.GetValues(ThemeSegment, languageService.GetLangOrUserLang(lang)).Select(x => new ThemeDTO { Key = int.Parse(x.Key), Text = x.Value }).OrderBy(x => x.Key).ToList();
 
     public void SetUserTheme(int key)
     {

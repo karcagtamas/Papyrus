@@ -1,14 +1,14 @@
 ﻿@using Papyrus.Client.Services.Interfaces
-@using Papyrus.Shared.Enums
+@using Papyrus.Shared.DTOs
 @using KarcagS.Blazor.Common.Store
 @inject NavigationManager Navigator
 @inject IStoreService StoreService
 @inject ICommonService CommonService
 
-<MudMenu Label="@Current.ToString()" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+<MudMenu Label="@Current.Text" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Style" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
     @foreach (var theme in Themes)
     {
-        <MudMenuItem OnClick="@(() => UpdateTheme(theme))"><MudText Color="@(Current == theme ? Color.Primary : Color.Default)">@(theme.ToString())</MudText></MudMenuItem>
+        <MudMenuItem OnClick="@(() => UpdateTheme(theme))"><MudText Color="@(Current.Key == theme.Key ? Color.Primary : Color.Default)">@theme.Text</MudText></MudMenuItem>
     }
 </MudMenu>
 
@@ -19,28 +19,41 @@
     [Parameter]
     public Variant Variant { get; set; } = Variant.Filled;
 
-    private List<Theme> Themes { get; set; } = new();
-    private Theme Current { get; set; } = Theme.Light;
+    [Parameter]
+    public bool PostChange { get; set; } = true;
 
-    protected override async void OnInitialized()
+    private List<ThemeDTO> Themes { get; set; } = new();
+    private ThemeDTO Current { get; set; } = new ThemeDTO { Key = 0, Text = "Light" };
+
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
-        Themes = new List<Theme> { Theme.Light, Theme.Dark };
+        await base.OnInitializedAsync();
+        Themes = await CommonService.GetThemeList();
 
-        var theme = StoreService.Get<int>("theme");
+        if (StoreService.IsExists("theme")) {
+            var theme = StoreService.Get<int>("theme");
 
-        if (theme != (int)Theme.Light && theme != (int)Theme.Dark)
-        {
-            await CommonService.SetLocalTheme((int)Theme.Light);
+            var dto = Themes.FirstOrDefault(x => x.Key == theme);
+
+            if (ObjectHelper.IsNull(dto))
+            {
+                await CommonService.SetLocalTheme(Themes.First().Key, PostChange);
+                Current = Themes.First();
+            }
+            else
+            {
+                Current = dto;
+            }
         }
-
-        Current = (Theme)theme;
 
         StateHasChanged();
     }
 
-    private async Task UpdateTheme(Theme theme)
+    private async Task UpdateTheme(ThemeDTO theme)
     {
-        await CommonService.SetLocalTheme((int)theme);
+        Current = theme;
+        await CommonService.SetLocalTheme(theme.Key, PostChange);
+
+        await InvokeAsync(StateHasChanged);
     }
 }

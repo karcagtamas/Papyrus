@@ -1,6 +1,8 @@
+using Blazored.LocalStorage;
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Store;
+using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
 
@@ -10,10 +12,14 @@ public class CommonService : ICommonService
 {
     private readonly IHttpService httpService;
     private readonly IStoreService storeService;
-    private readonly string url = $"{ApplicationSettings.BaseApiUrl}/Editor";
+    private readonly ILocalStorageService localStorageService;
+    private readonly IAuthService auth;
+    private readonly string url = $"{ApplicationSettings.BaseApiUrl}/Common";
 
-    public CommonService(IHttpService httpService, IStoreService storeService)
+    public CommonService(IHttpService httpService, IStoreService storeService, ILocalStorageService localStorageService, IAuthService auth)
     {
+        this.auth = auth;
+        this.localStorageService = localStorageService;
         this.storeService = storeService;
         this.httpService = httpService;
     }
@@ -38,10 +44,24 @@ public class CommonService : ICommonService
         return httpService.GetInt(settings).ExecuteWithResultOrElse(0);
     }
 
-    public async Task SetLocalTheme(int key)
+    public async Task SetLocalTheme(int key, bool post = true)
     {
-        await SetUserTheme(key);
+        if (storeService.IsExists("theme"))
+        {
+            var current = storeService.Get<int>("theme");
+
+            if (current == key)
+            {
+                return;
+            }
+        }
+
+        if (post && auth.IsLoggedIn())
+        {
+            await SetUserTheme(key);
+        }
         storeService.Add("theme", key);
+        await localStorageService.SetItemAsync("uitheme", key);
     }
 
     public Task SetUserTheme(int key)

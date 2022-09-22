@@ -22,6 +22,7 @@ public class CommonController : ControllerBase
     public List<ThemeDTO> GetTranslatedThemeList([FromQuery] string? lang) => commonService.GetTranslatedThemeList(lang);
 
     [HttpGet("Theme/User")]
+    [AllowAnonymous]
     public int GetUserTheme() => commonService.GetUserTheme();
 
     [HttpPut("Theme/User")]

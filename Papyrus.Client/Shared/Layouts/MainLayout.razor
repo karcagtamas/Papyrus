@@ -202,6 +202,7 @@
     private void HandleStoreChange(object? sender, StoreEventArgs args) {
         if (args.Key == "theme" && args.Type == StoreEvent.Add) {
             CurrentTheme = (Theme)store.Get<int>("theme");
+            StateHasChanged();
         }
     }
 
