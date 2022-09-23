@@ -20,5 +20,5 @@
     public DateRange? DateRange { get; set; } = default!;
 
     [Parameter]
-    public EventCallback DateRangeChanged { get; set; }
+    public EventCallback<DateRange?> DateRangeChanged { get; set; }
 }

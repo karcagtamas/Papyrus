@@ -20,5 +20,5 @@
     public DateTime? Date { get; set; } = default!;
 
     [Parameter]
-    public EventCallback DateChanged { get; set; }
+    public EventCallback<DateTime?> DateChanged { get; set; }
 }
