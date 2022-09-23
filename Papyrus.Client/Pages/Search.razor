@@ -1,4 +1,30 @@
 ﻿@page "/search"
-@attribute [Authorize]
+@inject IStringLocalizer<Search> L
 
-<ApplicationPageTitle PageName="Search"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]" />
+
+<div class="page-div">
+    <ActionBar>
+        <ChildContent>
+            <InfoButton Text="@L["Info"]" />
+            <div>
+                <TextInput Style="width: 440px;" Label="@L["Filter.Text"]" @bind-Value="QueryModel.Text" />
+            </div>
+            <Checkbox Label="@L["Filter.Tag"]" @bind-Checked="QueryModel.IncludeTags" />
+            <Checkbox Label="@L["Filter.Content"]" @bind-Checked="QueryModel.IncludeContents" />
+            <Checkbox Label="@L["Filter.Public"]" @bind-Checked="QueryModel.OnlyPublics" />
+            <MudSpacer />
+            <div>
+                <IntervalInput Style="width: 300px;" Label="@L["Filter.Interval"]" Clearable="true" @bind-DateRange="Range" />
+            </div>
+        </ChildContent>
+        <OtherRows>
+            <div class="mt-2 text-center w-25" style="margin: auto;">
+                <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" OnClick="DoSearch">@L["Search"]</MudButton>
+            </div>
+        </OtherRows>
+    </ActionBar>
+    <div>
+        Loading...
+    </div>
+</div>
