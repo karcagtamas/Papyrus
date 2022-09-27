@@ -28,11 +28,18 @@
         </ChildContent>
         <OtherRows>
             <div class="mt-2 text-center w-25" style="margin: auto;">
-                <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" OnClick="DoSearch">@L["Search"]</MudButton>
+                <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" OnClick="DoSearch" Disabled="Loading">@L["Search"]</MudButton>
             </div>
         </OtherRows>
     </ActionBar>
     <div>
-        Loading...
+        @if (Loading) {
+            <Loader />
+        } else {
+            @foreach (var r in ResultList)
+            {
+                @r.NoteId
+            }
+        }
     </div>
 </div>

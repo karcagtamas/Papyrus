@@ -230,30 +230,49 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     public List<SearchResultDTO> Search(SearchQueryModel query)
     {
-        var publics = GetListAsQuery(x => x.Public)
-            .Where(x => x.Title.Contains(query.Text));
+        var results = SearchQuery(GetAllAsQuery(), query, Utils.GetCurrentUserId());
 
-        // Tag checks
-        if (query.IncludeTags)
+        return results.Select(x => new SearchResultDTO
         {
-            publics = publics.Include(x => x.Tags)
-                .Where(x => x.Tags.Any(x => x.Tag.Caption.Contains(query.Text)));
+            NoteId = x.Id
+        })
+        .ToList();
+    }
+
+    private IQueryable<Note> SearchQuery(IQueryable<Note> queryable, SearchQueryModel query, string? userId = null)
+    {
+        if (!string.IsNullOrEmpty(query.Text))
+        {
+            // Tag checks
+            if (query.IncludeTags)
+            {
+                queryable = queryable.Include(x => x.Tags)
+                    .Where(x => x.Title.Contains(query.Text) || x.Tags.Any(x => x.Tag.Caption.Contains(query.Text)));
+            }
+            else
+            {
+                queryable = queryable.Where(x => x.Title.Contains(query.Text));
+            }
         }
 
+        // TODO: Add notes by group memberships
+        if (ObjectHelper.IsNull(userId) || query.OnlyPublics)
+        {
+            queryable = queryable.Where(x => x.Public);
+        }
+        else
+        {
+            queryable = queryable.Where(x => x.Public || x.CreatorId == userId);
+        }
 
-        // Filter contents
-        // User not logged in - dont set only publics - no possibilities
-
+        // TODO: Filter contents
 
         // Date interval checks
         if (query.StartDate != null && query.EndDate != null)
         {
-            publics = publics.Where(x => x.Creation > query.StartDate && x.Creation < query.EndDate);
+            queryable = queryable.Where(x => x.Creation > query.StartDate && x.Creation < query.EndDate);
         }
 
-        return publics.Select(x => new SearchResultDTO
-        {
-            NoteId = x.Id
-        }).ToList();
+        return queryable;
     }
 }
