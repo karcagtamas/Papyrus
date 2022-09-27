@@ -1,5 +1,9 @@
 ﻿@page "/search"
+@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Client.Services.Auth.Interfaces
 @inject IStringLocalizer<Search> L
+@inject INoteService NoteService
+@inject IAuthService Auth
 
 <ApplicationPageTitle PageName="@L["PageName"]" />
 
@@ -12,7 +16,11 @@
             </div>
             <Checkbox Label="@L["Filter.Tag"]" @bind-Checked="QueryModel.IncludeTags" />
             <Checkbox Label="@L["Filter.Content"]" @bind-Checked="QueryModel.IncludeContents" />
-            <Checkbox Label="@L["Filter.Public"]" @bind-Checked="QueryModel.OnlyPublics" />
+
+            @if (OnlyPublicAvailable)
+            {
+                <Checkbox Label="@L["Filter.Public"]" @bind-Checked="QueryModel.OnlyPublics" />
+            }
             <MudSpacer />
             <div>
                 <IntervalInput Style="width: 300px;" Label="@L["Filter.Interval"]" Clearable="true" @bind-DateRange="Range" />

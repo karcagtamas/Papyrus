@@ -106,4 +106,8 @@ public class NoteController : ControllerBase
 
         return await noteService.GetRights(id);
     }
+
+    [HttpGet("Search")]
+    [AllowAnonymous]
+    public List<SearchResultDTO> Search([FromQuery] SearchQueryModel query) => noteService.Search(query);
 }

@@ -227,4 +227,33 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
                 .ToList()
             );
     }
+
+    public List<SearchResultDTO> Search(SearchQueryModel query)
+    {
+        var publics = GetListAsQuery(x => x.Public)
+            .Where(x => x.Title.Contains(query.Text));
+
+        // Tag checks
+        if (query.IncludeTags)
+        {
+            publics = publics.Include(x => x.Tags)
+                .Where(x => x.Tags.Any(x => x.Tag.Caption.Contains(query.Text)));
+        }
+
+
+        // Filter contents
+        // User not logged in - dont set only publics - no possibilities
+
+
+        // Date interval checks
+        if (query.StartDate != null && query.EndDate != null)
+        {
+            publics = publics.Where(x => x.Creation > query.StartDate && x.Creation < query.EndDate);
+        }
+
+        return publics.Select(x => new SearchResultDTO
+        {
+            NoteId = x.Id
+        }).ToList();
+    }
 }

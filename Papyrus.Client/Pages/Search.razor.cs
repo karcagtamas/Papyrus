@@ -8,10 +8,13 @@ public partial class Search : ComponentBase
 {
     private SearchQueryModel QueryModel { get; set; } = new();
     private DateRange? Range { get; set; }
+    private bool OnlyPublicAvailable { get; set; } = false;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+
+        OnlyPublicAvailable = Auth.IsLoggedIn();
     }
 
     private void DoSearch()
@@ -28,5 +31,6 @@ public partial class Search : ComponentBase
         }
 
         // Send search request
+        var list = NoteService.Search(QueryModel);
     }
 }
