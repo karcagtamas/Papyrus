@@ -1,3 +1,4 @@
+using Microsoft.JSInterop;
 using Papyrus.Shared.DTOs;
 
 namespace Papyrus.Client.Services.Interfaces;
@@ -9,4 +10,5 @@ public interface ICommonService
     Task<int> GetUserTheme();
     Task SetUserTheme(int key);
     Task SetLocalTheme(int key, bool post = true);
+    Task OpenNote(string id, IJSRuntime jsRuntime);
 }

@@ -1,5 +1,8 @@
 ﻿@using KarcagS.Shared.Helpers
 @using Papyrus.Shared.DTOs.Notes
+@using Papyrus.Client.Services.Interfaces
+@inject ICommonService CommonService
+@inject IJSRuntime JSRuntime
 @inject IStringLocalizer<NoteListTile> L
 
 <MudCard Elevation="2">
@@ -34,11 +37,8 @@
     [Parameter]
     public bool OpenDisabled { get; set; } = false;
 
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
-
-    private async void Open()
+    private async Task Open()
     {
-        await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{Note.Id}", "_blank");
+        await CommonService.OpenNote(Note.Id, JSRuntime);
     }
 }

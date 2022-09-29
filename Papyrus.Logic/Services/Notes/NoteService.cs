@@ -230,29 +230,32 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     public List<SearchResultDTO> Search(SearchQueryModel query)
     {
-        var results = SearchQuery(GetAllAsQuery(), query, Utils.GetCurrentUserId());
+        var results = SearchQuery(GetAllAsQuery().Include(x => x.Tags), query, Utils.GetCurrentUserId());
 
         return results.Select(x => new SearchResultDTO
         {
-            NoteId = x.Id
+            NoteId = x.Id,
+            DisplayTitle = x.Title, // TODO: Append your hint or group name
+            PublicStatus = x.Public,
+            Creation = x.Creation,
+            LastUpdate = x.LastUpdate,
+            Archived = x.Archived,
+            Tags = Mapper.Map<List<NoteTagDTO>>(x.Tags.Select(x => x.Tag).ToList())
         })
         .ToList();
     }
 
     private IQueryable<Note> SearchQuery(IQueryable<Note> queryable, SearchQueryModel query, string? userId = null)
     {
-        if (!string.IsNullOrEmpty(query.Text))
+        // Tag checks
+        if (query.IncludeTags)
         {
-            // Tag checks
-            if (query.IncludeTags)
-            {
-                queryable = queryable.Include(x => x.Tags)
-                    .Where(x => x.Title.Contains(query.Text) || x.Tags.Any(x => x.Tag.Caption.Contains(query.Text)));
-            }
-            else
-            {
-                queryable = queryable.Where(x => x.Title.Contains(query.Text));
-            }
+            queryable = queryable
+                .Where(x => x.Title.Contains(query.Text) || x.Tags.Any(x => x.Tag.Caption.Contains(query.Text)));
+        }
+        else
+        {
+            queryable = queryable.Where(x => x.Title.Contains(query.Text));
         }
 
         // TODO: Add notes by group memberships

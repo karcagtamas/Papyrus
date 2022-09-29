@@ -1,0 +1,38 @@
+@using Papyrus.Shared.DTOs.Notes
+@using Papyrus.Client.Services.Interfaces
+@inject IJSRuntime JSRuntime
+@inject ICommonService CommonService
+@inject IStringLocalizer<SearchResultTile> L
+
+<MudCard Style="max-width: 800px;" Class="m-1 p-2 w-100">
+    <div class="d-flex flex-row align-items-center gap-3 mb-1">
+        <NotePublicStatusIcon Public="SearchResult.PublicStatus" />
+        <MudText>@SearchResult.DisplayTitle</MudText>
+    </div>
+    <DateDataRow Title="@L["Row.Creation"]" Date="SearchResult.Creation" OneRow />
+    <DateDataRow Title="@L["Row.LastUpdate"]" Date="SearchResult.LastUpdate" OneRow />
+
+    @if (SearchResult.Tags.Count > 0)
+    {
+        <MudText Color="Color.Primary">@L["Row.Tags"]:</MudText>
+
+        @foreach (var tag in SearchResult.Tags)
+        {
+            <TagBox Tag="tag" />
+        }
+    }
+
+    <div class="text-center">
+        <MudButton Variant="Variant.Filled" Color="Color.Tertiary" OnClick="Open" Disabled="SearchResult.Archived" EndIcon="@Icons.Filled.OpenInBrowser">@L["OpenAction"]</MudButton>
+    </div>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public SearchResultDTO SearchResult { get; set; } = default!;
+
+    private async Task Open()
+    {
+        await CommonService.OpenNote(SearchResult.NoteId, JSRuntime);
+    }
+}
