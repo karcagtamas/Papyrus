@@ -233,7 +233,9 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         var userId = Utils.GetCurrentUserId();
         var results = SearchQuery(GetAllAsQuery().Include(x => x.Tags).ThenInclude(x => x.Tag), query, userId);
 
-        return results.Select(x => new SearchResultDTO
+        return results
+        .ToList()
+        .Select(x => new SearchResultDTO
         {
             NoteId = x.Id,
             DisplayTitle = x.Title,
@@ -247,7 +249,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         .ToList();
     }
 
-    private SearchResultDataDTO ConstructData(Note note, string? userId)
+    private static SearchResultDataDTO ConstructData(Note note, string? userId)
     {
         // Determine category
         // Other by default => Public status
@@ -310,7 +312,8 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         else
         {
             queryable = queryable.Include(x => x.Group)
-                .ThenInclude(x => x.Members); // TODO: Fix nullable warning
+#nullable disable
+                .ThenInclude(x => x.Members);
             queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(x => x.UserId == userId)));
         }
 

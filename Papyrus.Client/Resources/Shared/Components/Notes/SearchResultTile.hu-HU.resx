@@ -132,6 +132,9 @@
   <data name="Row.LastUpdate" xml:space="preserve">
     <value>Utolsó Szerkesztés</value>
   </data>
+  <data name="Row.Owner" xml:space="preserve">
+    <value>Tulajdonos</value>
+  </data>
   <data name="Row.Tags" xml:space="preserve">
     <value>Címkék</value>
   </data>
