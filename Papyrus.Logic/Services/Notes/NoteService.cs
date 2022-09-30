@@ -254,6 +254,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         // Determine category
         // Other by default => Public status
         var cat = SearchResultCategory.Other;
+        bool openable = true;
 
         // User is logged in
         if (ObjectHelper.IsNotNull(userId))
@@ -265,10 +266,15 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             }
 
             // Note is connected to a group and the user is a member
-            // TODO: Check read rights
-            if (ObjectHelper.IsNotNull(note.Group) && note.Group.Members.Any(x => x.UserId == userId))
+            if (ObjectHelper.IsNotNull(note.Group))
             {
-                cat = SearchResultCategory.Group;
+                var member = note.Group.Members.FirstOrDefault(x => x.UserId == userId);
+
+                ObjectHelper.WhenNotNull(member, m =>
+                {
+                    cat = SearchResultCategory.Group;
+                    openable = m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote;
+                });
             }
         }
 
@@ -288,7 +294,8 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         {
             Type = cat,
             Owner = owner,
-            OwnerIsGroup = isGroup
+            OwnerIsGroup = isGroup,
+            Openable = openable
         };
     }
 
@@ -313,8 +320,9 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         {
             queryable = queryable.Include(x => x.Group)
 #nullable disable
-                .ThenInclude(x => x.Members);
-            queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(x => x.UserId == userId)));
+                .ThenInclude(x => x.Members)
+                .ThenInclude(x => x.Role);
+            queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(m => m.UserId == userId && (m.Role.ReadNoteList || m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote))));
         }
 
         // TODO: Filter contents
