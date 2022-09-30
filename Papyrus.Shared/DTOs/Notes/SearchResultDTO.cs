@@ -9,4 +9,5 @@ public class SearchResultDTO
     public DateTime Creation { get; set; }
     public DateTime LastUpdate { get; set; }
     public bool Archived { get; set; } = false;
+    public SearchResultDataDTO Data { get; set; } = new();
 }

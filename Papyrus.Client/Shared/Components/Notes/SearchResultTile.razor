@@ -1,5 +1,6 @@
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.Enums.Notes
 @inject IJSRuntime JSRuntime
 @inject ICommonService CommonService
 @inject IStringLocalizer<SearchResultTile> L
@@ -7,10 +8,11 @@
 <MudCard Style="max-width: 800px;" Class="m-1 p-2 w-100">
     <div class="d-flex flex-row align-items-center gap-3 mb-1">
         <NotePublicStatusIcon Public="SearchResult.PublicStatus" />
-        <MudText>@SearchResult.DisplayTitle</MudText>
+        <MudText>@GetDisplayText()</MudText>
     </div>
     <DateDataRow Title="@L["Row.Creation"]" Date="SearchResult.Creation" OneRow />
     <DateDataRow Title="@L["Row.LastUpdate"]" Date="SearchResult.LastUpdate" OneRow />
+    <DataRow Title="@L["Row.Owner"]" Value="@GetOwnerText()" OneRow />
 
     @if (SearchResult.Tags.Count > 0)
     {
@@ -34,5 +36,24 @@
     private async Task Open()
     {
         await CommonService.OpenNote(SearchResult.NoteId, JSRuntime);
+    }
+
+    private string GetOwnerText()
+    {
+        return L[SearchResult.Data.OwnerIsGroup ? "Owner.Group" : "Owner.User", SearchResult.Data.Owner];
+    }
+
+    private string GetDisplayText() {
+        switch (SearchResult.Data.Type)
+        {
+            case SearchResultCategory.Other:
+                return SearchResult.DisplayTitle;
+            case SearchResultCategory.Group:
+                return L["Source.Group", SearchResult.DisplayTitle];
+            case SearchResultCategory.User:
+                return L["Source.User", SearchResult.DisplayTitle];
+            default:
+                return SearchResult.DisplayTitle;
+        }
     }
 }

@@ -120,6 +120,12 @@
   <data name="OpenAction" xml:space="preserve">
     <value>Open</value>
   </data>
+  <data name="Owner.Group" xml:space="preserve">
+    <value>{0} (Group)</value>
+  </data>
+  <data name="Owner.User" xml:space="preserve">
+    <value>{0} (User)</value>
+  </data>
   <data name="Row.Creation" xml:space="preserve">
     <value>Creation</value>
   </data>
@@ -128,5 +134,11 @@
   </data>
   <data name="Row.Tags" xml:space="preserve">
     <value>Tags</value>
+  </data>
+  <data name="Source.Group" xml:space="preserve">
+    <value>{0} [From your groups]</value>
+  </data>
+  <data name="Source.User" xml:space="preserve">
+    <value>{0} [From your notes]</value>
   </data>
 </root>

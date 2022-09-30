@@ -230,19 +230,64 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     public List<SearchResultDTO> Search(SearchQueryModel query)
     {
-        var results = SearchQuery(GetAllAsQuery().Include(x => x.Tags), query, Utils.GetCurrentUserId());
+        var userId = Utils.GetCurrentUserId();
+        var results = SearchQuery(GetAllAsQuery().Include(x => x.Tags).ThenInclude(x => x.Tag), query, userId);
 
         return results.Select(x => new SearchResultDTO
         {
             NoteId = x.Id,
-            DisplayTitle = x.Title, // TODO: Append your hint or group name
+            DisplayTitle = x.Title,
             PublicStatus = x.Public,
             Creation = x.Creation,
             LastUpdate = x.LastUpdate,
             Archived = x.Archived,
-            Tags = Mapper.Map<List<NoteTagDTO>>(x.Tags.Select(x => x.Tag).ToList())
+            Tags = Mapper.Map<List<NoteTagDTO>>(x.Tags.Select(x => x.Tag).ToList()),
+            Data = ConstructData(x, userId)
         })
         .ToList();
+    }
+
+    private SearchResultDataDTO ConstructData(Note note, string? userId)
+    {
+        // Determine category
+        // Other by default => Public status
+        var cat = SearchResultCategory.Other;
+
+        // User is logged in
+        if (ObjectHelper.IsNotNull(userId))
+        {
+            // User is the owner
+            if (note.UserId == userId)
+            {
+                cat = SearchResultCategory.User;
+            }
+
+            // Note is connected to a group and the user is a member
+            // TODO: Check read rights
+            if (ObjectHelper.IsNotNull(note.Group) && note.Group.Members.Any(x => x.UserId == userId))
+            {
+                cat = SearchResultCategory.Group;
+            }
+        }
+
+        // Determine owner of the note
+        // Or a user or a group => One of the is always null
+        string owner = string.Empty;
+        bool isGroup = false;
+
+        ObjectHelper.WhenNotNull(note.User, u => owner = u.UserName);
+        ObjectHelper.WhenNotNull(note.Group, g =>
+        {
+            owner = g.Name;
+            isGroup = true;
+        });
+
+        return new()
+        {
+            Type = cat,
+            Owner = owner,
+            OwnerIsGroup = isGroup
+        };
     }
 
     private IQueryable<Note> SearchQuery(IQueryable<Note> queryable, SearchQueryModel query, string? userId = null)
@@ -258,14 +303,15 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             queryable = queryable.Where(x => x.Title.Contains(query.Text));
         }
 
-        // TODO: Add notes by group memberships
         if (ObjectHelper.IsNull(userId) || query.OnlyPublics)
         {
             queryable = queryable.Where(x => x.Public);
         }
         else
         {
-            queryable = queryable.Where(x => x.Public || x.CreatorId == userId);
+            queryable = queryable.Include(x => x.Group)
+                .ThenInclude(x => x.Members); // TODO: Fix nullable warning
+            queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(x => x.UserId == userId)));
         }
 
         // TODO: Filter contents
@@ -276,6 +322,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             queryable = queryable.Where(x => x.Creation > query.StartDate && x.Creation < query.EndDate);
         }
 
-        return queryable;
+        return queryable.Distinct();
     }
 }
