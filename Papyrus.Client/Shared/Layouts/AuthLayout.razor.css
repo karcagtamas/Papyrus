@@ -7,9 +7,14 @@
   align-items: center;
 }
 
-.culture-selector {
+.actions {
     position: absolute;
     top: 0;
     right: 3rem;
     top: 2rem;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }

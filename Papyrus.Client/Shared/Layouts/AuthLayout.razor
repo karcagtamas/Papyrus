@@ -3,12 +3,14 @@
 @inherits LayoutComponentBase
 @implements IDisposable
 @inject IStoreService store
+@inject IStringLocalizer<AuthLayout> L
 
 <MudThemeProvider Theme="@PapyrusTheme.GetTheme()" IsDarkMode="@(CurrentTheme == Theme.Dark)" />
 <MudSnackbarProvider />
 
 <div class="page">
-    <div class="culture-selector">
+    <div class="actions">
+        <MudButton Class="mr-3" StartIcon="@Icons.Filled.Home" Color="Color.Tertiary" Href="home">@L["Home"]</MudButton>
         <ThemeSelector Variant="Variant.Text" PostChange="false" Class="mr-3" />
         <LanguageSelector Variant="Variant.Text" />
     </div>
