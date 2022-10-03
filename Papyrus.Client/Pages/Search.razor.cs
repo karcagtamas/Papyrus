@@ -13,6 +13,8 @@ public partial class Search : ComponentBase
     private bool Loading { get; set; } = false;
 
     private List<SearchResultDTO> ResultList { get; set; } = new();
+    private bool FirstSearchPermitted { get; set; } = false;
+    private bool IsStateDirty { get; set; } = false;
 
     protected override void OnInitialized()
     {
@@ -41,7 +43,25 @@ public partial class Search : ComponentBase
 
         // Send search request
         ResultList = await NoteService.Search(QueryModel);
+        FirstSearchPermitted = true;
+        IsStateDirty = false;
         Loading = false;
+        StateHasChanged();
+    }
+
+    private void DoClear()
+    {
+        QueryModel = new SearchQueryModel();
+        ResultList = new();
+        IsStateDirty = false;
+        FirstSearchPermitted = false;
+        StateHasChanged();
+    }
+
+    private void HandleChange(Action change)
+    {
+        change();
+        IsStateDirty = true;
         StateHasChanged();
     }
 }

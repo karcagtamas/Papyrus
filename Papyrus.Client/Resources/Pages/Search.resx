@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ClearState" xml:space="preserve">
+    <value>Clear State</value>
+  </data>
   <data name="Filter.Content" xml:space="preserve">
     <value>Include Contents</value>
   </data>
@@ -131,6 +134,21 @@
   </data>
   <data name="Filter.Text" xml:space="preserve">
     <value>Search</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Fill the fields for the precisely searching. The Search text field is required.</value>
+  </data>
+  <data name="Message.Dirty" xml:space="preserve">
+    <value>You have search modifications. Click on the Search button.</value>
+  </data>
+  <data name="Message.EmptyResult" xml:space="preserve">
+    <value>There are not any result have been found.</value>
+  </data>
+  <data name="Message.First" xml:space="preserve">
+    <value>You need to fill the Search field first.</value>
+  </data>
+  <data name="Message.Invalid" xml:space="preserve">
+    <value>Search text field is required.</value>
   </data>
   <data name="PageName" xml:space="preserve">
     <value>Search</value>

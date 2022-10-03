@@ -330,7 +330,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         // Date interval checks
         if (query.StartDate != null && query.EndDate != null)
         {
-            queryable = queryable.Where(x => x.Creation > query.StartDate && x.Creation < query.EndDate);
+            queryable = queryable.Where(x => x.Creation >= query.StartDate && x.Creation <= query.EndDate);
         }
 
         return queryable.Distinct();
