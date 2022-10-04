@@ -110,6 +110,8 @@
             await Refreshed.InvokeAsync();
             await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
         }
+
+        await InvokeAsync(StateHasChanged);
     }
 
     private string ConstructTagText(List<string> list)

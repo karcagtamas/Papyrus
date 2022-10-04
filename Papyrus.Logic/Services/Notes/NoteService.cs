@@ -231,11 +231,22 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     public List<SearchResultDTO> Search(SearchQueryModel query)
     {
         var userId = Utils.GetCurrentUserId();
-        var results = SearchQuery(GetAllAsQuery().Include(x => x.Tags).ThenInclude(x => x.Tag), query, userId);
+        var resultQuery = SearchQuery(GetAllAsQuery().Include(x => x.Tags).ThenInclude(x => x.Tag), query, userId);
 
-        return results
-        .ToList()
-        .Select(x => new SearchResultDTO
+        var result = resultQuery.ToList();
+
+        // Append additional notes
+        if (query.IncludeContents)
+        {
+            var prevIds = result.Select(x => x.Id).ToList();
+            var relevantNotes = GetRelevantNotes(userId)
+                .Where(x => !prevIds.Contains(x.Id))
+                .ToList();
+            var contentSearchResult = noteContentService.Search(relevantNotes.Select(x => x.ContentId).ToList(), query.Text).Select(x => x.Id).ToList();
+            result.AddRange(relevantNotes.Where(x => contentSearchResult.Contains(x.ContentId)).ToList());
+        }
+
+        return result.Select(x => new SearchResultDTO
         {
             NoteId = x.Id,
             DisplayTitle = x.Title,
@@ -246,6 +257,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             Tags = Mapper.Map<List<NoteTagDTO>>(x.Tags.Select(x => x.Tag).ToList()),
             Data = ConstructData(x, userId)
         })
+        .OrderByDescending(x => x.Creation)
         .ToList();
     }
 
@@ -325,8 +337,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(m => m.UserId == userId && (m.Role.ReadNoteList || m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote))));
         }
 
-        // TODO: Filter contents
-
         // Date interval checks
         if (query.StartDate != null && query.EndDate != null)
         {
@@ -334,5 +344,15 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         }
 
         return queryable.Distinct();
+    }
+
+    private List<Note> GetRelevantNotes(string userId)
+    {
+        var query = GetListAsQuery(x => x.Public || (userId != null && (x.UserId == userId || (x.Group != null && x.Group.Members.Any(x => x.UserId == userId)))))
+            .Include(x => x.Group)
+            .ThenInclude(x => x.Members)
+            .Distinct();
+
+        return query.ToList();
     }
 }
