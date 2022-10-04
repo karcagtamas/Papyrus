@@ -1,4 +1,6 @@
-<MudCheckBox T="bool" Checked="Checked" CheckedChanged="CheckedChanged" Dense="true" Label="@Label" Style="@Style" Class="@Class" />
+@using System.Linq.Expressions
+
+<MudCheckBox T="bool" Checked="Checked" CheckedChanged="CheckedChanged" Dense="true" Label="@Label" Style="@Style" Class="@Class" For="For" />
 
 @code {
     [Parameter, EditorRequired]
@@ -15,4 +17,7 @@
 
     [Parameter]
     public EventCallback<bool> CheckedChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<bool>>? For { get; set; }
 }

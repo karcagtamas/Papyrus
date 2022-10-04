@@ -5,8 +5,7 @@
 @inject IStringLocalizer<GroupEditDialog> L
 
 <EditorDialog Model="GroupModel" ModelObj="Model" Submit="Submit" EntityName="@L["Entity"]" IsEdit="IsEdit">
-    <MudTextField T="string" Label="@L["Field.Name"]" Variant="Variant.Text" Required="true"
-                  For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
+    <TextInput Label="@L["Field.Name"]" For="@(() => Model.Name)" @bind-Value="Model.Name" Required FullWidth />
 </EditorDialog>
 
 @code {

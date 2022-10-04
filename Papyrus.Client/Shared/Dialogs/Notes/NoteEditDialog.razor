@@ -8,8 +8,7 @@
 @inject INoteService NoteService
 
 <EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="true">
-    <MudTextField Class="mb-5" T="string" Label="@L["Field.Title"]" Variant="Variant.Text" Required="true"
-                  For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth="true" />
+    <TextInput Class="mb-5" Label="@L["Field.Title"]" Required For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth />
     <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsPublic"]" For="@(() => Model.Public)" @bind-Checked="Model.Public" />
     <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsArchived"]" For="@(() => Model.Archived)" @bind-Checked="Model.Archived" />
     <div>

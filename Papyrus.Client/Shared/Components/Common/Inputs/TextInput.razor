@@ -1,4 +1,6 @@
-<MudTextField T="string" Value="Value" ValueChanged="ValueChanged" Style="@Style" Class="@Class" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" />
+@using System.Linq.Expressions
+
+<MudTextField T="string" Value="Value" ValueChanged="ValueChanged" Style="@Style" Class="@Class" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" TextChanged="TextChanged" For="For" Required="Required" FullWidth="FullWidth" Lines="Lines" InputType="FieldType" />
 
 @code {
     [Parameter, EditorRequired]
@@ -20,5 +22,42 @@
     public string Value { get; set; } = default!;
 
     [Parameter]
+    public bool Required { get; set; } = false;
+
+    [Parameter]
+    public bool FullWidth { get; set; } = false;
+
+    [Parameter]
+    public int Lines { get; set; } = 1;
+
+    [Parameter]
+    public bool IsPassword { get; set; } = false;
+
+    [Parameter]
+    public bool IsEmail { get; set; } = false;
+
+    [Parameter]
     public EventCallback<string> ValueChanged { get; set; }
+
+    [Parameter]
+    public EventCallback<string> TextChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<string>>? For { get; set; }
+
+    private InputType FieldType
+    {
+        get
+        {
+            if (IsPassword) {
+                return InputType.Password;
+            }
+
+            if (IsEmail) {
+                return InputType.Email;
+            }
+
+            return InputType.Text;
+        }
+    }
 }

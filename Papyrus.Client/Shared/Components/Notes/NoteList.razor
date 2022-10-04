@@ -33,7 +33,7 @@
             @if (ObjectHelper.IsNotEmpty(Tags))
             {
                 <div class="mr-3">
-                    <MudSelect T="int" Style="width: 420px;" SelectedValues="QueryModel.Tags.AsEnumerable()" SelectedValuesChanged="HandleTagFilterChange" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense" Clearable MultiSelection MultiSelectionTextFunc="ConstructTagText" Placeholder="@L["TagFilter.Placeholder"]">
+                    <MudSelect T="int" Style="width: 420px;" SelectedValues="QueryModel.Tags.AsEnumerable()" SelectedValuesChanged="HandleTagFilterChange" Variant="Variant.Outlined" Dense Margin="Margin.Dense" Clearable MultiSelection MultiSelectionTextFunc="ConstructTagText" Placeholder="@L["TagFilter.Placeholder"]">
                         @foreach (var tag in Tags)
                         {
                             <MudSelectItem @key="tag.Id" Value="tag.Id"><TagBox Tag="tag" /></MudSelectItem>
@@ -42,10 +42,10 @@
                 </div>
             }
             <div class="mr-3">
-                <MudDatePicker Style="width: 260px" Date="QueryModel.DateFilter" DateChanged="HandleDateFilterChange" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable Placeholder="@L["DateFilter.Placeholder"]" />
+                <DateInput Label="" Style="width: 260px" Date="QueryModel.DateFilter" DateChanged="HandleDateFilterChange" Clearable Placeholder="@L["DateFilter.Placeholder"]" />
             </div>
             <div>
-                <MudTextField Style="width: 260px" T="string" Value="@QueryModel.TextFilter" ValueChanged="HandleTextFilterChange" Margin="Margin.Dense" Variant="Variant.Outlined" Clearable Placeholder="@L["TextFilter.Placeholder"]" />
+                <TextInput Label="" Style="width: 260px" Value="@QueryModel.TextFilter" ValueChanged="HandleTextFilterChange" Clearable Placeholder="@L["TextFilter.Placeholder"]" />
             </div>
         </div>
     </OtherRows>

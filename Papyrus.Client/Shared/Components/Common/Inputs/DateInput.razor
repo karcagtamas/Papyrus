@@ -1,4 +1,6 @@
-<MudDatePicker Style="@Style" Class="@Class" Date="Date" DateChanged="DateChanged" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" />
+@using System.Linq.Expressions
+
+<MudDatePicker Style="@Style" Class="@Class" Date="Date" DateChanged="DateChanged" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" For="For" />
 
 @code {
     [Parameter, EditorRequired]
@@ -21,4 +23,7 @@
 
     [Parameter]
     public EventCallback<DateTime?> DateChanged { get; set; }
+
+    [Parameter]
+    public Expression<Func<DateTime?>>? For { get; set; }
 }

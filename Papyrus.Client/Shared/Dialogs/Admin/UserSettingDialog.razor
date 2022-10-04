@@ -1,7 +1,6 @@
 ﻿@using KarcagS.Blazor.Common.Services.Interfaces
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.DTOs
-@using Papyrus.Shared.Models
 @using Papyrus.Shared.Models.Admin
 @inject IStringLocalizer<UserSettingDialog> L
 @inject IUserService UserService
@@ -9,13 +8,13 @@
 @inject IConfirmService ConfirmService
 
 <EditorDialog Model="UserSettingModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="true" Submit="Submit" FormValidator="ValidateForm">
-    <MudSelect T="string" @bind-Value="Model.RoleId" Label="@L["Field.Role"]" Variant="Variant.Text" For="@(() => Model.RoleId)" FullWidth="true">
+    <MudSelect T="string" @bind-Value="Model.RoleId" Label="@L["Field.Role"]" Variant="Variant.Outlined" For="@(() => Model.RoleId)" FullWidth Dense Margin="Margin.Dense">
         @foreach (var role in Roles)
         {
             <MudSelectItem Value="@role.Id">@role.Name</MudSelectItem>
         }
     </MudSelect>
-    <MudCheckBox Class="mt-3" T="bool" @bind-Checked="Model.Disabled" Label="@L["Field.Disabled"]" For="@(() => Model.Disabled)" />
+    <Checkbox Class="mt-3" @bind-Checked="Model.Disabled" Label="@L["Field.Disabled"]" For="@(() => Model.Disabled)" />
 </EditorDialog>
 
 @code {
