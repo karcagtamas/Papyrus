@@ -5,8 +5,6 @@
 @using Papyrus.Client.Shared.Dialogs.Admin
 @using Papyrus.Shared
 @using Papyrus.Shared.DTOs
-@using Microsoft.IdentityModel.Tokens
-@using KarcagS.Shared.Helpers
 @attribute [Authorize(Roles = "Administrator,Moderator")]
 @inject IStringLocalizer<Users> L
 @inject IUserTableService UserTableService
@@ -20,12 +18,11 @@
     <Table @ref="Table" TKey="string" Service="UserTableService" Localizer="L" Style="Style" OnRowClick="RowClickHandler" ReadOnly="!HasWriteRight">
 
         <FilterRow>
-            <MudSelect Style="width: 240px;" T="string" ValueChanged="@(args => context("role", string.IsNullOrEmpty(args) ? null : args))" Label="@L["Table.Filter.Role"]" Placeholder="@L["Table.Filter.Role"]" Variant="Variant.Outlined" Dense="true" Margin="Margin.Dense" Clearable="true">
-                @foreach (var role in Roles)
-                {
-                    <MudSelectItem Value="role.Id">@role.Name</MudSelectItem>
-                }
-            </MudSelect>
+            <Selector Style="width: 240px;" T="string" TItem="RoleDTO" Items="Roles" KeyGetter="@((item) => item.Id)" Label="@L["Table.Filter.Role"]" Placeholder="@L["Table.Filter.Role"]" Clearable Value="@SelectedRole" ValueChanged="@(args => FilterHandler(args, context))">
+                <SelectItem Context="ctx">
+                    @ctx.Name
+                </SelectItem>
+            </Selector>
         </FilterRow>
 
     </Table>
@@ -40,6 +37,7 @@
     private StyleConfiguration Style { get; set; } = StyleConfiguration.Build();
     private List<RoleDTO> Roles { get; set; } = new();
     private bool HasWriteRight { get; set; } = false;
+    private string? SelectedRole { get; set; }
 
     protected override async void OnInitialized()
     {
@@ -87,6 +85,12 @@
         var parameters = new DialogParameters { { "UserId", item.ItemKey } };
 
         await HelperService.OpenEditorDialog<UserSettingDialog>("User Settings", (res) => Table?.Refresh(), parameters);
+    }
+
+    private void FilterHandler(string value, Action<string, object?> filter)
+    {
+        SelectedRole = value;
+        filter("role", string.IsNullOrEmpty(value) ? null : value);
     }
 
 }

@@ -8,12 +8,11 @@
 @inject IConfirmService ConfirmService
 
 <EditorDialog Model="UserSettingModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="true" Submit="Submit" FormValidator="ValidateForm">
-    <MudSelect T="string" @bind-Value="Model.RoleId" Label="@L["Field.Role"]" Variant="Variant.Outlined" For="@(() => Model.RoleId)" FullWidth Dense Margin="Margin.Dense">
-        @foreach (var role in Roles)
-        {
-            <MudSelectItem Value="@role.Id">@role.Name</MudSelectItem>
-        }
-    </MudSelect>
+    <Selector T="string" TItem="RoleDTO" Items="Roles" KeyGetter="@((item) => item.Id)" Label="@L["Field.Role"]" @bind-Value="Model.RoleId" For="@(() => Model.RoleId)" FullWidth>
+        <SelectItem>
+            @context.Name
+        </SelectItem>
+    </Selector>
     <Checkbox Class="mt-3" @bind-Checked="Model.Disabled" Label="@L["Field.Disabled"]" For="@(() => Model.Disabled)" />
 </EditorDialog>
 

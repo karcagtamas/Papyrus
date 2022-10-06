@@ -4,13 +4,11 @@
 @inject IStringLocalizer<GroupMemberEditDialog> L
 
 <EditorDialog Model="GroupMemberUpdateModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="true">
-    <MudSelect T="int" Label="@L["Field.Role"]" Variant="Variant.Outlined" Required="true"
-            For="@(() => Model.RoleId)" @bind-Value="Model.RoleId" FullWidth Dense Margin="Margin.Dense">
-        @foreach (var role in Roles)
-        {
-            <MudSelectItem Value="@role.Id">@role.Name</MudSelectItem>
-        }
-    </MudSelect>
+    <Selector T="int" TItem="GroupRoleLightDTO" Label="@L["Field.Role"]" Items="Roles" KeyGetter="@((item) => item.Id)" For="@(() => Model.RoleId)" @bind-Value="Model.RoleId">
+        <SelectItem>
+            @context.Name
+        </SelectItem>
+    </Selector>
 </EditorDialog>
 
 @code {
