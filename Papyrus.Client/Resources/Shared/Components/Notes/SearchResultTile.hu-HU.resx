@@ -117,22 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Dashboard" xml:space="preserve">
-    <value>Dashboard</value>
+  <data name="OpenAction" xml:space="preserve">
+    <value>Megnyitás</value>
   </data>
-  <data name="LoggedInText" xml:space="preserve">
-    <value>You are logged in. For the detailed information click on the &lt;b&gt;Dashboard&lt;/b&gt; button.</value>
+  <data name="Owner.Group" xml:space="preserve">
+    <value>{0} (Csoport)</value>
   </data>
-  <data name="LoggedOutText" xml:space="preserve">
-    <value>You are &lt;b&gt;logged out&lt;/b&gt;. For the continuing click on the &lt;b&gt;Sign In&lt;/b&gt; button.</value>
+  <data name="Owner.User" xml:space="preserve">
+    <value>{0} (Felhasználó)</value>
   </data>
-  <data name="Search" xml:space="preserve">
-    <value>Search</value>
+  <data name="Row.Creation" xml:space="preserve">
+    <value>Létrehozás</value>
   </data>
-  <data name="SearchText" xml:space="preserve">
-    <value>Or you can &lt;b&gt;Search&lt;/b&gt; between different notes.</value>
+  <data name="Row.LastUpdate" xml:space="preserve">
+    <value>Utolsó Szerkesztés</value>
   </data>
-  <data name="SignIn" xml:space="preserve">
-    <value>Sign In</value>
+  <data name="Row.Owner" xml:space="preserve">
+    <value>Tulajdonos</value>
+  </data>
+  <data name="Row.Tags" xml:space="preserve">
+    <value>Címkék</value>
+  </data>
+  <data name="Source.Group" xml:space="preserve">
+    <value>{0} [Csoportjaidból]</value>
+  </data>
+  <data name="Source.User" xml:space="preserve">
+    <value>{0} [Jegyzeteidből]</value>
   </data>
 </root>

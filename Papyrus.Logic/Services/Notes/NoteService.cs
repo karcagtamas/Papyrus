@@ -227,4 +227,132 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
                 .ToList()
             );
     }
+
+    public List<SearchResultDTO> Search(SearchQueryModel query)
+    {
+        var userId = Utils.GetCurrentUserId();
+        var resultQuery = SearchQuery(GetAllAsQuery().Include(x => x.Tags).ThenInclude(x => x.Tag), query, userId);
+
+        var result = resultQuery.ToList();
+
+        // Append additional notes
+        if (query.IncludeContents)
+        {
+            var prevIds = result.Select(x => x.Id).ToList();
+            var relevantNotes = GetRelevantNotes(userId)
+                .Where(x => !prevIds.Contains(x.Id))
+                .ToList();
+            var contentSearchResult = noteContentService.Search(relevantNotes.Select(x => x.ContentId).ToList(), query.Text).Select(x => x.Id).ToList();
+            result.AddRange(relevantNotes.Where(x => contentSearchResult.Contains(x.ContentId)).ToList());
+        }
+
+        return result.Select(x => new SearchResultDTO
+        {
+            NoteId = x.Id,
+            DisplayTitle = x.Title,
+            PublicStatus = x.Public,
+            Creation = x.Creation,
+            LastUpdate = x.LastUpdate,
+            Archived = x.Archived,
+            Tags = Mapper.Map<List<NoteTagDTO>>(x.Tags.Select(x => x.Tag).ToList()),
+            Data = ConstructData(x, userId)
+        })
+        .OrderByDescending(x => x.Creation)
+        .ToList();
+    }
+
+    private static SearchResultDataDTO ConstructData(Note note, string? userId)
+    {
+        // Determine category
+        // Other by default => Public status
+        var cat = SearchResultCategory.Other;
+        bool openable = true;
+
+        // User is logged in
+        if (ObjectHelper.IsNotNull(userId))
+        {
+            // User is the owner
+            if (note.UserId == userId)
+            {
+                cat = SearchResultCategory.User;
+            }
+
+            // Note is connected to a group and the user is a member
+            if (ObjectHelper.IsNotNull(note.Group))
+            {
+                var member = note.Group.Members.FirstOrDefault(x => x.UserId == userId);
+
+                ObjectHelper.WhenNotNull(member, m =>
+                {
+                    cat = SearchResultCategory.Group;
+                    openable = m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote;
+                });
+            }
+        }
+
+        // Determine owner of the note
+        // Or a user or a group => One of the is always null
+        string owner = string.Empty;
+        bool isGroup = false;
+
+        ObjectHelper.WhenNotNull(note.User, u => owner = u.UserName);
+        ObjectHelper.WhenNotNull(note.Group, g =>
+        {
+            owner = g.Name;
+            isGroup = true;
+        });
+
+        return new()
+        {
+            Type = cat,
+            Owner = owner,
+            OwnerIsGroup = isGroup,
+            Openable = openable
+        };
+    }
+
+    private IQueryable<Note> SearchQuery(IQueryable<Note> queryable, SearchQueryModel query, string? userId = null)
+    {
+        // Tag checks
+        if (query.IncludeTags)
+        {
+            queryable = queryable
+                .Where(x => x.Title.Contains(query.Text) || x.Tags.Any(x => x.Tag.Caption.Contains(query.Text)));
+        }
+        else
+        {
+            queryable = queryable.Where(x => x.Title.Contains(query.Text));
+        }
+
+        if (ObjectHelper.IsNull(userId) || query.OnlyPublics)
+        {
+            queryable = queryable.Where(x => x.Public);
+        }
+        else
+        {
+            queryable = queryable.Include(x => x.Group)
+#nullable disable
+                .ThenInclude(x => x.Members)
+                .ThenInclude(x => x.Role);
+            queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(m => m.UserId == userId && (m.Role.ReadNoteList || m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote))));
+        }
+
+        // Date interval checks
+        if (query.StartDate != null && query.EndDate != null)
+        {
+            queryable = queryable.Where(x => x.Creation >= query.StartDate && x.Creation <= query.EndDate);
+        }
+
+        return queryable.Distinct();
+    }
+
+    private List<Note> GetRelevantNotes(string userId)
+    {
+        var query = GetListAsQuery(x => x.Public || (userId != null && (x.UserId == userId || (x.Group != null && x.Group.Members.Any(x => x.UserId == userId)))))
+            .Include(x => x.Group)
+            .ThenInclude(x => x.Members)
+            .Distinct();
+
+        return query.ToList();
+    }
 }

@@ -117,22 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Dashboard" xml:space="preserve">
-    <value>Dashboard</value>
+  <data name="ClearState" xml:space="preserve">
+    <value>Állapot Törlése</value>
   </data>
-  <data name="LoggedInText" xml:space="preserve">
-    <value>You are logged in. For the detailed information click on the &lt;b&gt;Dashboard&lt;/b&gt; button.</value>
+  <data name="Filter.Content" xml:space="preserve">
+    <value>Tartalmak Ellenőrzése</value>
   </data>
-  <data name="LoggedOutText" xml:space="preserve">
-    <value>You are &lt;b&gt;logged out&lt;/b&gt;. For the continuing click on the &lt;b&gt;Sign In&lt;/b&gt; button.</value>
+  <data name="Filter.Interval" xml:space="preserve">
+    <value>Dátum Intervallum</value>
+  </data>
+  <data name="Filter.Public" xml:space="preserve">
+    <value>Csak Publikusak</value>
+  </data>
+  <data name="Filter.Tag" xml:space="preserve">
+    <value>Címkék Ellenőrzése</value>
+  </data>
+  <data name="Filter.Text" xml:space="preserve">
+    <value>Keresés</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Töltsd ki a mezőket a pontos kereséshez. A Keresés szöveges mező kitöltése kötelező.</value>
+  </data>
+  <data name="Message.Dirty" xml:space="preserve">
+    <value>Keresési módosításaid vannak. Kattints a Keresés gombra.</value>
+  </data>
+  <data name="Message.EmptyResult" xml:space="preserve">
+    <value>Nem található semmilyen eredemény.</value>
+  </data>
+  <data name="Message.First" xml:space="preserve">
+    <value>Elöszőr ki kell töltened a Keresés mezőt.</value>
+  </data>
+  <data name="Message.Invalid" xml:space="preserve">
+    <value>Keresés szöveges mező kitöltése kötelező.</value>
+  </data>
+  <data name="PageName" xml:space="preserve">
+    <value>Keresés</value>
   </data>
   <data name="Search" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="SearchText" xml:space="preserve">
-    <value>Or you can &lt;b&gt;Search&lt;/b&gt; between different notes.</value>
-  </data>
-  <data name="SignIn" xml:space="preserve">
-    <value>Sign In</value>
+    <value>Keresés</value>
   </data>
 </root>

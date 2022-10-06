@@ -5,44 +5,43 @@
 @inject IStringLocalizer<GroupRoleEditDialog> L
 
 <EditorDialog Model="GroupRoleModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="IsEdit" FormValidator="ValidateForm">
-    <MudTextField Class="mb-5" T="string" Label="@L["Field.Name"]" Variant="Variant.Text" Required="true"
-                  For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth="true" />
+    <TextInput Class="mb-5" Label="@L["Field.Name"]" Required For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth />
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Group"]</MudText>
     <div class="d-flex flex-row">
-        <MudCheckBox Label="@L["Field.GroupEdit"]" For="@(() => Model.GroupEdit)" @bind-Checked="Model.GroupEdit" />
+        <Checkbox Label="@L["Field.GroupEdit"]" For="@(() => Model.GroupEdit)" @bind-Checked="Model.GroupEdit" />
     </div>
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Notes"]</MudText>
-    <div class="d-flex flex-row">
-        <MudCheckBox Label="@L["Field.ReadNotes"]" For="@(() => Model.ReadNoteList)" @bind-Checked="Model.ReadNoteList" />
-        <MudCheckBox T="bool" Label="@L["Field.ReadNote"]" For="@(() => Model.ReadNote)" Checked="Model.ReadNote" CheckedChanged="ChangeNoteReadStatus" />
-        <MudCheckBox T="bool" Label="@L["Field.EditNote"]" For="@(() => Model.EditNote)" Checked="Model.EditNote" CheckedChanged="ChangeNoteEditStatus" />
-        <MudCheckBox T="bool" Label="@L["Field.DeleteNote"]" For="@(() => Model.DeleteNote)" Checked="Model.DeleteNote" CheckedChanged="ChangeNoteDeleteStatus" />
+    <div class="d-flex flex-row gap-1">
+        <Checkbox Label="@L["Field.ReadNotes"]" For="@(() => Model.ReadNoteList)" @bind-Checked="Model.ReadNoteList" />
+        <Checkbox Label="@L["Field.ReadNote"]" For="@(() => Model.ReadNote)" Checked="Model.ReadNote" CheckedChanged="ChangeNoteReadStatus" />
+        <Checkbox Label="@L["Field.EditNote"]" For="@(() => Model.EditNote)" Checked="Model.EditNote" CheckedChanged="ChangeNoteEditStatus" />
+        <Checkbox Label="@L["Field.DeleteNote"]" For="@(() => Model.DeleteNote)" Checked="Model.DeleteNote" CheckedChanged="ChangeNoteDeleteStatus" />
     </div>
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Members"]</MudText>
-    <div class="d-flex flex-row">
-        <MudCheckBox T="bool" Label="@L["Field.ReadMembers"]" For="@(() => Model.ReadMemberList)" Checked="Model.ReadMemberList" CheckedChanged="ChangeMemberReadStatus" />
-        <MudCheckBox T="bool" Label="@L["Field.EditMembers"]" For="@(() => Model.EditMemberList)" Checked="Model.EditMemberList" CheckedChanged="ChangeMemberEditStatus" />
+    <div class="d-flex flex-row gap-1">
+        <Checkbox Label="@L["Field.ReadMembers"]" For="@(() => Model.ReadMemberList)" Checked="Model.ReadMemberList" CheckedChanged="ChangeMemberReadStatus" />
+        <Checkbox Label="@L["Field.EditMembers"]" For="@(() => Model.EditMemberList)" Checked="Model.EditMemberList" CheckedChanged="ChangeMemberEditStatus" />
     </div>
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Roles"]</MudText>
-    <div class="d-flex flex-row">
-        <MudCheckBox T="bool" Label="@L["Field.ReadRoles"]" For="@(() => Model.ReadRoleList)" Checked="Model.ReadRoleList" CheckedChanged="ChangeRoleReadStatus" />
-        <MudCheckBox T="bool" Label="@L["Field.EditRoles"]" For="@(() => Model.EditRoleList)" Checked="Model.EditRoleList" CheckedChanged="ChangeRoleEditStatus" />
+    <div class="d-flex flex-row gap-1">
+        <Checkbox Label="@L["Field.ReadRoles"]" For="@(() => Model.ReadRoleList)" Checked="Model.ReadRoleList" CheckedChanged="ChangeRoleReadStatus" />
+        <Checkbox Label="@L["Field.EditRoles"]" For="@(() => Model.EditRoleList)" Checked="Model.EditRoleList" CheckedChanged="ChangeRoleEditStatus" />
     </div>
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Logs"]</MudText>
-    <div class="d-flex flex-row">
-        <MudCheckBox Label="@L["Field.ReadLogs"]" For="@(() => Model.ReadGroupActionLog)" @bind-Checked="Model.ReadGroupActionLog" />
-        <MudCheckBox Label="@L["Field.ReadNoteLogs"]" For="@(() => Model.ReadNoteActionLog)" @bind-Checked="Model.ReadNoteActionLog" />
+    <div class="d-flex flex-row gap-1">
+        <Checkbox Label="@L["Field.ReadLogs"]" For="@(() => Model.ReadGroupActionLog)" @bind-Checked="Model.ReadGroupActionLog" />
+        <Checkbox Label="@L["Field.ReadNoteLogs"]" For="@(() => Model.ReadNoteActionLog)" @bind-Checked="Model.ReadNoteActionLog" />
     </div>
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Tags"]</MudText>
-    <div class="d-flex flex-row">
-        <MudCheckBox T="bool" Label="@L["Field.ReadTags"]" For="@(() => Model.ReadTagList)" Checked="Model.ReadTagList" CheckedChanged="ChangeTagReadStatus" />
-        <MudCheckBox T="bool" Label="@L["Field.EditTags"]" For="@(() => Model.EditTagList)" Checked="Model.EditTagList" CheckedChanged="ChangeTagEditStatus" />
+    <div class="d-flex flex-row gap-1">
+        <Checkbox Label="@L["Field.ReadTags"]" For="@(() => Model.ReadTagList)" Checked="Model.ReadTagList" CheckedChanged="ChangeTagReadStatus" />
+        <Checkbox Label="@L["Field.EditTags"]" For="@(() => Model.EditTagList)" Checked="Model.EditTagList" CheckedChanged="ChangeTagEditStatus" />
     </div>
 </EditorDialog>
 

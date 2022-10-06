@@ -1,23 +1,18 @@
 ﻿@using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
-@using MudBlazor.Utilities
 @using Papyrus.Client.Services.Notes.Interfaces
-@using Papyrus.Shared.DTOs.Groups
 @using Papyrus.Shared.DTOs.Notes
-@using Papyrus.Shared.Models.Groups
-@using System.ComponentModel.DataAnnotations
 @using Papyrus.Shared.Models.Notes
 @inject IStringLocalizer<TagEditDialog> L
 
 <EditorDialog Model="TagModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="IsEdit">
     <MudText Class="@("text-center mt-3 mb-3 " + (IsEdit ? "hovered-text" : ""))" Color="Color.Primary" onclick="@(() => EditParent())"><b>@Path?.Path/</b></MudText>
-    <MudTextField Class="mb-5" T="string" Label="@L["Field.Caption"]" Variant="Variant.Text" Required="true"
-                  For="@(() => Model.Caption)" @bind-Value="Model.Caption" FullWidth="true" />
 
-    <MudTextField Class="mb-5" T="string" Label="@L["Field.Description"]" Variant="Variant.Text"
-                  For="@(() => Model.Description)" @bind-Value="Model.Description" FullWidth="true" Lines="5" />
+    <TextInput Class="mb-5" Label="@L["Field.Caption"]" Required For="@(() => Model.Caption)" @bind-Value="Model.Caption" FullWidth />
 
-    <MudColorPicker Class="mb-5" Label="@L["Field.Color"]" Variant="Variant.Text" @bind-Text="Model.Color" />
+    <TextInput Class="mb-5" Label="@L["Field.Description"]" For="@(() => Model.Description)" @bind-Value="Model.Description" FullWidth Lines="5" />
+
+    <MudColorPicker Class="mb-5" Label="@L["Field.Color"]" Margin="Margin.Dense" Variant="Variant.Outlined" @bind-Text="Model.Color" />
 </EditorDialog>
 
 @code {

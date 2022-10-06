@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Store;
+using Microsoft.JSInterop;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
@@ -43,6 +44,8 @@ public class CommonService : ICommonService
 
         return httpService.GetInt(settings).ExecuteWithResultOrElse(0);
     }
+
+    public async Task OpenNote(string id, IJSRuntime jsRuntime) => await jsRuntime.InvokeAsync<object>("open", $"/notes/editor/{id}", "_blank");
 
     public async Task SetLocalTheme(int key, bool post = true)
     {

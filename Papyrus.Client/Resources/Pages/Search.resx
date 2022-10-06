@@ -117,22 +117,43 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Dashboard" xml:space="preserve">
-    <value>Dashboard</value>
+  <data name="ClearState" xml:space="preserve">
+    <value>Clear State</value>
   </data>
-  <data name="LoggedInText" xml:space="preserve">
-    <value>You are logged in. For the detailed information click on the &lt;b&gt;Dashboard&lt;/b&gt; button.</value>
+  <data name="Filter.Content" xml:space="preserve">
+    <value>Include Contents</value>
   </data>
-  <data name="LoggedOutText" xml:space="preserve">
-    <value>You are &lt;b&gt;logged out&lt;/b&gt;. For the continuing click on the &lt;b&gt;Sign In&lt;/b&gt; button.</value>
+  <data name="Filter.Interval" xml:space="preserve">
+    <value>Date Interval</value>
+  </data>
+  <data name="Filter.Public" xml:space="preserve">
+    <value>Only Publics</value>
+  </data>
+  <data name="Filter.Tag" xml:space="preserve">
+    <value>Include Tags</value>
+  </data>
+  <data name="Filter.Text" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Fill the fields for the precisely searching. The Search text field is required.</value>
+  </data>
+  <data name="Message.Dirty" xml:space="preserve">
+    <value>You have search modifications. Click on the Search button.</value>
+  </data>
+  <data name="Message.EmptyResult" xml:space="preserve">
+    <value>There are not any result have been found.</value>
+  </data>
+  <data name="Message.First" xml:space="preserve">
+    <value>You need to fill the Search field first.</value>
+  </data>
+  <data name="Message.Invalid" xml:space="preserve">
+    <value>Search text field is required.</value>
+  </data>
+  <data name="PageName" xml:space="preserve">
+    <value>Search</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
-  </data>
-  <data name="SearchText" xml:space="preserve">
-    <value>Or you can &lt;b&gt;Search&lt;/b&gt; between different notes.</value>
-  </data>
-  <data name="SignIn" xml:space="preserve">
-    <value>Sign In</value>
   </data>
 </root>

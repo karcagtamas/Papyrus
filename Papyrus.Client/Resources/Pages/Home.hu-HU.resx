@@ -121,10 +121,16 @@
     <value>Írányítópult</value>
   </data>
   <data name="LoggedInText" xml:space="preserve">
-    <value>Már be vagy jelentkezve. A folytatáshoz kattints az &lt;b&gt;Írányítópult&lt;/b&gt; gombra.</value>
+    <value>Már be vagy jelentkezve. A részletes információkért kattints az &lt;b&gt;Írányítópult&lt;/b&gt; gombra.</value>
   </data>
   <data name="LoggedOutText" xml:space="preserve">
     <value>Jelenleg &lt;b&gt;ki vagy jelentkezve&lt;/b&gt;. A folytatáshoz kattints a &lt;b&gt;Bejelentkezés&lt;/b&gt; gombra.</value>
+  </data>
+  <data name="Search" xml:space="preserve">
+    <value>Keresés</value>
+  </data>
+  <data name="SearchText" xml:space="preserve">
+    <value>Vagy tudsz &lt;b&gt;Keresni&lt;/b&gt; különböző jegyzetek között.</value>
   </data>
   <data name="SignIn" xml:space="preserve">
     <value>Bejelentkezés</value>

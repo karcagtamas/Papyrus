@@ -18,6 +18,17 @@ public static class Extensions
             .AddMultiple("tags", query.Tags);
     }
 
+    public static HttpQueryParameters AddSearchFilters(this HttpQueryParameters queryParams, SearchQueryModel query)
+    {
+        return queryParams
+            .Add("text", query.Text)
+            .Add("onlyPublics", query.OnlyPublics)
+            .Add("includeContents", query.IncludeContents)
+            .Add("includeTags", query.IncludeTags)
+            .Add("startDate", query.StartDate)
+            .Add("endDate", query.EndDate);
+    }
+
     public static IObservable<T> ThrottleMax<T>(this IObservable<T> source, TimeSpan dueTime, TimeSpan maxTime) => source.ThrottleMax(dueTime, maxTime, Scheduler.Default);
 
     public static IObservable<T> ThrottleMax<T>(this IObservable<T> source, TimeSpan dueTime, TimeSpan maxTime, IScheduler scheduler)

@@ -11,4 +11,5 @@ public interface INoteService : IHttpCall<string>
     Task<NoteCreationDTO?> CreateEmpty(int? groupId);
     Task<NoteLightDTO?> GetLight(string id);
     Task<NoteRightsDTO> GetRights(string id);
+    Task<List<SearchResultDTO>> Search(SearchQueryModel query);
 }

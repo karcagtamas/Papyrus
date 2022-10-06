@@ -14,6 +14,10 @@ public static class PapyrusMenu
 
         items.AddRange(new List<MenuItem>()
         {
+            MenuItem.CreateItem("Home", "home")
+                .AddResourceKey("Home")
+                .AddIcon(Icons.Filled.Home)
+                .AddIconColor(Color.Tertiary),
             MenuItem.CreateItem("Dashboard", "dashboard")
                 .AddResourceKey("Dashboard")
                 .AddIcon(Icons.Filled.Dashboard),

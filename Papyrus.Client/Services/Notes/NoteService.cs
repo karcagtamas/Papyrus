@@ -69,4 +69,15 @@ public class NoteService : HttpCall<string>, INoteService
 
         return Http.Get<NoteRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
+
+    public Task<List<SearchResultDTO>> Search(SearchQueryModel query)
+    {
+        var queryParams = HttpQueryParameters.Build()
+            .AddSearchFilters(query);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Search"))
+            .AddQueryParams(queryParams);
+
+        return Http.Get<List<SearchResultDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
 }

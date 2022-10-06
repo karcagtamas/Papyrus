@@ -8,7 +8,7 @@
         <MudText Typo="Typo.h5" Color="Color.Primary">@L["Title"]</MudText>
     </TitleContent>
     <DialogContent>
-        <MudTextField T="string" Placeholder="@L["SearchPlaceholder"]" TextChanged="(value) => Fetch(value)" />
+        <TextInput Label="" Placeholder="@L["SearchPlaceholder"]" TextChanged="(value) => Fetch(value)" />
 
         @if (Users.Count > 0 && !IsLoading)
         {

@@ -2,6 +2,7 @@
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities.Groups;
+using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
@@ -33,22 +34,22 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.ReadNoteRequirement,
-            Checker = (input) => input.ReadNote || input.EditNote || input.DeleteNote
+            Checker = (rights, note) => note.Public || rights.ReadNote || rights.EditNote || rights.DeleteNote
         });
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.EditNoteRequirement,
-            Checker = (input) => input.EditNote || input.DeleteNote
+            Checker = (rights, note) => rights.EditNote || rights.DeleteNote
         });
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.DeleteNoteRequirement,
-            Checker = (input) => input.DeleteNote
+            Checker = (rights, note) => rights.DeleteNote
         });
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.ReadNoteLogsRequirement,
-            Checker = (input) => input.ReadNoteActionLog
+            Checker = (rights, note) => rights.ReadNoteActionLog
         });
     }
 
@@ -91,7 +92,7 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
 
                 ObjectHelper.WhenNotNull(check, c =>
                 {
-                    if (c.Checker(rights))
+                    if (c.Checker(rights, note))
                     {
                         context.Succeed(c.Requirement);
                     }
@@ -108,6 +109,6 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
     public class NoteAuthorization
     {
         public NoteRequirement Requirement { get; set; } = default!;
-        public Func<GroupRole, bool> Checker { get; set; } = (input) => true;
+        public Func<GroupRole, Note, bool> Checker { get; set; } = (role, note) => true;
     }
 }

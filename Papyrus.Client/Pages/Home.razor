@@ -21,6 +21,13 @@
         <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Redirect("/dashboard"))">@L["Dashboard"]</MudButton>
     }
 
+    <div>
+        <MudDivider Style="height: 1px; width: 700px;" Class="mt-5 mb-5" />
+    </div>
+
+    <MudText Typo="Typo.body2" Class="mb-5">@L["SearchText"].AsMarkup()</MudText>
+    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Redirect("/search"))">@L["Search"]</MudButton>
+
 </div>
 
 @code {

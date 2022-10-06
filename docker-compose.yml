@@ -2,6 +2,8 @@ version: '3.4'
 
 volumes:
   db:
+  mdb:
+  mconf:
 
 networks:
   app:
@@ -21,6 +23,15 @@ services:
     networks:
       - app
     container_name: papyrus-database
+
+  mongodb:
+    image: mongo
+    volumes:
+      - mdb:/data/db
+      - mconf:/data/configdb
+    networks:
+      - app
+    container_name: papyrus-mongodb
   
   client:
     image: karcagtamas/papyrus_client
@@ -35,10 +46,11 @@ services:
     container_name: papyrus
     depends_on:
       - database
+      - mongodb
       - client
     ports:
-      - "0.0.0.0:9888:7282"
-      - "0.0.0.0:9889:5282"
+      - "0.0.0.0:9878:7282"
+      - "0.0.0.0:9879:5282"
     environment:
       - DBHOST=database
     networks:
@@ -52,3 +64,4 @@ services:
       - 0.0.0.0:6767:8080
     networks:
       - app
+    container_name: papyrus-adminer

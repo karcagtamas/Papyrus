@@ -1,4 +1,91 @@
 ﻿@page "/search"
-@attribute [Authorize]
+@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Client.Services.Auth.Interfaces
+@inject IStringLocalizer<Search> L
+@inject INoteService NoteService
+@inject IAuthService Auth
 
-<ApplicationPageTitle PageName="Search"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]" />
+
+<div class="page-header">
+    <ActionBar>
+        <ChildContent>
+            <InfoButton Text="@L["Info"]" />
+            <div>
+                <TextInput Style="width: 440px;" Label="@L["Filter.Text"]" Value="@QueryModel.Text" ValueChanged="@((val) => HandleChange(() => QueryModel.Text = val))" />
+            </div>
+            <Checkbox Label="@L["Filter.Tag"]" Checked="QueryModel.IncludeTags" CheckedChanged="@((val) => HandleChange(() => QueryModel.IncludeTags = val))" />
+            <Checkbox Label="@L["Filter.Content"]" Checked="QueryModel.IncludeContents" CheckedChanged="@((val) => HandleChange(() => QueryModel.IncludeContents = val))" />
+
+            @if (OnlyPublicAvailable)
+            {
+                <Checkbox Label="@L["Filter.Public"]" Checked="QueryModel.OnlyPublics" CheckedChanged="@((val) => HandleChange(() => QueryModel.OnlyPublics = val))" />
+            }
+            <MudSpacer />
+            <div>
+                <IntervalInput Style="width: 300px;" Label="@L["Filter.Interval"]" Clearable="true" DateRange="Range" DateRangeChanged="@((val) => HandleChange(() => Range = val))" />
+            </div>
+        </ChildContent>
+        <OtherRows>
+            <div class="d-flex flex-row align-items-center mt-1">
+                <div class="d-flex flex-1 justify-content-start">
+                    @if (IsStateDirty)
+                    {
+                        @if (string.IsNullOrEmpty(QueryModel.Text))
+                        {
+                            <WarningMessage Message="@L["Message.Invalid"]" />
+                        }
+                        else
+                        {
+                            <WarningMessage Message="@L["Message.Dirty"]" />
+
+                        }
+                    }
+                </div>
+                <div class="d-flex flex-1 justify-content-center">
+                    <MudButton FullWidth="true" Variant="Variant.Filled" Color="Color.Primary" OnClick="DoSearch" Disabled="Loading || string.IsNullOrEmpty(QueryModel.Text)">@L["Search"]</MudButton>
+                </div>
+                <div class="d-flex flex-1 justify-content-end">
+                    <MudButton StartIcon="@Icons.Filled.Clear" Color="Color.Error" OnClick="DoClear" Disabled="!FirstSearchPermitted && !IsStateDirty">@L["ClearState"]</MudButton>
+                </div>
+            </div>
+        </OtherRows>
+    </ActionBar>
+</div>
+<div class="page-div">
+    @if (Loading)
+    {
+        <div class="d-flex flex-row align-items-center justify-content-center w-100 h-100">
+            <Loader />
+        </div>
+    }
+    else
+    {
+        @if (ResultList.Count > 0)
+        {
+            <div class="w-100">
+                <MudGrid Spacing="2">
+                    @foreach (var r in ResultList)
+                    {
+                        <MudItem @key="r.NoteId" xs="12" md="6" lg="4" Class="h-100">
+                            <SearchResultTile SearchResult="r" />
+                        </MudItem>
+                    }
+                </MudGrid>
+            </div>
+        }
+        else
+        {
+            <div class="d-flex flex-row align-items-center justify-content-center w-100 h-100">
+                @if (!FirstSearchPermitted)
+                {
+                    <MudText>@L["Message.First"]</MudText>
+                }
+                else
+                {
+                    <MudText>@L["Message.EmptyResult"]</MudText>
+                }
+            </div>
+        }
+    }
+</div>
