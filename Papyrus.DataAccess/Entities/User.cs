@@ -49,4 +49,7 @@ public class User : IdentityUser<string>, IEntity<string>
     public virtual ICollection<ActionLog> ActionLogs { get; set; } = default!;
 
     public virtual ICollection<IdentityUserRole<string>> Roles { get; set; } = default!;
+
+    public virtual ICollection<Post> CreatedPosts { get; set; } = default!;
+    public virtual ICollection<Post> UpdatedPosts { get; set; } = default!;
 }

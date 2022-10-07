@@ -146,6 +146,17 @@ public static class ContextExtensions
             .WithMany(x => x.ActionLogs)
             .OnDelete(DeleteBehavior.SetNull);
 
+        // Posts
+        builder.Entity<Post>(post =>
+        {
+            post.HasOne(x => x.Creator)
+                .WithMany(x => x.CreatedPosts)
+                .OnDelete(DeleteBehavior.SetNull);
+            post.HasOne(x => x.LastUpdater)
+                .WithMany(x => x.UpdatedPosts)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
         return builder;
     }
 
