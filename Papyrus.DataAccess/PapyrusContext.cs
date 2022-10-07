@@ -12,6 +12,8 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<Language> Languages { get; set; }
     public DbSet<Translation> Translations { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
+    public DbSet<Post> Posts { get; set; }
+
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
     public DbSet<GroupRole> GroupRoles { get; set; }
@@ -28,6 +30,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         Languages = default!;
         Translations = default!;
         RefreshTokens = default!;
+        Posts = default!;
         Groups = default!;
         GroupMembers = default!;
         GroupRoles = default!;

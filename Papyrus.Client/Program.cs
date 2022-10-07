@@ -84,6 +84,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserTableService, UserTableService>();
 builder.Services.AddScoped<ILanguageService, LanguageService>();
 builder.Services.AddScoped<IRoleService, RoleService>();
+builder.Services.AddScoped<IPostService, PostService>();
 
 builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IGroupRoleService, GroupRoleService>();

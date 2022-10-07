@@ -17,13 +17,15 @@ public static class PapyrusMenu
             MenuItem.CreateItem("Home", "home")
                 .AddResourceKey("Home")
                 .AddIcon(Icons.Filled.Home)
-                .AddIconColor(Color.Tertiary),
+                .AddIconColor(Color.Tertiary)
+                .IsAuthenticated(false),
             MenuItem.CreateItem("Dashboard", "dashboard")
                 .AddResourceKey("Dashboard")
                 .AddIcon(Icons.Filled.Dashboard),
             MenuItem.CreateItem("Search", "search")
                 .AddResourceKey("Search")
-                .AddIcon(Icons.Filled.Search),
+                .AddIcon(Icons.Filled.Search)
+                .IsAuthenticated(false),
             MenuItem.CreateItem("Profile", "my")
                 .AddResourceKey("Profile")
                 .AddIcon(Icons.Filled.Person),

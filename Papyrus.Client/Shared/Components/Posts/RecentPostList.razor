@@ -1,0 +1,42 @@
+@using Papyrus.Shared.DTOs
+@using Papyrus.Client.Services.Interfaces
+@inject IPostService PostService
+
+<div style="flex: 1;" class="p-1 pt-3 d-flex gap-3 flex-column overflow-auto">
+    @if (Posts.Count > 0)
+    {
+        @foreach (var post in Posts)
+        {
+            <PostTile @key="post.Id" Post="post" />
+        }
+    }
+    else
+    {
+        <div style="flex: 1;" class="d-flex align-items-center justify-content-center">
+            @if (Loading)
+            {
+                <Loader />
+            }
+            else
+            {
+                <MudText>There aren't any news. :D</MudText>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<PostDTO> Posts { get; set; } = new();
+    private bool Loading { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        Loading = true;
+        await InvokeAsync(StateHasChanged);
+        Posts = await PostService.GetAll<PostDTO>();
+        Loading = false;
+        await InvokeAsync(StateHasChanged);
+    }
+}

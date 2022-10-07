@@ -1,0 +1,15 @@
+@using Papyrus.Shared.DTOs
+@using Papyrus.Client.Utils
+@inject IStringLocalizer<PostTile> L
+
+<MudCard Class="p-1" Elevation="3">
+    <MudText Typo="Typo.body1" Class="mb-2"><b><small>@L["CreatorText", Post.Creator, DateHelper.DateToString(Post.Creation)]</small></b></MudText>
+    <MudText Typo="Typo.body1" Class="pl-3 pr-3">
+        @Post.Content.AsMarkup()
+    </MudText>
+</MudCard>
+
+@code {
+    [Parameter, EditorRequired]
+    public PostDTO Post { get; set; } = default!;
+}

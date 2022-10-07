@@ -117,37 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Dashboard" xml:space="preserve">
-    <value>Írányítópult</value>
+  <data name="Entity" xml:space="preserve">
+    <value>Poszt</value>
   </data>
-  <data name="LoggedInText" xml:space="preserve">
-    <value>Már be vagy jelentkezve. Látogasd meg az &lt;b&gt;Írányítópultot&lt;/b&gt; a részletesebb információkért.</value>
+  <data name="Toaster.Add" xml:space="preserve">
+    <value>{0} hozzáadás</value>
   </data>
-  <data name="LoggedOutText" xml:space="preserve">
-    <value>Jelenleg &lt;b&gt;ki vagy jelentkezve&lt;/b&gt;. A folytatáshoz szükséges a &lt;b&gt;Bejelentkezés&lt;/b&gt;.</value>
+  <data name="Toaster.Delete" xml:space="preserve">
+    <value>{0} törlés</value>
   </data>
-  <data name="NotRegisteredText" xml:space="preserve">
-    <value>Még nem rendelkezel felhasználó fiókkal? &lt;b&gt;Készíts egyet.&lt;/b&gt;</value>
-  </data>
-  <data name="PageName" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="PostsTitle" xml:space="preserve">
-    <value>Hírek</value>
-  </data>
-  <data name="Search" xml:space="preserve">
-    <value>Keresés</value>
-  </data>
-  <data name="SearchText" xml:space="preserve">
-    <value>Tudsz &lt;b&gt;Keresni&lt;/b&gt; különböző jegyzetek között.</value>
-  </data>
-  <data name="SignIn" xml:space="preserve">
-    <value>Bejelentkezés</value>
-  </data>
-  <data name="SignUp" xml:space="preserve">
-    <value>Regisztráció</value>
-  </data>
-  <data name="WelcomeText" xml:space="preserve">
-    <value>Üdvözlünk a &lt;b&gt;Papyrus&lt;/b&gt; Alkalmazásban</value>
+  <data name="Toaster.Update" xml:space="preserve">
+    <value>{0} szerkesztés</value>
   </data>
 </root>

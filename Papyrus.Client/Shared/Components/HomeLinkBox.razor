@@ -1,0 +1,19 @@
+@using Papyrus.Client.Utils
+
+<MudItem xs="12" md="6" Style="height: 220px;">
+    <MudCard Elevation="3" Class="h-100 p-2 d-flex flex-column justify-content-between">
+        <MudText Typo="Typo.h6" Class="p-4 mb-1 text-center">@Text.AsMarkup()</MudText>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="OnClick">@ButtonText</MudButton>
+    </MudCard>
+</MudItem>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Text { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public string ButtonText { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
+}

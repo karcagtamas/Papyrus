@@ -1,5 +1,59 @@
 ﻿.page-body {
     display: flex;
+    flex-direction: row;
+    flex: 1;
+    overflow: hidden;
+    height: 100%;
+}
+
+.page-body .left-part, .page-body .right-part {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+
+.page-body .left-part {
+    justify-content: center;
+    align-items: center;
+    flex: 2;
+    overflow: hidden;
+}
+
+.page-body .left-part #welcome {
+    display: flex;
+    text-align: center;
+    align-items: center;
+    flex: 1;
+}
+
+.page-body .left-part #posts {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    flex: 3;
+    overflow: hidden;
+}
+
+.page-body .left-part #posts #post-list {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.page-body .right-part {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-body .right-part #main-image {
+    width: 100%;
+    text-align: center ;
+}
+
+.page-body .right-part #main-links {
+    display: flex;
     flex-direction: column;
     flex: 1;
     align-items: center;
