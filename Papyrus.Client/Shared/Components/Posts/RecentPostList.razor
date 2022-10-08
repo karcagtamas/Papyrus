@@ -7,7 +7,7 @@
     {
         @foreach (var post in Posts)
         {
-            <PostTile @key="post.Id" Post="post" />
+            <PostTile @key="post.Id" Post="post" Editable="Editable" OnEditClick="OnEditClick" OnDeleteClick="OnDeleteClick" />
         }
     }
     else
@@ -26,6 +26,15 @@
 </div>
 
 @code {
+    [Parameter]
+    public bool Editable { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<int> OnEditClick { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDeleteClick { get; set; }
+
     private List<PostDTO> Posts { get; set; } = new();
     private bool Loading { get; set; } = false;
 
@@ -33,6 +42,11 @@
     {
         await base.OnInitializedAsync();
 
+        await Refresh();
+    }
+
+    public async Task Refresh()
+    {
         Loading = true;
         await InvokeAsync(StateHasChanged);
         Posts = await PostService.GetAll<PostDTO>();

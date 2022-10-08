@@ -2,14 +2,34 @@
 @using Papyrus.Client.Utils
 @inject IStringLocalizer<PostTile> L
 
-<MudCard Class="p-1" Elevation="3">
+<MudCard Class="p-1" Elevation="3" Style="position: relative;">
     <MudText Typo="Typo.body1" Class="mb-2"><b><small>@L["CreatorText", Post.Creator, DateHelper.DateToString(Post.Creation)]</small></b></MudText>
     <MudText Typo="Typo.body1" Class="pl-3 pr-3">
         @Post.Content.AsMarkup()
     </MudText>
+    <div style="position: absolute; right: .2rem; top: .2rem;">
+        @if (Editable)
+        {
+            <MudTooltip Text="@L["EditInfo"]">
+                <MudIconButton Icon="@Icons.Filled.Edit" Size="Size.Small" Color="Color.Warning" OnClick="@(() => OnEditClick.InvokeAsync(Post.Id))" />
+            </MudTooltip>
+            <MudTooltip Text="@L["DeleteInfo"]">
+                <MudIconButton Icon="@Icons.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => OnDeleteClick.InvokeAsync(Post.Id))" />
+            </MudTooltip>
+        }
+    </div>
 </MudCard>
 
 @code {
     [Parameter, EditorRequired]
     public PostDTO Post { get; set; } = default!;
+
+    [Parameter]
+    public bool Editable { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<int> OnEditClick { get; set; }
+
+    [Parameter]
+    public EventCallback<int> OnDeleteClick { get; set; }
 }

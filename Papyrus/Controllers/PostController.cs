@@ -34,14 +34,14 @@ public class PostController : ControllerBase
     public PostDTO Get(int id) => postService.GetMapped<PostDTO>(id);
 
     [HttpPost]
-    [Authorize("Administrator, Moderator")]
+    [Authorize(Roles = "Administrator, Moderator")]
     public void Create([FromBody] PostModel model) => postService.CreateFromModel(model);
 
     [HttpPut("{id}")]
-    [Authorize("Administrator, Moderator")]
+    [Authorize(Roles = "Administrator, Moderator")]
     public void Update(int id, [FromBody] PostModel model) => postService.UpdateByModel(id, model);
 
     [HttpDelete("{id}")]
-    [Authorize("Administrator, Moderator")]
+    [Authorize(Roles = "Administrator, Moderator")]
     public void Delete(int id) => postService.DeleteById(id);
 }

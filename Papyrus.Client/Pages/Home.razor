@@ -1,8 +1,13 @@
 ﻿@page "/home"
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using Papyrus.Client.Services.Auth.Interfaces
+@using Papyrus.Client.Services.Interfaces
 @using Papyrus.Client.Utils
 @inject NavigationManager NavigationManager
 @inject IAuthService Auth
+@inject IHelperService Helper
+@inject IConfirmService ConfirmService
+@inject IPostService PostService
 @inject IStringLocalizer<Home> L
 
 <ApplicationPageTitle PageName="@L["PageName"]" />
@@ -18,9 +23,16 @@
             <div class="d-flex flex-row align-items-center gap-1">
                 <MudIcon Icon="@Icons.Filled.Article" Size="Size.Small" Color="Color.Primary" />
                 <MudText Typo="Typo.h5" Color="Color.Primary">@L["PostsTitle"]:</MudText>
+                <MudSpacer />
+                @if (HasEditRight)
+                {
+                    <MudTooltip Text="@L["PostCreateInfo"]">
+                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Filled.Add" Size="Size.Small" OnClick="@(() => OpenPostDialog(null))" />
+                    </MudTooltip>
+                }
             </div>
             <div id="post-list" class="pl-5 pr-5">
-                <RecentPostList />
+                <RecentPostList @ref="PostList" Editable="HasEditRight" OnEditClick="@((id) => OpenPostDialog(id))" OnDeleteClick="DeletePost" />
             </div>
         </div>
     </div>
@@ -46,8 +58,50 @@
 </div>
 
 @code {
-    private void Redirect(string path)
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; } = default!;
+
+    private RecentPostList? PostList { get; set; }
+
+    private bool HasEditRight { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        NavigationManager.NavigateTo(path);
+        await base.OnInitializedAsync();
+
+        if (Auth.IsLoggedIn())
+        {
+            HasEditRight = await Helper.IsInRole(authStateTask, "Administrator", "Moderator");
+        }
+    }
+
+    private void Redirect(string path) => NavigationManager.NavigateTo(path);
+
+    private async Task OpenPostDialog(int? postId)
+    {
+        if (!HasEditRight)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters { { "PostId", postId } };
+        await Helper.OpenEditorDialog<PostEditDialog>("Edit Post", (res) => ObjectHelper.WhenNotNull(PostList, async l => await l.Refresh()), parameters);
+    }
+
+    private async Task DeletePost(int postId)
+    {
+        if (!HasEditRight)
+        {
+            return;
+        }
+
+        await ConfirmService.Open(new ConfirmDialogInput
+        {
+            Name = L["PostEntity"],
+            ActionName = L["PostDeleteAction"].ToString().ToLower(),
+            ActionFunction = async () => await PostService.Delete(postId)
+        },
+        L["PostDeleteConfirmTitle"],
+        () => ObjectHelper.WhenNotNull(PostList, async l => await l.Refresh()));
     }
 }

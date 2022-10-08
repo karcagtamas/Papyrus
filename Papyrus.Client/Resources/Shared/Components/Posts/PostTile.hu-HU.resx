@@ -120,4 +120,10 @@
   <data name="CreatorText" xml:space="preserve">
     <value>Készítve {0} által {1} időpontban</value>
   </data>
+  <data name="DeleteInfo" xml:space="preserve">
+    <value>Poszt törlése</value>
+  </data>
+  <data name="EditInfo" xml:space="preserve">
+    <value>Poszt szerkesztése</value>
+  </data>
 </root>
