@@ -22,10 +22,6 @@ public partial class Editor : ComponentBase, IDisposable
 
     [Parameter]
     public bool Disabled { get; set; } = false;
-
-    private bool ColorPickerOpened { get; set; }
-    private EditorAction? ColorAction { get; set; }
-    private MudColor SelectedColor { get; set; } = new MudColor("#FF1212FF");
     private string Content { get; set; } = "";
     private ElementReference? editorReference;
 
@@ -33,6 +29,8 @@ public partial class Editor : ComponentBase, IDisposable
     private IDisposable? disposable;
 
     public bool IsDirty { get; set; }
+
+    public MudColor? LastColor { get; set; }
 
     protected override void OnInitialized()
     {
@@ -120,26 +118,20 @@ public partial class Editor : ComponentBase, IDisposable
 
     private async Task SetEditorValue(string value, string clientId) => await JSRuntime.InvokeVoidAsync("setEditorValueByReference", editorReference, value, clientId);
 
-    private void ChooseColor(EditorAction action)
+    private async Task ChooseColor(EditorAction action)
     {
         if (Disabled)
         {
             return;
         }
 
-        ColorPickerOpened = true;
-        ColorAction = action;
-    }
+        var color = await CommonService.OpenColorPickerDialog(LastColor);
 
-    private void CloseColorChooser(bool cancel)
-    {
-        if (!cancel && SelectedColor is not null && ColorAction is not null)
+        ObjectHelper.WhenNotNull(color, c =>
         {
-            ExecuteAction(ColorAction ?? EditorAction.None, SelectedColor.ToString());
-        }
-
-        ColorPickerOpened = false;
-        ColorAction = null;
+            LastColor = c;
+            ExecuteAction(action, c.ToString());
+        });
     }
 
     public void Dispose() => disposable?.Dispose();

@@ -1,4 +1,5 @@
 using Microsoft.JSInterop;
+using MudBlazor.Utilities;
 using Papyrus.Shared.DTOs;
 
 namespace Papyrus.Client.Services.Interfaces;
@@ -11,4 +12,5 @@ public interface ICommonService
     Task SetUserTheme(int key);
     Task SetLocalTheme(int key, bool post = true);
     Task OpenNote(string id, IJSRuntime jsRuntime);
+    Task<MudColor?> OpenColorPickerDialog(MudColor? selected = null);
 }
