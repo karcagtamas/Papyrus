@@ -121,18 +121,45 @@
     <value>Dashboard</value>
   </data>
   <data name="LoggedInText" xml:space="preserve">
-    <value>You are logged in. For the detailed information click on the &lt;b&gt;Dashboard&lt;/b&gt; button.</value>
+    <value>You are logged in. Look at the  &lt;b&gt;Dashboard&lt;/b&gt; for more detailed information.</value>
   </data>
   <data name="LoggedOutText" xml:space="preserve">
-    <value>You are &lt;b&gt;logged out&lt;/b&gt;. For the continuing click on the &lt;b&gt;Sign In&lt;/b&gt; button.</value>
+    <value>You are &lt;b&gt;logged out&lt;/b&gt;. For the continuing you need to &lt;b&gt;Sign In&lt;/b&gt; to the System.</value>
+  </data>
+  <data name="NotRegisteredText" xml:space="preserve">
+    <value>Do not you have any account yet? &lt;b&gt;Create one.&lt;/b&gt;</value>
+  </data>
+  <data name="PageName" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="PostCreateInfo" xml:space="preserve">
+    <value>Create a new post</value>
+  </data>
+  <data name="PostDeleteAction" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="PostDeleteConfirmTitle" xml:space="preserve">
+    <value>Confirm Delete</value>
+  </data>
+  <data name="PostEntity" xml:space="preserve">
+    <value>Post</value>
+  </data>
+  <data name="PostsTitle" xml:space="preserve">
+    <value>News</value>
   </data>
   <data name="Search" xml:space="preserve">
     <value>Search</value>
   </data>
   <data name="SearchText" xml:space="preserve">
-    <value>Or you can &lt;b&gt;Search&lt;/b&gt; between different notes.</value>
+    <value>You can &lt;b&gt;Search&lt;/b&gt; between different notes.</value>
   </data>
   <data name="SignIn" xml:space="preserve">
     <value>Sign In</value>
+  </data>
+  <data name="SignUp" xml:space="preserve">
+    <value>Sign Up</value>
+  </data>
+  <data name="WelcomeText" xml:space="preserve">
+    <value>Welcome to the &lt;b&gt;Papyrus&lt;/b&gt; Application</value>
   </data>
 </root>

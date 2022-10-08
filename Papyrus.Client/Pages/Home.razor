@@ -1,38 +1,107 @@
 ﻿@page "/home"
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using Papyrus.Client.Services.Auth.Interfaces
+@using Papyrus.Client.Services.Interfaces
 @using Papyrus.Client.Utils
 @inject NavigationManager NavigationManager
 @inject IAuthService Auth
+@inject IHelperService Helper
+@inject IConfirmService ConfirmService
+@inject IPostService PostService
 @inject IStringLocalizer<Home> L
 
-<ApplicationPageTitle PageName="Home"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]" />
 
 <div class="page-body">
-    <MainImage Width="500" Class="mb-5" />
-
-    @if (!Auth.IsLoggedIn())
-    {
-        <MudText Typo="Typo.body2" Class="mb-5">@L["LoggedOutText"].AsMarkup()</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Redirect("/login"))">@L["SignIn"]</MudButton>
-    }
-    else
-    {
-        <MudText Typo="Typo.body2" Class="mb-5">@L["LoggedInText"].AsMarkup()</MudText>
-        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Redirect("/dashboard"))">@L["Dashboard"]</MudButton>
-    }
-
-    <div>
-        <MudDivider Style="height: 1px; width: 700px;" Class="mt-5 mb-5" />
+    <div class="left-part">
+        <div id="welcome">
+            <MudText Typo="Typo.h3" Color="Color.Primary">
+                @L["WelcomeText"].AsMarkup()
+            </MudText>
+        </div>
+        <div id="posts">
+            <div class="d-flex flex-row align-items-center gap-1">
+                <MudIcon Icon="@Icons.Filled.Article" Size="Size.Small" Color="Color.Primary" />
+                <MudText Typo="Typo.h5" Color="Color.Primary">@L["PostsTitle"]:</MudText>
+                <MudSpacer />
+                @if (HasEditRight)
+                {
+                    <MudTooltip Text="@L["PostCreateInfo"]">
+                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Filled.Add" Size="Size.Small" OnClick="@(() => OpenPostDialog(null))" />
+                    </MudTooltip>
+                }
+            </div>
+            <div id="post-list" class="pl-5 pr-5">
+                <RecentPostList @ref="PostList" Editable="HasEditRight" OnEditClick="@((id) => OpenPostDialog(id))" OnDeleteClick="DeletePost" />
+            </div>
+        </div>
     </div>
-
-    <MudText Typo="Typo.body2" Class="mb-5">@L["SearchText"].AsMarkup()</MudText>
-    <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Redirect("/search"))">@L["Search"]</MudButton>
-
+    <div class="right-part">
+        <div id="main-image">
+            <MainImage Width="380" Class="mb-5" />
+        </div>
+        <div id="main-links" >
+            <MudGrid Spacing="2">
+                @if (!Auth.IsLoggedIn())
+                {
+                    <HomeLinkBox Text="@L["LoggedOutText"]" ButtonText="@L["SignIn"]" OnClick="@(() => Redirect("/login"))" />
+                    <HomeLinkBox Text="@L["NotRegisteredText"]" ButtonText="@L["SignUp"]" OnClick="@(() => Redirect("/register"))" />
+                }
+                else
+                {
+                    <HomeLinkBox Text="@L["LoggedInText"]" ButtonText="@L["Dashboard"]" OnClick="@(() => Redirect("/dashboard"))" />
+                }
+                <HomeLinkBox Text="@L["SearchText"]" ButtonText="@L["Search"]" OnClick="@(() => Redirect("/search"))" />
+            </MudGrid>
+        </div>
+    </div>
 </div>
 
 @code {
-    private void Redirect(string path)
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; } = default!;
+
+    private RecentPostList? PostList { get; set; }
+
+    private bool HasEditRight { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
     {
-        NavigationManager.NavigateTo(path);
+        await base.OnInitializedAsync();
+
+        if (Auth.IsLoggedIn())
+        {
+            HasEditRight = await Helper.IsInRole(authStateTask, "Administrator", "Moderator");
+        }
+    }
+
+    private void Redirect(string path) => NavigationManager.NavigateTo(path);
+
+    private async Task OpenPostDialog(int? postId)
+    {
+        if (!HasEditRight)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters { { "PostId", postId } };
+        await Helper.OpenEditorDialog<PostEditDialog>("Edit Post", (res) => ObjectHelper.WhenNotNull(PostList, async l => await l.Refresh()), parameters);
+    }
+
+    private async Task DeletePost(int postId)
+    {
+        if (!HasEditRight)
+        {
+            return;
+        }
+
+        await ConfirmService.Open(new ConfirmDialogInput
+        {
+            Name = L["PostEntity"],
+            ActionName = L["PostDeleteAction"].ToString().ToLower(),
+            ActionFunction = async () => await PostService.Delete(postId)
+        },
+        L["PostDeleteConfirmTitle"],
+        () => ObjectHelper.WhenNotNull(PostList, async l => await l.Refresh()));
     }
 }

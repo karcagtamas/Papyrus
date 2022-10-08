@@ -8,7 +8,7 @@ namespace Papyrus.Client.Services;
 
 public class RoleService : HttpCall<string>, IRoleService
 {
-    public RoleService(IHttpService http, IStringLocalizer<IRoleService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Role", "User", localizer)
+    public RoleService(IHttpService http, IStringLocalizer<RoleService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Role", "Role", localizer)
     {
     }
 

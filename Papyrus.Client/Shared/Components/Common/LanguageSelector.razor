@@ -5,7 +5,7 @@
 @inject IJSRuntime JS
 @inject ILanguageService LanguageService
 
-<MudMenu Class="@Class" Label="@Current.ShortName" Color="Color" Variant="Variant" Dense="true" StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation="true" AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
+<MudMenu Class="@Class" Label="@Current.ShortName" Color="Color" Variant="Variant" Dense StartIcon="@Icons.Filled.Language" EndIcon="@Icons.Filled.KeyboardArrowDown" DisableElevation AnchorOrigin="Origin.BottomLeft" TransformOrigin="Origin.TopLeft">
     @foreach (var lang in Languages)
     {
         <MudMenuItem OnClick="@(() => UpdateLanguage(lang))"><MudText Color="@(Current.Id == lang.Id ? Color.Primary : Color.Default)">@lang.ShortName</MudText></MudMenuItem>

@@ -1,0 +1,44 @@
+@using Papyrus.Shared.DTOs
+@using Papyrus.Shared.Models
+@using Services.Interfaces
+@inject IPostService PostService
+@inject IStringLocalizer<PostEditDialog> L
+
+<EditorDialog Model="PostModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="IsEdit" Submit="Submit">
+    <TextInput Class="mb-5" Label="@L["Field.Content"]" Required For="@(() => Model.Content)" @bind-Value="Model.Content" FullWidth Lines="6" />
+</EditorDialog>
+
+
+@code {
+    [Parameter]
+    public int? PostId { get; set; }
+
+    private PostDTO? DTO { get; set; }
+    private PostModel Model { get; set; } = new();
+    private bool IsEdit { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Get();
+    }
+
+    private async Task Get()
+    {
+        if (ObjectHelper.IsNotNull(PostId))
+        {
+            IsEdit = true;
+            DTO = await PostService.Get<PostDTO>((int)PostId);
+            ObjectHelper.WhenNotNull(DTO, dto => {
+                Model = new PostModel
+                {
+                    Content = dto.Content
+                };
+            });
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private Task<bool> Submit() => ObjectHelper.IsNotNull(PostId) ? PostService.Update((int)PostId, Model) : PostService.Create(Model);
+}
