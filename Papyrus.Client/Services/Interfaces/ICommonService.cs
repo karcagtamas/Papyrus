@@ -13,4 +13,5 @@ public interface ICommonService
     Task SetLocalTheme(int key, bool post = true);
     Task OpenNote(string id, IJSRuntime jsRuntime);
     Task<MudColor?> OpenColorPickerDialog(MudColor? selected = null);
+    Task<int?> OpenNumberPickerDialog(int? selected = null, string? title = null, string? fieldLabel = null);
 }

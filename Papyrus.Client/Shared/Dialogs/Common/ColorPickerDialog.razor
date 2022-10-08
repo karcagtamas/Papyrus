@@ -11,8 +11,8 @@
         <MudColorPicker PickerVariant="PickerVariant.Static" @bind-Value="ColorValue" />
     </DialogContent>
     <DialogActions>
-        <MudButton Size="Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => Dialog.Close())" Class="mr-1">@L["CloseAction"]</MudButton>
-        <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => Dialog.Close(ColorValue))">@L["ApplyAction"]</MudButton>
+        <MudButton Variant="Variant.Text" OnClick="@(() => Dialog.Close())">@L["CloseAction"]</MudButton>
+        <MudButton Variant="Variant.Text" Color="Color.Primary" OnClick="@(() => Dialog.Close(ColorValue))">@L["ApplyAction"]</MudButton>
     </DialogActions>
 </MudDialog>
 

@@ -126,6 +126,15 @@
   <data name="FontColorAction.Tooltip" xml:space="preserve">
     <value>Betűszín</value>
   </data>
+  <data name="FontSelector.FieldLabel" xml:space="preserve">
+    <value>Betű Méret</value>
+  </data>
+  <data name="FontSelector.Title" xml:space="preserve">
+    <value>Betű Méret Választás</value>
+  </data>
+  <data name="FontSizeAction.Tooltip" xml:space="preserve">
+    <value>Betű Méret</value>
+  </data>
   <data name="ItalicAction.Tooltip" xml:space="preserve">
     <value>Dölt</value>
   </data>

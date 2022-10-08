@@ -60,6 +60,13 @@ public class CommonService : ICommonService
 
     public async Task OpenNote(string id, IJSRuntime jsRuntime) => await jsRuntime.InvokeAsync<object>("open", $"/notes/editor/{id}", "_blank");
 
+    public Task<int?> OpenNumberPickerDialog(int? selected = null, string? title = null, string? fieldLabel = null)
+    {
+        var paremeters = new DialogParameters { { "NumberValue", ObjectHelper.OrElse(selected, 12) }, { "Title", title }, { "FieldLabel", fieldLabel } };
+
+        return helper.OpenDialog<NumberPickerDialog, int?>(title ?? "", (value) => { }, paremeters);
+    }
+
     public async Task SetLocalTheme(int key, bool post = true)
     {
         if (storeService.IsExists("theme"))

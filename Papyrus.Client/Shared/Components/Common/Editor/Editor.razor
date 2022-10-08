@@ -27,6 +27,11 @@
                 <MudIconButton Disabled="Disabled" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))" Size="Size.Small" />
             </MudTooltip>
         </MudButtonGroup>
+        <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
+            <MudTooltip Text="@L["FontSizeAction.Tooltip"]">
+                <MudIconButton Icon="@Icons.Filled.FormatSize" OnClick="ChooseFontSize" Disabled="Disabled" Size="Size.Small" />
+            </MudTooltip>
+        </MudButtonGroup>
         <MudSpacer />
 
         @RightToolbar
