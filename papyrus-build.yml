@@ -1,0 +1,50 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+variables:
+  - name: project
+    value: "**/Papyrus.csproj"
+  - name: buildConfiguration
+    value: "Release"
+  - template: app-version.yml
+  - name: versionRevision
+    value: $[counter(${{variables.versionMajorMinorPatch}}, 0)]
+
+steps:
+  - task: UseDotNet@2
+    displayName: "Use .NET 6 sdk"
+    inputs:
+      packageType: sdk
+      version: 6.0.401
+      installationPath: $(Agent.ToolsDirectory)/dotnet
+
+  - task: DotNetCoreCLI@2
+    displayName: "Build"
+    inputs:
+      command: "build"
+      projects: "$(project)"
+      arguments: "--configuration $(BuildConfiguration)"
+
+  - task: DotNetCoreCLI@2
+    displayName: "Publish"
+    inputs:
+      command: "publish"
+      projects: "${project}"
+      arguments: "--configuration $(BuildConfiguration) --output $(Build.ArtifactStagingDirectory) -p:Version=${{variables.versionMajorMinorPatch}}.$(versionRevision)"
+
+  - task: CopyFiles@2
+    displayName: "Copy EF Scripts to Staging"
+    inputs:
+      Contents: "**/*_dump.sql"
+      TargetFolder: "$(build.artifactstagingdirectory)/Scripts"
+      flattenFolders: true
+
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish Artifacts"
+    inputs:
+      PathtoPublish: "$(Build.ArtifactStagingDirectory)"
+      ArtifactName: "drop"
+      publishLocation: "Container"
