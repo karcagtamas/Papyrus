@@ -120,11 +120,11 @@
   <data name="OpenAction" xml:space="preserve">
     <value>Megnyitás</value>
   </data>
-  <data name="Owner.Group" xml:space="preserve">
-    <value>{0} (Csoport)</value>
+  <data name="OwnerType.Group" xml:space="preserve">
+    <value>Csoport</value>
   </data>
-  <data name="Owner.User" xml:space="preserve">
-    <value>{0} (Felhasználó)</value>
+  <data name="OwnerType.User" xml:space="preserve">
+    <value>Felhasználó</value>
   </data>
   <data name="Row.Creation" xml:space="preserve">
     <value>Létrehozás</value>
@@ -139,9 +139,9 @@
     <value>Címkék</value>
   </data>
   <data name="Source.Group" xml:space="preserve">
-    <value>{0} [Csoportjaidból]</value>
+    <value>Csoportjaidból</value>
   </data>
   <data name="Source.User" xml:space="preserve">
-    <value>{0} [Jegyzeteidből]</value>
+    <value>Jegyzeteidből</value>
   </data>
 </root>

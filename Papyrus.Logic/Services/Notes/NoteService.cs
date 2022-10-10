@@ -1,7 +1,9 @@
-﻿using AutoMapper;
+﻿using System.Linq.Expressions;
+using AutoMapper;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
+using LinqKit;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
@@ -313,16 +315,16 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     private IQueryable<Note> SearchQuery(IQueryable<Note> queryable, SearchQueryModel query, string? userId = null)
     {
-        // Tag checks
-        if (query.IncludeTags)
-        {
-            queryable = queryable
-                .Where(x => x.Title.Contains(query.Text) || x.Tags.Any(x => x.Tag.Caption.Contains(query.Text)));
-        }
-        else
-        {
-            queryable = queryable.Where(x => x.Title.Contains(query.Text));
-        }
+        Expression<Func<Note, bool>> titlePredicate = x => x.Title.Contains(query.Text);
+        Expression<Func<Note, bool>> tagNamePredicate = x => x.Tags.Any(x => x.Tag.Caption.Contains(query.Text));
+        Expression<Func<Note, bool>> ownerPredicate = x => (x.User != null && x.User.UserName.Contains(query.Text)) || (x.Group != null && x.Group.Name.Contains(query.Text));
+
+        queryable = queryable.AsExpandable().Where(x => titlePredicate.Invoke(x) || ownerPredicate.Invoke(x) || (query.IncludeTags && tagNamePredicate.Invoke(x)))
+            .Include(x => x.User)
+            .Include(x => x.Group)
+#nullable disable
+                .ThenInclude(x => x.Members)
+                .ThenInclude(x => x.Role);
 
         if (ObjectHelper.IsNull(userId) || query.OnlyPublics)
         {
@@ -330,10 +332,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         }
         else
         {
-            queryable = queryable.Include(x => x.Group)
-#nullable disable
-                .ThenInclude(x => x.Members)
-                .ThenInclude(x => x.Role);
             queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(m => m.UserId == userId && (m.Role.ReadNoteList || m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote))));
         }
 
