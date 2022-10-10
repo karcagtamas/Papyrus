@@ -10,7 +10,7 @@
         <NotePublicStatusIcon Public="SearchResult.PublicStatus" />
         <MudText Typo="Typo.h6" Color="Color.Primary">
             <b>
-                <MudHighlighter Text="@SearchResult.DisplayTitle" HighlightedText="@SearchTerm" CaseSensitive="false" />
+                <MudHighlighter Text="@SearchResult.DisplayTitle" HighlightedText="@SearchTerm" CaseSensitive="false" Style="padding: unset;" />
             </b>
             [@GetSourceText()]
         </MudText>
@@ -18,7 +18,14 @@
     </div>
     <DateDataRow Title="@L["Row.Creation"]" Date="SearchResult.Creation" OneRow />
     <DateDataRow Title="@L["Row.LastUpdate"]" Date="SearchResult.LastUpdate" OneRow />
-    <DataRow Title="@L["Row.Owner"]" Value="@GetOwnerText()" OneRow />
+
+    <MudText Typo="Typo.body1" Color="Color.Default" Inline="true">
+        <MudText Typo="Typo.body1" Color="Color.Primary" Inline="true">
+            <b>@L["Row.Owner"]:</b>
+        </MudText>
+        <MudHighlighter Text="@SearchResult.Data.Owner" HighlightedText="@SearchTerm" CaseSensitive="false" Style="padding: unset;" />
+        (@L[SearchResult.Data.OwnerIsGroup ? "OwnerType.Group" : "OwnerType.User"])
+    </MudText>
 
     @if (SearchResult.Tags.Count > 0)
     {
@@ -48,11 +55,6 @@
     private async Task Open()
     {
         await CommonService.OpenNote(SearchResult.NoteId, JSRuntime);
-    }
-
-    private string GetOwnerText()
-    {
-        return L[SearchResult.Data.OwnerIsGroup ? "Owner.Group" : "Owner.User", SearchResult.Data.Owner];
     }
 
     private string GetSourceText() {
