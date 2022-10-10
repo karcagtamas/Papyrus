@@ -139,9 +139,9 @@
     <value>Címkék</value>
   </data>
   <data name="Source.Group" xml:space="preserve">
-    <value>{0} [Csoportjaidból]</value>
+    <value>Csoportjaidból</value>
   </data>
   <data name="Source.User" xml:space="preserve">
-    <value>{0} [Jegyzeteidből]</value>
+    <value>Jegyzeteidből</value>
   </data>
 </root>

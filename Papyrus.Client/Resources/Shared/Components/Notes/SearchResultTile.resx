@@ -139,9 +139,9 @@
     <value>Tags</value>
   </data>
   <data name="Source.Group" xml:space="preserve">
-    <value>{0} [From your groups]</value>
+    <value>From your groups</value>
   </data>
   <data name="Source.User" xml:space="preserve">
-    <value>{0} [From your notes]</value>
+    <value>From your notes</value>
   </data>
 </root>
