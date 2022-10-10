@@ -117,31 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BackgroundColorAction.Tooltip" xml:space="preserve">
-    <value>Background color</value>
+  <data name="ApplyAction" xml:space="preserve">
+    <value>Alkalmazás</value>
   </data>
-  <data name="BoldAction.Tooltip" xml:space="preserve">
-    <value>Bold</value>
+  <data name="CloseAction" xml:space="preserve">
+    <value>Bezárás</value>
   </data>
-  <data name="FontColorAction.Tooltip" xml:space="preserve">
-    <value>Foreground color</value>
-  </data>
-  <data name="FontSelector.FieldLabel" xml:space="preserve">
-    <value>Font Size</value>
-  </data>
-  <data name="FontSelector.Title" xml:space="preserve">
-    <value>Select Font Size</value>
-  </data>
-  <data name="FontSizeAction.Tooltip" xml:space="preserve">
-    <value>Font Size</value>
-  </data>
-  <data name="ItalicAction.Tooltip" xml:space="preserve">
-    <value>Italic</value>
-  </data>
-  <data name="StrikeThroughAction.Tooltip" xml:space="preserve">
-    <value>Strike through</value>
-  </data>
-  <data name="UnderlinedAction.Tooltip" xml:space="preserve">
-    <value>Underlined</value>
+  <data name="Title" xml:space="preserve">
+    <value>Szín Választása</value>
   </data>
 </root>

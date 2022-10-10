@@ -1,3 +1,5 @@
+@using Papyrus.Client.Services.Interfaces
+@inject ICommonService CommonService
 @inject IStringLocalizer<Editor> L
 @inject IJSRuntime JSRuntime
 
@@ -5,34 +7,29 @@
     <div id="rt-editor-actions">
         <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
             <MudTooltip Text="@L["BoldAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))" Disabled="Disabled" />
+                <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
             <MudTooltip Text="@L["ItalicAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))" Disabled="Disabled" />
+                <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
             <MudTooltip Text="@L["UnderlinedAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))" Disabled="Disabled" />
+                <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
             <MudTooltip Text="@L["StrikeThroughAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))" Disabled="Disabled" />
+                <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
         </MudButtonGroup>
         <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
             <MudTooltip Text="@L["FontColorAction.Tooltip"]">
-                <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))" />
+                <MudIconButton Disabled="Disabled" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))" Size="Size.Small" />
             </MudTooltip>
-            <MudPopover Open="@ColorPickerOpened" AnchorOrigin="Origin.BottomCenter">
-                <div class="p-1">
-                    <MudColorPicker PickerVariant="PickerVariant.Static" @bind-Value="SelectedColor" />
-                    <MudDivider />
-                    <div class="flex-box flex-row justify-content-end p-1 mt-1">
-                        <MudButton Size="Size.Small" Variant="Variant.Text" Color="Color.Secondary" OnClick="@(() => CloseColorChooser(true))" Class="mr-1">Cancel</MudButton>
-                        <MudButton Size="Size.Small" Variant="Variant.Filled" Color="Color.Primary" OnClick="@(() => CloseColorChooser(false))">Apply</MudButton>
-                    </div>
-                </div>
-            </MudPopover>
             <MudTooltip Text="@L["BackgroundColorAction.Tooltip"]">
-                <MudIconButton Disabled="@(Disabled || @ColorPickerOpened)" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))" />
+                <MudIconButton Disabled="Disabled" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))" Size="Size.Small" />
+            </MudTooltip>
+        </MudButtonGroup>
+        <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
+            <MudTooltip Text="@L["FontSizeAction.Tooltip"]">
+                <MudIconButton Icon="@Icons.Filled.FormatSize" OnClick="ChooseFontSize" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
         </MudButtonGroup>
         <MudSpacer />

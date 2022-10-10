@@ -8,5 +8,6 @@ public enum EditorAction
     Strikethrough,
     TextColor,
     BackColor,
+    FontSize,
     None
 }

@@ -1,10 +1,14 @@
 using Blazored.LocalStorage;
 using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
+using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Blazor.Common.Store;
 using Microsoft.JSInterop;
+using MudBlazor;
+using MudBlazor.Utilities;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
+using Papyrus.Client.Shared.Dialogs.Common;
 using Papyrus.Shared.DTOs;
 
 namespace Papyrus.Client.Services;
@@ -15,10 +19,12 @@ public class CommonService : ICommonService
     private readonly IStoreService storeService;
     private readonly ILocalStorageService localStorageService;
     private readonly IAuthService auth;
+    private readonly IHelperService helper;
     private readonly string url = $"{ApplicationSettings.BaseApiUrl}/Common";
 
-    public CommonService(IHttpService httpService, IStoreService storeService, ILocalStorageService localStorageService, IAuthService auth)
+    public CommonService(IHttpService httpService, IStoreService storeService, ILocalStorageService localStorageService, IAuthService auth, IHelperService helper)
     {
+        this.helper = helper;
         this.auth = auth;
         this.localStorageService = localStorageService;
         this.storeService = storeService;
@@ -45,7 +51,21 @@ public class CommonService : ICommonService
         return httpService.GetInt(settings).ExecuteWithResultOrElse(0);
     }
 
+    public Task<MudColor?> OpenColorPickerDialog(MudColor? selected = null)
+    {
+        var paremeters = new DialogParameters { { "ColorValue", ObjectHelper.OrElse(selected, new MudColor("AAAAAA")) } };
+
+        return helper.OpenDialog<ColorPickerDialog, MudColor?>("", (value) => { }, paremeters);
+    }
+
     public async Task OpenNote(string id, IJSRuntime jsRuntime) => await jsRuntime.InvokeAsync<object>("open", $"/notes/editor/{id}", "_blank");
+
+    public Task<int?> OpenNumberPickerDialog(int? selected = null, string? title = null, string? fieldLabel = null)
+    {
+        var paremeters = new DialogParameters { { "NumberValue", ObjectHelper.OrElse(selected, 12) }, { "Title", title }, { "FieldLabel", fieldLabel } };
+
+        return helper.OpenDialog<NumberPickerDialog, int?>(title ?? "", (value) => { }, paremeters);
+    }
 
     public async Task SetLocalTheme(int key, bool post = true)
     {

@@ -83,7 +83,7 @@
                     @foreach (var user in Users)
                     {
                         <MudTooltip Text="@user.DisplayName">
-                            <MudAvatar Color="Color.Secondary">@user.UserName.ToUpper()[0]</MudAvatar>
+                            <MudAvatar Color="Color.Secondary" Size="Size.Small">@user.UserName.ToUpper()[0]</MudAvatar>
                         </MudTooltip>
                     }
                 </div>

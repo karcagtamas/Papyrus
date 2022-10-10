@@ -1,7 +1,6 @@
 ﻿using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
 using Papyrus.Client.Utils;
@@ -22,10 +21,6 @@ public partial class Editor : ComponentBase, IDisposable
 
     [Parameter]
     public bool Disabled { get; set; } = false;
-
-    private bool ColorPickerOpened { get; set; }
-    private EditorAction? ColorAction { get; set; }
-    private MudColor SelectedColor { get; set; } = new MudColor("#FF1212FF");
     private string Content { get; set; } = "";
     private ElementReference? editorReference;
 
@@ -33,6 +28,9 @@ public partial class Editor : ComponentBase, IDisposable
     private IDisposable? disposable;
 
     public bool IsDirty { get; set; }
+
+    public MudColor? LastColor { get; set; }
+    public int? LastFontSize { get; set; }
 
     protected override void OnInitialized()
     {
@@ -101,6 +99,9 @@ public partial class Editor : ComponentBase, IDisposable
             case EditorAction.BackColor:
                 await JSRuntime.InvokeVoidAsync("document.execCommand", "backcolor", false, param);
                 break;
+            case EditorAction.FontSize:
+                await JSRuntime.InvokeVoidAsync("document.execCommand", "fontSize", false, param);
+                break;
             default: return;
         }
     }
@@ -120,26 +121,36 @@ public partial class Editor : ComponentBase, IDisposable
 
     private async Task SetEditorValue(string value, string clientId) => await JSRuntime.InvokeVoidAsync("setEditorValueByReference", editorReference, value, clientId);
 
-    private void ChooseColor(EditorAction action)
+    private async Task ChooseColor(EditorAction action)
     {
         if (Disabled)
         {
             return;
         }
 
-        ColorPickerOpened = true;
-        ColorAction = action;
+        var color = await CommonService.OpenColorPickerDialog(LastColor);
+
+        ObjectHelper.WhenNotNull(color, c =>
+        {
+            LastColor = c;
+            ExecuteAction(action, c.ToString());
+        });
     }
 
-    private void CloseColorChooser(bool cancel)
+    private async Task ChooseFontSize()
     {
-        if (!cancel && SelectedColor is not null && ColorAction is not null)
+        if (Disabled)
         {
-            ExecuteAction(ColorAction ?? EditorAction.None, SelectedColor.ToString());
+            return;
         }
 
-        ColorPickerOpened = false;
-        ColorAction = null;
+        var num = await CommonService.OpenNumberPickerDialog(LastFontSize, L["FontSelector.Title"], L["FontSelector.FieldLabel"]);
+
+        ObjectHelper.WhenNotNull(num, n =>
+        {
+            LastFontSize = n;
+            ExecuteAction(EditorAction.FontSize, $"{n}px");
+        });
     }
 
     public void Dispose() => disposable?.Dispose();
