@@ -17,6 +17,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
     public DbSet<GroupRole> GroupRoles { get; set; }
+    public DbSet<Folder> Folders { get; set; }
     public DbSet<Note> Notes { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<NoteTag> NoteTags { get; set; }
@@ -34,6 +35,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         Groups = default!;
         GroupMembers = default!;
         GroupRoles = default!;
+        Folders = default!;
         Notes = default!;
         Tags = default!;
         NoteTags = default!;

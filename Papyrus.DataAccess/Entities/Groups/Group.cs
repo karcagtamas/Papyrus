@@ -28,4 +28,5 @@ public class Group : IEntity<int>, ICreationEntity
     public virtual ICollection<GroupRole> Roles { get; set; } = default!;
     public virtual ICollection<Note> Notes { get; set; } = default!;
     public virtual ICollection<Tag> Tags { get; set; } = default!;
+    public virtual ICollection<Folder> Folders { get; set; } = default!;
 }

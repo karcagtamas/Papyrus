@@ -7,6 +7,7 @@ using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Enums;
 using Papyrus.Logic.Services.Auth.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
+using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 using Papyrus.Shared.Models.Auth;
 
@@ -19,10 +20,11 @@ public class AuthService : IAuthService
     private readonly IUserService userService;
     private readonly ITokenService tokenService;
     private readonly IUtilsService<string> utils;
+    private readonly IFolderService folderService;
 
-    public AuthService(UserManager<User> userManager, RoleManager<Role> roleManager, IUserService userService,
-        ITokenService tokenService, IUtilsService<string> utils)
+    public AuthService(UserManager<User> userManager, RoleManager<Role> roleManager, IUserService userService, ITokenService tokenService, IUtilsService<string> utils, IFolderService folderService)
     {
+        this.folderService = folderService;
         this.userManager = userManager;
         this.roleManager = roleManager;
         this.userService = userService;
@@ -63,6 +65,9 @@ public class AuthService : IAuthService
         var result = await userManager.CreateAsync(user, model.Password);
 
         await AddDefaultRoleByResult(result, user);
+
+        // Add Note root folder
+        folderService.createRootFolder(user.Id, null);
     }
 
     public void Logout(string clientId)

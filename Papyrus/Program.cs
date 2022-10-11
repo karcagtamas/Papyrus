@@ -79,6 +79,7 @@ builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
 builder.Services.AddScoped<INoteActionLogTableService, NoteActionLogTableService>();
 builder.Services.AddScoped<INoteContentService, NoteContentService>();
 builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IFolderService, FolderService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
 
