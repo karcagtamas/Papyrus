@@ -1,0 +1,30 @@
+using KarcagS.Blazor.Common.Http;
+using KarcagS.Blazor.Common.Models;
+using Microsoft.Extensions.Localization;
+using Papyrus.Client.Services.Notes.Interfaces;
+using Papyrus.Shared.DTOs.Notes;
+
+namespace Papyrus.Client.Services.Notes;
+
+public class FolderService : HttpCall<string>, IFolderService
+{
+    public FolderService(IHttpService http, IStringLocalizer<NoteService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Folder", "Folder", localizer)
+    {
+    }
+
+    public Task<FolderContentDTO> GetContent(string? folder, int? groupId)
+    {
+        var queryParams = HttpQueryParameters.Build()
+            .Add("group", groupId)
+            .Add("folder", folder);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url))
+            .AddQueryParams(queryParams);
+
+        return Http.Get<FolderContentDTO>(settings).ExecuteWithResultOrElse(new FolderContentDTO
+        {
+            Folders = new(),
+            Notes = new()
+        });
+    }
+}

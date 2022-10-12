@@ -63,7 +63,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         groupMemberService.Create(member);
 
         // Add Note root folder
-        folderService.createRootFolder(null, id);
+        folderService.CreateRootFolder(null, id);
 
         return id;
     }

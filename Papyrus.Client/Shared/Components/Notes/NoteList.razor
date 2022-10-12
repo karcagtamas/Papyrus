@@ -4,6 +4,7 @@
 @using Papyrus.Shared.Models.Notes
 @inject IStringLocalizer<NoteList> L
 @inject INoteService NoteService
+@inject IFolderService FolderService
 @inject ITagService TagService
 @inject IJSRuntime JSRuntime
 
@@ -67,6 +68,9 @@
     public Func<NoteFilterQueryModel, Task<List<NoteLightDTO>>> Fetcher { get; set; } = (query) => Task.FromResult(new List<NoteLightDTO>());
 
     [Parameter]
+    public string? Folder { get; set; }
+
+    [Parameter]
     public EventCallback Refreshed { get; set; }
 
     [Parameter]
@@ -78,6 +82,7 @@
     private NoteFilterQueryModel QueryModel { get; set; } = new();
     private List<NoteLightDTO> List { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();
+    private FolderContentDTO Content { get; set; } = new FolderContentDTO { Folders = new(), Notes = new() };
 
     protected override async Task OnInitializedAsync()
     {
@@ -91,6 +96,7 @@
     private async Task Refresh()
     {
         List = await Fetcher(QueryModel);
+        Content = await FolderService.GetContent(Folder, GroupId);
         await Refreshed.InvokeAsync();
 
         await InvokeAsync(StateHasChanged);

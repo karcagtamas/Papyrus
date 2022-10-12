@@ -177,6 +177,9 @@
   <data name="Server.Message.Fatal" xml:space="preserve">
     <value>Valamilyen hiba történt. Kérjük próbálja újra késöbb.</value>
   </data>
+  <data name="Server.Message.InvalidFolderKeys" xml:space="preserve">
+    <value>Nem megfelelő Mappa azonosítók.</value>
+  </data>
   <data name="Server.Message.MissingCloseRight" xml:space="preserve">
     <value>Nincs jogosultsága Lezárni ezt a csoportot.</value>
   </data>

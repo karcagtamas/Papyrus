@@ -26,30 +26,17 @@ public class NoteService : HttpCall<string>, INoteService
             .ExecuteWithResult();
     }
 
-    public Task<List<NoteLightDTO>> GetByGroup(int groupId, NoteFilterQueryModel query)
-    {
-        var pathParams = HttpPathParameters.Build()
-            .Add(groupId);
-
-        var queryParams = HttpQueryParameters.Build()
-            .AddNoteFilters(query);
-
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
-            .AddPathParams(pathParams)
-            .AddQueryParams(queryParams);
-
-        return Http.Get<List<NoteLightDTO>>(settings).ExecuteWithResultOrElse(new());
-    }
-
-    public Task<List<NoteLightDTO>> GetByUser(NoteFilterQueryModel query)
+    public Task<List<NoteLightDTO>> GetFiltered(NoteFilterQueryModel query, int? groupId)
     {
         var queryParams = HttpQueryParameters.Build()
-            .AddNoteFilters(query);
+            .AddNoteFilters(query)
+            .Add("group", groupId);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "User"))
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Filtered"))
             .AddQueryParams(queryParams);
 
-        return Http.Get<List<NoteLightDTO>>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<List<NoteLightDTO>>(settings)
+            .ExecuteWithResultOrElse(new());
     }
 
     public Task<NoteLightDTO?> GetLight(string id)

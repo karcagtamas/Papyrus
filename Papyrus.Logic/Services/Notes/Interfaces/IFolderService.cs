@@ -1,9 +1,11 @@
 using KarcagS.Common.Tools.Repository;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.Shared.DTOs.Notes;
 
 namespace Papyrus.Logic.Services.Notes.Interfaces;
 
 public interface IFolderService : IMapperRepository<Folder, string>
 {
-    void createRootFolder(string? userId = null, int? groupId = null);
+    void CreateRootFolder(string? userId = null, int? groupId = null);
+    FolderContentDTO GetContent(string? folderId, int? groupId);
 }

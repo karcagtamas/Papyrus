@@ -4,8 +4,8 @@
 @inject IStringLocalizer<Notes> L
 @inject INoteService NoteService
 
-<ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    <NoteList Fetcher="Fetcher" />
+    <NoteList Fetcher="Fetcher" Folder="@Folder" />
 </div>

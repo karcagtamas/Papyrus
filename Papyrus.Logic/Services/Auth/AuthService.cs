@@ -67,7 +67,7 @@ public class AuthService : IAuthService
         await AddDefaultRoleByResult(result, user);
 
         // Add Note root folder
-        folderService.createRootFolder(user.Id, null);
+        folderService.CreateRootFolder(user.Id, null);
     }
 
     public void Logout(string clientId)

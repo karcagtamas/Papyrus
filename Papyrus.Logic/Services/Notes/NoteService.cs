@@ -77,11 +77,11 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return id;
     }
 
-    public List<NoteLightDTO> GetByGroup(int groupId, NoteFilterQueryModel query) => GetFilteredList(GetListAsQuery(x => x.GroupId == groupId), query);
-
-    public List<NoteLightDTO> GetByUser(NoteFilterQueryModel query)
+    public List<NoteLightDTO> GetFiltered(NoteFilterQueryModel query, int? groupId)
     {
         var userId = Utils.GetRequiredCurrentUserId();
+
+        // TODO: Search by group
 
         return GetFilteredList(GetListAsQuery(x => x.UserId == userId), query);
     }
@@ -224,7 +224,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
                 .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
                 .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
                 .OrderByDescending(x => x.LastUpdate)
-                .Include(x => x.Tags)
+                .Include(x => x.Tags).ThenInclude(x => x.Tag)
                 .Include(x => x.Creator)
                 .ToList()
             );

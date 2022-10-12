@@ -6,5 +6,9 @@ namespace Papyrus.Client.Pages.Notes;
 
 public partial class Notes : ComponentBase
 {
-    private Task<List<NoteLightDTO>> Fetcher(NoteFilterQueryModel query) => NoteService.GetByUser(query);
+    [Parameter]
+    [SupplyParameterFromQuery]
+    public string? Folder { get; set; }
+
+    private Task<List<NoteLightDTO>> Fetcher(NoteFilterQueryModel query) => NoteService.GetFiltered(query, null);
 }

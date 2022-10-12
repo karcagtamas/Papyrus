@@ -25,7 +25,7 @@ public partial class GroupNotes : ComponentBase
         await Refresh();
     }
 
-    private Task<List<NoteLightDTO>> Fetcher(NoteFilterQueryModel query) => NoteService.GetByGroup(GroupId, query);
+    private Task<List<NoteLightDTO>> Fetcher(NoteFilterQueryModel query) => NoteService.GetFiltered(query, GroupId);
 
     private async Task<bool> SetPageStatus()
     {

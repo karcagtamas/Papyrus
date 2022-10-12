@@ -6,8 +6,7 @@ namespace Papyrus.Client.Services.Notes.Interfaces;
 
 public interface INoteService : IHttpCall<string>
 {
-    Task<List<NoteLightDTO>> GetByGroup(int groupId, NoteFilterQueryModel query);
-    Task<List<NoteLightDTO>> GetByUser(NoteFilterQueryModel query);
+    Task<List<NoteLightDTO>> GetFiltered(NoteFilterQueryModel query, int? groupId);
     Task<NoteCreationDTO?> CreateEmpty(int? groupId);
     Task<NoteLightDTO?> GetLight(string id);
     Task<NoteRightsDTO> GetRights(string id);
