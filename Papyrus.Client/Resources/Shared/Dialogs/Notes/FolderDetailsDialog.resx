@@ -117,43 +117,19 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArchivedStatus.Archived" xml:space="preserve">
-    <value>Archivált</value>
+  <data name="Action.OK" xml:space="preserve">
+    <value>Ok</value>
   </data>
-  <data name="ArchivedStatus.NotArchived" xml:space="preserve">
-    <value>Nem Archivált</value>
+  <data name="Row.Creation" xml:space="preserve">
+    <value>Creation</value>
   </data>
-  <data name="CreateAction" xml:space="preserve">
-    <value>Létrehozás</value>
+  <data name="Row.LastUpdate" xml:space="preserve">
+    <value>Last Update</value>
   </data>
-  <data name="CreateFolderAction" xml:space="preserve">
-    <value>Mappa Létrehozás</value>
+  <data name="Row.Name" xml:space="preserve">
+    <value>Name</value>
   </data>
-  <data name="DateFilter.Placeholder" xml:space="preserve">
-    <value>Amíg Szűrés</value>
-  </data>
-  <data name="FolderDelete.Confirm.Title" xml:space="preserve">
-    <value>Mappa Törlésének Megerősítése</value>
-  </data>
-  <data name="FolderDeleteAction" xml:space="preserve">
-    <value>Törlés</value>
-  </data>
-  <data name="FolderEntity" xml:space="preserve">
-    <value>Mappa</value>
-  </data>
-  <data name="PublishType.All" xml:space="preserve">
-    <value>Mind</value>
-  </data>
-  <data name="PublishType.NotPublished" xml:space="preserve">
-    <value>Csak Nem Nyílvánosak</value>
-  </data>
-  <data name="PublishType.Published" xml:space="preserve">
-    <value>Csak Nyílvánosak</value>
-  </data>
-  <data name="TagFilter.Placeholder" xml:space="preserve">
-    <value>Címke Szűrés</value>
-  </data>
-  <data name="TextFilter.Placeholder" xml:space="preserve">
-    <value>Szöveg Szűrés</value>
+  <data name="Title" xml:space="preserve">
+    <value>Folder {0}</value>
   </data>
 </root>

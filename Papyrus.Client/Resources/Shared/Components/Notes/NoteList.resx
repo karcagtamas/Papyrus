@@ -132,6 +132,15 @@
   <data name="DateFilter.Placeholder" xml:space="preserve">
     <value>Until Filter</value>
   </data>
+  <data name="FolderDelete.Confirm.Title" xml:space="preserve">
+    <value>Confirm Folder Delete</value>
+  </data>
+  <data name="FolderDeleteAction" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="FolderEntity" xml:space="preserve">
+    <value>Folder</value>
+  </data>
   <data name="PublishType.All" xml:space="preserve">
     <value>All</value>
   </data>

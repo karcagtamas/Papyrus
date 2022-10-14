@@ -1,0 +1,24 @@
+@using Papyrus.Shared.DTOs.Notes
+@inject IStringLocalizer<FolderDetailsDialog> L
+
+<MudDialog>
+    <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">@L["Title", Folder.Name]</MudText></TitleContent>
+    <DialogContent>
+        <DataRow Title="@L["Row.Name"]" Value="@Folder.Name" />
+        <DateDataRow Title="@L["Row.Creation"]" Date="Folder.Creation" />
+        <DateDataRow Title="@L["Row.LastUpdate"]" Date="Folder.LastUpdate" />
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        <MudButton Color="Color.Primary" OnClick="@(() => Dialog.Close())">@L["Action.OK"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    [Parameter]
+    public FolderDTO Folder { get; set; } = default!;
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+}

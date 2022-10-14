@@ -5,7 +5,7 @@
 @inject IStringLocalizer<FolderEditDialog> L
 @inject IFolderService FolderService
 
-<EditorDialog Model="FolderModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="IsEdit">
+<EditorDialog Model="FolderModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="IsEdit" Submit="Submit" Remove="Remove">
     <TextInput Class="mb-5" Label="@L["Field.Name"]" Required For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth />
 </EditorDialog>
 
@@ -22,26 +22,27 @@
     private FolderDTO? Folder { get; set; }
     private FolderModel Model { get; set; } = new();
 
-    private bool IsEdit { get; set; } = false;
+    private bool IsEdit { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+        await base.OnInitializedAsync();
 
-        ObjectHelper.WhenNotNull(FolderId, async id =>
+        if (ObjectHelper.IsNotNull(FolderId))
         {
-            Folder = await FolderService.Get<FolderDTO>(id);
+            IsEdit = true;
+            Folder = await FolderService.Get<FolderDTO>((string)FolderId);
 
             if (ObjectHelper.IsNotNull(Folder))
             {
-                IsEdit = true;
                 Model = new(Folder, ParentFolderId, GroupId);
 
                 await InvokeAsync(StateHasChanged);
             }
-        });
+        }
 
         Model.ParentId = ParentFolderId;
+        await InvokeAsync(StateHasChanged);
     }
 
     private Task<bool> Submit()

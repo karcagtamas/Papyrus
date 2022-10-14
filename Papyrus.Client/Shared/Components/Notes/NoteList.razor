@@ -10,6 +10,7 @@
 @inject ITagService TagService
 @inject IHelperService Helper
 @inject ICommonService CommonService
+@inject IConfirmService ConfirmService
 
 <ActionBar>
     <ChildContent>
@@ -17,7 +18,7 @@
             @if (CreateEnabled)
             {
                 <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
-                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="CreateFolder">@L["CreateFolderAction"]</MudButton>
+                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => OpenFolderEditor(null))">@L["CreateFolderAction"]</MudButton>
             }
         </div>
         <MudSpacer />
@@ -61,7 +62,7 @@
             @foreach(var folder in Content.Folders)
             {
                 <MudItem @key="folder.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListFolderTile Folder="folder" />
+                    <NoteListFolderTile Folder="folder" OnEdit="OpenFolderEditor" OnDelete="OpenDeleteConfirm" />
                 </MudItem>
             }
             @foreach (var note in Content.Notes)
@@ -133,11 +134,21 @@
         }
     }
 
-    private async Task CreateFolder()
+    private async Task OpenFolderEditor(string? id = null)
     {
-        var parameters = new DialogParameters {{ "FolderId", null }, { "ParentFolderId", Content.ParentFolder.Id }, { "GroupId", GroupId }};
+        var parameters = new DialogParameters {{ "FolderId", id }, { "ParentFolderId", Content.ParentFolder.Id }, { "GroupId", GroupId }};
 
         await Helper.OpenEditorDialog<FolderEditDialog>("", async (res) => await Refresh(), parameters);
+    }
+
+    private async Task OpenDeleteConfirm(string id) {
+        await ConfirmService.Open(new ConfirmDialogInput {
+            Name = L["FolderEntity"],
+            ActionName = L["FolderDeleteAction"].ToString().ToLower(),
+            ActionFunction = () => FolderService.Delete(id)
+        },
+        L["FolderDelete.Confirm.Title"],
+        async () => await Refresh());
     }
 
     private string ConstructTagText(List<string> list)

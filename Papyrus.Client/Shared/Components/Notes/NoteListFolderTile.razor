@@ -1,12 +1,14 @@
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Client.Services.Interfaces
-@inject ICommonService CommonService
 @inject IStringLocalizer<NoteListFolderTile> L
+@inject IHelperService Helper
+@inject ICommonService CommonService
 
 <MudMenu Class="w-100" PositionAtCursor="true" ActivationEvent="@MouseEvent.RightClick" Dense="true" Variant="Variant.Outlined" >
     <ActivatorContent>
         <div class="w-100" @onclick="ClickHandler">
-            <MudCard Class="w-100 p-2 d-flex flex-column align-items-center" @onclick="ClickHandler">
+            <MudCard Class="w-100 p-2 d-flex flex-column align-items-center tile-hover" @onclick="ClickHandler">
                 <img src="assets/images/folder.svg" height="120" />
                 <MudText Color="Color.Primary" Class="mt-2">
                     @Folder.Name
@@ -16,9 +18,9 @@
     </ActivatorContent>
     <ChildContent>
         <MudMenuItem Icon="@Icons.Filled.FolderOpen" IconSize="Size.Small" OnClick="ClickHandler">@L["Menu.Item.Open"]</MudMenuItem>
-        <MudMenuItem Icon="@Icons.Filled.Edit" IconColor="Color.Warning" IconSize="Size.Small">@L["Menu.Item.Edit"]</MudMenuItem>
-        <MudMenuItem Icon="@Icons.Filled.Delete" IconColor="Color.Error" IconSize="Size.Small">@L["Menu.Item.Delete"]</MudMenuItem>
-        <MudMenuItem Icon="@Icons.Filled.Info" IconColor="Color.Info" IconSize="Size.Small">@L["Menu.Item.Details"]</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Filled.Edit" IconColor="Color.Warning" IconSize="Size.Small" OnClick="Edit">@L["Menu.Item.Edit"]</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Filled.Delete" IconColor="Color.Error" IconSize="Size.Small" OnClick="Delete">@L["Menu.Item.Delete"]</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Filled.Info" IconColor="Color.Info" IconSize="Size.Small" OnClick="DetailsHandler">@L["Menu.Item.Details"]</MudMenuItem>
     </ChildContent>
 </MudMenu>
 
@@ -27,5 +29,21 @@
     [Parameter, EditorRequired]
     public FolderDTO Folder { get; set; } = default!;
 
+    [Parameter]
+    public EventCallback<string> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnDelete { get; set; }
+
     private void ClickHandler() => CommonService.OpenFolder(Folder.Id);
+
+    private async Task DetailsHandler()
+    {
+        await Helper.OpenDialog<FolderDetailsDialog>("", () => {}, new DialogParameters { { "Folder", Folder } }, new DialogOptions { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true });
+    }
+
+    private async Task Edit() => await OnEdit.InvokeAsync(Folder.Id);
+
+    private async Task Delete() => await OnDelete.InvokeAsync(Folder.Id);
+
 }

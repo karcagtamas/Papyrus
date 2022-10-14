@@ -48,7 +48,12 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
 
     public void EditFolder(string id, FolderModel model)
     {
-        throw new NotImplementedException();
+        var folder = Get(id);
+
+        ExceptionHelper.Check(folder.GroupId == model.GroupId, "Invalid Folder keys", "Server.Message.InvalidFolderKeys");
+        // TODO: Check unique name on same level
+
+        UpdateByModel(id, model);
     }
 
     public FolderContentDTO GetContent(string? folderId, int? groupId)

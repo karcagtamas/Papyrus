@@ -33,4 +33,7 @@ public class FolderController : ControllerBase
 
     [HttpPut("{id}")]
     public void Update(string id, [FromBody] FolderModel model) => folderService.EditFolder(id, model); // TODO: Authorize
+
+    [HttpDelete("{id}")]
+    public void Delete(string id) => folderService.DeleteById(id); // TODO: Authorize
 }

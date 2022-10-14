@@ -115,3 +115,13 @@ a,
     cursor: pointer;
     text-decoration: underline;
 }
+
+.tile-hover {
+    transition-duration: .8s;
+}
+
+.tile-hover:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition-duration: .8s;
+}
