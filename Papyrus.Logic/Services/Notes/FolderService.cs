@@ -23,7 +23,7 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
         var parentFolder = Get(model.ParentId);
 
         ExceptionHelper.Check(parentFolder.GroupId == model.GroupId, "Invalid Folder keys", "Server.Message.InvalidFolderKeys");
-        // TODO: Check unique name on same level
+        ExceptionHelper.Check(parentFolder.Folders.ToList().All(f => f.Name != model.Name), () => new ArgumentException("The name of the Folder has to be unique"));
 
         var folder = Mapper.Map<Folder>(model);
 
@@ -51,9 +51,16 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
         var folder = Get(id);
 
         ExceptionHelper.Check(folder.GroupId == model.GroupId, "Invalid Folder keys", "Server.Message.InvalidFolderKeys");
-        // TODO: Check unique name on same level
+        ExceptionHelper.Check(ObjectHelper.IsNull(folder.Parent) || folder.Parent.Folders.ToList().All(f => !NamesAreEqual(f.Name, model.Name)), () => new ArgumentException("The name of the Folder has to be unique"));
 
         UpdateByModel(id, model);
+    }
+
+    public bool Exists(string parentFolderId, string name)
+    {
+        var folder = Get(parentFolderId);
+
+        return folder.Folders.ToList().Any(x => NamesAreEqual(x.Name, name));
     }
 
     public FolderContentDTO GetContent(string? folderId, int? groupId)
@@ -83,4 +90,6 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
             ? GetList(x => x.ParentId == null && ((groupId != null && x.GroupId == groupId) || x.UserId == userId)).FirstOrDefault()
             : GetList(x => x.Id == folderId && ((groupId != null && x.GroupId == groupId) || x.UserId == userId)).FirstOrDefault();
     }
+
+    private bool NamesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
 }

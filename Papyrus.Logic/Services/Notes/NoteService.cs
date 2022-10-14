@@ -89,9 +89,11 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     {
         var userId = Utils.GetRequiredCurrentUserId();
 
-        // TODO: Search by group
-
-        return GetFilteredList(GetListAsQuery(x => x.UserId == userId), query);
+        return GetFilteredList(
+            ObjectHelper.IsNotNull(groupId)
+                ? GetListAsQuery(x => x.GroupId == groupId)
+                : GetListAsQuery(x => x.UserId == userId),
+            query);
     }
 
     public override T GetMapped<T>(string id)

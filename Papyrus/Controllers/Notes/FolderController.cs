@@ -36,4 +36,7 @@ public class FolderController : ControllerBase
 
     [HttpDelete("{id}")]
     public void Delete(string id) => folderService.DeleteById(id); // TODO: Authorize
+
+    [HttpGet("Exists")]
+    public bool Exists([FromQuery] string parentFolder, [FromQuery] string name) => folderService.Exists(parentFolder, name);
 }

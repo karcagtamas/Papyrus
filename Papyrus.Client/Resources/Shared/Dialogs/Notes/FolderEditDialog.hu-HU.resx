@@ -123,4 +123,7 @@
   <data name="Field.Name" xml:space="preserve">
     <value>Név</value>
   </data>
+  <data name="Message.AlreadyExists" xml:space="preserve">
+    <value>Egy mappa már létezik ezzel a névvel: {0}</value>
+  </data>
 </root>

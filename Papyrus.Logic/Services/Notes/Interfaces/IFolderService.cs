@@ -11,4 +11,5 @@ public interface IFolderService : IMapperRepository<Folder, string>
     void CreateFolder(FolderModel model);
     void EditFolder(string id, FolderModel model);
     FolderContentDTO GetContent(string? folderId, int? groupId);
+    bool Exists(string parentFolderId, string name);
 }

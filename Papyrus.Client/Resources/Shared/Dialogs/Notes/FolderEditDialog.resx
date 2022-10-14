@@ -123,4 +123,7 @@
   <data name="Field.Name" xml:space="preserve">
     <value>Name</value>
   </data>
+  <data name="Message.AlreadyExists" xml:space="preserve">
+    <value>A folder is already exist with this name: {0}</value>
+  </data>
 </root>

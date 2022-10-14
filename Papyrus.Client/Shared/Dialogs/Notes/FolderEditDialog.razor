@@ -5,7 +5,7 @@
 @inject IStringLocalizer<FolderEditDialog> L
 @inject IFolderService FolderService
 
-<EditorDialog Model="FolderModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="IsEdit" Submit="Submit" Remove="Remove">
+<EditorDialog Model="FolderModel" ModelObj="Model" EntityName="@L["Entity"]" IsEdit="IsEdit" Submit="Submit" Remove="Remove" FormValidator="ValidateForm">
     <TextInput Class="mb-5" Label="@L["Field.Name"]" Required For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth />
 </EditorDialog>
 
@@ -47,7 +47,6 @@
 
     private Task<bool> Submit()
     {
-        // TODO: Add form validator => unique folder names on same level
         if (IsEdit)
         {
             if (ObjectHelper.IsNotNull(FolderId))
@@ -71,5 +70,16 @@
         }
 
         return Task.FromResult(false);
+    }
+
+    private async Task<bool> ValidateForm(FolderModel model, ISnackbar snackbar)
+    {
+        if (await FolderService.Exists(ParentFolderId, model.Name))
+        {
+            snackbar.Add(L["Message.AlreadyExists", model.Name], Severity.Error);
+            return false;
+        }
+
+        return true;
     }
 }

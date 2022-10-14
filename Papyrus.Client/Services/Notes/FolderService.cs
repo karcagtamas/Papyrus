@@ -12,6 +12,18 @@ public class FolderService : HttpCall<string>, IFolderService
     {
     }
 
+    public Task<bool> Exists(string parentFolderId, string name)
+    {
+        var queryParams = HttpQueryParameters.Build()
+            .Add("parentFolder", parentFolderId)
+            .Add("name", name);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists"))
+            .AddQueryParams(queryParams);
+
+        return Http.GetBool(settings).ExecuteWithResult();
+    }
+
     public Task<FolderContentDTO> GetContent(string? folder, int? groupId)
     {
         var queryParams = HttpQueryParameters.Build()
