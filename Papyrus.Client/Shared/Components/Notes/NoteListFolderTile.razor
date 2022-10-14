@@ -1,11 +1,11 @@
 @using Papyrus.Shared.DTOs.Notes
 
-<div>
-    <div>
-        <img src="assets/images/folder.svg" />
-    </div>
-    @Folder.Name
-</div>
+<MudCard Class="w-100 p-2 d-flex flex-column align-items-center">
+    <img src="assets/images/folder.svg" height="120" />
+    <MudText Color="Color.Primary" Class="mt-2">
+        @Folder.Name
+    </MudText>
+</MudCard>
 
 @code
 {

@@ -13,6 +13,7 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     public string Id { get; set; } = default!;
 
     [Required]
+    [MaxLength(40)]
     public string Title { get; set; } = default!;
 
     [Required]

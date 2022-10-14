@@ -1,8 +1,14 @@
 @using Papyrus.Shared.DTOs.Notes
 
-<div>
-    @Note.Title
-</div>
+<MudCard Class="w-100 p-2 d-flex flex-column align-items-center" Style="position: relative;">
+    <div style="position: absolute; left: .4rem; top: .4rem;">
+        <NotePublicStatusIcon Public="Note.Public" Size="Size.Small" />
+    </div>
+    <img src="assets/images/file.svg" height="120" />
+    <MudText Color="Color.Primary" Class="mt-2">
+        @Note.Title
+    </MudText>
+</MudCard>
 
 @code
 {

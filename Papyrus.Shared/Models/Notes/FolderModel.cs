@@ -8,7 +8,7 @@ public class FolderModel
 {
 
     [LocalizedRequired(ErrorMessage = "Field is required")]
-    [LocalizedMaxLength(40, ErrorMessage = "Maximum length is 30")]
+    [LocalizedMaxLength(40, ErrorMessage = "Maximum length is 40")]
     public string Name { get; set; } = default!;
 
     [Required]

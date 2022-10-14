@@ -63,8 +63,6 @@
                     <NoteListFolderTile Folder="folder" />
                 </MudItem>
             }
-        </MudGrid>
-        <MudGrid>
             @foreach (var note in Content.Notes)
             {
                 <MudItem @key="note.Id" xs="6" sm="4" md="3" lg="2" xl="1">
@@ -73,20 +71,11 @@
             }
         </MudGrid>
     </div>
-    <div class="notes">
-        @foreach (var note in List)
-        {
-            <NoteListTile @key="note.Id" Note="note" />
-        }
-    </div>
 </div>
 
 @code {
     [Parameter]
     public int? GroupId { get; set; } = null;
-
-    [Parameter, EditorRequired]
-    public Func<NoteFilterQueryModel, Task<List<NoteLightDTO>>> Fetcher { get; set; } = (query) => Task.FromResult(new List<NoteLightDTO>());
 
     [Parameter]
     public string? Folder { get; set; }
@@ -101,7 +90,6 @@
     public bool OpenDisabled { get; set; } = false;
 
     private NoteFilterQueryModel QueryModel { get; set; } = new();
-    private List<NoteLightDTO> List { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();
     private FolderContentDTO Content { get; set; } = new FolderContentDTO { ParentFolder = new(), Folders = new(), Notes = new() };
 
@@ -116,7 +104,6 @@
 
     private async Task Refresh()
     {
-        List = await Fetcher(QueryModel);
         Content = await FolderService.GetContent(Folder, GroupId);
         await Refreshed.InvokeAsync();
 
@@ -134,18 +121,16 @@
 
         if (ObjectHelper.IsNotNull(result))
         {
-            await Refreshed.InvokeAsync();
             await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
+            await Refresh();
         }
-
-        await InvokeAsync(StateHasChanged);
     }
 
     private async Task CreateFolder()
     {
         var parameters = new DialogParameters {{ "FolderId", null }, { "ParentFolderId", Content.ParentFolder.Id }, { "GroupId", GroupId }};
 
-        await Helper.OpenEditorDialog<FolderEditDialog>("", (res) => {}, parameters);
+        await Helper.OpenEditorDialog<FolderEditDialog>("", async (res) => await Refresh(), parameters);
     }
 
     private string ConstructTagText(List<string> list)
