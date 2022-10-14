@@ -126,6 +126,9 @@
   <data name="CreateAction" xml:space="preserve">
     <value>Létrehozás</value>
   </data>
+  <data name="CreateFolderAction" xml:space="preserve">
+    <value>Mappa Létrehozás</value>
+  </data>
   <data name="DateFilter.Placeholder" xml:space="preserve">
     <value>Amíg Szűrés</value>
   </data>

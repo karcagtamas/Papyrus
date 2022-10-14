@@ -1,0 +1,14 @@
+@using Papyrus.Shared.DTOs.Notes
+
+<div>
+    <div>
+        <img src="assets/images/folder.svg" />
+    </div>
+    @Folder.Name
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public FolderDTO Folder { get; set; } = default!;
+}

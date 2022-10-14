@@ -117,34 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ArchivedStatus.Archived" xml:space="preserve">
-    <value>Archived</value>
+  <data name="Entity" xml:space="preserve">
+    <value>Mappa</value>
   </data>
-  <data name="ArchivedStatus.NotArchived" xml:space="preserve">
-    <value>Not Archived</value>
-  </data>
-  <data name="CreateAction" xml:space="preserve">
-    <value>Create</value>
-  </data>
-  <data name="CreateFolderAction" xml:space="preserve">
-    <value>Create Folder</value>
-  </data>
-  <data name="DateFilter.Placeholder" xml:space="preserve">
-    <value>Until Filter</value>
-  </data>
-  <data name="PublishType.All" xml:space="preserve">
-    <value>All</value>
-  </data>
-  <data name="PublishType.NotPublished" xml:space="preserve">
-    <value>Only Not Published</value>
-  </data>
-  <data name="PublishType.Published" xml:space="preserve">
-    <value>Only Published</value>
-  </data>
-  <data name="TagFilter.Placeholder" xml:space="preserve">
-    <value>Tag Filter</value>
-  </data>
-  <data name="TextFilter.Placeholder" xml:space="preserve">
-    <value>Text Filter</value>
+  <data name="Field.Name" xml:space="preserve">
+    <value>Név</value>
   </data>
 </root>

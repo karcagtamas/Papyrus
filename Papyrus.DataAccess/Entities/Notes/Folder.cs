@@ -15,7 +15,7 @@ public class Folder : IEntity<string>, ICreationEntity, ILastUpdateEntity
 
     [Required]
     [MaxLength(40)]
-    public string Title { get; set; } = default!;
+    public string Name { get; set; } = default!;
 
     [Required]
     public DateTime Creation { get; set; }

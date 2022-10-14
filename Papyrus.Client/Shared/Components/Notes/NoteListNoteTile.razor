@@ -1,0 +1,11 @@
+@using Papyrus.Shared.DTOs.Notes
+
+<div>
+    @Note.Title
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public NoteLightDTO Note { get; set; } = default!;
+}

@@ -42,6 +42,8 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             Title = model.Title
         };
 
+        // TODO: Append Folder Id with ROOT fallback
+
         var userId = Utils.GetRequiredCurrentUserId();
 
         if (ObjectHelper.IsNotNull(model.GroupId))

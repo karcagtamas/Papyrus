@@ -8,7 +8,7 @@ namespace Papyrus.Client.Services.Notes;
 
 public class FolderService : HttpCall<string>, IFolderService
 {
-    public FolderService(IHttpService http, IStringLocalizer<NoteService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Folder", "Folder", localizer)
+    public FolderService(IHttpService http, IStringLocalizer<FolderService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Folder", "Folder", localizer)
     {
     }
 
@@ -23,6 +23,7 @@ public class FolderService : HttpCall<string>, IFolderService
 
         return Http.Get<FolderContentDTO>(settings).ExecuteWithResultOrElse(new FolderContentDTO
         {
+            ParentFolder = new(),
             Folders = new(),
             Notes = new()
         });

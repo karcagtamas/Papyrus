@@ -101,6 +101,7 @@ var mapperConfig = new MapperConfiguration(conf =>
     conf.AddProfile<LanguageMapper>();
     conf.AddProfile<RoleMapper>();
     conf.AddProfile<PostMapper>();
+    conf.AddProfile<FolderMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 

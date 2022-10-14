@@ -8,6 +8,7 @@ using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
+using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Logic.Services.Notes;
 
@@ -15,6 +16,21 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
 {
     public FolderService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper) : base(context, loggerService, utilsService, mapper, "Folder")
     {
+    }
+
+    public void CreateFolder(FolderModel model)
+    {
+        var parentFolder = Get(model.ParentId);
+
+        ExceptionHelper.Check(parentFolder.GroupId == model.GroupId, "Invalid Folder keys", "Server.Message.InvalidFolderKeys");
+        // TODO: Check unique name on same level
+
+        var folder = Mapper.Map<Folder>(model);
+
+        folder.UserId = parentFolder.UserId;
+        folder.GroupId = parentFolder.GroupId;
+
+        Create(folder);
     }
 
     public void CreateRootFolder(string? userId = null, int? groupId = null)
@@ -25,9 +41,14 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
         {
             UserId = userId,
             GroupId = groupId,
-            Title = "ROOT",
+            Name = "ROOT",
             CreatorId = userId,
         });
+    }
+
+    public void EditFolder(string id, FolderModel model)
+    {
+        throw new NotImplementedException();
     }
 
     public FolderContentDTO GetContent(string? folderId, int? groupId)
@@ -36,8 +57,17 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
 
         return new FolderContentDTO
         {
-            Folders = Mapper.Map<List<FolderDTO>>(folder.Folders.ToList()),
-            Notes = Mapper.Map<List<NoteLightDTO>>(Context.Set<Note>().AsQueryable().Where(x => x.FolderId == folder.Id).Include(x => x.Tags).ThenInclude(x => x.Tag).ToList()),
+            ParentFolder = Mapper.Map<FolderDTO>(folder),
+            Folders = Mapper.Map<List<FolderDTO>>(
+                folder.Folders
+                    .OrderBy(x => x.Name)
+                    .ToList()),
+            Notes = Mapper.Map<List<NoteLightDTO>>(
+                Context.Set<Note>().AsQueryable()
+                    .Where(x => x.FolderId == folder.Id)
+                    .Include(x => x.Tags).ThenInclude(x => x.Tag)
+                    .OrderBy(x => x.Title)
+                    .ToList()),
         };
     }
 
