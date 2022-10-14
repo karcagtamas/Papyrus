@@ -2,7 +2,6 @@
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Client.Services.Interfaces
 @inject ICommonService CommonService
-@inject IJSRuntime JSRuntime
 @inject IStringLocalizer<NoteListTile> L
 
 <MudCard Elevation="2">
@@ -39,6 +38,6 @@
 
     private async Task Open()
     {
-        await CommonService.OpenNote(Note.Id, JSRuntime);
+        await CommonService.OpenNote(Note.Id);
     }
 }

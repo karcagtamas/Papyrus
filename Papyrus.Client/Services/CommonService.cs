@@ -3,6 +3,7 @@ using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
 using KarcagS.Blazor.Common.Services.Interfaces;
 using KarcagS.Blazor.Common.Store;
+using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor;
 using MudBlazor.Utilities;
@@ -20,10 +21,14 @@ public class CommonService : ICommonService
     private readonly ILocalStorageService localStorageService;
     private readonly IAuthService auth;
     private readonly IHelperService helper;
+    private readonly IJSRuntime jsRuntime;
+    private readonly NavigationManager navigation;
     private readonly string url = $"{ApplicationSettings.BaseApiUrl}/Common";
 
-    public CommonService(IHttpService httpService, IStoreService storeService, ILocalStorageService localStorageService, IAuthService auth, IHelperService helper)
+    public CommonService(IHttpService httpService, IStoreService storeService, ILocalStorageService localStorageService, IAuthService auth, IHelperService helper, IJSRuntime jsRuntime, NavigationManager navigation)
     {
+        this.navigation = navigation;
+        this.jsRuntime = jsRuntime;
         this.helper = helper;
         this.auth = auth;
         this.localStorageService = localStorageService;
@@ -58,7 +63,9 @@ public class CommonService : ICommonService
         return helper.OpenDialog<ColorPickerDialog, MudColor?>("", (value) => { }, paremeters);
     }
 
-    public async Task OpenNote(string id, IJSRuntime jsRuntime) => await jsRuntime.InvokeAsync<object>("open", $"/notes/editor/{id}", "_blank");
+    public void OpenFolder(string id) => navigation.NavigateTo($"/notes/{id}");
+
+    public async Task OpenNote(string id) => await jsRuntime.InvokeAsync<object>("open", $"/notes/editor/{id}", "_blank");
 
     public Task<int?> OpenNumberPickerDialog(int? selected = null, string? title = null, string? fieldLabel = null)
     {

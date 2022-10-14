@@ -19,10 +19,10 @@ public class FolderController : ControllerBase
     }
 
     [HttpGet]
-    public FolderContentDTO GetFolderContent([FromQuery] string? folder, [FromQuery] int? groupId)
+    public FolderContentDTO GetFolderContent([FromQuery] string? folder, [FromQuery] int? group)
     {
         // TODO: Authorize checking
-        return folderService.GetContent(folder, groupId);
+        return folderService.GetContent(folder, group);
     }
 
     [HttpGet("{id}")]

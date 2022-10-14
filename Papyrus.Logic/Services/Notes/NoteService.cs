@@ -1,5 +1,6 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
@@ -25,9 +26,11 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     private readonly INoteContentService noteContentService;
     private readonly IUserService userService;
     private readonly IGroupService groupService;
+    private readonly IFolderService folderService;
 
-    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService, INoteContentService noteContentService, IUserService userService, IGroupService groupService) : base(context, loggerService, utilsService, mapper, "Note")
+    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService, INoteContentService noteContentService, IUserService userService, IGroupService groupService, IFolderService folderService) : base(context, loggerService, utilsService, mapper, "Note")
     {
+        this.folderService = folderService;
         this.groupActionLogService = groupActionLogService;
         this.noteActionLogService = noteActionLogService;
         this.noteContentService = noteContentService;
@@ -39,12 +42,15 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     {
         var note = new Note
         {
-            Title = model.Title
+            Title = model.Title,
+            FolderId = model.FolderId,
         };
 
-        // TODO: Append Folder Id with ROOT fallback
+        var folder = folderService.Get(model.FolderId);
 
         var userId = Utils.GetRequiredCurrentUserId();
+
+        ExceptionHelper.Check(ObjectHelper.IsNull(model.GroupId) ? userId == folder.UserId : model.GroupId == folder.GroupId, "Invalid Folder keys", "Server.Message.InvalidFolderKeys");
 
         if (ObjectHelper.IsNotNull(model.GroupId))
         {

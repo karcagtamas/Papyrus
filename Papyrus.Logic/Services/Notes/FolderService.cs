@@ -74,6 +74,8 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
     private Folder? TryFind(string? folderId, int? groupId)
     {
         var userId = Utils.GetRequiredCurrentUserId();
-        return GetList(x => ((folderId == null && x.ParentId == null) || x.Id == folderId) && ((groupId != null && x.GroupId == groupId) || (groupId == null && x.UserId == userId))).FirstOrDefault();
+        return ObjectHelper.IsNull(folderId)
+            ? GetList(x => x.ParentId == null && groupId == null ? x.UserId == userId : x.GroupId == groupId).FirstOrDefault()
+            : GetList(x => x.Id == folderId && groupId == null ? x.UserId == userId : x.GroupId == groupId).FirstOrDefault();
     }
 }

@@ -1,4 +1,5 @@
 ﻿@using KarcagS.Blazor.Common.Services.Interfaces
+@using Papyrus.Client.Services.Interfaces
 @using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Shared.Enums.Notes
@@ -8,7 +9,7 @@
 @inject IFolderService FolderService
 @inject ITagService TagService
 @inject IHelperService Helper
-@inject IJSRuntime JSRuntime
+@inject ICommonService CommonService
 
 <ActionBar>
     <ChildContent>
@@ -66,7 +67,7 @@
             @foreach (var note in Content.Notes)
             {
                 <MudItem @key="note.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListNoteTile Note="note" />
+                    <NoteListNoteTile Note="note" OpenDisabled="OpenDisabled" />
                 </MudItem>
             }
         </MudGrid>
@@ -102,12 +103,19 @@
         await Refresh();
     }
 
-    private async Task Refresh()
+    protected override async Task OnParametersSetAsync()
+    {
+        await Refresh();
+    }
+
+    private async Task Refresh(Action? postAction = null)
     {
         Content = await FolderService.GetContent(Folder, GroupId);
         await Refreshed.InvokeAsync();
 
         await InvokeAsync(StateHasChanged);
+
+        postAction?.Invoke();
     }
 
     private async Task Create()
@@ -117,12 +125,11 @@
             return;
         }
 
-        var result = await NoteService.CreateEmpty(GroupId);
+        var result = await NoteService.CreateEmpty(Content.ParentFolder.Id, GroupId);
 
         if (ObjectHelper.IsNotNull(result))
         {
-            await JSRuntime.InvokeAsync<object>("open", $"/notes/editor/{result.Id}", "_blank");
-            await Refresh();
+            await Refresh(async () => await CommonService.OpenNote(result.Id));
         }
     }
 

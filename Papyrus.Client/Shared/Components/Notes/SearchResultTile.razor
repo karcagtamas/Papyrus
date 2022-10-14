@@ -1,7 +1,6 @@
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.Enums.Notes
-@inject IJSRuntime JSRuntime
 @inject ICommonService CommonService
 @inject IStringLocalizer<SearchResultTile> L
 
@@ -54,7 +53,7 @@
 
     private async Task Open()
     {
-        await CommonService.OpenNote(SearchResult.NoteId, JSRuntime);
+        await CommonService.OpenNote(SearchResult.NoteId);
     }
 
     private string GetSourceText() {

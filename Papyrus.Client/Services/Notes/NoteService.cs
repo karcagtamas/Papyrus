@@ -17,12 +17,12 @@ public class NoteService : HttpCall<string>, INoteService
         this.localizer = localizer;
     }
 
-    public Task<NoteCreationDTO?> CreateEmpty(int? groupId)
+    public Task<NoteCreationDTO?> CreateEmpty(string folderId, int? groupId = null)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url))
             .AddToaster(localizer["Toaster.Create"]);
 
-        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId, Title = localizer["NoteTitle"] })
+        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId, Title = localizer["NoteTitle"], FolderId = folderId })
             .ExecuteWithResult();
     }
 
