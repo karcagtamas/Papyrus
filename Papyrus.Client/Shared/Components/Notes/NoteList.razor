@@ -65,13 +65,13 @@
             @foreach(var folder in Content.Folders)
             {
                 <MudItem @key="folder.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListFolderTile Folder="folder" OnEdit="OpenFolderEditor" OnDelete="OpenDeleteConfirm" ManageEnabled="FolderManageEnabled" />
+                    <NoteListFolderTile Folder="folder" ManageEnabled="FolderManageEnabled" OnEdit="OpenFolderEditor" OnDelete="OpenFolderDeleteConfirm" />
                 </MudItem>
             }
             @foreach (var note in Content.Notes)
             {
                 <MudItem @key="note.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListNoteTile Note="note" OpenDisabled="NoteOpenDisabled" />
+                    <NoteListNoteTile Note="note" OpenDisabled="NoteOpenDisabled" EditEnabled="NoteEditEnabled" DeleteEnabled="NoteDeleteEnabled" OnEdit="OpenNoteEditor" OnDelete="OpenNoteDeleteConfirm" />
                 </MudItem>
             }
         </MudGrid>
@@ -99,6 +99,12 @@
 
     [Parameter]
     public bool FolderManageEnabled { get; set; } = false;
+
+    [Parameter]
+    public bool NoteEditEnabled { get; set; } = false;
+
+    [Parameter]
+    public bool NoteDeleteEnabled { get; set; } = false;
 
     private NoteFilterQueryModel QueryModel { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();
@@ -145,18 +151,55 @@
 
     private async Task OpenFolderEditor(string? id = null)
     {
+        if (!FolderManageEnabled)
+        {
+            return;
+        }
+
         var parameters = new DialogParameters {{ "FolderId", id }, { "ParentFolderId", Content.ParentFolder.Id }, { "GroupId", GroupId }};
 
         await Helper.OpenEditorDialog<FolderEditDialog>("", async (res) => await Refresh(), parameters);
     }
 
-    private async Task OpenDeleteConfirm(string id) {
+    private async Task OpenNoteEditor(string id)
+    {
+        if (!NoteEditEnabled)
+        {
+            return;
+        }
+
+        var parameters = new DialogParameters { { "NoteId", id }, { "DeleteEnabled", NoteDeleteEnabled } };
+
+        await Helper.OpenEditorDialog<NoteEditDialog>("Edit Note", async (res) => await Refresh(), parameters);
+    }
+
+    private async Task OpenFolderDeleteConfirm(string id) {
+        if (!FolderManageEnabled)
+        {
+            return;
+        }
+
         await ConfirmService.Open(new ConfirmDialogInput {
             Name = L["FolderEntity"],
             ActionName = L["FolderDeleteAction"].ToString().ToLower(),
             ActionFunction = () => FolderService.Delete(id)
         },
         L["FolderDelete.Confirm.Title"],
+        async () => await Refresh());
+    }
+
+    private async Task OpenNoteDeleteConfirm(string id) {
+        if (!NoteDeleteEnabled)
+        {
+            return;
+        }
+
+        await ConfirmService.Open(new ConfirmDialogInput {
+            Name = L["NoteEntity"],
+            ActionName = L["NoteDeleteAction"].ToString().ToLower(),
+            ActionFunction = () => FolderService.Delete(id)
+        },
+        L["NoteDelete.Confirm.Title"],
         async () => await Refresh());
     }
 

@@ -8,7 +8,7 @@
 <MudMenu Class="w-100" PositionAtCursor="true" ActivationEvent="@MouseEvent.RightClick" Dense="true" Variant="Variant.Outlined" >
     <ActivatorContent>
         <div class="w-100" @onclick="ClickHandler">
-            <MudCard Class="w-100 p-2 d-flex flex-column align-items-center tile-hover" @onclick="ClickHandler">
+            <MudCard Class="w-100 p-2 d-flex flex-column align-items-center tile-hover">
                 <img src="assets/images/folder.svg" height="120" />
                 <MudText Color="Color.Primary" Class="mt-2">
                     @Folder.Name

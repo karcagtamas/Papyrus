@@ -12,6 +12,6 @@
 <div class="page-div">
     @if (PageEnabled)
     {
-        <NoteList GroupId="GroupId" NoteCreateEnabled="Rights.CanCreate" FolderCreateEnabled="Rights.CanCreateFolder" NoteOpenDisabled="!Rights.CanOpen" FolderManageEnabled="Rights.CanManageFolder" />
+        <NoteList GroupId="GroupId" NoteCreateEnabled="Rights.CanCreateNote" FolderCreateEnabled="Rights.CanCreateFolder" NoteOpenDisabled="!Rights.CanOpenNote" FolderManageEnabled="Rights.CanManageFolder" NoteEditEnabled="Rights.CanEditNote" NoteDeleteEnabled="Rights.CanDeleteNote" />
     }
 </div>

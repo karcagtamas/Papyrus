@@ -306,11 +306,13 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         {
             return new GroupNoteRightsDTO
             {
-                CanCreate = !group.IsClosed,
-                CanView = true,
-                CanOpen = true,
+                CanCreateNote = !group.IsClosed,
+                CanViewNote = true,
+                CanOpenNote = true,
                 CanCreateFolder = !group.IsClosed,
                 CanManageFolder = !group.IsClosed,
+                CanEditNote = !group.IsClosed,
+                CanDeleteNote = !group.IsClosed,
             };
         }
 
@@ -321,13 +323,17 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
             return new GroupNoteRightsDTO();
         }
 
+        var basicAccess = !group.IsClosed && (role.EditNote || role.DeleteNote);
+
         return new GroupNoteRightsDTO
         {
-            CanCreate = !group.IsClosed && (role.EditNote || role.DeleteNote),
-            CanView = role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
-            CanOpen = role.ReadNote || role.EditNote || role.DeleteNote,
-            CanCreateFolder = !group.IsClosed && (role.EditNote || role.DeleteNote),
-            CanManageFolder = !group.IsClosed && (role.EditNote || role.DeleteNote),
+            CanCreateNote = basicAccess,
+            CanViewNote = role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
+            CanOpenNote = role.ReadNote || role.EditNote || role.DeleteNote,
+            CanCreateFolder = basicAccess,
+            CanManageFolder = basicAccess,
+            CanEditNote = basicAccess,
+            CanDeleteNote = basicAccess,
         };
     }
 }

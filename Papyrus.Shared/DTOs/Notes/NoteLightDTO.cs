@@ -5,6 +5,7 @@ public class NoteLightDTO
     public string Id { get; set; } = default!;
     public string Title { get; set; } = default!;
     public DateTime LastUpdate { get; set; }
+    public DateTime Creation { get; set; }
     public string? Creator { get; set; }
     public string? LastUpdater { get; set; }
     public bool Public { get; set; }

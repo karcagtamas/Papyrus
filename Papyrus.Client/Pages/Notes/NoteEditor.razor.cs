@@ -177,7 +177,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
             return;
         }
 
-        var parameters = new DialogParameters { { "NoteId", Id }, { "Rights", NoteRights } };
+        var parameters = new DialogParameters { { "NoteId", Id }, { "DeleteEnabled", NoteRights.CanDelete } };
 
         await Helper.OpenEditorDialog<NoteEditDialog>("Edit Note", async (res) =>
         {

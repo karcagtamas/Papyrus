@@ -141,6 +141,15 @@
   <data name="FolderEntity" xml:space="preserve">
     <value>Mappa</value>
   </data>
+  <data name="NoteDelete.Confirm.Title" xml:space="preserve">
+    <value>Jegyzet Törlésének Megerősítése</value>
+  </data>
+  <data name="NoteDeleteAction" xml:space="preserve">
+    <value>Törlés</value>
+  </data>
+  <data name="NoteEntity" xml:space="preserve">
+    <value>Jegyzet</value>
+  </data>
   <data name="PublishType.All" xml:space="preserve">
     <value>Mind</value>
   </data>

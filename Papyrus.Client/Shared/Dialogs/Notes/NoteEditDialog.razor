@@ -29,7 +29,7 @@
     public string NoteId { get; set; } = default!;
 
     [Parameter]
-    public NoteRightsDTO Rights { get; set; } = new();
+    public bool DeleteEnabled { get; set; } = false;
 
     private NoteLightDTO? Note { get; set; }
     private NoteModel Model { get; set; } = new();
@@ -38,6 +38,8 @@
 
     protected override async void OnInitialized()
     {
+        await base.OnInitializedAsync();
+
         Note = await NoteService.GetLight(NoteId);
 
         if (ObjectHelper.IsNotNull(Note))
@@ -46,15 +48,13 @@
             Tags = Note.Tags;
             Model.Tags = Tags.Select(x => x.Id).ToList();
 
-            if (Rights.CanEdit)
+            if (DeleteEnabled)
             {
                 Remove = () => NoteService.Delete(NoteId);
             }
 
             await InvokeAsync(StateHasChanged);
         }
-
-        base.OnInitialized();
     }
 
     private Task<bool> Submit() => NoteService.Update(NoteId, Model);

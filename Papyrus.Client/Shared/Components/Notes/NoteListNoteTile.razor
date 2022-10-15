@@ -1,16 +1,31 @@
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using Papyrus.Shared.DTOs.Notes
 @using Papyrus.Client.Services.Interfaces
+@inject IStringLocalizer<NoteListNoteTile> L
+@inject IHelperService Helper
 @inject ICommonService CommonService
 
-<MudCard Class="w-100 p-2 d-flex flex-column align-items-center" Style="position: relative;" @onclick="ClickHandler">
-    <div style="position: absolute; left: .4rem; top: .4rem;">
-        <NotePublicStatusIcon Public="Note.Public" Size="Size.Small" />
-    </div>
-    <img src="assets/images/file.svg" height="120" />
-    <MudText Color="Color.Primary" Class="mt-2">
-        @Note.Title
-    </MudText>
-</MudCard>
+<MudMenu Class="w-100" PositionAtCursor="true" ActivationEvent="@MouseEvent.RightClick" Dense="true" Variant="Variant.Outlined" >
+    <ActivatorContent>
+        <div class="w-100" @onclick="ClickHandler">
+            <MudCard Class="w-100 p-2 d-flex flex-column align-items-center tile-hover" Style="position: relative;">
+                <div style="position: absolute; left: .4rem; top: .4rem;">
+                    <NotePublicStatusIcon Public="Note.Public" Size="Size.Small" />
+                </div>
+                <img src="assets/images/file.svg" height="120" />
+                <MudText Color="Color.Primary" Class="mt-2">
+                    @Note.Title
+                </MudText>
+            </MudCard>
+        </div>
+    </ActivatorContent>
+    <ChildContent>
+        <MudMenuItem Icon="@Icons.Filled.FileOpen" IconSize="Size.Small" OnClick="ClickHandler">@L["Menu.Item.Open"]</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Filled.Edit" IconColor="Color.Warning" IconSize="Size.Small" OnClick="Edit" Disabled="!EditEnabled">@L["Menu.Item.Edit"]</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Filled.Delete" IconColor="Color.Error" IconSize="Size.Small" OnClick="Delete" Disabled="!DeleteEnabled">@L["Menu.Item.Delete"]</MudMenuItem>
+        <MudMenuItem Icon="@Icons.Filled.Info" IconColor="Color.Info" IconSize="Size.Small" OnClick="DetailsHandler">@L["Menu.Item.Details"]</MudMenuItem>
+    </ChildContent>
+</MudMenu>
 
 @code
 {
@@ -20,6 +35,18 @@
     [Parameter]
     public bool OpenDisabled { get; set; } = true;
 
+    [Parameter]
+    public bool EditEnabled { get; set; } = false;
+
+    [Parameter]
+    public bool DeleteEnabled { get; set; } = false;
+
+    [Parameter]
+    public EventCallback<string> OnEdit { get; set; }
+
+    [Parameter]
+    public EventCallback<string> OnDelete { get; set; }
+
     private async Task ClickHandler()
     {
         if (!OpenDisabled)
@@ -27,4 +54,13 @@
             await CommonService.OpenNote(Note.Id);
         }
     }
+
+    private async Task DetailsHandler()
+    {
+        await Helper.OpenDialog<NoteDetailsDialog>("", () => {}, new DialogParameters { { "Note", Note } }, new DialogOptions { MaxWidth = MaxWidth.ExtraSmall, FullWidth = true });
+    }
+
+    private async Task Edit() => await OnEdit.InvokeAsync(Note.Id);
+
+    private async Task Delete() => await OnDelete.InvokeAsync(Note.Id);
 }
