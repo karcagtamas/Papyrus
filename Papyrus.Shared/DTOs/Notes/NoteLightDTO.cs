@@ -12,7 +12,6 @@ public class NoteLightDTO
     public bool Archived { get; set; }
     public List<NoteTagDTO> Tags { get; set; } = default!;
     public int? GroupId { get; set; }
-    public bool Deleted { get; set; }
     public string ContentId { get; set; } = default!;
     public DateTime ContentLastEdit { get; set; }
 }

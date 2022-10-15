@@ -33,7 +33,7 @@
                     @if (NoteRights.CanEdit)
                     {
                         <MudTooltip Text="@L["EditAction.Tooltip"]">
-                            <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" Disabled="Note.Deleted" />
+                            <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" />
                         </MudTooltip>
                     }
                     @if (NoteRights.CanViewLogs)
@@ -74,10 +74,9 @@
                 </div>
                 <LogicDataRow Title="@L["IsPublic.Title"]" Value="Note.Public" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
                 <LogicDataRow Title="@L["IsArchived.Title"]" Value="Note.Archived" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
-                <LogicDataRow Title="@L["IsDeleted.Title"]" Value="Note.Deleted" TrueValue="@L["TrueValue"]" FalseValue="@L["FalseValue"]" TrueColor="Color.Success" FalseColor="Color.Error" OneRow="true" />
             }
         </MudCard>
-        <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange" Disabled="!NoteRights.CanEdit || Note.Deleted">
+        <Editor @ref="Editor" ClientId="@ClientId" OnContentChange="HandleChange" Disabled="!NoteRights.CanEdit">
             <RightToolbar>
                 <div class="d-flex flex-row align-items-center gap-3">
                     @foreach (var user in Users)
@@ -88,21 +87,18 @@
                     }
                 </div>
                 <div class="d-flex ml-5 mr-2 flex-row align-items-center gap-2">
-                    @if (!Note.Deleted)
+                    @if (IsSaving)
                     {
-                        @if (IsSaving)
-                        {
-                            <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
-                        }
-                        else
-                        {
-                            <MudTooltip Text="@L["SaveContent.Tooltip"]">
-                                <MudIconButton Icon="@Icons.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="@(!NoteRights.CanEdit || (!Editor?.IsDirty ?? true))" Class="p-1 mr-1" />
-                            </MudTooltip>
-                        }
+                        <MudProgressCircular Color="Color.Primary" Indeterminate="true" Size="Size.Small" />
                     }
-                    <MudTooltip Text="@(ObjectHelper.OrElse(hub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? L["Connection.Active.Tooltip"] : L["Connection.Inactive.Tooltip"])">
-                        <MudIcon Icon="@(ObjectHelper.OrElse(hub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? Icons.Filled.Cloud : Icons.Filled.CloudOff)" Color="Color.Primary" />
+                    else
+                    {
+                        <MudTooltip Text="@L["SaveContent.Tooltip"]">
+                                <MudIconButton Icon="@Icons.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="@(!NoteRights.CanEdit || (!Editor?.IsDirty ?? true))" Class="p-1 mr-1" />
+                        </MudTooltip>
+                    }
+                    <MudTooltip Text="@(ObjectHelper.OrElse(editorHub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? L["Connection.Active.Tooltip"] : L["Connection.Inactive.Tooltip"])">
+                        <MudIcon Icon="@(ObjectHelper.OrElse(editorHub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? Icons.Filled.Cloud : Icons.Filled.CloudOff)" Color="Color.Primary" />
                     </MudTooltip>
                 </div>
             </RightToolbar>

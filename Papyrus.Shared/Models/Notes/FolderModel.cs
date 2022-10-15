@@ -20,10 +20,8 @@ public class FolderModel
 
     }
 
-    public FolderModel(FolderDTO folder, string parentId, int? groupId = null)
+    public FolderModel(FolderDTO folder)
     {
         Name = folder.Name;
-        ParentId = parentId;
-        GroupId = groupId;
     }
 }

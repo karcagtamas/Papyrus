@@ -29,6 +29,9 @@
     [Parameter, EditorRequired]
     public FolderDTO Folder { get; set; } = default!;
 
+    [Parameter, EditorRequired]
+    public string ListPrefix { get; set; } = default!;
+
     [Parameter]
     public bool ManageEnabled { get; set; } = false;
 
@@ -38,7 +41,7 @@
     [Parameter]
     public EventCallback<string> OnDelete { get; set; }
 
-    private void ClickHandler() => CommonService.OpenFolder(Folder.Id);
+    private void ClickHandler() => CommonService.OpenFolder(ListPrefix, Folder.Id);
 
     private async Task DetailsHandler()
     {

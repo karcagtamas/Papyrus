@@ -63,7 +63,7 @@ public class CommonService : ICommonService
         return helper.OpenDialog<ColorPickerDialog, MudColor?>("", (value) => { }, paremeters);
     }
 
-    public void OpenFolder(string id) => navigation.NavigateTo($"/notes/{id}");
+    public void OpenFolder(string prefix, string id) => navigation.NavigateTo($"{prefix}/{id}");
 
     public async Task OpenNote(string id) => await jsRuntime.InvokeAsync<object>("open", $"/notes/editor/{id}", "_blank");
 

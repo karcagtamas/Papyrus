@@ -8,6 +8,9 @@ public partial class GroupNotes : ComponentBase
     [Parameter]
     public int GroupId { get; set; }
 
+    [Parameter]
+    public string? Folder { get; set; }
+
     private GroupNoteRightsDTO Rights { get; set; } = new();
     private bool PageEnabled { get; set; }
 

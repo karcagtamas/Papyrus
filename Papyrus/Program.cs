@@ -172,7 +172,7 @@ builder.Services
                 var accessToken = context.Request.Query["access_token"];
 
                 var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/editor"))
+                if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/editor") || path.StartsWithSegments("/note")))
                 {
                     context.Token = accessToken;
                 }
@@ -233,6 +233,7 @@ if (bool.TrueString.Equals(builder.Configuration["HttpsRedirect"]))
 }
 
 app.MapHub<EditorHub>("/editor");
+app.MapHub<NoteHub>("/note");
 
 app.UseCors("Policy");
 

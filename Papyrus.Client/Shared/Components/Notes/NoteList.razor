@@ -65,7 +65,7 @@
             @foreach(var folder in Content.Folders)
             {
                 <MudItem @key="folder.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListFolderTile Folder="folder" ManageEnabled="FolderManageEnabled" OnEdit="OpenFolderEditor" OnDelete="OpenFolderDeleteConfirm" />
+                    <NoteListFolderTile ListPrefix="@ListPrefix" Folder="folder" ManageEnabled="FolderManageEnabled" OnEdit="OpenFolderEditor" OnDelete="OpenFolderDeleteConfirm" />
                 </MudItem>
             }
             @foreach (var note in Content.Notes)
@@ -79,6 +79,9 @@
 </div>
 
 @code {
+    [Parameter, EditorRequired]
+    public string ListPrefix { get; set; } = default!;
+
     [Parameter]
     public int? GroupId { get; set; } = null;
 

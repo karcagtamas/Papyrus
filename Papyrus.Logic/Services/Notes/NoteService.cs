@@ -5,9 +5,11 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using LinqKit;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
@@ -15,6 +17,7 @@ using Papyrus.Mongo.DataAccess.Entities;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
 using Papyrus.Shared.Enums.Notes;
+using Papyrus.Shared.HubEvents;
 using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Logic.Services.Notes;
@@ -27,10 +30,23 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     private readonly IUserService userService;
     private readonly IGroupService groupService;
     private readonly IFolderService folderService;
+    private readonly IHubContext<NoteHub> hubContext;
 
-    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService, INoteContentService noteContentService, IUserService userService, IGroupService groupService, IFolderService folderService) : base(context, loggerService, utilsService, mapper, "Note")
+    public NoteService(
+        PapyrusContext context,
+        ILoggerService loggerService,
+        IUtilsService<string> utilsService,
+        IMapper mapper,
+        IGroupActionLogService groupActionLogService,
+        INoteActionLogService noteActionLogService,
+        INoteContentService noteContentService,
+        IUserService userService,
+        IGroupService groupService,
+        IFolderService folderService,
+        IHubContext<NoteHub> hubContext) : base(context, loggerService, utilsService, mapper, "Note")
     {
         this.folderService = folderService;
+        this.hubContext = hubContext;
         this.groupActionLogService = groupActionLogService;
         this.noteActionLogService = noteActionLogService;
         this.noteContentService = noteContentService;
@@ -170,6 +186,10 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         });
 
         base.Update(entity, doPersist);
+
+        // Send Socket request
+        var dto = GetMapped<NoteLightDTO>(entity.Id);
+        Task.WaitAll(hubContext.Clients.Group(entity.Id).SendAsync(NoteHubEvents.NoteUpdated, dto));
     }
 
     public override void Delete(Note entity, bool doPersist = true)
@@ -187,7 +207,12 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             Logger.LogError(e);
         }
 
+        var oldId = entity.Id;
+
         base.Delete(entity, doPersist);
+
+        // Send Socket request
+        Task.WaitAll(hubContext.Clients.Group(oldId).SendAsync(NoteHubEvents.NoteDeleted));
     }
 
     public async Task<NoteRightsDTO> GetRights(string id)

@@ -35,13 +35,14 @@
 
             if (ObjectHelper.IsNotNull(Folder))
             {
-                Model = new(Folder, ParentFolderId, GroupId);
+                Model = new(Folder);
 
                 await InvokeAsync(StateHasChanged);
             }
         }
 
         Model.ParentId = ParentFolderId;
+        Model.GroupId = GroupId;
         await InvokeAsync(StateHasChanged);
     }
 
