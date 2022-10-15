@@ -6,4 +6,5 @@ public class GroupNoteRightsDTO
     public bool CanView { get; set; }
     public bool CanOpen { get; set; }
     public bool CanCreateFolder { get; set; }
+    public bool CanManageFolder { get; set; }
 }

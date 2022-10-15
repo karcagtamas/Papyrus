@@ -65,7 +65,7 @@
             @foreach(var folder in Content.Folders)
             {
                 <MudItem @key="folder.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListFolderTile Folder="folder" OnEdit="OpenFolderEditor" OnDelete="OpenDeleteConfirm" />
+                    <NoteListFolderTile Folder="folder" OnEdit="OpenFolderEditor" OnDelete="OpenDeleteConfirm" ManageEnabled="FolderManageEnabled" />
                 </MudItem>
             }
             @foreach (var note in Content.Notes)
@@ -96,6 +96,9 @@
 
     [Parameter]
     public bool NoteOpenDisabled { get; set; } = true;
+
+    [Parameter]
+    public bool FolderManageEnabled { get; set; } = false;
 
     private NoteFilterQueryModel QueryModel { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();

@@ -310,6 +310,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
                 CanView = true,
                 CanOpen = true,
                 CanCreateFolder = !group.IsClosed,
+                CanManageFolder = !group.IsClosed,
             };
         }
 
@@ -325,7 +326,8 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
             CanCreate = !group.IsClosed && (role.EditNote || role.DeleteNote),
             CanView = role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
             CanOpen = role.ReadNote || role.EditNote || role.DeleteNote,
-            CanCreateFolder = !group.IsClosed && (role.EditNote || role.DeleteNote)
+            CanCreateFolder = !group.IsClosed && (role.EditNote || role.DeleteNote),
+            CanManageFolder = !group.IsClosed && (role.EditNote || role.DeleteNote),
         };
     }
 }
