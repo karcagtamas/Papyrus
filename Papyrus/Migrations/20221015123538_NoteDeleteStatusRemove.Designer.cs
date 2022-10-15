@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Papyrus.DataAccess;
 
@@ -10,9 +11,10 @@ using Papyrus.DataAccess;
 namespace Papyrus.Migrations
 {
     [DbContext(typeof(PapyrusContext))]
-    partial class PapyrusContextModelSnapshot : ModelSnapshot
+    [Migration("20221015123538_NoteDeleteStatusRemove")]
+    partial class NoteDeleteStatusRemove
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

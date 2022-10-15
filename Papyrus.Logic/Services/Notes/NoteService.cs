@@ -167,23 +167,27 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             {
                 noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Archived);
             }
-
-            if (o["Deleted"] as bool? != entity.Deleted)
-            {
-                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Delete);
-            }
         });
 
         base.Update(entity, doPersist);
     }
 
-    public void Delete(string id)
+    public override void Delete(Note entity, bool doPersist = true)
     {
-        var note = Get(id);
+        string userId = Utils.GetRequiredCurrentUserId();
 
-        note.Deleted = true;
+        noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Delete);
 
-        Update(note);
+        try
+        {
+            noteContentService.DeleteById(entity.ContentId);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e);
+        }
+
+        base.Delete(entity, doPersist);
     }
 
     public async Task<NoteRightsDTO> GetRights(string id)
@@ -227,7 +231,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     {
         return Mapper.Map<List<NoteLightDTO>>(
             queryable
-                .Where(x => !x.Deleted)
                 .Where(x => query.PublishType == NotePublishType.All || (query.PublishType == NotePublishType.Published && x.Public) || (query.PublishType == NotePublishType.NotPublished && !x.Public))
                 .Where(x => (query.ArchivedStatus && x.Archived) || (!query.ArchivedStatus && !x.Archived))
                 .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
@@ -362,5 +365,21 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             .Distinct();
 
         return query.ToList();
+    }
+
+    public void DeleteFolder(string folderId)
+    {
+        var folder = folderService.Get(folderId);
+
+        DeleteFolder(folder);
+    }
+
+    private void DeleteFolder(Folder folder)
+    {
+        folder.Folders.ToList().ForEach(f => DeleteFolder(f));
+
+        folder.Notes.ToList().ForEach(n => Delete(n));
+
+        folderService.Delete(folder);
     }
 }

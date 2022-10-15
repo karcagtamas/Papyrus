@@ -14,11 +14,13 @@ public class FolderController : ControllerBase
 {
     private readonly IFolderService folderService;
     private readonly IRightService rightService;
+    private readonly INoteService noteService;
 
-    public FolderController(IFolderService folderService, IRightService rightService)
+    public FolderController(IFolderService folderService, IRightService rightService, INoteService noteService)
     {
         this.folderService = folderService;
         this.rightService = rightService;
+        this.noteService = noteService;
     }
 
     [HttpGet]
@@ -82,7 +84,7 @@ public class FolderController : ControllerBase
             return new EmptyResult();
         }
 
-        folderService.DeleteById(id);
+        noteService.DeleteFolder(id);
 
         return Ok();
     }

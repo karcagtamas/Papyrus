@@ -35,9 +35,6 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     public string? LastUpdaterId { get; set; }
 
     [Required]
-    public bool Deleted { get; set; }
-
-    [Required]
     public string ContentId { get; set; } = default!;
 
     [Required]

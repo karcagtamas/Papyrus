@@ -11,6 +11,6 @@ public interface INoteService : IMapperRepository<Note, string>
     NoteCreationDTO CreateEmpty(NoteCreateModel model);
     Task<NoteRightsDTO> GetRights(string id);
     void UpdateWithTags(string id, NoteModel model);
-    void Delete(string id);
     List<SearchResultDTO> Search(SearchQueryModel query);
+    void DeleteFolder(string folderId);
 }

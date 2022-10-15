@@ -88,7 +88,7 @@ public class NoteController : ControllerBase
             return new EmptyResult();
         }
 
-        noteService.Delete(id);
+        noteService.DeleteById(id);
 
         return Ok();
     }
