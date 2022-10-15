@@ -20,6 +20,7 @@ public static class GroupOperations
     public static readonly GroupRequirement EditGroupMembersRequirement = new() { Name = "EditGroupMembers" };
     public static readonly GroupRequirement ReadNotesRequirement = new() { Name = "ReadNotes" };
     public static readonly GroupRequirement CreateNoteRequirement = new() { Name = "CreateNote" };
+    public static readonly GroupRequirement CreateFolderRequirement = new() { Name = "CreateFolder" };
     public static readonly GroupRequirement ReadTagsRequirement = new() { Name = "ReadTag" };
     public static readonly GroupRequirement CreateTagRequirement = new() { Name = "CreateTag" };
 }
@@ -27,42 +28,45 @@ public static class GroupOperations
 public static class GroupPolicies
 {
     public static readonly AuthorizationPolicy ReadGroup = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.ReadGroupRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.ReadGroupRequirement)
+            .Build();
     public static readonly AuthorizationPolicy EditGroup = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.EditGroupRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.EditGroupRequirement)
+            .Build();
     public static readonly AuthorizationPolicy CloseOpenGroup = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.CloseOpenGroupRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.CloseOpenGroupRequirement)
+            .Build();
     public static readonly AuthorizationPolicy RemoveGroup = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.RemoveGroupRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.RemoveGroupRequirement)
+            .Build();
     public static readonly AuthorizationPolicy ReadGroupLogs = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.ReadGroupLogsRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.ReadGroupLogsRequirement)
+            .Build();
     public static readonly AuthorizationPolicy ReadGroupRoles = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.ReadGroupRolesRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.ReadGroupRolesRequirement)
+            .Build();
     public static readonly AuthorizationPolicy EditGroupRoles = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.EditGroupRolesRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.EditGroupRolesRequirement)
+            .Build();
     public static readonly AuthorizationPolicy ReadGroupMembers = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.ReadGroupMembersRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.ReadGroupMembersRequirement)
+            .Build();
     public static readonly AuthorizationPolicy EditGroupMembers = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.EditGroupMembersRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.EditGroupMembersRequirement)
+            .Build();
     public static readonly AuthorizationPolicy ReadNotes = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.ReadNotesRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.ReadNotesRequirement)
+            .Build();
     public static readonly AuthorizationPolicy CreateNote = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.CreateNoteRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.CreateNoteRequirement)
+            .Build();
+    public static readonly AuthorizationPolicy CreateFolder = new AuthorizationPolicyBuilder()
+            .AddRequirements(GroupOperations.CreateFolderRequirement)
+            .Build();
     public static readonly AuthorizationPolicy ReadTags = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.ReadTagsRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.ReadTagsRequirement)
+            .Build();
     public static readonly AuthorizationPolicy CreateTag = new AuthorizationPolicyBuilder()
-           .AddRequirements(GroupOperations.CreateTagRequirement)
-           .Build();
+            .AddRequirements(GroupOperations.CreateTagRequirement)
+            .Build();
 }

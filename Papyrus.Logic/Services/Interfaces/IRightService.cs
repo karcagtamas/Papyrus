@@ -12,6 +12,7 @@ public interface IRightService
     Task<bool> HasGroupRoleListReadRight(int groupId);
     Task<bool> HasGroupRoleListEditRight(int groupId);
     Task<bool> HasGroupNoteCreateRight(int groupId);
+    Task<bool> HasGroupFolderCreateRight(int groupId);
     Task<bool> HasGroupNoteListReadRight(int groupId);
     Task<bool> HasGroupTagListReadRight(int groupId);
     Task<bool> HasGroupTagCreateRight(int groupId);
@@ -21,4 +22,6 @@ public interface IRightService
     Task<bool> HasNoteLogListReadRight(string noteId);
     Task<bool> HasTagEditRight(int tagId);
     Task<bool> HasTagReadRight(int tagId);
+    Task<bool> HasFolderReadRight(string folderId);
+    Task<bool> HasFolderManageRight(string folderId);
 }

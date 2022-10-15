@@ -16,9 +16,15 @@ public class RightService : IRightService
         this.authorization = authorization;
     }
 
+    public Task<bool> HasFolderManageRight(string folderId) => Check(folderId, FolderPolicies.ManagerFolder);
+
+    public Task<bool> HasFolderReadRight(string folderId) => Check(folderId, FolderPolicies.ReadFolder);
+
     public Task<bool> HasGroupCloseOpenRight(int groupId) => Check(groupId, GroupPolicies.CloseOpenGroup);
 
     public Task<bool> HasGroupEditRight(int groupId) => Check(groupId, GroupPolicies.EditGroup);
+
+    public Task<bool> HasGroupFolderCreateRight(int groupId) => Check(groupId, GroupPolicies.CreateFolder);
 
     public Task<bool> HasGroupLogListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadGroupLogs);
 
