@@ -13,4 +13,5 @@ public interface INoteService : IMapperRepository<Note, string>
     void UpdateWithTags(string id, NoteModel model);
     List<SearchResultDTO> Search(SearchQueryModel query);
     void DeleteFolder(string folderId);
+    bool Exists(string parentFolderId, string title, string? id);
 }

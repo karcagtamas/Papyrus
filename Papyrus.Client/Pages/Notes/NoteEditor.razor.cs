@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using KarcagS.Blazor.Common.Components.Dialogs;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
@@ -192,25 +191,16 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     private async Task OpenEdit()
     {
-        if (!NoteRights.CanEdit)
+        if (!NoteRights.CanEdit || ObjectHelper.IsNull(Note))
         {
             return;
         }
 
-        var parameters = new DialogParameters { { "NoteId", Id }, { "DeleteEnabled", NoteRights.CanDelete } };
+        var parameters = new DialogParameters { { "NoteId", Id }, { "DeleteEnabled", NoteRights.CanDelete }, { "ParentFolderId", Note.FolderId } };
 
         await Helper.OpenEditorDialog<NoteEditDialog>("Edit Note", (res) =>
         {
             // Socket Response will refresh
-            if (res.Performed)
-            {
-                if (res.Event == EditorCloseEvent.Remove)
-                {
-                }
-                else if (res.Event == EditorCloseEvent.Edit)
-                {
-                }
-            }
         }, parameters);
     }
 

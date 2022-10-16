@@ -14,4 +14,5 @@ public class NoteLightDTO
     public int? GroupId { get; set; }
     public string ContentId { get; set; } = default!;
     public DateTime ContentLastEdit { get; set; }
+    public string FolderId { get; set; } = default!;
 }

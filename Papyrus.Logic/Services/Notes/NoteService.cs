@@ -56,9 +56,10 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     public NoteCreationDTO CreateEmpty(NoteCreateModel model)
     {
+        var title = GenerateEmptyTitle(model.FolderId, model.Title);
         var note = new Note
         {
-            Title = model.Title,
+            Title = title,
             FolderId = model.FolderId,
         };
 
@@ -148,6 +149,9 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         });
 
         note.Tags = tags;
+
+        var folder = folderService.Get(note.FolderId);
+        ExceptionHelper.Check(ObjectHelper.IsNull(folder.Parent) || folder.Parent.Notes.ToList().All(n => !TitlesAreEqual(n.Title, model.Title)), () => new ArgumentException("The name of the Note has to be unique"));
 
         Update(note);
     }
@@ -252,22 +256,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return new NoteRightsDTO();
     }
 
-    private List<NoteLightDTO> GetFilteredList(IQueryable<Note> queryable, NoteFilterQueryModel query)
-    {
-        return Mapper.Map<List<NoteLightDTO>>(
-            queryable
-                .Where(x => query.PublishType == NotePublishType.All || (query.PublishType == NotePublishType.Published && x.Public) || (query.PublishType == NotePublishType.NotPublished && !x.Public))
-                .Where(x => (query.ArchivedStatus && x.Archived) || (!query.ArchivedStatus && !x.Archived))
-                .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
-                .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
-                .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
-                .OrderByDescending(x => x.LastUpdate)
-                .Include(x => x.Tags).ThenInclude(x => x.Tag)
-                .Include(x => x.Creator)
-                .ToList()
-            );
-    }
-
     public List<SearchResultDTO> Search(SearchQueryModel query)
     {
         var userId = Utils.GetCurrentUserId();
@@ -299,6 +287,64 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         })
         .OrderByDescending(x => x.Creation)
         .ToList();
+    }
+
+    public void DeleteFolder(string folderId)
+    {
+        var folder = folderService.Get(folderId);
+
+        DeleteFolder(folder);
+    }
+
+    public bool Exists(string parentFolderId, string title, string? id)
+    {
+        var folder = folderService.Get(parentFolderId);
+
+        return Exists(folder.Notes.ToList(), title, id);
+    }
+
+    private string GenerateEmptyTitle(string folderId, string title)
+    {
+        var notes = folderService.Get(folderId).Notes.ToList();
+
+        string constructedTitle = title;
+        bool valid = false;
+        int c = 0;
+
+        do
+        {
+            if (c == 0)
+            {
+                constructedTitle = title;
+            }
+            else
+            {
+                constructedTitle = $"{title} ({c})";
+            }
+
+            valid = !Exists(notes, constructedTitle, null);
+
+            c++;
+        }
+        while (!valid);
+
+        return constructedTitle;
+    }
+
+    private List<NoteLightDTO> GetFilteredList(IQueryable<Note> queryable, NoteFilterQueryModel query)
+    {
+        return Mapper.Map<List<NoteLightDTO>>(
+            queryable
+                .Where(x => query.PublishType == NotePublishType.All || (query.PublishType == NotePublishType.Published && x.Public) || (query.PublishType == NotePublishType.NotPublished && !x.Public))
+                .Where(x => (query.ArchivedStatus && x.Archived) || (!query.ArchivedStatus && !x.Archived))
+                .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
+                .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
+                .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
+                .OrderByDescending(x => x.LastUpdate)
+                .Include(x => x.Tags).ThenInclude(x => x.Tag)
+                .Include(x => x.Creator)
+                .ToList()
+            );
     }
 
     private static SearchResultDataDTO ConstructData(Note note, string? userId)
@@ -392,13 +438,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return query.ToList();
     }
 
-    public void DeleteFolder(string folderId)
-    {
-        var folder = folderService.Get(folderId);
-
-        DeleteFolder(folder);
-    }
-
     private void DeleteFolder(Folder folder)
     {
         folder.Folders.ToList().ForEach(f => DeleteFolder(f));
@@ -406,5 +445,14 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         folder.Notes.ToList().ForEach(n => Delete(n));
 
         folderService.Delete(folder);
+    }
+
+    private bool TitlesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
+
+    private bool Exists(List<Note> notes, string title, string? id)
+    {
+        return notes
+            .Where(x => x.Id != id)
+            .Any(x => TitlesAreEqual(x.Title, title));
     }
 }

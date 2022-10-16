@@ -107,4 +107,7 @@ public class NoteController : ControllerBase
     [HttpGet("Search")]
     [AllowAnonymous]
     public List<SearchResultDTO> Search([FromQuery] SearchQueryModel query) => noteService.Search(query);
+
+    [HttpGet("Exists")]
+    public bool Exists([FromQuery] string parentFolder, [FromQuery] string title, [FromQuery] string? id) => noteService.Exists(parentFolder, title, id);
 }

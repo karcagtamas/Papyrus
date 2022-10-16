@@ -26,6 +26,19 @@ public class NoteService : HttpCall<string>, INoteService
             .ExecuteWithResult();
     }
 
+    public Task<bool> Exists(string parentFolderId, string title, string? id)
+    {
+        var queryParams = HttpQueryParameters.Build()
+            .Add("parentFolder", parentFolderId)
+            .Add("title", title)
+            .Add("id", id);
+
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists"))
+            .AddQueryParams(queryParams);
+
+        return Http.GetBool(settings).ExecuteWithResult();
+    }
+
     public Task<List<NoteLightDTO>> GetFiltered(NoteFilterQueryModel query, int? groupId)
     {
         var queryParams = HttpQueryParameters.Build()

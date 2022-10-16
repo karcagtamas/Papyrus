@@ -181,7 +181,7 @@
             return;
         }
 
-        var parameters = new DialogParameters { { "NoteId", id }, { "DeleteEnabled", NoteDeleteEnabled } };
+        var parameters = new DialogParameters { { "NoteId", id }, { "DeleteEnabled", NoteDeleteEnabled }, { "ParentFolderId", Content.ParentFolder.Id } };
 
         await Helper.OpenEditorDialog<NoteEditDialog>("Edit Note", async (res) => await Refresh(), parameters);
     }
