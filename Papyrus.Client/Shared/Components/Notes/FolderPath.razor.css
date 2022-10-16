@@ -1,0 +1,8 @@
+.path-part {
+    border-radius: 4px;
+}
+
+.path-part:hover {
+    cursor: pointer;
+    background-color: rgba(128, 128, 128, 0.28);
+}

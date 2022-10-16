@@ -1,0 +1,25 @@
+@using Papyrus.Shared.DTOs.Notes
+@using Papyrus.Client.Services.Interfaces
+@inject IStringLocalizer<FolderPath> L
+@inject ICommonService CommonService
+
+<div class="d-flex flex-row gap-1">
+    @foreach (var item in Path)
+    {
+        <div @key="item.FolderId" class="d-flex flex-row gap-1">
+            <div class="path-part pr-1 pl-1" @onclick="@(() => OnClick.InvokeAsync(item))">
+                <MudText Inline="true" Color="@(item.IsRoot ? Color.Warning : Color.Primary)">@(item.IsRoot ? @L["Root"] : item.Name)</MudText>
+            </div>
+            <MudText Inline="true">/</MudText>
+        </div>
+    }
+</div>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public List<FolderPathDTO> Path { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<FolderPathDTO> OnClick { get; set; }
+}

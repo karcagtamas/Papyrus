@@ -80,6 +80,7 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
                     .Include(x => x.Tags).ThenInclude(x => x.Tag)
                     .OrderBy(x => x.Title)
                     .ToList()),
+            Path = GetFolderPath(folder),
         };
     }
 
@@ -92,4 +93,20 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
     }
 
     private bool NamesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
+
+    private List<FolderPathDTO> GetFolderPath(Folder child)
+    {
+        List<Folder> folders = new();
+        var current = new FolderPathDTO { FolderId = child.Id, Name = child.Name };
+
+        if (ObjectHelper.IsNotNull(child.ParentId))
+        {
+            var list = GetFolderPath(child.Parent!);
+            list.Add(current);
+            return list;
+        }
+
+        current.IsRoot = true;
+        return new List<FolderPathDTO> { current };
+    }
 }

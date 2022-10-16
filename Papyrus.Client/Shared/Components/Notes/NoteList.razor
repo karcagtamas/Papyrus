@@ -37,7 +37,9 @@
     </ChildContent>
     <OtherRows>
         <div class="d-flex flex-row w-100">
-            <div></div>
+            <div class="d-flex flex-row align-items-center">
+                <FolderPath Path="Content.Path" OnClick="Redirect" />
+            </div>
             <MudSpacer />
             @if (ObjectHelper.IsNotEmpty(Tags))
             {
@@ -111,7 +113,7 @@
 
     private NoteFilterQueryModel QueryModel { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();
-    private FolderContentDTO Content { get; set; } = new FolderContentDTO { ParentFolder = new(), Folders = new(), Notes = new() };
+    private FolderContentDTO Content { get; set; } = new FolderContentDTO { ParentFolder = new() };
 
     protected override async Task OnInitializedAsync()
     {
@@ -135,6 +137,14 @@
         await InvokeAsync(StateHasChanged);
 
         postAction?.Invoke();
+    }
+
+    private void Redirect(FolderPathDTO item)
+    {
+        if (item.FolderId != Content.ParentFolder.Id)
+        {
+            CommonService.OpenFolder(ListPrefix, item.FolderId, item.IsRoot);
+        }
     }
 
     private async Task CreateNote()
