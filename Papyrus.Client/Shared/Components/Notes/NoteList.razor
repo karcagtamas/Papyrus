@@ -280,8 +280,7 @@
         }
 
         await ConfirmService.Open(new ConfirmDialogInput {
-            Name = L["FolderEntity"],
-            ActionName = L["FolderDeleteAction"].ToString().ToLower(),
+            Message = L["FolderDelete.Confirm.Message"],
             ActionFunction = () => FolderService.Delete(id)
         },
         L["FolderDelete.Confirm.Title"],
@@ -295,8 +294,7 @@
         }
 
         await ConfirmService.Open(new ConfirmDialogInput {
-            Name = L["NoteEntity"],
-            ActionName = L["NoteDeleteAction"].ToString().ToLower(),
+            Message = L["NoteDelete.Confirm.Message"],
             ActionFunction = () => NoteService.Delete(id)
         },
         L["NoteDelete.Confirm.Title"],

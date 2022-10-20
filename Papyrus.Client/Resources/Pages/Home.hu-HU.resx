@@ -135,14 +135,11 @@
   <data name="PostCreateInfo" xml:space="preserve">
     <value>Új poszt létrehozása</value>
   </data>
-  <data name="PostDeleteAction" xml:space="preserve">
-    <value>Törlés</value>
+  <data name="PostDeleteConfirmMessage" xml:space="preserve">
+    <value>Biztosan szeretné törölni ezt a Posztot?</value>
   </data>
   <data name="PostDeleteConfirmTitle" xml:space="preserve">
     <value>Törlés Megerősítése</value>
-  </data>
-  <data name="PostEntity" xml:space="preserve">
-    <value>Poszt</value>
   </data>
   <data name="PostsTitle" xml:space="preserve">
     <value>Hírek</value>

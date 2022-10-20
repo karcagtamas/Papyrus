@@ -89,7 +89,7 @@ public partial class TagTree : ComponentBase
             return;
         }
 
-        await ConfirmService.Open(new ConfirmDialogInput { Name = L["Entity"], ActionFunction = async () => await TagService.Delete(id) }, L["RemoveConfirm.Title"], async () => await Refresh());
+        await ConfirmService.Open(new ConfirmDialogInput { Message = L["RemoveConfirm.Message"], ActionFunction = async () => await TagService.Delete(id) }, L["RemoveConfirm.Title"], async () => await Refresh());
     }
 
     private async Task OpenDialog(int? tagId, int? parentId)

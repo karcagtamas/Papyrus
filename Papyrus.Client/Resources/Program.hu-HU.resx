@@ -117,17 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Confirm.Action.Delete" xml:space="preserve">
-    <value>törölni</value>
-  </data>
   <data name="Confirm.Cancel" xml:space="preserve">
     <value>Mégsem</value>
   </data>
   <data name="Confirm.Confirm" xml:space="preserve">
     <value>Megerősítés</value>
-  </data>
-  <data name="Confirm.Message" xml:space="preserve">
-    <value>Biztosan szeretné {0} a következő {1} elemet?</value>
   </data>
   <data name="Dialog.Cancel" xml:space="preserve">
     <value>Mégsem</value>
@@ -138,8 +132,8 @@
   <data name="Editor.Cancel" xml:space="preserve">
     <value>Mégsem</value>
   </data>
-  <data name="Editor.ConfirmDelete.Action" xml:space="preserve">
-    <value>Törlés</value>
+  <data name="Editor.ConfirmDelete.Message" xml:space="preserve">
+    <value>Biztosan szeretné törölni {0} elemet?</value>
   </data>
   <data name="Editor.ConfirmDelete.Title" xml:space="preserve">
     <value>Törlés megerősítése</value>

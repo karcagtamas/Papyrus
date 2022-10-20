@@ -132,6 +132,9 @@
   <data name="RemoveAction" xml:space="preserve">
     <value>{0} címke törlése</value>
   </data>
+  <data name="RemoveConfirm.Message" xml:space="preserve">
+    <value>Biztosan szeretné törölni ezt a Címkét?</value>
+  </data>
   <data name="RemoveConfirm.Title" xml:space="preserve">
     <value>Törlés Megerősítése</value>
   </data>

@@ -117,17 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Confirm.Action.Delete" xml:space="preserve">
-    <value>delete</value>
-  </data>
   <data name="Confirm.Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
   <data name="Confirm.Confirm" xml:space="preserve">
     <value>Confirm</value>
-  </data>
-  <data name="Confirm.Message" xml:space="preserve">
-    <value>Are you sure want to {0} {1}?</value>
   </data>
   <data name="Dialog.Cancel" xml:space="preserve">
     <value>Cancel</value>
@@ -138,8 +132,8 @@
   <data name="Editor.Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="Editor.ConfirmDelete.Action" xml:space="preserve">
-    <value>Delete</value>
+  <data name="Editor.ConfirmDelete.Message" xml:space="preserve">
+    <value>Are you sure want to delete {0}?</value>
   </data>
   <data name="Editor.ConfirmDelete.Title" xml:space="preserve">
     <value>Confirm Delete</value>

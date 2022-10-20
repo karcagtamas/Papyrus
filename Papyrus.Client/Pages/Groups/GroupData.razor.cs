@@ -68,19 +68,19 @@ public partial class GroupData : ComponentBase
         await HelperService.OpenEditorDialog<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", async (res) => await GetGroup(), parameters);
     }
 
-    private async Task Close() => await ExecuteAction(Rights.CanClose, L["CloseAction"], L["CloseActionName"], () => GroupService.Close(GroupId), async () => await GetGroup());
+    private async Task Close() => await ExecuteAction(Rights.CanClose, L["CloseTitle"], L["CloseMessage"], () => GroupService.Close(GroupId), async () => await GetGroup());
 
-    private async Task Open() => await ExecuteAction(Rights.CanOpen, L["OpenAction"], L["OpenActionName"], () => GroupService.Open(GroupId), async () => await GetGroup());
+    private async Task Open() => await ExecuteAction(Rights.CanOpen, L["OpenTitle"], L["OpenMessage"], () => GroupService.Open(GroupId), async () => await GetGroup());
 
-    private async Task Remove() => await ExecuteAction(Rights.CanRemove, L["RemoveAction"], L["RemoveActionName"], () => GroupService.Remove(GroupId), () => Navigation.NavigateTo("/my-groups"));
+    private async Task Remove() => await ExecuteAction(Rights.CanRemove, L["RemoveTitle"], L["RemoveMessage"], () => GroupService.Remove(GroupId), () => Navigation.NavigateTo("/my-groups"));
 
-    private async Task ExecuteAction(bool preCheck, string action, string actionName, Func<Task<bool>> performAction, Action postAction)
+    private async Task ExecuteAction(bool preCheck, string title, string message, Func<Task<bool>> performAction, Action postAction)
     {
         if (!preCheck)
         {
             return;
         }
 
-        await ConfirmService.Open(new ConfirmDialogInput { Name = L["Entity"], ActionName = actionName.ToLower(), ActionFunction = async () => await performAction() }, L["ActionConfirmTitle", action], () => postAction());
+        await ConfirmService.Open(new ConfirmDialogInput { Message = message, ActionFunction = async () => await performAction() }, title, () => postAction());
     }
 }

@@ -97,8 +97,7 @@
 
         await ConfirmService.Open(new ConfirmDialogInput
         {
-            Name = L["PostEntity"],
-            ActionName = L["PostDeleteAction"].ToString().ToLower(),
+            Message = L["PostDeleteConfirmMessage"],
             ActionFunction = async () => await PostService.Delete(postId)
         },
         L["PostDeleteConfirmTitle"],
