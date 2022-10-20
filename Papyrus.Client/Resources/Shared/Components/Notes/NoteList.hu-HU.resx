@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArchivedStatus" xml:space="preserve">
+    <value>Archivált Állapot</value>
+  </data>
   <data name="ArchivedStatus.Archived" xml:space="preserve">
     <value>Archivált</value>
   </data>
@@ -129,8 +132,11 @@
   <data name="CreateFolderAction" xml:space="preserve">
     <value>Mappa Létrehozás</value>
   </data>
-  <data name="DateFilter.Placeholder" xml:space="preserve">
-    <value>Amíg Szűrés</value>
+  <data name="DateFilter" xml:space="preserve">
+    <value>Amíg</value>
+  </data>
+  <data name="FalseValue" xml:space="preserve">
+    <value>Nem</value>
   </data>
   <data name="FolderDelete.Confirm.Title" xml:space="preserve">
     <value>Mappa Törlésének Megerősítése</value>
@@ -150,19 +156,43 @@
   <data name="NoteEntity" xml:space="preserve">
     <value>Jegyzet</value>
   </data>
-  <data name="PublishType.All" xml:space="preserve">
-    <value>Mind</value>
+  <data name="PublicStatus" xml:space="preserve">
+    <value>Nyílvános Állapot</value>
   </data>
-  <data name="PublishType.NotPublished" xml:space="preserve">
-    <value>Csak Nem Nyílvánosak</value>
+  <data name="PublicStatus.NotPublished" xml:space="preserve">
+    <value>Nem Nyílvánosak</value>
   </data>
-  <data name="PublishType.Published" xml:space="preserve">
-    <value>Csak Nyílvánosak</value>
+  <data name="PublicStatus.Published" xml:space="preserve">
+    <value>Nyílvánosak</value>
   </data>
-  <data name="TagFilter.Placeholder" xml:space="preserve">
+  <data name="Table.ArchivedStatus" xml:space="preserve">
+    <value>Archivált-e</value>
+  </data>
+  <data name="Table.Creation" xml:space="preserve">
+    <value>Létrehozás</value>
+  </data>
+  <data name="Table.Creator" xml:space="preserve">
+    <value>Létrehozó</value>
+  </data>
+  <data name="Table.LastUpdate" xml:space="preserve">
+    <value>Utolsó Szerkesztés</value>
+  </data>
+  <data name="Table.LastUpdater" xml:space="preserve">
+    <value>Utolsó Szerkesztő</value>
+  </data>
+  <data name="Table.PublicStatus" xml:space="preserve">
+    <value>Nyílvános-e</value>
+  </data>
+  <data name="Table.Title" xml:space="preserve">
+    <value>Cím</value>
+  </data>
+  <data name="TagFilter" xml:space="preserve">
     <value>Címke Szűrés</value>
   </data>
-  <data name="TextFilter.Placeholder" xml:space="preserve">
-    <value>Szöveg Szűrés</value>
+  <data name="TextFilter" xml:space="preserve">
+    <value>Keresés</value>
+  </data>
+  <data name="TrueValue" xml:space="preserve">
+    <value>Igen</value>
   </data>
 </root>

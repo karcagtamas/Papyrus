@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ArchivedStatus" xml:space="preserve">
+    <value>Archived Status</value>
+  </data>
   <data name="ArchivedStatus.Archived" xml:space="preserve">
     <value>Archived</value>
   </data>
@@ -129,8 +132,11 @@
   <data name="CreateFolderAction" xml:space="preserve">
     <value>Create Folder</value>
   </data>
-  <data name="DateFilter.Placeholder" xml:space="preserve">
-    <value>Until Filter</value>
+  <data name="DateFilter" xml:space="preserve">
+    <value>Until</value>
+  </data>
+  <data name="FalseValue" xml:space="preserve">
+    <value>No</value>
   </data>
   <data name="FolderDelete.Confirm.Title" xml:space="preserve">
     <value>Confirm Folder Delete</value>
@@ -150,19 +156,43 @@
   <data name="NoteEntity" xml:space="preserve">
     <value>Note</value>
   </data>
-  <data name="PublishType.All" xml:space="preserve">
-    <value>All</value>
+  <data name="PublicStatus" xml:space="preserve">
+    <value>Public Status</value>
   </data>
-  <data name="PublishType.NotPublished" xml:space="preserve">
-    <value>Only Not Published</value>
+  <data name="PublicStatus.NotPublished" xml:space="preserve">
+    <value>Not Published</value>
   </data>
-  <data name="PublishType.Published" xml:space="preserve">
-    <value>Only Published</value>
+  <data name="PublicStatus.Published" xml:space="preserve">
+    <value>Published</value>
   </data>
-  <data name="TagFilter.Placeholder" xml:space="preserve">
+  <data name="Table.ArchivedStatus" xml:space="preserve">
+    <value>Is Archived</value>
+  </data>
+  <data name="Table.Creation" xml:space="preserve">
+    <value>Creation</value>
+  </data>
+  <data name="Table.Creator" xml:space="preserve">
+    <value>Creator</value>
+  </data>
+  <data name="Table.LastUpdate" xml:space="preserve">
+    <value>Last Update</value>
+  </data>
+  <data name="Table.LastUpdater" xml:space="preserve">
+    <value>Last Updater</value>
+  </data>
+  <data name="Table.PublicStatus" xml:space="preserve">
+    <value>Is Public</value>
+  </data>
+  <data name="Table.Title" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="TagFilter" xml:space="preserve">
     <value>Tag Filter</value>
   </data>
-  <data name="TextFilter.Placeholder" xml:space="preserve">
-    <value>Text Filter</value>
+  <data name="TextFilter" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="TrueValue" xml:space="preserve">
+    <value>Yes</value>
   </data>
 </root>

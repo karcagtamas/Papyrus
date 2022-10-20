@@ -2,7 +2,6 @@
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs.Notes
-@using Papyrus.Shared.Enums.Notes
 @using Papyrus.Shared.Models.Notes
 @inject IStringLocalizer<NoteList> L
 @inject INoteService NoteService
@@ -12,71 +11,113 @@
 @inject ICommonService CommonService
 @inject IConfirmService ConfirmService
 
-<ActionBar>
-    <ChildContent>
-        <div class="d-flex flex-row gap-2">
-            @if (NoteCreateEnabled)
-            {
-                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="CreateNote">@L["CreateAction"]</MudButton>
-            }
-            @if (FolderCreateEnabled)
-            {
-                <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => OpenFolderEditor(null))">@L["CreateFolderAction"]</MudButton>
-            }
-        </div>
-        <MudSpacer />
-        <MudRadioGroup Class="mr-3" T="bool" SelectedOption="QueryModel.ArchivedStatus" SelectedOptionChanged="HandleArchivedStatusChange">
-            <MudRadio Size="Size.Small" Option="true">@L["ArchivedStatus.Archived"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="false">@L["ArchivedStatus.NotArchived"]</MudRadio>
-        </MudRadioGroup>
-        <MudRadioGroup T="NotePublishType" SelectedOption="QueryModel.PublishType" SelectedOptionChanged="HandlePublishTypeChange">
-            <MudRadio Size="Size.Small" Option="NotePublishType.All">@L["PublishType.All"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="NotePublishType.Published">@L["PublishType.Published"]</MudRadio>
-            <MudRadio Size="Size.Small" Option="NotePublishType.NotPublished">@L["PublishType.NotPublished"]</MudRadio>
-        </MudRadioGroup>
-    </ChildContent>
-    <OtherRows>
-        <div class="d-flex flex-row w-100">
-            <div class="d-flex flex-row align-items-center">
+<div class="d-flex flex-column overflow-hidden" style="flex: 1;">
+    <ActionBar>
+        <ChildContent>
+            <div class="d-flex flex-row gap-2">
+                @if (NoteCreateEnabled)
+                {
+                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="CreateNote">@L["CreateAction"]</MudButton>
+                }
+                @if (FolderCreateEnabled)
+                {
+                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => OpenFolderEditor(null))">@L["CreateFolderAction"]</MudButton>
+                }
+            </div>
+            <div class="ml-5 d-flex flex-row align-items-center">
                 <FolderPath Path="Content.Path" OnClick="Redirect" />
             </div>
-            <MudSpacer />
-            @if (ObjectHelper.IsNotEmpty(Tags))
-            {
+        </ChildContent>
+        <OtherRows>
+            <div class="d-flex flex-row w-100 mt-2">
                 <div class="mr-3">
-                    <MudSelect T="int" Style="width: 420px;" SelectedValues="QueryModel.Tags.AsEnumerable()" SelectedValuesChanged="HandleTagFilterChange" Variant="Variant.Outlined" Dense Margin="Margin.Dense" Clearable MultiSelection MultiSelectionTextFunc="ConstructTagText" Placeholder="@L["TagFilter.Placeholder"]">
-                        @foreach (var tag in Tags)
+                    <TextInput Label="@L["TextFilter"]" Style="width: 260px" Value="@QueryModel.TextFilter" ValueChanged="HandleTextFilterChange" Clearable Placeholder="@L["TextFilter"]" />
+                </div>
+                <div class="mr-3">
+                    <Selector Style="width: 240px;" T="bool?" TItem="SelectorItem" Items="PublicStatusSource" KeyGetter="@((item) => item.Key)" Label="@L["PublicStatus"]" Placeholder="@L["PublicStatus"]" Clearable Value="QueryModel.PublicStatus" ValueChanged="@(args => HandlePublicStatusChange(args))">
+                        <SelectItem Context="ctx">
+                            @ctx.Label
+                        </SelectItem>
+                    </Selector>
+                </div>
+                <div class="mr-3">
+                    <Selector Style="width: 240px;" T="bool?" TItem="SelectorItem" Items="ArchivedStatusSource" KeyGetter="@((item) => item.Key)" Label="@L["ArchivedStatus"]" Placeholder="@L["ArchivedStatus"]" Clearable Value="QueryModel.ArchivedStatus" ValueChanged="@(args => HandleArchivedStatusChange(args))">
+                        <SelectItem Context="ctx">
+                            @ctx.Label
+                        </SelectItem>
+                    </Selector>
+                </div>
+                <div class="mr-3">
+                    <DateInput Label="@L["DateFilter"]" Style="width: 260px" Date="QueryModel.DateFilter" DateChanged="HandleDateFilterChange" Clearable Placeholder="@L["DateFilter"]" />
+                </div>
+                @if (ObjectHelper.IsNotEmpty(Tags))
+                {
+                    <div>
+                        <MudSelect T="int" Style="width: 420px;" SelectedValues="QueryModel.Tags.AsEnumerable()" SelectedValuesChanged="HandleTagFilterChange" Variant="Variant.Outlined" Dense Margin="Margin.Dense" Clearable MultiSelection MultiSelectionTextFunc="ConstructTagText" Placeholder="@L["TagFilter"]" Label="@L["TagFilter"]">
+                            @foreach (var tag in Tags)
+                            {
+                                <MudSelectItem @key="tag.Id" Value="tag.Id"><TagBox Tag="tag" /></MudSelectItem>
+                            }
+                        </MudSelect>
+                    </div>
+                }
+            </div>
+        </OtherRows>
+    </ActionBar>
+    <div class="d-flex flex-column overflow-hidden" style="flex: 1;">
+        @if (!IsLoading)
+        {
+            @if (!IsFilteredList)
+            {
+                <div class="d-flex flex-column overflow-auto pl-3 pr-3 pt-1" style="flex: 1;">
+                    <MudGrid>
+                        @foreach(var folder in Content.Folders)
                         {
-                            <MudSelectItem @key="tag.Id" Value="tag.Id"><TagBox Tag="tag" /></MudSelectItem>
+                            <MudItem @key="folder.Id" xs="6" sm="4" md="3" lg="2" xl="1">
+                                <NoteListFolderTile ListPrefix="@ListPrefix" Folder="folder" ManageEnabled="FolderManageEnabled" OnEdit="OpenFolderEditor" OnDelete="OpenFolderDeleteConfirm" />
+                            </MudItem>
                         }
-                    </MudSelect>
+                        @foreach (var note in Content.Notes)
+                        {
+                            <MudItem @key="note.Id" xs="6" sm="4" md="3" lg="2" xl="1">
+                                <NoteListNoteTile Note="note" OpenDisabled="NoteOpenDisabled" EditEnabled="NoteEditEnabled" DeleteEnabled="NoteDeleteEnabled" OnEdit="OpenNoteEditor" OnDelete="OpenNoteDeleteConfirm" />
+                            </MudItem>
+                        }
+                    </MudGrid>
                 </div>
             }
-            <div class="mr-3">
-                <DateInput Label="" Style="width: 260px" Date="QueryModel.DateFilter" DateChanged="HandleDateFilterChange" Clearable Placeholder="@L["DateFilter.Placeholder"]" />
-            </div>
-            <div>
-                <TextInput Label="" Style="width: 260px" Value="@QueryModel.TextFilter" ValueChanged="HandleTextFilterChange" Clearable Placeholder="@L["TextFilter.Placeholder"]" />
-            </div>
-        </div>
-    </OtherRows>
-</ActionBar>
-<div class="page-content">
-    <div>
-        <MudGrid>
-            @foreach(var folder in Content.Folders)
+            else
             {
-                <MudItem @key="folder.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListFolderTile ListPrefix="@ListPrefix" Folder="folder" ManageEnabled="FolderManageEnabled" OnEdit="OpenFolderEditor" OnDelete="OpenFolderDeleteConfirm" />
-                </MudItem>
+                <div class="d-flex flex-column p-1" style="max-height: 100%;">
+                    <MudTable T="NoteLightDTO" Hover Dense Items="FilteredNoteList" OnRowClick="TableRowClickHandler" Class="w-100 flex-box h-100" FixedHeader>
+                        <HeaderContent>
+                            <MudTh><MudText Color="Color.Primary">@L["Table.Title"]</MudText></MudTh>
+                            <MudTh><MudText Color="Color.Primary">@L["Table.Creator"]</MudText></MudTh>
+                            <MudTh><MudText Color="Color.Primary">@L["Table.LastUpdater"]</MudText></MudTh>
+                            <MudTh><MudText Color="Color.Primary">@L["Table.PublicStatus"]</MudText></MudTh>
+                            <MudTh><MudText Color="Color.Primary">@L["Table.ArchivedStatus"]</MudText></MudTh>
+                            <MudTh><MudText Color="Color.Primary">@L["Table.Creation"]</MudText></MudTh>
+                            <MudTh><MudText Color="Color.Primary">@L["Table.LastUpdater"]</MudText></MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel="Title"><MudText Color="Color.Secondary">@context.Title</MudText></MudTd>
+                            <MudTd DataLabel="Title"><MudText>@WriteHelper.WriteNullableField(context.Creator)</MudText></MudTd>
+                            <MudTd DataLabel="Title"><MudText>@WriteHelper.WriteNullableField(context.LastUpdater)</MudText></MudTd>
+                            <MudTd DataLabel="Title"><LogicText LogicValue="context.Public" TrueText="@L["TrueValue"]" FalseText="@L["FalseValue"]"/></MudTd>
+                            <MudTd DataLabel="Title"><LogicText LogicValue="context.Archived" TrueText="@L["TrueValue"]" FalseText="@L["FalseValue"]"/></MudTd>
+                            <MudTd DataLabel="Title"><MudText>@DateHelper.DateToString(context.Creation)</MudText></MudTd>
+                            <MudTd DataLabel="Title"><MudText>@DateHelper.DateToString(context.LastUpdate)</MudText></MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </div>
             }
-            @foreach (var note in Content.Notes)
-            {
-                <MudItem @key="note.Id" xs="6" sm="4" md="3" lg="2" xl="1">
-                    <NoteListNoteTile Note="note" OpenDisabled="NoteOpenDisabled" EditEnabled="NoteEditEnabled" DeleteEnabled="NoteDeleteEnabled" OnEdit="OpenNoteEditor" OnDelete="OpenNoteDeleteConfirm" />
-                </MudItem>
-            }
-        </MudGrid>
+        }
+        else
+        {
+            <div class="d-flex w-100 h-100 align-items-center justify-content-center">
+                <Loader />
+            </div>
+        }
     </div>
 </div>
 
@@ -89,6 +130,8 @@
 
     [Parameter]
     public string? Folder { get; set; }
+
+    private string? SavedFolder { get; set; }
 
     [Parameter]
     public EventCallback Refreshed { get; set; }
@@ -114,29 +157,64 @@
     private NoteFilterQueryModel QueryModel { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();
     private FolderContentDTO Content { get; set; } = new FolderContentDTO { ParentFolder = new() };
+    private List<NoteLightDTO> FilteredNoteList { get; set; } = new();
+
+    private List<SelectorItem> PublicStatusSource { get; set; } = new();
+    private List<SelectorItem> ArchivedStatusSource { get; set; } = new();
+    private bool IsFilteredList { get; set; } = false;
+    private bool IsLoading { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
+        FillSelectors();
         Tags = await TagService.GetList(GroupId);
+        SavedFolder = Folder;
 
         await Refresh();
     }
 
     protected override async Task OnParametersSetAsync()
     {
-        await Refresh();
+        if (Folder != SavedFolder)
+        {
+            await Refresh();
+            SavedFolder = Folder;
+        }
     }
 
     private async Task Refresh(Action? postAction = null)
     {
-        Content = await FolderService.GetContent(Folder, GroupId);
+        IsLoading = true;
+        await InvokeAsync(StateHasChanged);
+
+        if (HasFilledSearchFilter())
+        {
+            FilteredNoteList = await NoteService.GetFiltered(QueryModel, GroupId);
+            Content = new FolderContentDTO { ParentFolder = new() };
+            IsFilteredList = true;
+        }
+        else
+        {
+            Content = await FolderService.GetContent(Folder, GroupId);
+            FilteredNoteList = new();
+            IsFilteredList = false;
+        }
+        IsLoading = false;
         await Refreshed.InvokeAsync();
 
         await InvokeAsync(StateHasChanged);
 
         postAction?.Invoke();
+    }
+
+    private void FillSelectors()
+    {
+        PublicStatusSource.Add(new SelectorItem { Key = true, Label = L["PublicStatus.Published"] });
+        PublicStatusSource.Add(new SelectorItem { Key = false, Label = L["PublicStatus.NotPublished"] });
+
+        ArchivedStatusSource.Add(new SelectorItem { Key = true, Label = L["ArchivedStatus.Archived"] });
+        ArchivedStatusSource.Add(new SelectorItem { Key = false, Label = L["ArchivedStatus.NotArchived"] });
     }
 
     private void Redirect(FolderPathDTO item)
@@ -145,6 +223,15 @@
         {
             CommonService.OpenFolder(ListPrefix, item.FolderId, item.IsRoot);
         }
+    }
+
+    private bool HasFilledSearchFilter()
+    {
+        return ObjectHelper.IsNotNull(QueryModel.TextFilter)
+            || ObjectHelper.IsNotNull(QueryModel.PublicStatus)
+            || ObjectHelper.IsNotNull(QueryModel.ArchivedStatus)
+            || ObjectHelper.IsNotNull(QueryModel.DateFilter)
+            || ObjectHelper.IsNotEmpty(QueryModel.Tags);
     }
 
     private async Task CreateNote()
@@ -222,13 +309,13 @@
         return string.Join(", ", Tags.Where(x => ids.Contains(x.Id)).Select(x => x.Caption).ToList());
     }
 
-    private async Task HandlePublishTypeChange(NotePublishType publishType)
+    private async Task HandlePublicStatusChange(bool? publicStatus)
     {
-        QueryModel.PublishType = publishType;
+        QueryModel.PublicStatus = publicStatus;
         await Refresh();
     }
 
-    private async Task HandleArchivedStatusChange(bool status)
+    private async Task HandleArchivedStatusChange(bool? status)
     {
         QueryModel.ArchivedStatus = status;
         await Refresh();
@@ -250,5 +337,21 @@
     {
         QueryModel.Tags = tags.ToList();
         await Refresh();
+    }
+
+    private async Task TableRowClickHandler(TableRowClickEventArgs<NoteLightDTO> args)
+    {
+        if (NoteOpenDisabled)
+        {
+            return;
+        }
+
+        await CommonService.OpenNote(args.Item.Id);
+    }
+
+    class SelectorItem
+    {
+        public bool Key { get; set; }
+        public string Label { get; set; } = default!;
     }
 }

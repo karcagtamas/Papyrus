@@ -335,12 +335,12 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     {
         return Mapper.Map<List<NoteLightDTO>>(
             queryable
-                .Where(x => query.PublishType == NotePublishType.All || (query.PublishType == NotePublishType.Published && x.Public) || (query.PublishType == NotePublishType.NotPublished && !x.Public))
-                .Where(x => (query.ArchivedStatus && x.Archived) || (!query.ArchivedStatus && !x.Archived))
+                .Where(x => query.PublicStatus == null || query.PublicStatus == x.Public)
+                .Where(x => query.ArchivedStatus == null || query.ArchivedStatus == x.Archived)
                 .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
                 .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
                 .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
-                .OrderByDescending(x => x.LastUpdate)
+                .OrderBy(x => x.Title)
                 .Include(x => x.Tags).ThenInclude(x => x.Tag)
                 .Include(x => x.Creator)
                 .ToList()
@@ -449,7 +449,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     private bool TitlesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
 
-    private bool Exists(List<Note> notes, string title, string? id)
+    private bool Exists(List<Note> notes, string title, string id)
     {
         return notes
             .Where(x => x.Id != id)

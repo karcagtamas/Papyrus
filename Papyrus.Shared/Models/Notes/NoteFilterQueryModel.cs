@@ -1,11 +1,9 @@
-﻿using Papyrus.Shared.Enums.Notes;
-
-namespace Papyrus.Shared.Models.Notes;
+﻿namespace Papyrus.Shared.Models.Notes;
 
 public class NoteFilterQueryModel
 {
-    public NotePublishType PublishType { get; set; } = NotePublishType.All;
-    public bool ArchivedStatus { get; set; } = false;
+    public bool? PublicStatus { get; set; } = null;
+    public bool? ArchivedStatus { get; set; } = null;
     public string? TextFilter { get; set; } = null;
     public DateTime? DateFilter { get; set; } = null;
     public List<int> Tags { get; set; } = new();
