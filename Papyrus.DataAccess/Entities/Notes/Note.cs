@@ -13,10 +13,8 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     public string Id { get; set; } = default!;
 
     [Required]
+    [MaxLength(40)]
     public string Title { get; set; } = default!;
-
-    public string? UserId { get; set; }
-    public int? GroupId { get; set; }
 
     [Required]
     public bool Public { get; set; }
@@ -37,17 +35,20 @@ public class Note : IEntity<string>, ICreationEntity, ILastUpdateEntity
     public string? LastUpdaterId { get; set; }
 
     [Required]
-    public bool Deleted { get; set; }
-
-    [Required]
     public string ContentId { get; set; } = default!;
 
-    public DateTime? ContentLastEdit { get; set; }
+    [Required]
+    public string FolderId { get; set; } = default!;
 
-    public virtual User? User { get; set; }
-    public virtual Group? Group { get; set; }
+    public DateTime? ContentLastEdit { get; set; }
+    public string? UserId { get; set; }
+    public int? GroupId { get; set; }
+
     public virtual User? Creator { get; set; }
     public virtual User? LastUpdater { get; set; }
+    public virtual Folder Folder { get; set; } = default!;
+    public virtual User? User { get; set; }
+    public virtual Group? Group { get; set; }
     public virtual ICollection<NoteTag> Tags { get; set; } = default!;
     public virtual ICollection<EditorMember> EditorMemberships { get; set; } = default!;
 }

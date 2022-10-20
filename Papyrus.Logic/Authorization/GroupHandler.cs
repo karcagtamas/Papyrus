@@ -83,6 +83,11 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
         });
         checkers.Add(new GroupAuthorization
         {
+            Requirement = GroupOperations.CreateFolderRequirement,
+            Checker = (input) => input.GroupRole.EditNote || input.GroupRole.DeleteNote
+        });
+        checkers.Add(new GroupAuthorization
+        {
             Requirement = GroupOperations.ReadTagsRequirement,
             Checker = (input) => input.GroupRole.ReadTagList || input.GroupRole.EditTagList || input.GroupRole.ReadNoteList
         });

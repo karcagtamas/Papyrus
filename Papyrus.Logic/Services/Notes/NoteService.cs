@@ -1,12 +1,15 @@
 ﻿using System.Linq.Expressions;
 using AutoMapper;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using LinqKit;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
@@ -14,6 +17,7 @@ using Papyrus.Mongo.DataAccess.Entities;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
 using Papyrus.Shared.Enums.Notes;
+using Papyrus.Shared.HubEvents;
 using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Logic.Services.Notes;
@@ -25,9 +29,24 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     private readonly INoteContentService noteContentService;
     private readonly IUserService userService;
     private readonly IGroupService groupService;
+    private readonly IFolderService folderService;
+    private readonly IHubContext<NoteHub> hubContext;
 
-    public NoteService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupActionLogService groupActionLogService, INoteActionLogService noteActionLogService, INoteContentService noteContentService, IUserService userService, IGroupService groupService) : base(context, loggerService, utilsService, mapper, "Note")
+    public NoteService(
+        PapyrusContext context,
+        ILoggerService loggerService,
+        IUtilsService<string> utilsService,
+        IMapper mapper,
+        IGroupActionLogService groupActionLogService,
+        INoteActionLogService noteActionLogService,
+        INoteContentService noteContentService,
+        IUserService userService,
+        IGroupService groupService,
+        IFolderService folderService,
+        IHubContext<NoteHub> hubContext) : base(context, loggerService, utilsService, mapper, "Note")
     {
+        this.folderService = folderService;
+        this.hubContext = hubContext;
         this.groupActionLogService = groupActionLogService;
         this.noteActionLogService = noteActionLogService;
         this.noteContentService = noteContentService;
@@ -37,12 +56,18 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     public NoteCreationDTO CreateEmpty(NoteCreateModel model)
     {
+        var title = GenerateEmptyTitle(model.FolderId, model.Title);
         var note = new Note
         {
-            Title = model.Title
+            Title = title,
+            FolderId = model.FolderId,
         };
 
+        var folder = folderService.Get(model.FolderId);
+
         var userId = Utils.GetRequiredCurrentUserId();
+
+        ExceptionHelper.Check(ObjectHelper.IsNull(model.GroupId) ? userId == folder.UserId : model.GroupId == folder.GroupId, "Invalid Folder keys", "Server.Message.InvalidFolderKeys");
 
         if (ObjectHelper.IsNotNull(model.GroupId))
         {
@@ -77,13 +102,15 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return id;
     }
 
-    public List<NoteLightDTO> GetByGroup(int groupId, NoteFilterQueryModel query) => GetFilteredList(GetListAsQuery(x => x.GroupId == groupId), query);
-
-    public List<NoteLightDTO> GetByUser(NoteFilterQueryModel query)
+    public List<NoteLightDTO> GetFiltered(NoteFilterQueryModel query, int? groupId)
     {
         var userId = Utils.GetRequiredCurrentUserId();
 
-        return GetFilteredList(GetListAsQuery(x => x.UserId == userId), query);
+        return GetFilteredList(
+            ObjectHelper.IsNotNull(groupId)
+                ? GetListAsQuery(x => x.GroupId == groupId)
+                : GetListAsQuery(x => x.UserId == userId),
+            query);
     }
 
     public override T GetMapped<T>(string id)
@@ -123,6 +150,9 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
         note.Tags = tags;
 
+        var folder = folderService.Get(note.FolderId);
+        ExceptionHelper.Check(ObjectHelper.IsNull(folder.Parent) || folder.Parent.Notes.ToList().All(n => !TitlesAreEqual(n.Title, model.Title)), () => new ArgumentException("The name of the Note has to be unique"));
+
         Update(note);
     }
 
@@ -157,23 +187,36 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             {
                 noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Archived);
             }
-
-            if (o["Deleted"] as bool? != entity.Deleted)
-            {
-                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Delete);
-            }
         });
 
         base.Update(entity, doPersist);
+
+        // Send Socket request
+        var dto = GetMapped<NoteLightDTO>(entity.Id);
+        Task.WaitAll(hubContext.Clients.Group(entity.Id).SendAsync(NoteHubEvents.NoteUpdated, dto));
     }
 
-    public void Delete(string id)
+    public override void Delete(Note entity, bool doPersist = true)
     {
-        var note = Get(id);
+        string userId = Utils.GetRequiredCurrentUserId();
 
-        note.Deleted = true;
+        noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Delete);
 
-        Update(note);
+        try
+        {
+            noteContentService.DeleteById(entity.ContentId);
+        }
+        catch (Exception e)
+        {
+            Logger.LogError(e);
+        }
+
+        var oldId = entity.Id;
+
+        base.Delete(entity, doPersist);
+
+        // Send Socket request
+        Task.WaitAll(hubContext.Clients.Group(oldId).SendAsync(NoteHubEvents.NoteDeleted));
     }
 
     public async Task<NoteRightsDTO> GetRights(string id)
@@ -213,23 +256,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return new NoteRightsDTO();
     }
 
-    private List<NoteLightDTO> GetFilteredList(IQueryable<Note> queryable, NoteFilterQueryModel query)
-    {
-        return Mapper.Map<List<NoteLightDTO>>(
-            queryable
-                .Where(x => !x.Deleted)
-                .Where(x => query.PublishType == NotePublishType.All || (query.PublishType == NotePublishType.Published && x.Public) || (query.PublishType == NotePublishType.NotPublished && !x.Public))
-                .Where(x => (query.ArchivedStatus && x.Archived) || (!query.ArchivedStatus && !x.Archived))
-                .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
-                .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
-                .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
-                .OrderByDescending(x => x.LastUpdate)
-                .Include(x => x.Tags)
-                .Include(x => x.Creator)
-                .ToList()
-            );
-    }
-
     public List<SearchResultDTO> Search(SearchQueryModel query)
     {
         var userId = Utils.GetCurrentUserId();
@@ -261,6 +287,64 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         })
         .OrderByDescending(x => x.Creation)
         .ToList();
+    }
+
+    public void DeleteFolder(string folderId)
+    {
+        var folder = folderService.Get(folderId);
+
+        DeleteFolder(folder);
+    }
+
+    public bool Exists(string parentFolderId, string title, string? id)
+    {
+        var folder = folderService.Get(parentFolderId);
+
+        return Exists(folder.Notes.ToList(), title, id);
+    }
+
+    private string GenerateEmptyTitle(string folderId, string title)
+    {
+        var notes = folderService.Get(folderId).Notes.ToList();
+
+        string constructedTitle = title;
+        bool valid = false;
+        int c = 0;
+
+        do
+        {
+            if (c == 0)
+            {
+                constructedTitle = title;
+            }
+            else
+            {
+                constructedTitle = $"{title} ({c})";
+            }
+
+            valid = !Exists(notes, constructedTitle, null);
+
+            c++;
+        }
+        while (!valid);
+
+        return constructedTitle;
+    }
+
+    private List<NoteLightDTO> GetFilteredList(IQueryable<Note> queryable, NoteFilterQueryModel query)
+    {
+        return Mapper.Map<List<NoteLightDTO>>(
+            queryable
+                .Where(x => query.PublicStatus == null || query.PublicStatus == x.Public)
+                .Where(x => query.ArchivedStatus == null || query.ArchivedStatus == x.Archived)
+                .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
+                .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
+                .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
+                .OrderBy(x => x.Title)
+                .Include(x => x.Tags).ThenInclude(x => x.Tag)
+                .Include(x => x.Creator)
+                .ToList()
+            );
     }
 
     private static SearchResultDataDTO ConstructData(Note note, string? userId)
@@ -352,5 +436,23 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             .Distinct();
 
         return query.ToList();
+    }
+
+    private void DeleteFolder(Folder folder)
+    {
+        folder.Folders.ToList().ForEach(f => DeleteFolder(f));
+
+        folder.Notes.ToList().ForEach(n => Delete(n));
+
+        folderService.Delete(folder);
+    }
+
+    private bool TitlesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
+
+    private bool Exists(List<Note> notes, string title, string id)
+    {
+        return notes
+            .Where(x => x.Id != id)
+            .Any(x => TitlesAreEqual(x.Title, title));
     }
 }

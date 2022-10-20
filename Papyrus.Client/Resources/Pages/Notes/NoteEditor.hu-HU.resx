@@ -153,9 +153,6 @@
   <data name="IsArchived.Title" xml:space="preserve">
     <value>Archivált-e</value>
   </data>
-  <data name="IsDeleted.Title" xml:space="preserve">
-    <value>Törölt-e</value>
-  </data>
   <data name="IsPublic.Title" xml:space="preserve">
     <value>Publikus-e</value>
   </data>

@@ -1,11 +1,10 @@
 ﻿@page "/notes"
-@using Papyrus.Client.Services.Notes.Interfaces
+@page "/notes/{folder}"
 @attribute [Authorize]
 @inject IStringLocalizer<Notes> L
-@inject INoteService NoteService
 
-<ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
-    <NoteList Fetcher="Fetcher" />
+    <NoteList ListPrefix="/notes" Folder="@Folder" NoteCreateEnabled FolderCreateEnabled NoteOpenDisabled="false" FolderManageEnabled NoteEditEnabled NoteDeleteEnabled />
 </div>

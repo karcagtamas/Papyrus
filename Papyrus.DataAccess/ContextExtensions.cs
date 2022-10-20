@@ -206,57 +206,74 @@ public static class ContextExtensions
 
     public static ModelBuilder RegisterNoteEntities(this ModelBuilder builder)
     {
-        // Note
-        builder.Entity<Note>()
-            .HasOne(x => x.User)
-            .WithMany(x => x.Notes)
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<Note>()
-            .HasOne(x => x.Group)
-            .WithMany(x => x.Notes)
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<Note>()
-            .HasOne(x => x.Creator)
-            .WithMany(x => x.CreatedNotes)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.SetNull);
-        builder.Entity<Note>()
-            .HasOne(x => x.LastUpdater)
-            .WithMany(x => x.LastUpdatedNotes)
-            .IsRequired(false)
-            .OnDelete(DeleteBehavior.SetNull);
-        builder.Entity<Note>()
-            .HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+        builder.Entity<Folder>(folder =>
+        {
+            folder.HasOne(x => x.User)
+                .WithMany(x => x.Folders)
+                .OnDelete(DeleteBehavior.Cascade);
+            folder.HasOne(x => x.Group)
+                .WithMany(x => x.Folders)
+                .OnDelete(DeleteBehavior.Cascade);
+            folder.HasOne(x => x.Creator)
+                .WithMany(x => x.CreatedFolders)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            folder.HasOne(x => x.Parent)
+                .WithMany(x => x.Folders)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.Cascade);
+            folder.HasCheckConstraint("CK_Folder_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+        });
 
-        // Tag
-        builder.Entity<Tag>()
-            .HasOne(x => x.Group)
-            .WithMany(x => x.Tags)
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<Tag>()
-            .HasOne(x => x.User)
-            .WithMany(x => x.Tags)
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<Tag>()
-            .HasOne(x => x.Parent)
-            .WithMany(x => x.Children)
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<Tag>()
-            .HasCheckConstraint("CK_Tag_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+        builder.Entity<Note>(note =>
+        {
+            note.HasOne(x => x.User)
+                .WithMany(x => x.Notes)
+                .OnDelete(DeleteBehavior.Cascade);
+            note.HasOne(x => x.Group)
+                .WithMany(x => x.Notes)
+                .OnDelete(DeleteBehavior.Cascade);
+            note.HasOne(x => x.Creator)
+                .WithMany(x => x.CreatedNotes)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            note.HasOne(x => x.LastUpdater)
+                .WithMany(x => x.LastUpdatedNotes)
+                .IsRequired(false)
+                .OnDelete(DeleteBehavior.SetNull);
+            note.HasOne(x => x.Folder)
+                .WithMany(x => x.Notes)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            note.HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+        });
 
-        // Note Tags
-        builder.Entity<NoteTag>()
-            .HasKey(x => new { x.NoteId, x.TagId });
-        builder.Entity<NoteTag>()
-            .HasOne(x => x.Note)
-            .WithMany(x => x.Tags)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<NoteTag>()
-            .HasOne(x => x.Tag)
-            .WithMany(x => x.Notes)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<Tag>(tag =>
+        {
+            tag.HasOne(x => x.Group)
+                .WithMany(x => x.Tags)
+                .OnDelete(DeleteBehavior.Cascade);
+            tag.HasOne(x => x.User)
+                .WithMany(x => x.Tags)
+                .OnDelete(DeleteBehavior.Cascade);
+            tag.HasOne(x => x.Parent)
+                .WithMany(x => x.Children)
+                .OnDelete(DeleteBehavior.Cascade);
+            tag.HasCheckConstraint("CK_Tag_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+        });
+
+        builder.Entity<NoteTag>(noteTag =>
+        {
+            noteTag.HasKey(x => new { x.NoteId, x.TagId });
+            noteTag.HasOne(x => x.Note)
+                .WithMany(x => x.Tags)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            noteTag.HasOne(x => x.Tag)
+                .WithMany(x => x.Notes)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         return builder;
     }

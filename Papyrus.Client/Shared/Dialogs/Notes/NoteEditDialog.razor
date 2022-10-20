@@ -7,7 +7,7 @@
 @inject IHelperService Helper
 @inject INoteService NoteService
 
-<EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="true">
+<EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="true" FormValidator="ValidateForm">
     <TextInput Class="mb-5" Label="@L["Field.Title"]" Required For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth />
     <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsPublic"]" For="@(() => Model.Public)" @bind-Checked="Model.Public" />
     <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsArchived"]" For="@(() => Model.Archived)" @bind-Checked="Model.Archived" />
@@ -29,7 +29,10 @@
     public string NoteId { get; set; } = default!;
 
     [Parameter]
-    public NoteRightsDTO Rights { get; set; } = new();
+    public bool DeleteEnabled { get; set; } = false;
+
+    [Parameter]
+    public string ParentFolderId { get; set; } = default!;
 
     private NoteLightDTO? Note { get; set; }
     private NoteModel Model { get; set; } = new();
@@ -38,6 +41,8 @@
 
     protected override async void OnInitialized()
     {
+        await base.OnInitializedAsync();
+
         Note = await NoteService.GetLight(NoteId);
 
         if (ObjectHelper.IsNotNull(Note))
@@ -46,15 +51,13 @@
             Tags = Note.Tags;
             Model.Tags = Tags.Select(x => x.Id).ToList();
 
-            if (Rights.CanEdit)
+            if (DeleteEnabled)
             {
                 Remove = () => NoteService.Delete(NoteId);
             }
 
             await InvokeAsync(StateHasChanged);
         }
-
-        base.OnInitialized();
     }
 
     private Task<bool> Submit() => NoteService.Update(NoteId, Model);
@@ -90,5 +93,16 @@
         Tags = Tags.Where(x => x.Id != id).ToList();
         Model.Tags.Remove(id);
         StateHasChanged();
+    }
+
+    private async Task<bool> ValidateForm(NoteModel model, ISnackbar snackbar)
+    {
+        if (await NoteService.Exists(ParentFolderId, model.Title, NoteId))
+        {
+            snackbar.Add(L["Message.AlreadyExists", model.Title], Severity.Error);
+            return false;
+        }
+
+        return true;
     }
 }

@@ -129,6 +129,9 @@
   <data name="Field.Title" xml:space="preserve">
     <value>Cím</value>
   </data>
+  <data name="Message.AlreadyExists" xml:space="preserve">
+    <value>Egy jegyzet már létezik ezzel a névvel: {0}</value>
+  </data>
   <data name="Tooltip.Add" xml:space="preserve">
     <value>Címkék hozzáadása</value>
   </data>

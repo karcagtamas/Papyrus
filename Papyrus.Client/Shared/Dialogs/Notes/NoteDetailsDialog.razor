@@ -1,0 +1,42 @@
+@using Papyrus.Shared.DTOs.Notes
+@inject IStringLocalizer<NoteDetailsDialog> L
+
+<MudDialog>
+    <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">@L["Title", Note.Title]</MudText></TitleContent>
+    <DialogContent>
+        <DataRow Title="@L["Row.Title"]" Value="@Note.Title" />
+        <DateDataRow Title="@L["Row.Creation"]" Date="Note.Creation" />
+        <DateDataRow Title="@L["Row.LastUpdate"]" Date="Note.LastUpdate" />
+        <DataRow Title="@L["Row.Creator"]" Value="@Note.Creator" />
+        <DataRow Title="@L["Row.LastUpdater"]" Value="@Note.LastUpdater" />
+        <LogicDataRow Title="@L["Row.Public"]" TrueValue="@L["Row.Value.True"]" FalseValue="@L["Row.Value.True"]" Value="@Note.Public" />
+        <LogicDataRow Title="@L["Row.Archived"]" TrueValue="@L["Row.Value.True"]" FalseValue="@L["Row.Value.True"]" Value="@Note.Archived" />
+        <MudText Color="Color.Primary">@L["Row.Tags"]:</MudText>
+        @if (ObjectHelper.IsEmpty(Note.Tags))
+        {
+            <MudText>@L["Row.Tags.Empty"]</MudText>
+        }
+        else
+        {
+            <div>
+                @foreach (var tag in Note.Tags)
+                {
+                    <TagBox @key="tag.Id" Tag="tag" />
+                }
+            </div>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudSpacer />
+        <MudButton Color="Color.Primary" OnClick="@(() => Dialog.Close())">@L["Action.OK"]</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code
+{
+    [Parameter]
+    public NoteLightDTO Note { get; set; } = default!;
+
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+}

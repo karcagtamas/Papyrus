@@ -352,6 +352,49 @@ namespace Papyrus.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Folder", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("Creation")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("CreatorId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<string>("ParentId")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("ParentId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Folders");
+
+                    b.HasCheckConstraint("CK_Folder_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+                });
+
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Note", b =>
                 {
                     b.Property<string>("Id")
@@ -373,8 +416,9 @@ namespace Papyrus.Migrations
                     b.Property<string>("CreatorId")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("tinyint(1)");
+                    b.Property<string>("FolderId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
@@ -390,7 +434,8 @@ namespace Papyrus.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("varchar(255)");
@@ -398,6 +443,8 @@ namespace Papyrus.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CreatorId");
+
+                    b.HasIndex("FolderId");
 
                     b.HasIndex("GroupId");
 
@@ -1253,12 +1300,49 @@ namespace Papyrus.Migrations
                     b.Navigation("Group");
                 });
 
+            modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Folder", b =>
+                {
+                    b.HasOne("Papyrus.DataAccess.Entities.User", "Creator")
+                        .WithMany("CreatedFolders")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Papyrus.DataAccess.Entities.Groups.Group", "Group")
+                        .WithMany("Folders")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Papyrus.DataAccess.Entities.Notes.Folder", "Parent")
+                        .WithMany("Folders")
+                        .HasForeignKey("ParentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Papyrus.DataAccess.Entities.User", "User")
+                        .WithMany("Folders")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Creator");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("Parent");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Note", b =>
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.User", "Creator")
                         .WithMany("CreatedNotes")
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Papyrus.DataAccess.Entities.Notes.Folder", "Folder")
+                        .WithMany("Notes")
+                        .HasForeignKey("FolderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Papyrus.DataAccess.Entities.Groups.Group", "Group")
                         .WithMany("Notes")
@@ -1276,6 +1360,8 @@ namespace Papyrus.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Creator");
+
+                    b.Navigation("Folder");
 
                     b.Navigation("Group");
 
@@ -1367,6 +1453,8 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Groups.Group", b =>
                 {
+                    b.Navigation("Folders");
+
                     b.Navigation("Members");
 
                     b.Navigation("Notes");
@@ -1384,6 +1472,13 @@ namespace Papyrus.Migrations
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Language", b =>
                 {
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Folder", b =>
+                {
+                    b.Navigation("Folders");
+
+                    b.Navigation("Notes");
                 });
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Note", b =>
@@ -1411,6 +1506,8 @@ namespace Papyrus.Migrations
 
                     b.Navigation("AddedGroupMembers");
 
+                    b.Navigation("CreatedFolders");
+
                     b.Navigation("CreatedGroups");
 
                     b.Navigation("CreatedNotes");
@@ -1418,6 +1515,8 @@ namespace Papyrus.Migrations
                     b.Navigation("CreatedPosts");
 
                     b.Navigation("EditorMemberships");
+
+                    b.Navigation("Folders");
 
                     b.Navigation("Groups");
 

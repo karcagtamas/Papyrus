@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Papyrus.Shared.DTOs.Groups.Rights;
-using Papyrus.Shared.DTOs.Notes;
-using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Client.Pages.Groups;
 
@@ -9,6 +7,9 @@ public partial class GroupNotes : ComponentBase
 {
     [Parameter]
     public int GroupId { get; set; }
+
+    [Parameter]
+    public string? Folder { get; set; }
 
     private GroupNoteRightsDTO Rights { get; set; } = new();
     private bool PageEnabled { get; set; }
@@ -24,8 +25,6 @@ public partial class GroupNotes : ComponentBase
 
         await Refresh();
     }
-
-    private Task<List<NoteLightDTO>> Fetcher(NoteFilterQueryModel query) => NoteService.GetByGroup(GroupId, query);
 
     private async Task<bool> SetPageStatus()
     {

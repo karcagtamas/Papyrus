@@ -79,6 +79,7 @@ builder.Services.AddScoped<INoteActionLogService, NoteActionLogService>();
 builder.Services.AddScoped<INoteActionLogTableService, NoteActionLogTableService>();
 builder.Services.AddScoped<INoteContentService, NoteContentService>();
 builder.Services.AddScoped<ITagService, TagService>();
+builder.Services.AddScoped<IFolderService, FolderService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
 
@@ -100,6 +101,7 @@ var mapperConfig = new MapperConfiguration(conf =>
     conf.AddProfile<LanguageMapper>();
     conf.AddProfile<RoleMapper>();
     conf.AddProfile<PostMapper>();
+    conf.AddProfile<FolderMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
@@ -140,6 +142,7 @@ builder.Services.AddModelValidatedControllers();
 builder.Services.AddTransient<IAuthorizationHandler, GroupHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, NoteHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, TagHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, FolderHandler>();
 
 // Auth
 builder.Services
@@ -169,7 +172,7 @@ builder.Services
                 var accessToken = context.Request.Query["access_token"];
 
                 var path = context.HttpContext.Request.Path;
-                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/editor"))
+                if (!string.IsNullOrEmpty(accessToken) && (path.StartsWithSegments("/editor") || path.StartsWithSegments("/note")))
                 {
                     context.Token = accessToken;
                 }
@@ -230,6 +233,7 @@ if (bool.TrueString.Equals(builder.Configuration["HttpsRedirect"]))
 }
 
 app.MapHub<EditorHub>("/editor");
+app.MapHub<NoteHub>("/note");
 
 app.UseCors("Policy");
 

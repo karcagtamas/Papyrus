@@ -17,39 +17,39 @@ public class NoteService : HttpCall<string>, INoteService
         this.localizer = localizer;
     }
 
-    public Task<NoteCreationDTO?> CreateEmpty(int? groupId)
+    public Task<NoteCreationDTO?> CreateEmpty(string folderId, int? groupId = null)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url))
             .AddToaster(localizer["Toaster.Create"]);
 
-        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId, Title = localizer["NoteTitle"] })
+        return Http.PostWithResult<NoteCreationDTO, NoteCreateModel>(settings, new NoteCreateModel { GroupId = groupId, Title = localizer["NoteTitle"], FolderId = folderId })
             .ExecuteWithResult();
     }
 
-    public Task<List<NoteLightDTO>> GetByGroup(int groupId, NoteFilterQueryModel query)
+    public Task<bool> Exists(string parentFolderId, string title, string? id)
     {
-        var pathParams = HttpPathParameters.Build()
-            .Add(groupId);
-
         var queryParams = HttpQueryParameters.Build()
-            .AddNoteFilters(query);
+            .Add("parentFolder", parentFolderId)
+            .Add("title", title)
+            .Add("id", id);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "Group"))
-            .AddPathParams(pathParams)
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Exists"))
             .AddQueryParams(queryParams);
 
-        return Http.Get<List<NoteLightDTO>>(settings).ExecuteWithResultOrElse(new());
+        return Http.GetBool(settings).ExecuteWithResult();
     }
 
-    public Task<List<NoteLightDTO>> GetByUser(NoteFilterQueryModel query)
+    public Task<List<NoteLightDTO>> GetFiltered(NoteFilterQueryModel query, int? groupId)
     {
         var queryParams = HttpQueryParameters.Build()
-            .AddNoteFilters(query);
+            .AddNoteFilters(query)
+            .Add("group", groupId);
 
-        var settings = new HttpSettings(Http.BuildUrl(Url, "User"))
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Filtered"))
             .AddQueryParams(queryParams);
 
-        return Http.Get<List<NoteLightDTO>>(settings).ExecuteWithResultOrElse(new());
+        return Http.Get<List<NoteLightDTO>>(settings)
+            .ExecuteWithResultOrElse(new());
     }
 
     public Task<NoteLightDTO?> GetLight(string id)

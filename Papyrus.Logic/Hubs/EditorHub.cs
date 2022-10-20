@@ -1,4 +1,5 @@
-﻿using KarcagS.Common.Tools.Services;
+﻿using System.Text;
+using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
@@ -9,7 +10,6 @@ using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.HubEvents;
-using System.Text;
 
 namespace Papyrus.Logic.Hubs;
 
@@ -82,12 +82,6 @@ public class EditorHub : Hub
             });
         }
     }
-
-    [Authorize]
-    public async Task UpdateNote(string editor, NoteChangeEventArgs args) => await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorNoteUpdated, args);
-
-    [Authorize]
-    public async Task DeleteNote(string editor) => await Clients.OthersInGroup(editor).SendAsync(EditorHubEvents.EditorNoteDeleted);
 
     public override async Task OnDisconnectedAsync(Exception? exception)
     {

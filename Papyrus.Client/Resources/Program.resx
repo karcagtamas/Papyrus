@@ -177,6 +177,9 @@
   <data name="Server.Message.Fatal" xml:space="preserve">
     <value>Something bad happened. Please try again later.</value>
   </data>
+  <data name="Server.Message.InvalidFolderKeys" xml:space="preserve">
+    <value>Invalid Folder keys.</value>
+  </data>
   <data name="Server.Message.MissingCloseRight" xml:space="preserve">
     <value>Not have permission to Close this group.</value>
   </data>

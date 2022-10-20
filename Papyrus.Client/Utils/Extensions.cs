@@ -11,7 +11,7 @@ public static class Extensions
     public static HttpQueryParameters AddNoteFilters(this HttpQueryParameters queryParams, NoteFilterQueryModel query)
     {
         return queryParams
-            .Add("publishType", query.PublishType)
+            .Add("publicStatus", query.PublicStatus)
             .Add("archivedStatus", query.ArchivedStatus)
             .Add("textFilter", query.TextFilter)
             .Add("dateFilter", query.DateFilter)

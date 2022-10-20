@@ -1,4 +1,5 @@
 ﻿@page "/groups/{GroupId:int}/notes"
+@page "/groups/{GroupId:int}/notes/{folder}"
 @using Papyrus.Client.Services.Groups.Interfaces
 @using Papyrus.Client.Services.Notes.Interfaces
 @attribute [Authorize]
@@ -12,6 +13,6 @@
 <div class="page-div">
     @if (PageEnabled)
     {
-        <NoteList Fetcher="Fetcher" GroupId="GroupId" CreateEnabled="Rights.CanCreate" OpenDisabled="Rights.CanOpen" />
+        <NoteList ListPrefix="@($@"/groups/{GroupId}/notes")" Folder="@Folder" GroupId="GroupId" NoteCreateEnabled="Rights.CanCreateNote" FolderCreateEnabled="Rights.CanCreateFolder" NoteOpenDisabled="!Rights.CanOpenNote" FolderManageEnabled="Rights.CanManageFolder" NoteEditEnabled="Rights.CanEditNote" NoteDeleteEnabled="Rights.CanDeleteNote" />
     }
 </div>

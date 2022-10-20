@@ -43,19 +43,16 @@ public class NoteController : ControllerBase
         return noteService.GetMapped<NoteLightDTO>(id);
     }
 
-    [HttpGet("Group/{groupId}")]
-    public async Task<ActionResult<List<NoteLightDTO>>> GetByGroup(int groupId, [FromQuery] NoteFilterQueryModel query)
+    [HttpGet("Filtered")]
+    public async Task<ActionResult<List<NoteLightDTO>>> GetFiltered([FromQuery] NoteFilterQueryModel query, [FromQuery] int? group)
     {
-        if (!await rightService.HasGroupNoteListReadRight(groupId))
+        if (ObjectHelper.IsNotNull(group) && !await rightService.HasGroupNoteListReadRight((int)group))
         {
             return new EmptyResult();
         }
 
-        return noteService.GetByGroup(groupId, query);
+        return noteService.GetFiltered(query, group);
     }
-
-    [HttpGet("User")]
-    public List<NoteLightDTO> GetByUser([FromQuery] NoteFilterQueryModel query) => noteService.GetByUser(query);
 
     [HttpPost]
     public async Task<ActionResult<NoteCreationDTO>> CreateEmpty([FromBody] NoteCreateModel model)
@@ -91,7 +88,7 @@ public class NoteController : ControllerBase
             return new EmptyResult();
         }
 
-        noteService.Delete(id);
+        noteService.DeleteById(id);
 
         return Ok();
     }
@@ -110,4 +107,7 @@ public class NoteController : ControllerBase
     [HttpGet("Search")]
     [AllowAnonymous]
     public List<SearchResultDTO> Search([FromQuery] SearchQueryModel query) => noteService.Search(query);
+
+    [HttpGet("Exists")]
+    public bool Exists([FromQuery] string parentFolder, [FromQuery] string title, [FromQuery] string? id) => noteService.Exists(parentFolder, title, id);
 }

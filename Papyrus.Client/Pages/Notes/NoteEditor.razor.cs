@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using KarcagS.Blazor.Common.Components.Dialogs;
 using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
@@ -20,7 +19,8 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     private Editor? Editor = new();
 
-    private HubConnection? hub;
+    private HubConnection? editorHub;
+    private HubConnection? noteHub;
     private string PageTitle { get; set; } = "Editor [New Document]";
     private NoteDTO? Note { get; set; }
     private NoteRightsDTO NoteRights { get; set; } = new();
@@ -40,7 +40,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
         await Refresh();
 
-        InitHub();
+        InitHubs();
 
         await InvokeAsync(StateHasChanged);
     }
@@ -82,18 +82,18 @@ public partial class NoteEditor : ComponentBase, IDisposable
         await InvokeAsync(StateHasChanged);
     }
 
-    private void InitHub()
+    private void InitHubs()
     {
-        hub = new HubConnectionBuilder()
+        editorHub = new HubConnectionBuilder()
             .WithUrl($"{ApplicationSettings.BaseUrl}/editor?Editor={Id}", options =>
             {
                 options.AccessTokenProvider = () => TokenService.GetAccessTokenProvider();
             })
             .Build();
 
-        hub?.On<byte[]>(EditorHubEvents.EditorChanged, ApplyDiffs);
+        editorHub?.On<byte[]>(EditorHubEvents.EditorChanged, ApplyDiffs);
 
-        hub?.On<UserLightDTO>(EditorHubEvents.EditorMemberJoined, async (user) =>
+        editorHub?.On<UserLightDTO>(EditorHubEvents.EditorMemberJoined, async (user) =>
         {
             if (ObjectHelper.IsNotNull(user))
             {
@@ -103,31 +103,38 @@ public partial class NoteEditor : ComponentBase, IDisposable
             }
         });
 
-        hub?.On<string>(EditorHubEvents.EditorMemberLeft, async (user) =>
+        editorHub?.On<string>(EditorHubEvents.EditorMemberLeft, async (user) =>
         {
             // Remove user from the list
             Users.RemoveAll(x => x.Id == user);
             await InvokeAsync(StateHasChanged);
         });
 
-        hub?.On<NoteChangeEventArgs>(EditorHubEvents.EditorNoteUpdated, async (args) =>
+        noteHub = new HubConnectionBuilder()
+            .WithUrl($"{ApplicationSettings.BaseUrl}/note?Note={Id}", options =>
+            {
+                options.AccessTokenProvider = () => TokenService.GetAccessTokenProvider();
+            })
+            .Build();
+
+        noteHub?.On<NoteLightDTO>(NoteHubEvents.NoteUpdated, async (data) =>
         {
             if (ObjectHelper.IsNotNull(Note))
             {
-                Note.Title = args.Title;
-                Note.Tags = args.Tags;
-                Note.Public = args.Public;
-                Note.Archived = args.Archived;
-                Note.LastUpdate = args.LastUpdate;
-                Note.LastUpdater = args.LastUpdater;
+                Note.Title = data.Title;
+                Note.Tags = data.Tags;
+                Note.Public = data.Public;
+                Note.Archived = data.Archived;
+                Note.LastUpdate = data.LastUpdate;
+                Note.LastUpdater = data.LastUpdater;
                 UpdatePageTitle();
                 await InvokeAsync(StateHasChanged);
             }
         });
 
-        hub?.On(EditorHubEvents.EditorNoteDeleted, () => HandleDeleteAction());
+        noteHub?.On(NoteHubEvents.NoteDeleted, () => HandleDeleteAction());
 
-        ObjectHelper.WhenNotNull(hub, async (h) =>
+        ObjectHelper.WhenNotNull(editorHub, async (h) =>
         {
             try
             {
@@ -136,7 +143,19 @@ public partial class NoteEditor : ComponentBase, IDisposable
             catch (Exception e)
             {
                 Console.WriteLine(e);
-                hub = null;
+                editorHub = null;
+            }
+        });
+        ObjectHelper.WhenNotNull(noteHub, async (h) =>
+        {
+            try
+            {
+                await h.StartAsync();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                noteHub = null;
             }
         });
     }
@@ -145,7 +164,7 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     private void HandleChange(string content)
     {
-        ObjectHelper.WhenNotNull(hub, (h) =>
+        ObjectHelper.WhenNotNull(editorHub, (h) =>
         {
             if (h.State != HubConnectionState.Connected)
             {
@@ -172,55 +191,16 @@ public partial class NoteEditor : ComponentBase, IDisposable
 
     private async Task OpenEdit()
     {
-        if (!NoteRights.CanEdit)
+        if (!NoteRights.CanEdit || ObjectHelper.IsNull(Note))
         {
             return;
         }
 
-        var parameters = new DialogParameters { { "NoteId", Id }, { "Rights", NoteRights } };
+        var parameters = new DialogParameters { { "NoteId", Id }, { "DeleteEnabled", NoteRights.CanDelete }, { "ParentFolderId", Note.FolderId } };
 
-        await Helper.OpenEditorDialog<NoteEditDialog>("Edit Note", async (res) =>
+        await Helper.OpenEditorDialog<NoteEditDialog>("Edit Note", (res) =>
         {
-            if (res.Performed)
-            {
-                if (res.Event == EditorCloseEvent.Remove)
-                {
-                    hub?.SendAsync(EditorHubEvents.EditorNoteDeleted, Id);
-
-                    // Will notify other clients
-                    HandleDeleteAction();
-                }
-                else if (res.Event == EditorCloseEvent.Edit)
-                {
-                    // Fetch new data
-                    var note = await NoteService.GetLight(Id);
-
-                    ObjectHelper.WhenNotNull(note, async n =>
-                    {
-                        if ((hub?.State ?? HubConnectionState.Disconnected) != HubConnectionState.Connected)
-                        {
-                            Toaster.Open(new ToasterSettings { Caption = L["Hub.Message.Disconnected"], Type = ToasterType.Error });
-                            return;
-                        }
-
-                        // Notify other clients
-                        hub?.SendAsync(EditorHubEvents.EditorUpdateNote, Id, new NoteChangeEventArgs { Title = n.Title, Tags = n.Tags, Public = n.Public, Archived = n.Archived, LastUpdate = n.LastUpdate, LastUpdater = n.LastUpdater });
-
-                        if (ObjectHelper.IsNotNull(Note))
-                        {
-                            // Internal update
-                            Note.Title = n.Title;
-                            Note.Tags = n.Tags;
-                            Note.Public = n.Public;
-                            Note.Archived = n.Archived;
-                            Note.LastUpdate = n.LastUpdate;
-                            Note.LastUpdater = n.LastUpdater;
-                        }
-                        UpdatePageTitle();
-                        await InvokeAsync(StateHasChanged);
-                    });
-                }
-            }
+            // Socket Response will refresh
         }, parameters);
     }
 
@@ -261,6 +241,10 @@ public partial class NoteEditor : ComponentBase, IDisposable
         Navigation.NavigateTo(url);
     }
 
-    public void Dispose() => ObjectHelper.WhenNotNull(hub, async h => await h.DisposeAsync());
+    public void Dispose()
+    {
+        ObjectHelper.WhenNotNull(editorHub, async h => await h.DisposeAsync());
+        ObjectHelper.WhenNotNull(noteHub, async h => await h.DisposeAsync());
+    }
 
 }

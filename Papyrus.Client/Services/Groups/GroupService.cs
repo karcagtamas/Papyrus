@@ -117,9 +117,9 @@ public class GroupService : HttpCall<int>, IGroupService
     public Task<GroupNoteRightsDTO> GetNoteRights(int id)
     {
         var pathParams = HttpPathParameters.Build()
-             .Add(id)
-             .Add("Rights")
-             .Add("Note");
+            .Add(id)
+            .Add("Rights")
+            .Add("Note");
 
         var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
 
