@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -53,4 +54,10 @@ public class UserController : ControllerBase
 
     [HttpGet("AppAccess")]
     public List<AccessDTO> GetAppAccesses() => userService.GetAppAccesses();
+
+    [HttpGet("NoteAccess/Recent")]
+    public List<NoteListDTO> GetRecentNoteAccesses() => userService.GetRecentNoteAccesses();
+
+    [HttpGet("NoteAccess/Common")]
+    public List<NoteListDTO> GetMostCommonNoteAccesses() => userService.GetMostCommonNoteAccesses();
 }

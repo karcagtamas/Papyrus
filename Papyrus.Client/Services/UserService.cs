@@ -3,6 +3,7 @@ using KarcagS.Blazor.Common.Models;
 using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -41,6 +42,20 @@ public class UserService : HttpCall<string>, IUserService
         var settings = new HttpSettings(Http.BuildUrl(Url, "AppAccess"));
 
         return Http.Get<List<AccessDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
+
+    public Task<List<NoteListDTO>> GetMostCommonNoteAccesses()
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "NoteAccess", "Common"));
+
+        return Http.Get<List<NoteListDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
+
+    public Task<List<NoteListDTO>> GetRecentNoteAccesses()
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "NoteAccess", "Recent"));
+
+        return Http.Get<List<NoteListDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
     public Task<UserSettingDTO?> GetSettings(string id)
