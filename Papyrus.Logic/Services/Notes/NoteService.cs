@@ -303,6 +303,14 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return Exists(folder.Notes.ToList(), title, id);
     }
 
+    public void Access(string id)
+    {
+        var note = Get(id);
+
+        note.Accesses.Add(new NoteAccess { Id = Guid.NewGuid().ToString(), NoteId = id, UserId = Utils.GetRequiredCurrentUserId(), Timestamp = DateTime.Now });
+        Update(note);
+    }
+
     private string GenerateEmptyTitle(string folderId, string title)
     {
         var notes = folderService.Get(folderId).Notes.ToList();

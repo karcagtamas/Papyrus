@@ -14,4 +14,5 @@ public interface INoteService : IMapperRepository<Note, string>
     List<SearchResultDTO> Search(SearchQueryModel query);
     void DeleteFolder(string folderId);
     bool Exists(string parentFolderId, string title, string? id);
+    void Access(string id);
 }

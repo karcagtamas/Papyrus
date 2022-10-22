@@ -162,4 +162,6 @@ public class UserService : MapperRepository<User, string, string>, IUserService
 
         return await userManager.IsInRoleAsync(user, "Administrator");
     }
+
+    public List<AccessDTO> GetAppAccesses() => Mapper.Map<List<AccessDTO>>(Utils.GetCurrentUser<User>().AppAccesses.OrderByDescending(x => x.Timestamp).Take(5).ToList());
 }

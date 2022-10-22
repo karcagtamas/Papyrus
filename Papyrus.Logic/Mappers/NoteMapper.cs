@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
 
@@ -27,5 +28,7 @@ public class NoteMapper : Profile
             .ForMember(dest => dest.Caption, opt => opt.MapFrom(src => src.Tag.Caption))
             .ForMember(dest => dest.Color, opt => opt.MapFrom(src => src.Tag.Color));
         CreateMap<Tag, NoteTagDTO>();
+
+        CreateMap<NoteAccess, AccessDTO>();
     }
 }

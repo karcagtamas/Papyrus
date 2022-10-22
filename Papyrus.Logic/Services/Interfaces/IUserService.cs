@@ -21,4 +21,5 @@ public interface IUserService : IMapperRepository<User, string>
     void Update(string id, UserModel model);
     void UpdateSettings(string id, UserSettingModel model);
     List<UserLightDTO> Search(string searchTerm, bool ignoreCurrent, List<string> ignored);
+    List<AccessDTO> GetAppAccesses();
 }

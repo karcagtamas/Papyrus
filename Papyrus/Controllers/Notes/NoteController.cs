@@ -110,4 +110,7 @@ public class NoteController : ControllerBase
 
     [HttpGet("Exists")]
     public bool Exists([FromQuery] string parentFolder, [FromQuery] string title, [FromQuery] string? id) => noteService.Exists(parentFolder, title, id);
+
+    [HttpPost("Access")]
+    public void Access([FromBody] string id) => noteService.Access(id);
 }

@@ -1,11 +1,62 @@
 @page "/dashboard"
 @attribute [Authorize]
+@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Shared.DTOs
+@inject IUserService UserService
 @inject IStringLocalizer<Dashboard> L
 
 <ApplicationPageTitle PageName="Dashboard" />
 
 <div class="page-body">
-    <MudText Typo="Typo.h2" Color="Color.Primary">Papyrus</MudText>
-    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-5">@L["Details"]</MudText>
-    <MainImage Width="500" Class="mt-5" />
+    <div class="flex-box flex-row h-100 w-100">
+        <div class="flex-box w-100 align-items-center justify-content-center">
+            <MudText Typo="Typo.h2" Color="Color.Primary">Papyrus</MudText>
+            <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-5">@L["Details"]</MudText>
+            <MainImage Width="500" Class="mt-5" />
+        </div>
+        <div class="flex-box w-100">
+            <div class="flex-box p-2">
+                <MudCard Class="h-100 p-1 m-4">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-1">@L["LastAppAccess"]:</MudText>
+                    <div class="p-1">
+                        @foreach (var access in AppAccesses)
+                        {
+                            <MudText @key="access.Id">@L["AccessOn", DateHelper.DateToString(access.Timestamp)]</MudText>
+                        }
+                    </div>
+                </MudCard>
+            </div>
+            <div class="flex-box p-2">
+                <MudCard Class="h-100 p-1 m-4">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-1">@L["RecentNoteAccess"]:</MudText>
+                    <div class="p-1">
+
+                    </div>
+                </MudCard>
+            </div>
+            <div class="flex-box p-2">
+                <MudCard Class="h-100 p-1 m-4">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-1">@L["MostNoteAccess"]:</MudText>
+                    <div class="p-1">
+
+                    </div>
+                </MudCard>
+            </div>
+        </div>
+    </div>
+
 </div>
+
+@code
+{
+    public List<AccessDTO> AppAccesses { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        AppAccesses = await UserService.GetAppAccesses();
+    }
+}
+
+

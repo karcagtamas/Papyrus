@@ -36,6 +36,13 @@ public class UserService : HttpCall<string>, IUserService
         return Http.GetBool(settings).ExecuteWithResult();
     }
 
+    public Task<List<AccessDTO>> GetAppAccesses()
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "AppAccess"));
+
+        return Http.Get<List<AccessDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
+
     public Task<UserSettingDTO?> GetSettings(string id)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, id, "Settings"));

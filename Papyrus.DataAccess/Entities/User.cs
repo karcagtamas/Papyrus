@@ -54,4 +54,6 @@ public class User : IdentityUser<string>, IEntity<string>
 
     public virtual ICollection<Post> CreatedPosts { get; set; } = default!;
     public virtual ICollection<Post> UpdatedPosts { get; set; } = default!;
+    public virtual ICollection<AppAccess> AppAccesses { get; set; } = default!;
+    public virtual ICollection<NoteAccess> NoteAccesses { get; set; } = default!;
 }

@@ -17,6 +17,13 @@ public class NoteService : HttpCall<string>, INoteService
         this.localizer = localizer;
     }
 
+    public Task<bool> Access(string id)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Access"));
+
+        return Http.Post(settings, id).Execute();
+    }
+
     public Task<NoteCreationDTO?> CreateEmpty(string folderId, int? groupId = null)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url))

@@ -50,4 +50,7 @@ public class UserController : ControllerBase
 
     [HttpGet("Search")]
     public List<UserLightDTO> Search([FromQuery] string searchTerm, [FromQuery] bool ignoreCurrent, [FromQuery] List<string> ignored) => userService.Search(searchTerm, ignoreCurrent, ignored);
+
+    [HttpGet("AppAccess")]
+    public List<AccessDTO> GetAppAccesses() => userService.GetAppAccesses();
 }

@@ -15,4 +15,5 @@ public interface IUserService : IHttpCall<string>
     Task<bool> UpdatePassword(UserPasswordModel model);
     Task<bool> UpdateSettings(string id, UserSettingModel model);
     Task<List<UserLightDTO>> Search(string searchTerm, bool ignoreCurrent, List<string> ignored);
+    Task<List<AccessDTO>> GetAppAccesses();
 }
