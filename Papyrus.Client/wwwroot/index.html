@@ -1,43 +1,89 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+        />
+        <meta
+            http-equiv="Content-Security-Policy"
+            content="worker-src blob:; child-src blob: gap:; img-src 'self' blob: data:; default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:"
+        />
+        <title>Papyrus</title>
+        <base href="/" />
+        <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
+        <link href="Papyrus.Client.styles.css" rel="stylesheet" />
+        <link href="css/app.css" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap"
+            rel="stylesheet"
+        />
+        <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
+        <link href="_content/KarcagS.Blazor.Common/lib.css" rel="stylesheet" />
+        <link
+            href="https://use.fontawesome.com/releases/v5.14.0/css/all.css"
+            rel="stylesheet"
+        />
+        <style>
+            .app-spinner-box {
+                display: flex;
+                flex-direction: column;
+                flex: 1;
+                align-items: center;
+                justify-content: center;
+            }
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta http-equiv="Content-Security-Policy"
-          content="worker-src blob:; child-src blob: gap:; img-src 'self' blob: data:; default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:" />
-    <title>Papyrus</title>
-    <base href="/" />
-    <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
-    <link href="Papyrus.Client.styles.css" rel="stylesheet" />
-    <link href="css/app.css" rel="stylesheet" />
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Bree+Serif&display=swap"
-          rel="stylesheet" />
-    <link href="_content/MudBlazor/MudBlazor.min.css" rel="stylesheet" />
-    <link href="_content/KarcagS.Blazor.Common/lib.css" rel="stylesheet" />
-    <link href="https://use.fontawesome.com/releases/v5.14.0/css/all.css" rel="stylesheet">
-</head>
+            @keyframes spinner {
+                0% {
+                    transform: translate3d(-50%, -50%, 0) rotate(0deg);
+                }
+                100% {
+                    transform: translate3d(-50%, -50%, 0) rotate(360deg);
+                }
+            }
+            .app-spinner::before {
+                animation: 1.5s linear infinite spinner;
+                animation-play-state: inherit;
+                border: solid 5px #cfd0d1;
+                border-bottom-color: #1c87c9;
+                border-radius: 50%;
+                content: "";
+                height: 40px;
+                width: 40px;
+                position: absolute;
+                top: 40%;
+                left: 50%;
+                transform: translate3d(-50%, -50%, 0);
+                will-change: transform;
+            }
+        </style>
+    </head>
 
-<body>
-    <div id="app">Papyrus is Loading...</div>
+    <body>
+        <div id="app">
+            <div class="app-spinner-box">
+                <div class="app-spinner"></div>
+                <div>Papyrus is Loading...</div>
+            </div>
+        </div>
 
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
-    <script src="_framework/blazor.webassembly.js"></script>
-    <script src="_content/MudBlazor/MudBlazor.min.js"></script>
-    <script src="scripts/Editor.js"></script>
-    <script src="scripts/Utils.js"></script>
-    <script>
-        window.blazorCulture = {
-            get: () => window.localStorage['BlazorCulture'],
-            set: (value) => window.localStorage['BlazorCulture'] = value
-        };
-    </script>
-</body>
-
+        <div id="blazor-error-ui">
+            An unhandled error has occurred.
+            <a href="" class="reload">Reload</a>
+            <a class="dismiss">🗙</a>
+        </div>
+        <script src="_framework/blazor.webassembly.js"></script>
+        <script src="_content/MudBlazor/MudBlazor.min.js"></script>
+        <script src="scripts/Editor.js"></script>
+        <script src="scripts/Utils.js"></script>
+        <script>
+            window.blazorCulture = {
+                get: () => window.localStorage["BlazorCulture"],
+                set: (value) => (window.localStorage["BlazorCulture"] = value),
+            };
+        </script>
+    </body>
 </html>

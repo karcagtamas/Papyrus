@@ -117,14 +117,11 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ActionConfirmTitle" xml:space="preserve">
-    <value>{0} Megerősítése</value>
+  <data name="CloseMessage" xml:space="preserve">
+    <value>Biztosan szeretné lezárni ezt a Csoportot?</value>
   </data>
-  <data name="CloseAction" xml:space="preserve">
-    <value>Lezárás</value>
-  </data>
-  <data name="CloseActionName" xml:space="preserve">
-    <value>lezárni</value>
+  <data name="CloseTitle" xml:space="preserve">
+    <value>Lezárás Megerősítése</value>
   </data>
   <data name="CountSuffix" xml:space="preserve">
     <value>db.</value>
@@ -153,11 +150,11 @@
   <data name="Notes" xml:space="preserve">
     <value>Jegyzetek</value>
   </data>
-  <data name="OpenAction" xml:space="preserve">
-    <value>Kinyitás</value>
+  <data name="OpenMessage" xml:space="preserve">
+    <value>Biztosan szeretné kinyitni ezt a Csoportot?</value>
   </data>
-  <data name="OpenActionName" xml:space="preserve">
-    <value>kinyitni</value>
+  <data name="OpenTitle" xml:space="preserve">
+    <value>Kinyitás Megerősítése</value>
   </data>
   <data name="Owner" xml:space="preserve">
     <value>Tulajdonos</value>
@@ -165,11 +162,11 @@
   <data name="PageName" xml:space="preserve">
     <value>Adatok</value>
   </data>
-  <data name="RemoveAction" xml:space="preserve">
-    <value>Törlés</value>
+  <data name="RemoveMessage" xml:space="preserve">
+    <value>Biztosan szeretné törölni ezt a Csoportot?</value>
   </data>
-  <data name="RemoveActionName" xml:space="preserve">
-    <value>törölni</value>
+  <data name="RemoveTitle" xml:space="preserve">
+    <value>Törlés Megerősítése</value>
   </data>
   <data name="Roles" xml:space="preserve">
     <value>Szerepkörök</value>

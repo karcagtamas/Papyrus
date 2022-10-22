@@ -132,6 +132,9 @@
   <data name="RemoveAction" xml:space="preserve">
     <value>Remove {0} tag</value>
   </data>
+  <data name="RemoveConfirm.Message" xml:space="preserve">
+    <value>Are you sure want to delete this Tag?</value>
+  </data>
   <data name="RemoveConfirm.Title" xml:space="preserve">
     <value>Confirm Delete</value>
   </data>

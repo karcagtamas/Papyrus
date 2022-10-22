@@ -138,23 +138,17 @@
   <data name="FalseValue" xml:space="preserve">
     <value>Nem</value>
   </data>
+  <data name="FolderDelete.Confirm.Message" xml:space="preserve">
+    <value>Biztosan szeretné törölni ezt a Mappát?</value>
+  </data>
   <data name="FolderDelete.Confirm.Title" xml:space="preserve">
     <value>Mappa Törlésének Megerősítése</value>
   </data>
-  <data name="FolderDeleteAction" xml:space="preserve">
-    <value>Törlés</value>
-  </data>
-  <data name="FolderEntity" xml:space="preserve">
-    <value>Mappa</value>
+  <data name="NoteDelete.Confirm.Message" xml:space="preserve">
+    <value>Biztosan szeretné törölni ezt a Jegyzetet?</value>
   </data>
   <data name="NoteDelete.Confirm.Title" xml:space="preserve">
     <value>Jegyzet Törlésének Megerősítése</value>
-  </data>
-  <data name="NoteDeleteAction" xml:space="preserve">
-    <value>Törlés</value>
-  </data>
-  <data name="NoteEntity" xml:space="preserve">
-    <value>Jegyzet</value>
   </data>
   <data name="PublicStatus" xml:space="preserve">
     <value>Nyílvános Állapot</value>

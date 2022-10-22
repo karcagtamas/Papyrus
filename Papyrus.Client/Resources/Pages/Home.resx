@@ -135,14 +135,11 @@
   <data name="PostCreateInfo" xml:space="preserve">
     <value>Create a new post</value>
   </data>
-  <data name="PostDeleteAction" xml:space="preserve">
-    <value>Delete</value>
+  <data name="PostDeleteConfirmMessage" xml:space="preserve">
+    <value>Are you sure want to delete this Post?</value>
   </data>
   <data name="PostDeleteConfirmTitle" xml:space="preserve">
     <value>Confirm Delete</value>
-  </data>
-  <data name="PostEntity" xml:space="preserve">
-    <value>Post</value>
   </data>
   <data name="PostsTitle" xml:space="preserve">
     <value>News</value>
