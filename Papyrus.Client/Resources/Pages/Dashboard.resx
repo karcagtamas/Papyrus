@@ -117,10 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AccessOn" xml:space="preserve">
+    <value>Logged in at {0}</value>
+  </data>
   <data name="Details" xml:space="preserve">
     <value>Note Manager Application</value>
   </data>
+  <data name="LastAppAccess" xml:space="preserve">
+    <value>Last Sign In events</value>
+  </data>
+  <data name="MostNoteAccess" xml:space="preserve">
+    <value>Most Common Notes</value>
+  </data>
   <data name="PageName" xml:space="preserve">
     <value>Dashboard</value>
+  </data>
+  <data name="RecentNoteAccess" xml:space="preserve">
+    <value>Recent Notes</value>
   </data>
 </root>

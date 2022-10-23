@@ -117,22 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="AccessOn" xml:space="preserve">
-    <value>Bejelentkezve {0} időpontban</value>
-  </data>
-  <data name="Details" xml:space="preserve">
-    <value>Jegyzet Menedzser Alkalmazás</value>
-  </data>
-  <data name="LastAppAccess" xml:space="preserve">
-    <value>Utolsó Belépések</value>
-  </data>
-  <data name="MostNoteAccess" xml:space="preserve">
-    <value>Leggyakoribb Jegyzet megnyitások</value>
-  </data>
-  <data name="PageName" xml:space="preserve">
-    <value>Írányítópult</value>
-  </data>
-  <data name="RecentNoteAccess" xml:space="preserve">
-    <value>Legutóbbi Jegyzet megnyitások</value>
+  <data name="OpenAction" xml:space="preserve">
+    <value>Open</value>
   </data>
 </root>

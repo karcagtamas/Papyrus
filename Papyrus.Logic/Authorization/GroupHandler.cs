@@ -34,7 +34,7 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
         checkers.Add(new GroupAuthorization
         {
             Requirement = GroupOperations.EditGroupRequirement,
-            Checker = (input) => input.GroupRole.GroupEdit
+            Checker = (input) => input.GroupRole.GroupEdit && !input.Group.IsClosed
         });
         checkers.Add(new GroupAuthorization
         {
@@ -59,7 +59,7 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
         checkers.Add(new GroupAuthorization
         {
             Requirement = GroupOperations.EditGroupRolesRequirement,
-            Checker = (input) => input.GroupRole.EditRoleList
+            Checker = (input) => input.GroupRole.EditRoleList && !input.Group.IsClosed
         });
         checkers.Add(new GroupAuthorization
         {
@@ -69,7 +69,7 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
         checkers.Add(new GroupAuthorization
         {
             Requirement = GroupOperations.EditGroupMembersRequirement,
-            Checker = (input) => input.GroupRole.EditMemberList
+            Checker = (input) => input.GroupRole.EditMemberList && !input.Group.IsClosed
         });
         checkers.Add(new GroupAuthorization
         {
@@ -79,12 +79,12 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
         checkers.Add(new GroupAuthorization
         {
             Requirement = GroupOperations.CreateNoteRequirement,
-            Checker = (input) => input.GroupRole.EditNote || input.GroupRole.DeleteNote
+            Checker = (input) => (input.GroupRole.EditNote || input.GroupRole.DeleteNote) && !input.Group.IsClosed
         });
         checkers.Add(new GroupAuthorization
         {
             Requirement = GroupOperations.CreateFolderRequirement,
-            Checker = (input) => input.GroupRole.EditNote || input.GroupRole.DeleteNote
+            Checker = (input) => (input.GroupRole.EditNote || input.GroupRole.DeleteNote) && !input.Group.IsClosed
         });
         checkers.Add(new GroupAuthorization
         {
@@ -94,7 +94,7 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
         checkers.Add(new GroupAuthorization
         {
             Requirement = GroupOperations.CreateTagRequirement,
-            Checker = (input) => input.GroupRole.EditTagList
+            Checker = (input) => input.GroupRole.EditTagList && !input.Group.IsClosed
         });
     }
 
@@ -110,6 +110,7 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
                 return;
             }
 
+            var group = groupService.Get(resource);
             var rights = groupService.GetUserRole(resource);
             var groupRights = await groupService.GetRights(resource);
 
@@ -123,7 +124,7 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
 
             ObjectHelper.WhenNotNull(check, c =>
             {
-                if (c.Checker(new GroupAuthorizationInput { GroupRole = rights, GroupRights = groupRights }))
+                if (c.Checker(new GroupAuthorizationInput { GroupRole = rights, GroupRights = groupRights, Group = group }))
                 {
                     context.Succeed(c.Requirement);
                 }
@@ -146,5 +147,6 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
     {
         public GroupRole GroupRole { get; set; } = default!;
         public GroupRightsDTO GroupRights { get; set; } = default!;
+        public Group Group { get; set; } = default!;
     }
 }

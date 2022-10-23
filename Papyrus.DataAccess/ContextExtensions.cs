@@ -157,6 +157,14 @@ public static class ContextExtensions
                 .OnDelete(DeleteBehavior.SetNull);
         });
 
+        builder.Entity<AppAccess>(access =>
+        {
+            access.HasOne(x => x.User)
+                .WithMany(x => x.AppAccesses)
+                .OnDelete(DeleteBehavior.Cascade)
+                .IsRequired();
+        });
+
         return builder;
     }
 
@@ -271,6 +279,19 @@ public static class ContextExtensions
                 .OnDelete(DeleteBehavior.Cascade);
             noteTag.HasOne(x => x.Tag)
                 .WithMany(x => x.Notes)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        builder.Entity<NoteAccess>(access =>
+        {
+            access.HasOne(x => x.User)
+                .WithMany(x => x.NoteAccesses)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+
+            access.HasOne(x => x.Note)
+                .WithMany(x => x.Accesses)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
         });

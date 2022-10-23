@@ -3,6 +3,7 @@ using KarcagS.Blazor.Common.Models;
 using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -34,6 +35,13 @@ public class UserService : HttpCall<string>, IUserService
             .AddQueryParams(queryParams);
 
         return Http.GetBool(settings).ExecuteWithResult();
+    }
+
+    public Task<List<AccessDTO>> GetAppAccesses()
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "AppAccess"));
+
+        return Http.Get<List<AccessDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
     public Task<UserSettingDTO?> GetSettings(string id)

@@ -1,5 +1,6 @@
 using KarcagS.Blazor.Common.Http;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -15,4 +16,5 @@ public interface IUserService : IHttpCall<string>
     Task<bool> UpdatePassword(UserPasswordModel model);
     Task<bool> UpdateSettings(string id, UserSettingModel model);
     Task<List<UserLightDTO>> Search(string searchTerm, bool ignoreCurrent, List<string> ignored);
+    Task<List<AccessDTO>> GetAppAccesses();
 }

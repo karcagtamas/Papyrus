@@ -4,13 +4,16 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using MimeMapping;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
+using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Common.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Mongo.DataAccess.Enums;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -162,4 +165,6 @@ public class UserService : MapperRepository<User, string, string>, IUserService
 
         return await userManager.IsInRoleAsync(user, "Administrator");
     }
+
+    public List<AccessDTO> GetAppAccesses() => Mapper.Map<List<AccessDTO>>(Utils.GetCurrentUser<User>().AppAccesses.OrderByDescending(x => x.Timestamp).Take(5).ToList());
 }

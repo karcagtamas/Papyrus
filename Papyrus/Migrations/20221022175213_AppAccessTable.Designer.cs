@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Papyrus.DataAccess;
 
@@ -10,9 +11,10 @@ using Papyrus.DataAccess;
 namespace Papyrus.Migrations
 {
     [DbContext(typeof(PapyrusContext))]
-    partial class PapyrusContextModelSnapshot : ModelSnapshot
+    [Migration("20221022175213_AppAccessTable")]
+    partial class AppAccessTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -474,31 +476,6 @@ namespace Papyrus.Migrations
                     b.ToTable("Notes");
 
                     b.HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
-                });
-
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteAccess", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("NoteId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("varchar(255)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NoteId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("NoteAccesses");
                 });
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteTag", b =>
@@ -1425,25 +1402,6 @@ namespace Papyrus.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteAccess", b =>
-                {
-                    b.HasOne("Papyrus.DataAccess.Entities.Notes.Note", "Note")
-                        .WithMany("Accesses")
-                        .HasForeignKey("NoteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Papyrus.DataAccess.Entities.User", "User")
-                        .WithMany("NoteAccesses")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Note");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.NoteTag", b =>
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.Notes.Note", "Note")
@@ -1557,8 +1515,6 @@ namespace Papyrus.Migrations
 
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Notes.Note", b =>
                 {
-                    b.Navigation("Accesses");
-
                     b.Navigation("EditorMemberships");
 
                     b.Navigation("Tags");
@@ -1599,8 +1555,6 @@ namespace Papyrus.Migrations
                     b.Navigation("Groups");
 
                     b.Navigation("LastUpdatedNotes");
-
-                    b.Navigation("NoteAccesses");
 
                     b.Navigation("Notes");
 

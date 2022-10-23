@@ -17,4 +17,5 @@ public interface IGroupService : IHttpCall<int>
     Task<bool> Close(int id);
     Task<bool> Open(int id);
     Task<bool> Remove(int id);
+    Task<List<GroupNoteListDTO>> GetRecentEdits(int id);
 }

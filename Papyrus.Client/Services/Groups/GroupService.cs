@@ -125,4 +125,15 @@ public class GroupService : HttpCall<int>, IGroupService
 
         return Http.Get<GroupNoteRightsDTO>(settings).ExecuteWithResultOrElse(new());
     }
+
+    public Task<List<GroupNoteListDTO>> GetRecentEdits(int id)
+    {
+        var pathParams = HttpPathParameters.Build()
+            .Add(id)
+            .Add("RecentEdit");
+
+        var settings = new HttpSettings(Http.BuildUrl(Url)).AddPathParams(pathParams);
+
+        return Http.Get<List<GroupNoteListDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
 }

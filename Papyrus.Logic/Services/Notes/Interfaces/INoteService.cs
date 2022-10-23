@@ -1,5 +1,6 @@
 ﻿using KarcagS.Common.Tools.Repository;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
 
@@ -14,4 +15,7 @@ public interface INoteService : IMapperRepository<Note, string>
     List<SearchResultDTO> Search(SearchQueryModel query);
     void DeleteFolder(string folderId);
     bool Exists(string parentFolderId, string title, string? id);
+    void Access(string id);
+    List<NoteDashboardDTO> GetRecentNoteAccesses(IRightService rightService);
+    List<NoteDashboardDTO> GetMostCommonNoteAccesses(IRightService rightService);
 }

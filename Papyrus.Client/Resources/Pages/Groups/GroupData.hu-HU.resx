@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CloseAction" xml:space="preserve">
+    <value>Lezárás</value>
+  </data>
   <data name="CloseMessage" xml:space="preserve">
     <value>Biztosan szeretné lezárni ezt a Csoportot?</value>
   </data>
@@ -150,6 +153,9 @@
   <data name="Notes" xml:space="preserve">
     <value>Jegyzetek</value>
   </data>
+  <data name="OpenAction" xml:space="preserve">
+    <value>Megnyitás</value>
+  </data>
   <data name="OpenMessage" xml:space="preserve">
     <value>Biztosan szeretné kinyitni ezt a Csoportot?</value>
   </data>
@@ -161,6 +167,15 @@
   </data>
   <data name="PageName" xml:space="preserve">
     <value>Adatok</value>
+  </data>
+  <data name="RecentEditNoteTitle" xml:space="preserve">
+    <value>&lt;b&gt;{0}&lt;/b&gt; szerkesztve ekkor: {1}</value>
+  </data>
+  <data name="RecentEditTitle" xml:space="preserve">
+    <value>Mostanában Szerkesztett Jegyzetek</value>
+  </data>
+  <data name="RemoveAction" xml:space="preserve">
+    <value>Törlés</value>
   </data>
   <data name="RemoveMessage" xml:space="preserve">
     <value>Biztosan szeretné törölni ezt a Csoportot?</value>

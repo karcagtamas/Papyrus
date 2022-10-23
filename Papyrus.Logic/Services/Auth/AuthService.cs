@@ -41,6 +41,7 @@ public class AuthService : IAuthService
         ExceptionHelper.Check(await userManager.CheckPasswordAsync(user, model.Password), "Incorrect username or password");
 
         user.LastLogin = DateTime.Now;
+        user.AppAccesses.Add(new AppAccess { Id = Guid.NewGuid().ToString(), UserId = user.Id, Timestamp = DateTime.Now });
 
         userService.Update(user);
 

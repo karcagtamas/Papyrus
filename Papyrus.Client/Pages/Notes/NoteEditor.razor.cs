@@ -43,6 +43,8 @@ public partial class NoteEditor : ComponentBase, IDisposable
         InitHubs();
 
         await InvokeAsync(StateHasChanged);
+
+        await NoteService.Access(Id);
     }
 
     private async Task Refresh()

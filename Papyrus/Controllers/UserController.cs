@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -50,4 +51,7 @@ public class UserController : ControllerBase
 
     [HttpGet("Search")]
     public List<UserLightDTO> Search([FromQuery] string searchTerm, [FromQuery] bool ignoreCurrent, [FromQuery] List<string> ignored) => userService.Search(searchTerm, ignoreCurrent, ignored);
+
+    [HttpGet("AppAccess")]
+    public List<AccessDTO> GetAppAccesses() => userService.GetAppAccesses();
 }

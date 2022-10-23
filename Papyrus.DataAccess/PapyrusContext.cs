@@ -13,6 +13,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<Translation> Translations { get; set; }
     public DbSet<RefreshToken> RefreshTokens { get; set; }
     public DbSet<Post> Posts { get; set; }
+    public DbSet<AppAccess> AppAccesses { get; set; }
 
     public DbSet<Group> Groups { get; set; }
     public DbSet<GroupMember> GroupMembers { get; set; }
@@ -21,6 +22,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<Note> Notes { get; set; }
     public DbSet<Tag> Tags { get; set; }
     public DbSet<NoteTag> NoteTags { get; set; }
+    public DbSet<NoteAccess> NoteAccesses { get; set; }
 
     public DbSet<ActionLog> ActionLogs { get; set; }
 
@@ -32,6 +34,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         Translations = default!;
         RefreshTokens = default!;
         Posts = default!;
+        AppAccesses = default!;
         Groups = default!;
         GroupMembers = default!;
         GroupRoles = default!;
@@ -39,6 +42,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         Notes = default!;
         Tags = default!;
         NoteTags = default!;
+        NoteAccesses = default!;
         ActionLogs = default!;
         EditorMembers = default!;
     }

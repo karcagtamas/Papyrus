@@ -6,4 +6,5 @@ public class GroupRightsDTO
     public bool CanOpen { get; set; }
     public bool CanRemove { get; set; }
     public bool CanEdit { get; set; }
+    public bool CanOpenNote { get; set; }
 }

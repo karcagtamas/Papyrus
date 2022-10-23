@@ -303,6 +303,59 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         return Exists(folder.Notes.ToList(), title, id);
     }
 
+    public void Access(string id)
+    {
+        var note = Get(id);
+
+        note.Accesses.Add(new NoteAccess { Id = Guid.NewGuid().ToString(), NoteId = id, UserId = Utils.GetRequiredCurrentUserId(), Timestamp = DateTime.Now });
+        Update(note);
+    }
+
+    public List<NoteDashboardDTO> GetRecentNoteAccesses(IRightService rightService)
+    {
+        return Context.Set<NoteAccess>().AsQueryable()
+            .Where(x => x.UserId == Utils.GetRequiredCurrentUserId())
+            .Include(x => x.Note)
+            .OrderByDescending(x => x.Timestamp)
+            .ToList()
+            .GroupBy(x => x.Note)
+            .Select(x => x.Key)
+            .Take(5)
+            .ToList()
+            .Select(note =>
+            {
+                var dto = Mapper.Map<NoteDashboardDTO>(note);
+
+                dto.CanOpen = rightService.HasNoteReadRight(note.Id).Result;
+
+                return dto;
+            })
+            .ToList();
+    }
+
+    public List<NoteDashboardDTO> GetMostCommonNoteAccesses(IRightService rightService)
+    {
+        var userId = Utils.GetRequiredCurrentUserId();
+        return Context.Set<NoteAccess>().AsQueryable()
+            .Where(x => x.UserId == userId)
+            .Include(x => x.Note)
+            .ToList()
+            .GroupBy(x => x.Note)
+            .OrderByDescending(x => x.Count())
+            .Select(x => x.Key)
+            .Take(5)
+            .ToList()
+            .Select(note =>
+            {
+                var dto = Mapper.Map<NoteDashboardDTO>(note);
+
+                dto.CanOpen = rightService.HasNoteReadRight(note.Id).Result;
+
+                return dto;
+            })
+            .ToList();
+    }
+
     private string GenerateEmptyTitle(string folderId, string title)
     {
         var notes = folderService.Get(folderId).Notes.ToList();

@@ -15,5 +15,7 @@ public class UserMapper : Profile
         CreateMap<User, UserTokenDTO>();
         CreateMap<User, UserLightDTO>();
         CreateMap<UserModel, User>();
+
+        CreateMap<AppAccess, AccessDTO>();
     }
 }

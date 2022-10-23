@@ -1,11 +1,61 @@
 @page "/dashboard"
 @attribute [Authorize]
+@using Papyrus.Client.Services.Interfaces
+@using Papyrus.Client.Services.Notes.Interfaces
+@using Papyrus.Shared.DTOs
+@using Papyrus.Shared.DTOs.Notes
+@inject IUserService UserService
+@inject INoteService NoteService
 @inject IStringLocalizer<Dashboard> L
 
 <ApplicationPageTitle PageName="Dashboard" />
 
 <div class="page-body">
-    <MudText Typo="Typo.h2" Color="Color.Primary">Papyrus</MudText>
-    <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-5">@L["Details"]</MudText>
-    <MainImage Width="500" Class="mt-5" />
+    <div class="flex-box flex-row h-100 w-100">
+        <div class="flex-box w-100 align-items-center justify-content-center">
+            <MudText Typo="Typo.h2" Color="Color.Primary">Papyrus</MudText>
+            <MudText Typo="Typo.h5" Color="Color.Primary" Class="mb-5">@L["Details"]</MudText>
+            <MainImage Width="500" Class="mt-5" />
+        </div>
+        <div class="flex-box w-100">
+            <div class="flex-box p-2">
+                <MudCard Class="h-100 p-1 m-4">
+                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-1">@L["LastAppAccess"]:</MudText>
+                    <div class="p-1">
+                        @foreach (var access in AppAccesses)
+                        {
+                            <MudText @key="access.Id">@L["AccessOn", DateHelper.DateToString(access.Timestamp)]</MudText>
+                        }
+                    </div>
+                </MudCard>
+            </div>
+            <div class="flex-box p-2">
+                <DashboardNotePanel Notes="RecentNotes" Title="@L["RecentNoteAccess"]" />
+            </div>
+            <div class="flex-box p-2">
+                <DashboardNotePanel Notes="MostCommonNotes" Title="@L["MostNoteAccess"]" />
+            </div>
+        </div>
+    </div>
+
 </div>
+
+@code
+{
+    public List<AccessDTO> AppAccesses { get; set; } = new();
+    public List<NoteDashboardDTO> RecentNotes { get; set; } = new();
+    public List<NoteDashboardDTO> MostCommonNotes { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        AppAccesses = await UserService.GetAppAccesses();
+        RecentNotes = await NoteService.GetRecentNoteAccesses();
+        MostCommonNotes = await NoteService.GetMostCommonNoteAccesses();
+
+        await InvokeAsync(StateHasChanged);
+    }
+}
+
+
