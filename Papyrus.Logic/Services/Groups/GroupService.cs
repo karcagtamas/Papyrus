@@ -112,7 +112,8 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
             CanClose = hasFullAccess && !group.IsClosed,
             CanOpen = hasFullAccess && group.IsClosed,
             CanRemove = hasFullAccess,
-            CanEdit = !group.IsClosed && (hasFullAccess || (role?.GroupEdit ?? false))
+            CanEdit = !group.IsClosed && (hasFullAccess || (role?.GroupEdit ?? false)),
+            CanOpenNote = hasFullAccess || (role?.ReadNote ?? false) || (role?.EditNote ?? false) || (role?.DeleteNote ?? false)
         };
     }
 
@@ -335,5 +336,18 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
             CanEditNote = basicAccess,
             CanDeleteNote = basicAccess,
         };
+    }
+
+    public List<GroupNoteListDTO> GetRecentEdits(int id)
+    {
+        var group = Get(id);
+
+        return Mapper.Map<List<GroupNoteListDTO>>(
+            group.Notes
+                .Where(x => x.ContentLastEdit != null)
+                .OrderByDescending(x => x.ContentLastEdit)
+                .Take(10)
+                .ToList()
+        );
     }
 }

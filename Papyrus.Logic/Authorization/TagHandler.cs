@@ -38,7 +38,7 @@ public class TagHandler : AuthorizationHandler<TagRequirement, int>
         checkers.Add(new TagAuthorization
         {
             Requirement = TagOperations.EditTagRequirement,
-            Checker = (input) => input.EditTagList
+            Checker = (input) => input.GroupRole.EditTagList && input.GroupEditCheck
         });
     }
 
@@ -77,11 +77,12 @@ public class TagHandler : AuthorizationHandler<TagRequirement, int>
                     return;
                 }
 
+                var group = groupService.Get((int)tag.GroupId);
                 var check = checkers.FirstOrDefault(x => x.Requirement == requirement);
 
                 ObjectHelper.WhenNotNull(check, c =>
                 {
-                    if (c.Checker(rights))
+                    if (c.Checker(new TagAuthorizationInput { GroupRole = rights, GroupCase = true, GroupIsClosed = group.IsClosed }))
                     {
                         context.Succeed(c.Requirement);
                     }
@@ -98,6 +99,15 @@ public class TagHandler : AuthorizationHandler<TagRequirement, int>
     public class TagAuthorization
     {
         public TagRequirement Requirement { get; set; } = default!;
-        public Func<GroupRole, bool> Checker { get; set; } = (input) => true;
+        public Func<TagAuthorizationInput, bool> Checker { get; set; } = (input) => true;
+    }
+
+    public class TagAuthorizationInput
+    {
+        public GroupRole GroupRole { get; set; } = default!;
+        public bool GroupCase { get; set; } = default!;
+        public bool GroupIsClosed { get; set; } = default!;
+
+        public bool GroupEditCheck { get => !GroupCase || !GroupIsClosed; }
     }
 }

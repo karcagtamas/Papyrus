@@ -17,6 +17,7 @@ public partial class GroupData : ComponentBase
     private GroupDTO? Group { get; set; } = default!;
     private GroupRightsDTO Rights { get; set; } = new();
     private bool PageEnabled { get; set; } = false;
+    private List<GroupNoteListDTO> Notes { get; set; } = new();
 
 
     protected override async Task OnInitializedAsync()
@@ -28,7 +29,7 @@ public partial class GroupData : ComponentBase
             return;
         }
 
-        await GetGroup();
+        await Refresh();
     }
 
     private async Task<bool> SetPageStatus()
@@ -45,10 +46,13 @@ public partial class GroupData : ComponentBase
         return true;
     }
 
-    private async Task GetGroup()
+    private async Task Refresh()
     {
         Group = await GroupService.Get<GroupDTO>(GroupId);
         Rights = await GroupService.GetRights(GroupId);
+
+        Notes = await GroupService.GetRecentEdits(GroupId);
+
         await InvokeAsync(StateHasChanged);
     }
 
@@ -65,12 +69,12 @@ public partial class GroupData : ComponentBase
     private async Task OpenDialog(int? groupId)
     {
         var parameters = new DialogParameters { { "GroupId", groupId } };
-        await HelperService.OpenEditorDialog<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", async (res) => await GetGroup(), parameters);
+        await HelperService.OpenEditorDialog<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", async (res) => await Refresh(), parameters);
     }
 
-    private async Task Close() => await ExecuteAction(Rights.CanClose, L["CloseTitle"], L["CloseMessage"], () => GroupService.Close(GroupId), async () => await GetGroup());
+    private async Task Close() => await ExecuteAction(Rights.CanClose, L["CloseTitle"], L["CloseMessage"], () => GroupService.Close(GroupId), async () => await Refresh());
 
-    private async Task Open() => await ExecuteAction(Rights.CanOpen, L["OpenTitle"], L["OpenMessage"], () => GroupService.Open(GroupId), async () => await GetGroup());
+    private async Task Open() => await ExecuteAction(Rights.CanOpen, L["OpenTitle"], L["OpenMessage"], () => GroupService.Open(GroupId), async () => await Refresh());
 
     private async Task Remove() => await ExecuteAction(Rights.CanRemove, L["RemoveTitle"], L["RemoveMessage"], () => GroupService.Remove(GroupId), () => Navigation.NavigateTo("/my-groups"));
 
@@ -82,5 +86,10 @@ public partial class GroupData : ComponentBase
         }
 
         await ConfirmService.Open(new ConfirmDialogInput { Message = message, ActionFunction = async () => await performAction() }, title, () => postAction());
+    }
+
+    private async Task OpenNote(string id)
+    {
+        await CommonService.OpenNote(id);
     }
 }

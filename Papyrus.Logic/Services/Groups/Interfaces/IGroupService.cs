@@ -21,4 +21,5 @@ public interface IGroupService : IMapperRepository<Group, int>
     Task Remove(int id);
     GroupRole? GetGroupRole(Group group, string userId);
     Task<bool> HasFullAccess(Group group, string userId);
+    List<GroupNoteListDTO> GetRecentEdits(int id);
 }

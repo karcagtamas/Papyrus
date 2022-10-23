@@ -34,22 +34,22 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.ReadNoteRequirement,
-            Checker = (rights, note) => note.Public || rights.ReadNote || rights.EditNote || rights.DeleteNote
+            Checker = (input) => input.Note.Public || input.GroupRole.ReadNote || input.GroupRole.EditNote || input.GroupRole.DeleteNote
         });
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.EditNoteRequirement,
-            Checker = (rights, note) => rights.EditNote || rights.DeleteNote
+            Checker = (input) => (input.GroupRole.EditNote || input.GroupRole.DeleteNote) && input.GroupEditCheck
         });
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.DeleteNoteRequirement,
-            Checker = (rights, note) => rights.DeleteNote
+            Checker = (input) => input.GroupRole.DeleteNote && input.GroupEditCheck
         });
         checkers.Add(new NoteAuthorization
         {
             Requirement = NoteOperations.ReadNoteLogsRequirement,
-            Checker = (rights, note) => rights.ReadNoteActionLog
+            Checker = (input) => input.GroupRole.ReadNoteActionLog
         });
     }
 
@@ -88,11 +88,12 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
                     return;
                 }
 
+                var group = groupService.Get((int)note.GroupId);
                 var check = checkers.FirstOrDefault(x => x.Requirement == requirement);
 
                 ObjectHelper.WhenNotNull(check, c =>
                 {
-                    if (c.Checker(rights, note))
+                    if (c.Checker(new NoteAuthorizationInput { GroupRole = rights, Note = note, GroupCase = true, GroupIsClosed = group.IsClosed }))
                     {
                         context.Succeed(c.Requirement);
                     }
@@ -109,6 +110,16 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
     public class NoteAuthorization
     {
         public NoteRequirement Requirement { get; set; } = default!;
-        public Func<GroupRole, Note, bool> Checker { get; set; } = (role, note) => true;
+        public Func<NoteAuthorizationInput, bool> Checker { get; set; } = (input) => true;
+    }
+
+    public class NoteAuthorizationInput
+    {
+        public GroupRole GroupRole { get; set; } = default!;
+        public Note Note { get; set; } = default!;
+        public bool GroupCase { get; set; } = default!;
+        public bool GroupIsClosed { get; set; } = default!;
+
+        public bool GroupEditCheck { get => !GroupCase || !GroupIsClosed; }
     }
 }

@@ -163,4 +163,15 @@ public class GroupController : ControllerBase
 
         return Ok();
     }
+
+    [HttpGet("{id}/RecentEdit")]
+    public async Task<ActionResult<List<GroupNoteListDTO>>> GetRecentEdits(int id)
+    {
+        if (!await rightService.HasGroupReadRight(id))
+        {
+            return new EmptyResult();
+        }
+
+        return groupService.GetRecentEdits(id);
+    }
 }

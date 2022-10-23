@@ -2,6 +2,7 @@
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Shared.DTOs;
+using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
 
@@ -20,6 +21,7 @@ public class NoteMapper : Profile
             .ForMember(dest => dest.LastUpdater, opt => opt.MapFrom(src => ObjectHelper.MapOrDefault(src.LastUpdater, x => x.UserName)))
             .ForMember(dest => dest.Tags, opt => opt.MapFrom(src => src.Tags.Select(x => x.Tag).ToList()));
         CreateMap<Note, NoteDashboardDTO>();
+        CreateMap<Note, GroupNoteListDTO>();
 
         CreateMap<NoteModel, Note>()
             .ForMember(dest => dest.Tags, opt => opt.Ignore());

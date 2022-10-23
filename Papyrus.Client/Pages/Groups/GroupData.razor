@@ -1,12 +1,15 @@
 ﻿@page "/groups/{GroupId:int}"
 @using KarcagS.Blazor.Common.Services.Interfaces
+@using Papyrus.Client.Services.Interfaces
 @using Papyrus.Client.Services.Groups.Interfaces
+@using Papyrus.Client.Utils
 @attribute [Authorize]
-@inject IStringLocalizer<GroupData> L
 @inject IGroupService GroupService
 @inject IConfirmService ConfirmService
 @inject IHelperService HelperService
 @inject NavigationManager Navigation
+@inject ICommonService CommonService
+@inject IStringLocalizer<GroupData> L
 
 <GroupPageTitle PageName="@L["PageName"]" />
 
@@ -27,14 +30,32 @@
             <MudSpacer />
             <MudButton Color="Color.Secondary" Href="/my-groups">@L["MyGroupsLink"]</MudButton>
         </ActionBar>
-        <MudCard Elevation="2" Class="p-2">
-            <DataRow Title="@L["Name"]" Value="@Group.Name" />
-            <DataRow Title="@L["Owner"]" Value="@Group.Owner" />
-            <DateDataRow Title="@L["Creation"]" Date="@Group.Creation" />
-            <NumericDataRow Title="@L["Members"]" Number="@Group.Members" Suffix="@L["CountSuffix"]" />
-            <NumericDataRow Title="@L["Roles"]" Number="@Group.Roles" Suffix="@L["CountSuffix"]" />
-            <NumericDataRow Title="@L["Tags"]" Number="@Group.Tags" Suffix="@L["CountSuffix"]" />
-            <NumericDataRow Title="@L["Notes"]" Number="@Group.Notes" Suffix="@L["CountSuffix"]" />
-        </MudCard>
+        <div class="flex-box flex-row">
+            <div class="flex-box p-1">
+                <MudCard Elevation="2" Class="p-2">
+                    <DataRow Title="@L["Name"]" Value="@Group.Name" />
+                    <DataRow Title="@L["Owner"]" Value="@Group.Owner" />
+                    <DateDataRow Title="@L["Creation"]" Date="@Group.Creation" />
+                    <NumericDataRow Title="@L["Members"]" Number="@Group.Members" Suffix="@L["CountSuffix"]" />
+                    <NumericDataRow Title="@L["Roles"]" Number="@Group.Roles" Suffix="@L["CountSuffix"]" />
+                    <NumericDataRow Title="@L["Tags"]" Number="@Group.Tags" Suffix="@L["CountSuffix"]" />
+                    <NumericDataRow Title="@L["Notes"]" Number="@Group.Notes" Suffix="@L["CountSuffix"]" />
+                </MudCard>
+            </div>
+            <div class="flex-box p-1">
+                <MudCard Elevation="2" Class="p-2">
+                    <MudText Typo="Typo.h6" Color="Color.Primary">@L["RecentEditTitle"]:</MudText>
+                    <div class="p-1">
+                        @foreach (var n in Notes)
+                        {
+                            <div @key="n.Id" class="d-flex align-items-center justify-content-between w-100">
+                                <MudText Inline="true">@L["RecentEditNoteTitle", n.Title, DateHelper.DateToString(n.ContentLastEdit)].AsMarkup()</MudText>
+                                <MudButton Color="Color.Secondary" Size="Size.Small" OnClick="@(() => OpenNote(n.Id))" Disabled="!Rights.CanOpenNote">@L["OpenAction"]</MudButton>
+                            </div>
+                        }
+                    </div>
+                </MudCard>
+            </div>
+        </div>
     }
 </div>
