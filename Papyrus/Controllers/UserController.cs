@@ -54,10 +54,4 @@ public class UserController : ControllerBase
 
     [HttpGet("AppAccess")]
     public List<AccessDTO> GetAppAccesses() => userService.GetAppAccesses();
-
-    [HttpGet("NoteAccess/Recent")]
-    public List<NoteListDTO> GetRecentNoteAccesses() => userService.GetRecentNoteAccesses();
-
-    [HttpGet("NoteAccess/Common")]
-    public List<NoteListDTO> GetMostCommonNoteAccesses() => userService.GetMostCommonNoteAccesses();
 }

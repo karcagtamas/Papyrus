@@ -1,0 +1,37 @@
+@using Papyrus.Shared.DTOs.Notes
+@using Papyrus.Client.Services.Interfaces
+@inject IStringLocalizer<DashboardNotePanel> L
+@inject ICommonService CommonService
+
+<MudCard Class="h-100 p-1 m-4">
+    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-1">@Title:</MudText>
+    <div class="p-1">
+        @foreach (var note in Notes)
+        {
+            <div @key="note.Id" class="d-flex flex-row">
+                <MudText Inline="true" style="flex: 1">@note.Title</MudText>
+                <MudButton Color="Color.Secondary" Size="Size.Small" OnClick="@(() => OpenNote(note))" Disabled="!note.CanOpen">@L["OpenAction"]</MudButton>
+            </div>
+        }
+    </div>
+</MudCard>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public List<NoteDashboardDTO> Notes { get; set; } = new();
+
+    [Parameter]
+    public EventCallback<string> OnClick { get; set; }
+
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+
+    private async Task OpenNote(NoteDashboardDTO note)
+    {
+        if (note.CanOpen)
+        {
+            await CommonService.OpenNote(note.Id);
+        }
+    }
+}

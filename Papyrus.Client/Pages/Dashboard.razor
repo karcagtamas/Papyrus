@@ -1,10 +1,11 @@
 @page "/dashboard"
 @attribute [Authorize]
 @using Papyrus.Client.Services.Interfaces
+@using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Shared.DTOs
 @using Papyrus.Shared.DTOs.Notes
 @inject IUserService UserService
-@inject ICommonService CommonService
+@inject INoteService NoteService
 @inject IStringLocalizer<Dashboard> L
 
 <ApplicationPageTitle PageName="Dashboard" />
@@ -29,32 +30,10 @@
                 </MudCard>
             </div>
             <div class="flex-box p-2">
-                <MudCard Class="h-100 p-1 m-4">
-                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-1">@L["RecentNoteAccess"]:</MudText>
-                    <div class="p-1">
-                        @foreach (var note in RecentNotes)
-                        {
-                            <div @key="note.Id" class="d-flex flex-row">
-                                <MudText Inline="true" style="flex: 1">@note.Title</MudText>
-                                <MudButton Color="Color.Secondary" Size="Size.Small" OnClick="@(() => OpenNote(note.Id))">Open</MudButton>
-                            </div>
-                        }
-                    </div>
-                </MudCard>
+                <DashboardNotePanel Notes="RecentNotes" Title="@L["RecentNoteAccess"]" />
             </div>
             <div class="flex-box p-2">
-                <MudCard Class="h-100 p-1 m-4">
-                    <MudText Typo="Typo.h6" Color="Color.Primary" Class="mb-1">@L["MostNoteAccess"]:</MudText>
-                    <div class="p-1">
-                        @foreach (var note in MostCommonNotes)
-                        {
-                            <div @key="note.Id" class="d-flex flex-row">
-                                <MudText Inline="true" style="flex: 1">@note.Title</MudText>
-                                <MudButton Color="Color.Secondary" Size="Size.Small" OnClick="@(() => OpenNote(note.Id))">Open</MudButton>
-                            </div>
-                        }
-                    </div>
-                </MudCard>
+                <DashboardNotePanel Notes="MostCommonNotes" Title="@L["MostNoteAccess"]" />
             </div>
         </div>
     </div>
@@ -64,23 +43,18 @@
 @code
 {
     public List<AccessDTO> AppAccesses { get; set; } = new();
-    public List<NoteListDTO> RecentNotes { get; set; } = new();
-    public List<NoteListDTO> MostCommonNotes { get; set; } = new();
+    public List<NoteDashboardDTO> RecentNotes { get; set; } = new();
+    public List<NoteDashboardDTO> MostCommonNotes { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
         AppAccesses = await UserService.GetAppAccesses();
-        RecentNotes = await UserService.GetRecentNoteAccesses();
-        MostCommonNotes = await UserService.GetMostCommonNoteAccesses();
+        RecentNotes = await NoteService.GetRecentNoteAccesses();
+        MostCommonNotes = await NoteService.GetMostCommonNoteAccesses();
 
         await InvokeAsync(StateHasChanged);
-    }
-
-    private async Task OpenNote(string id)
-    {
-        await CommonService.OpenNote(id);
     }
 }
 

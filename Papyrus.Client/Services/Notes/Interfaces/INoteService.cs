@@ -13,4 +13,6 @@ public interface INoteService : IHttpCall<string>
     Task<List<SearchResultDTO>> Search(SearchQueryModel query);
     Task<bool> Exists(string parentFolderId, string title, string? id);
     Task<bool> Access(string id);
+    Task<List<NoteDashboardDTO>> GetRecentNoteAccesses();
+    Task<List<NoteDashboardDTO>> GetMostCommonNoteAccesses();
 }

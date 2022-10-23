@@ -87,4 +87,18 @@ public class NoteService : HttpCall<string>, INoteService
 
         return Http.Get<List<SearchResultDTO>>(settings).ExecuteWithResultOrElse(new());
     }
+
+    public Task<List<NoteDashboardDTO>> GetMostCommonNoteAccesses()
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Access", "Common"));
+
+        return Http.Get<List<NoteDashboardDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
+
+    public Task<List<NoteDashboardDTO>> GetRecentNoteAccesses()
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, "Access", "Recent"));
+
+        return Http.Get<List<NoteDashboardDTO>>(settings).ExecuteWithResultOrElse(new());
+    }
 }

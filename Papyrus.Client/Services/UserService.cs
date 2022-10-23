@@ -44,20 +44,6 @@ public class UserService : HttpCall<string>, IUserService
         return Http.Get<List<AccessDTO>>(settings).ExecuteWithResultOrElse(new());
     }
 
-    public Task<List<NoteListDTO>> GetMostCommonNoteAccesses()
-    {
-        var settings = new HttpSettings(Http.BuildUrl(Url, "NoteAccess", "Common"));
-
-        return Http.Get<List<NoteListDTO>>(settings).ExecuteWithResultOrElse(new());
-    }
-
-    public Task<List<NoteListDTO>> GetRecentNoteAccesses()
-    {
-        var settings = new HttpSettings(Http.BuildUrl(Url, "NoteAccess", "Recent"));
-
-        return Http.Get<List<NoteListDTO>>(settings).ExecuteWithResultOrElse(new());
-    }
-
     public Task<UserSettingDTO?> GetSettings(string id)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, id, "Settings"));

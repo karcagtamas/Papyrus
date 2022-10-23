@@ -113,4 +113,10 @@ public class NoteController : ControllerBase
 
     [HttpPost("Access")]
     public void Access([FromBody] string id) => noteService.Access(id);
+
+    [HttpGet("Access/Recent")]
+    public List<NoteDashboardDTO> GetRecentNoteAccesses() => noteService.GetRecentNoteAccesses(rightService);
+
+    [HttpGet("Access/Common")]
+    public List<NoteDashboardDTO> GetMostCommonNoteAccesses() => noteService.GetMostCommonNoteAccesses(rightService);
 }
