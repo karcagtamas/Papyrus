@@ -100,6 +100,11 @@ builder.Services.AddScoped<IFolderService, FolderService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
 
+builder.Services.AddOidcAuthentication(opt =>
+{
+    builder.Configuration.Bind("Local", opt.ProviderOptions);
+});
+
 builder.Services.AddMudServices(config =>
 {
     config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
