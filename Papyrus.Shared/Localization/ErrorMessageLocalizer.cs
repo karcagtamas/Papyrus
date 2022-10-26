@@ -28,4 +28,9 @@ public class ErrorMessageLocalizer
     public const string RequiredKey = "Required";
     public const string EmailAddressKey = "EmailAddress";
     public const string MaxLengthKey = "MaxLength";
+    public const string MinLengthKey = "MinLength";
+    public const string ContainsAlphaKey = "ContainsAlpha";
+    public const string ContainsCapitalAlphaKey = "ContainsCapitalAlpha";
+    public const string ContainsNumericKey = "ContainsNumeric";
+    public const string ContainsSpecialKey = "ContainsSpecial";
 }

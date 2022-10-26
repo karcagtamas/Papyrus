@@ -12,6 +12,11 @@ public class RegistrationModel
     public string Email { get; set; } = default!;
 
     [LocalizedRequired(ErrorMessage = "Password is required")]
+    [LocalizedMinLength(8, ErrorMessage = "Minimum length is 8")]
+    [LocalizedContainsAlpha(ErrorMessage = "Need to contain at least one letter")]
+    [LocalizedContainsCapitalAlpha(ErrorMessage = "Need to contain at least one capital letter")]
+    [LocalizedContainsNumeric(ErrorMessage = "Need to contain at least one numeric character")]
+    [LocalizedContainsSpecial(ErrorMessage = "Need to contain at least one special character")]
     public string Password { get; set; } = default!;
 
     [LocalizedMaxLength(100)]
