@@ -1,6 +1,6 @@
 @using System.Linq.Expressions
 
-<MudTextField T="string" Value="Value" ValueChanged="ValueChanged" Style="@Style" Class="@Class" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" TextChanged="TextChanged" For="For" Required="Required" FullWidth="FullWidth" Lines="Lines" InputType="FieldType" />
+<MudTextField T="string" Value="Value" ValueChanged="ValueChanged" Style="@Style" Class="@Class" Variant="Variant.Outlined" Margin="Margin.Dense" Clearable="Clearable" Placeholder="@Placeholder" Label="@Label" TextChanged="TextChanged" For="For" Required="Required" FullWidth="FullWidth" Lines="Lines" InputType="FieldType" AdornmentIcon="@AdornmentIcon" OnAdornmentClick="OnAdornmentClick" Adornment="Adornment.End" />
 
 @code {
     [Parameter, EditorRequired]
@@ -44,6 +44,12 @@
 
     [Parameter]
     public Expression<Func<string>>? For { get; set; }
+
+    [Parameter]
+    public string AdornmentIcon { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnAdornmentClick { get; set; }
 
     private InputType FieldType
     {

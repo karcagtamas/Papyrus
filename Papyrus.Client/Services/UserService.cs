@@ -86,7 +86,7 @@ public class UserService : HttpCall<string>, IUserService
     public Task<bool> UpdatePassword(UserPasswordModel model)
     {
         var settings = new HttpSettings(Http.BuildUrl(Url, "Password"))
-            .AddToaster(localizer["Toaster.ImageUpdate"]);
+            .AddToaster(localizer["Toaster.PasswordUpdate"]);
 
         return Http.Put(settings, model).Execute();
     }

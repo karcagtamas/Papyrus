@@ -96,7 +96,7 @@ public class UserService : MapperRepository<User, string, string>, IUserService
             throw new ServerException($"User not found");
         }
 
-        if (user.UserName != model.UserName && ObjectHelper.IsNotNull(GetByName(user.UserName)))
+        if (user.UserName != model.UserName && ObjectHelper.IsNotNull(GetByName(model.UserName)))
         {
             throw new ServerException($"User already exists with this name: {model.UserName}");
         }
