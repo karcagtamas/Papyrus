@@ -1,9 +1,19 @@
 @using Papyrus.Client.Services.Auth.Interfaces
 @inject IAuthService authService
+@inject NavigationManager Navigation
 
 @code {
     protected override void OnInitialized()
     {
-        authService.NotAuthorized();
+        base.OnInitialized();
+
+        if (!authService.IsLoggedIn())
+        {
+            authService.NotAuthorized();
+        }
+        else
+        {
+            Navigation.NavigateTo("/not-authorized");
+        }
     }
 }

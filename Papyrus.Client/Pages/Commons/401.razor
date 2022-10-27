@@ -1,0 +1,8 @@
+@page "/not-authorized"
+@layout ErrorLayout
+@inject NavigationManager Navigation
+@inject IStringLocalizer<_401> L
+
+<MudText Typo="Typo.h3" Color="Color.Primary">@L["NotAuthorized"]</MudText>
+
+<MudButton Color="Color.Primary" Variant="Variant.Filled" OnClick="@(() => Navigation.NavigateTo("/home"))">@L["ToHome"]</MudButton>
