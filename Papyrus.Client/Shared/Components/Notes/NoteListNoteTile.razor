@@ -13,9 +13,13 @@
                     <NotePublicStatusIcon Public="Note.Public" Size="Size.Small" />
                 </div>
                 <img src="assets/images/file.svg" height="120" />
-                <MudText Color="Color.Primary" Class="mt-2">
-                    @Note.Title
-                </MudText>
+                <div class="mt-2 w-100 text-center" style="overflow: hidden;">
+                    <MudTooltip Text="@Note.Title" RootClass="w-100">
+                        <MudText Color="Color.Primary" Style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                            @Note.Title
+                        </MudText>
+                    </MudTooltip>
+                </div>
             </MudCard>
         </div>
     </ActivatorContent>
