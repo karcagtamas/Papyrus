@@ -228,6 +228,9 @@
   <data name="Uploader.Message.InvalidExtensions" xml:space="preserve">
     <value>Invalid file extension [{0}]. Please try again with a correct type. [{1}]</value>
   </data>
+  <data name="Uploader.Message.InvalidSize" xml:space="preserve">
+    <value>The file size [{0} bytes] exceeds the maximum size [{1} bytes] for the file [{2}]. Please use smaller files.</value>
+  </data>
   <data name="Uploader.Message.UploadingError" xml:space="preserve">
     <value>Problem during the image uploading. Please try again later.</value>
   </data>
