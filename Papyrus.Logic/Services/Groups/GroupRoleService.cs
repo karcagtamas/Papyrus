@@ -2,6 +2,7 @@
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
@@ -143,7 +144,9 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     {
         string userId = Utils.GetRequiredCurrentUserId();
 
-        ExceptionHelper.Check(Context.Set<Group>().Find(entity.GroupId)?.Roles.All(x => x.Name != entity.Name) ?? false, () => new ArgumentException("The name of the Group Role has to be unique"));
+        var group = Context.Set<Group>().Find(entity.GroupId);
+
+        ExceptionHelper.Check(ObjectHelper.OrElseThrow(Context.Set<Group>().Find(entity.GroupId), () => new ArgumentException("Group not found")).Roles?.All(x => x.Name != entity.Name) ?? true, () => new ArgumentException("The name of the Group Role has to be unique"));
 
         int id = base.Create(entity, doPersist);
 
