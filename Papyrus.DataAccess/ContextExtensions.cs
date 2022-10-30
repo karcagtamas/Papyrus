@@ -203,13 +203,13 @@ public static class ContextExtensions
             .OnDelete(DeleteBehavior.SetNull);
 
         // Group Role
-        builder.Entity<GroupRole>()
-            .HasAlternateKey(x => new { x.GroupId, x.Name });
-        builder.Entity<GroupRole>()
-            .HasOne(x => x.Group)
-            .WithMany(x => x.Roles)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<GroupRole>(groupRole =>
+        {
+            groupRole.HasOne(x => x.Group)
+                .WithMany(x => x.Roles)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         return builder;
     }

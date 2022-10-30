@@ -1,12 +1,13 @@
-﻿using Papyrus.Shared.Attributes;
+﻿using System.ComponentModel.DataAnnotations;
+using Papyrus.Shared.Attributes;
 using Papyrus.Shared.DTOs.Groups;
-using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.Shared.Models.Groups;
 
 public class GroupRoleModel
 {
     [LocalizedRequired(ErrorMessage = "Field is required")]
+    [LocalizedMaxLength(40, ErrorMessage = "Max length is 40")]
     public string Name { get; set; } = default!;
 
     [Required]

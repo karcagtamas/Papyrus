@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
@@ -141,6 +142,9 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public override int Create(GroupRole entity, bool doPersist = true)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+
+        ExceptionHelper.Check(Context.Set<Group>().Find(entity.GroupId)?.Roles.All(x => x.Name != entity.Name) ?? false, () => new ArgumentException("The name of the Group Role has to be unique"));
+
         int id = base.Create(entity, doPersist);
 
         groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleCreate, doPersist);
@@ -151,6 +155,9 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public override void Update(GroupRole entity, bool doPersist = true)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+
+        ExceptionHelper.Check(entity.Group.Roles.Where(x => x.Id != entity.Id).All(x => x.Name != entity.Name), () => new ArgumentException("The name of the Group Role has to be unique"));
+
         base.Update(entity, doPersist);
 
         groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleEdit, doPersist);
