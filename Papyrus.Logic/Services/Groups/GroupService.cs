@@ -73,7 +73,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         string userId = Utils.GetRequiredCurrentUserId();
         var id = base.Create(entity, doPersist);
 
-        groupActionLogService.AddActionLog(id, userId, GroupActionLogType.Create);
+        groupActionLogService.AddActionLog(id, userId, GroupActionLogType.Create, doPersist);
 
         return id;
     }
@@ -83,7 +83,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         string userId = Utils.GetRequiredCurrentUserId();
         base.Update(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.Id, userId, GroupActionLogType.DataEdit);
+        groupActionLogService.AddActionLog(entity.Id, userId, GroupActionLogType.DataEdit, doPersist);
     }
 
     public async Task Close(int id)
@@ -96,7 +96,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         group.IsClosed = true;
         Update(group);
 
-        groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Close);
+        groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Close, true);
     }
 
     public async Task<GroupRightsDTO> GetRights(int id)
@@ -127,7 +127,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         group.IsClosed = false;
         Update(group);
 
-        groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Open);
+        groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Open, true);
     }
 
     public async Task Remove(int id)
@@ -138,6 +138,8 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         ExceptionHelper.Check(await HasFullAccess(group, userId), "Not have permission to Remove this group.", "Server.Message.MissingRemoveRight");
 
         Delete(group);
+
+        groupActionLogService.AddActionLog(group.Id, userId, GroupActionLogType.Remove, true);
     }
     public async Task<GroupTagRightsDTO> GetTagRights(int id)
     {

@@ -143,7 +143,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         string userId = Utils.GetRequiredCurrentUserId();
         int id = base.Create(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleCreate);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleCreate, doPersist);
 
         return id;
     }
@@ -153,7 +153,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         string userId = Utils.GetRequiredCurrentUserId();
         base.Update(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleEdit);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleEdit, doPersist);
     }
 
     public override void Delete(GroupRole entity, bool doPersist = true)
@@ -161,7 +161,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         string userId = Utils.GetRequiredCurrentUserId();
         base.Delete(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleRemove);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleRemove, doPersist);
     }
 
     public bool Exists(int groupId, string name) => GetList(x => x.GroupId == groupId && x.Name == name).Any();

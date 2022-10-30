@@ -72,7 +72,6 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         if (ObjectHelper.IsNotNull(model.GroupId))
         {
             note.GroupId = model.GroupId;
-            groupActionLogService.AddActionLog((int)model.GroupId, userId, GroupActionLogType.NoteCreate);
         }
         else
         {
@@ -84,6 +83,11 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         note.ContentId = contentId;
 
         var id = Create(note);
+
+        if (ObjectHelper.IsNotNull(note.GroupId))
+        {
+            groupActionLogService.AddActionLog((int)note.GroupId, userId, GroupActionLogType.NoteCreate, true);
+        }
 
         return new NoteCreationDTO
         {
@@ -97,7 +101,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         string userId = Utils.GetRequiredCurrentUserId();
         var id = base.Create(entity, doPersist);
 
-        noteActionLogService.AddActionLog(id, userId, NoteActionLogType.Create);
+        noteActionLogService.AddActionLog(id, userId, NoteActionLogType.Create, doPersist);
 
         return id;
     }
@@ -165,27 +169,27 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         {
             if (o["Title"] as string != entity.Title)
             {
-                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.TitleEdit);
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.TitleEdit, doPersist);
             }
 
             if (Context.Entry(entity).Collection(x => x.Tags).IsModified)
             {
-                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.TagEdit);
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.TagEdit, doPersist);
             }
 
             if (o["ContentLastEdit"] as DateTime? != entity.ContentLastEdit)
             {
-                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.ContentEdit);
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.ContentEdit, doPersist);
             }
 
             if (o["Public"] as bool? != entity.Public)
             {
-                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Publish);
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Publish, doPersist);
             }
 
             if (o["Archived"] as bool? != entity.Archived)
             {
-                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Archived);
+                noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Archived, doPersist);
             }
         });
 
@@ -200,7 +204,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     {
         string userId = Utils.GetRequiredCurrentUserId();
 
-        noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Delete);
+        noteActionLogService.AddActionLog(entity.Id, userId, NoteActionLogType.Delete, doPersist);
 
         try
         {

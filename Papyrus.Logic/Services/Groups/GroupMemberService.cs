@@ -38,7 +38,7 @@ public class GroupMemberService : MapperRepository<GroupMember, int, string>, IG
         string userId = Utils.GetRequiredCurrentUserId();
         var id = base.Create(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberAdd);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberAdd, doPersist);
 
         return id;
     }
@@ -48,7 +48,7 @@ public class GroupMemberService : MapperRepository<GroupMember, int, string>, IG
         string userId = Utils.GetRequiredCurrentUserId();
         base.Update(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberEdit);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberEdit, doPersist);
     }
 
     public override void Delete(GroupMember entity, bool doPersist = true)
@@ -56,7 +56,7 @@ public class GroupMemberService : MapperRepository<GroupMember, int, string>, IG
         string userId = Utils.GetRequiredCurrentUserId();
         base.Delete(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberRemove);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.MemberRemove, doPersist);
     }
 
     public List<string> GetMemberKeys(int groupId, List<int> memberIds) => GetList(x => x.GroupId == groupId && memberIds.Contains(x.Id)).Select(x => x.UserId).ToList();
