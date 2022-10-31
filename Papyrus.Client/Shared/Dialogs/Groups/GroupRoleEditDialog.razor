@@ -4,7 +4,7 @@
 @using Papyrus.Shared.Models.Groups
 @inject IStringLocalizer<GroupRoleEditDialog> L
 
-<EditorDialog Model="GroupRoleModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="IsEdit" FormValidator="ValidateForm">
+<EditorDialog Model="GroupRoleModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="IsEdit" FormValidator="ValidateForm" RemoveDisabled="RemoveDisabled">
     <TextInput Class="mb-5" Label="@L["Field.Name"]" Required For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth />
     <MudDivider />
     <MudText Class="mt-1">@L["Group.Group"]</MudText>
@@ -43,6 +43,13 @@
         <Checkbox Label="@L["Field.ReadTags"]" For="@(() => Model.ReadTagList)" Checked="Model.ReadTagList" CheckedChanged="ChangeTagReadStatus" />
         <Checkbox Label="@L["Field.EditTags"]" For="@(() => Model.EditTagList)" Checked="Model.EditTagList" CheckedChanged="ChangeTagEditStatus" />
     </div>
+
+    @if (RemoveDisabled && ObjectHelper.IsNotNull(GroupRole))
+    {
+        <div class="mt-5">
+            <WarningMessage Message="@L["Message.ConnectedMembers", GroupRole?.Members ?? 0]" />
+        </div>
+    }
 </EditorDialog>
 
 @code {
@@ -58,9 +65,12 @@
     private GroupRoleDTO? GroupRole { get; set; }
     private GroupRoleModel Model { get; set; } = new(0);
     private bool IsEdit { get; set; } = false;
+    private bool RemoveDisabled { get; set; } = true;
 
     protected override async void OnInitialized()
     {
+        base.OnInitialized();
+
         Model.GroupId = GroupId;
         if (ObjectHelper.IsNotNull(GroupRoleId))
         {
@@ -70,11 +80,10 @@
             if (ObjectHelper.IsNotNull(GroupRole))
             {
                 Model = new GroupRoleModel(GroupId, GroupRole);
+                RemoveDisabled = GroupRole.Members > 0;
                 await InvokeAsync(StateHasChanged);
             }
-
         }
-        base.OnInitialized();
     }
 
     private Task<bool> Submit()
@@ -99,7 +108,7 @@
 
     private async Task<bool> ValidateForm(GroupRoleModel model, ISnackbar snackbar)
     {
-        if (ObjectHelper.IsNotNull(GroupRole) && model.Name != GroupRole.Name && await GroupRoleService.Exists(GroupId, model.Name))
+        if (((ObjectHelper.IsNotNull(GroupRole) && model.Name != GroupRole.Name) || ObjectHelper.IsNull(GroupRoleId)) && await GroupRoleService.Exists(GroupId, model.Name))
         {
             snackbar.Add(L["Message.AlreadyExists", model.Name], Severity.Error);
             return false;

@@ -2,7 +2,13 @@
 @inject IStringLocalizer<NoteDetailsDialog> L
 
 <MudDialog>
-    <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">@L["Title", Note.Title]</MudText></TitleContent>
+    <TitleContent>
+        <div class="w-100 pr-5">
+            <MudTooltip Text="@Note.Title" RootClass="w-100">
+                <MudText Typo="Typo.h5" Color="Color.Primary" Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@L["Title", Note.Title]</MudText>
+            </MudTooltip>
+        </div>
+    </TitleContent>
     <DialogContent>
         <DataRow Title="@L["Row.Title"]" Value="@Note.Title" />
         <DateDataRow Title="@L["Row.Creation"]" Date="Note.Creation" />

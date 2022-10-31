@@ -7,7 +7,7 @@
 @inject IHelperService Helper
 @inject INoteService NoteService
 
-<EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="true" FormValidator="ValidateForm">
+<EditorDialog Model="NoteModel" ModelObj="Model" Submit="Submit" Remove="Remove" EntityName="@L["Entity"]" IsEdit="true" FormValidator="ValidateForm" RemoveDisabled="!DeleteEnabled">
     <TextInput Class="mb-5" Label="@L["Field.Title"]" Required For="@(() => Model.Title)" @bind-Value="Model.Title" FullWidth />
     <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsPublic"]" For="@(() => Model.Public)" @bind-Checked="Model.Public" />
     <MudSwitch Class="mb-5" Color="Color.Primary" T="bool" Label="@L["Field.IsArchived"]" For="@(() => Model.Archived)" @bind-Checked="Model.Archived" />
@@ -37,7 +37,6 @@
     private NoteLightDTO? Note { get; set; }
     private NoteModel Model { get; set; } = new();
     private List<NoteTagDTO> Tags { get; set; } = new();
-    private Func<Task<bool>>? Remove { get; set; }
 
     protected override async void OnInitialized()
     {
@@ -51,16 +50,13 @@
             Tags = Note.Tags;
             Model.Tags = Tags.Select(x => x.Id).ToList();
 
-            if (DeleteEnabled)
-            {
-                Remove = () => NoteService.Delete(NoteId);
-            }
-
             await InvokeAsync(StateHasChanged);
         }
     }
 
     private Task<bool> Submit() => NoteService.Update(NoteId, Model);
+
+    private Task<bool> Remove() => NoteService.Delete(NoteId);
 
     private async Task AddTags()
     {

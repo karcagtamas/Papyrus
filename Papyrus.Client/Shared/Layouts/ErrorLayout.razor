@@ -1,4 +1,7 @@
 @inherits LayoutComponentBase
 
-<div>404 - Page not found</div>
-@Body
+<MudThemeProvider Theme="@PapyrusTheme.GetTheme()" />
+
+<div class="flex-box justify-content-center align-items-center w-100 h-100 gap-5">
+    @Body
+</div>

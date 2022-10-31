@@ -102,6 +102,8 @@ public static class ContextExtensions
                 new() { Key = GroupActionLogTypeConverter.GetLogKey(GroupActionLogType.DataEdit), Segment = "Group", Language = "hu-HU", Value = "Adatok szerkesztve" },
                 new() { Key = GroupActionLogTypeConverter.GetLogKey(GroupActionLogType.NoteCreate), Segment = "Group", Language = "en-US", Value = "Note is created" },
                 new() { Key = GroupActionLogTypeConverter.GetLogKey(GroupActionLogType.NoteCreate), Segment = "Group", Language = "hu-HU", Value = "Jegyzet létrehozva" },
+                new() { Key = GroupActionLogTypeConverter.GetLogKey(GroupActionLogType.Remove), Segment = "Group", Language = "en-US", Value = "Group is removed" },
+                new() { Key = GroupActionLogTypeConverter.GetLogKey(GroupActionLogType.Remove), Segment = "Group", Language = "hu-HU", Value = "Csoport törölve" },
             });
         builder.Entity<Translation>()
             .HasData(new List<Translation>
@@ -201,13 +203,13 @@ public static class ContextExtensions
             .OnDelete(DeleteBehavior.SetNull);
 
         // Group Role
-        builder.Entity<GroupRole>()
-            .HasAlternateKey(x => new { x.GroupId, x.Name });
-        builder.Entity<GroupRole>()
-            .HasOne(x => x.Group)
-            .WithMany(x => x.Roles)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<GroupRole>(groupRole =>
+        {
+            groupRole.HasOne(x => x.Group)
+                .WithMany(x => x.Roles)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         return builder;
     }

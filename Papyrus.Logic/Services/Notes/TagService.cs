@@ -79,7 +79,7 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
 
         if (ObjectHelper.IsNotNull(entity.GroupId))
         {
-            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagCreate);
+            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagCreate, doPersist);
         }
 
         return id;
@@ -92,7 +92,7 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
 
         if (ObjectHelper.IsNotNull(entity.GroupId))
         {
-            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagEdit);
+            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagEdit, doPersist);
         }
     }
 
@@ -103,7 +103,7 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
 
         if (ObjectHelper.IsNotNull(entity.GroupId))
         {
-            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagRemove);
+            groupActionLogService.AddActionLog((int)entity.GroupId, userId, GroupActionLogType.TagRemove, doPersist);
         }
     }
 

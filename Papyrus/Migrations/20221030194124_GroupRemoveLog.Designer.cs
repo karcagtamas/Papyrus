@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Papyrus.DataAccess;
 
@@ -10,9 +11,10 @@ using Papyrus.DataAccess;
 namespace Papyrus.Migrations
 {
     [DbContext(typeof(PapyrusContext))]
-    partial class PapyrusContextModelSnapshot : ModelSnapshot
+    [Migration("20221030194124_GroupRemoveLog")]
+    partial class GroupRemoveLog
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -302,8 +304,7 @@ namespace Papyrus.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("varchar(40)");
+                        .HasColumnType("varchar(255)");
 
                     b.Property<bool>("ReadGroupActionLog")
                         .HasColumnType("tinyint(1)");
@@ -331,7 +332,7 @@ namespace Papyrus.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("GroupId");
+                    b.HasAlternateKey("GroupId", "Name");
 
                     b.ToTable("GroupRoles");
                 });

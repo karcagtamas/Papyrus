@@ -10,9 +10,13 @@
         <div class="w-100" @onclick="ClickHandler">
             <MudCard Class="w-100 p-2 d-flex flex-column align-items-center tile-hover">
                 <img src="assets/images/folder.svg" height="120" />
-                <MudText Color="Color.Primary" Class="mt-2">
-                    @Folder.Name
-                </MudText>
+                <div class="mt-2 w-100 text-center" style="overflow: hidden;">
+                    <MudTooltip Text="@Folder.Name" RootClass="w-100">
+                        <MudText Color="Color.Primary" Style="white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                            @Folder.Name
+                        </MudText>
+                    </MudTooltip>
+                </div>
             </MudCard>
         </div>
     </ActivatorContent>

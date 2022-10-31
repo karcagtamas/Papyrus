@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
+using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
@@ -141,9 +143,14 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public override int Create(GroupRole entity, bool doPersist = true)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+
+        var group = Context.Set<Group>().Find(entity.GroupId);
+
+        ExceptionHelper.Check(ObjectHelper.OrElseThrow(Context.Set<Group>().Find(entity.GroupId), () => new ArgumentException("Group not found")).Roles?.All(x => x.Name != entity.Name) ?? true, () => new ArgumentException("The name of the Group Role has to be unique"));
+
         int id = base.Create(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleCreate);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleCreate, doPersist);
 
         return id;
     }
@@ -151,9 +158,12 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
     public override void Update(GroupRole entity, bool doPersist = true)
     {
         string userId = Utils.GetRequiredCurrentUserId();
+
+        ExceptionHelper.Check(entity.Group.Roles.Where(x => x.Id != entity.Id).All(x => x.Name != entity.Name), () => new ArgumentException("The name of the Group Role has to be unique"));
+
         base.Update(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleEdit);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleEdit, doPersist);
     }
 
     public override void Delete(GroupRole entity, bool doPersist = true)
@@ -161,7 +171,7 @@ public class GroupRoleService : MapperRepository<GroupRole, int, string>, IGroup
         string userId = Utils.GetRequiredCurrentUserId();
         base.Delete(entity, doPersist);
 
-        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleRemove);
+        groupActionLogService.AddActionLog(entity.GroupId, userId, GroupActionLogType.RoleRemove, doPersist);
     }
 
     public bool Exists(int groupId, string name) => GetList(x => x.GroupId == groupId && x.Name == name).Any();

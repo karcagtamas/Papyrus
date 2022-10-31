@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using Papyrus.Shared.Models.Groups;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Shared.DTOs.Groups;
+using Papyrus.Shared.Models.Groups;
 
 namespace Papyrus.Logic.Mappers;
 
@@ -21,7 +21,8 @@ public class GroupMapper : Profile
 
         CreateMap<GroupMember, GroupMemberDTO>()
             .ForMember(dest => dest.Join, opt => opt.MapFrom(src => src.Creation));
-        CreateMap<GroupRole, GroupRoleDTO>();
+        CreateMap<GroupRole, GroupRoleDTO>()
+            .ForMember(dest => dest.Members, opt => opt.MapFrom(src => src.Members.Count));
         CreateMap<GroupRole, GroupRoleLightDTO>();
         CreateMap<GroupMemberCreateModel, GroupMember>();
         CreateMap<GroupMemberUpdateModel, GroupMember>();

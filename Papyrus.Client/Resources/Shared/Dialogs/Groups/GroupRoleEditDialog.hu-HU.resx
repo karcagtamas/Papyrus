@@ -187,6 +187,9 @@
     <value>Címke Jogosultságok</value>
   </data>
   <data name="Message.AlreadyExists" xml:space="preserve">
-    <value>Csoport Szerepkör már létezik ezzel a névvel [{0}]</value>
+    <value>Csoport Szerepkör már létezik ezzel a névvel [{0}].</value>
+  </data>
+  <data name="Message.ConnectedMembers" xml:space="preserve">
+    <value>Szerepkör {0} kapcsolat taggal rendelkezik.</value>
   </data>
 </root>

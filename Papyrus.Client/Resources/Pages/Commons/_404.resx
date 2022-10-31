@@ -117,79 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Entity" xml:space="preserve">
-    <value>Group Role</value>
+  <data name="PageNotFound" xml:space="preserve">
+    <value>Page Not Found</value>
   </data>
-  <data name="Field.CreateNote" xml:space="preserve">
-    <value>Create Note</value>
-  </data>
-  <data name="Field.DeleteNote" xml:space="preserve">
-    <value>Delete Note</value>
-  </data>
-  <data name="Field.EditMembers" xml:space="preserve">
-    <value>Edit Members</value>
-  </data>
-  <data name="Field.EditNote" xml:space="preserve">
-    <value>Edit Note</value>
-  </data>
-  <data name="Field.EditRoles" xml:space="preserve">
-    <value>Edit Roles</value>
-  </data>
-  <data name="Field.EditTags" xml:space="preserve">
-    <value>Edit Tags</value>
-  </data>
-  <data name="Field.GroupClose" xml:space="preserve">
-    <value>Group Close</value>
-  </data>
-  <data name="Field.GroupEdit" xml:space="preserve">
-    <value>Group Edit</value>
-  </data>
-  <data name="Field.Name" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="Field.ReadLogs" xml:space="preserve">
-    <value>Read Action Logs</value>
-  </data>
-  <data name="Field.ReadMembers" xml:space="preserve">
-    <value>Read Members</value>
-  </data>
-  <data name="Field.ReadNote" xml:space="preserve">
-    <value>Read Note</value>
-  </data>
-  <data name="Field.ReadNoteLogs" xml:space="preserve">
-    <value>Read Note Action Logs</value>
-  </data>
-  <data name="Field.ReadNotes" xml:space="preserve">
-    <value>Listing Notes</value>
-  </data>
-  <data name="Field.ReadRoles" xml:space="preserve">
-    <value>Read Roles</value>
-  </data>
-  <data name="Field.ReadTags" xml:space="preserve">
-    <value>Read Tags</value>
-  </data>
-  <data name="Group.Group" xml:space="preserve">
-    <value>Main Rights</value>
-  </data>
-  <data name="Group.Logs" xml:space="preserve">
-    <value>Action Log Rights</value>
-  </data>
-  <data name="Group.Members" xml:space="preserve">
-    <value>Member Rights</value>
-  </data>
-  <data name="Group.Notes" xml:space="preserve">
-    <value>Note Rights</value>
-  </data>
-  <data name="Group.Roles" xml:space="preserve">
-    <value>Role Rights</value>
-  </data>
-  <data name="Group.Tags" xml:space="preserve">
-    <value>Tag Rights</value>
-  </data>
-  <data name="Message.AlreadyExists" xml:space="preserve">
-    <value>Group Role is already exists with this name [{0}].</value>
-  </data>
-  <data name="Message.ConnectedMembers" xml:space="preserve">
-    <value>Role has {0} connected member(s).</value>
+  <data name="ToHome" xml:space="preserve">
+    <value>To Home</value>
   </data>
 </root>

@@ -2,7 +2,13 @@
 @inject IStringLocalizer<FolderDetailsDialog> L
 
 <MudDialog>
-    <TitleContent><MudText Typo="Typo.h5" Color="Color.Primary">@L["Title", Folder.Name]</MudText></TitleContent>
+    <TitleContent>
+        <div class="w-100 pr-5">
+            <MudTooltip Text="@Folder.Name" RootClass="w-100">
+                <MudText Typo="Typo.h5" Color="Color.Primary" Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">@L["Title", Folder.Name]</MudText>
+            </MudTooltip>
+        </div>
+    </TitleContent>
     <DialogContent>
         <DataRow Title="@L["Row.Name"]" Value="@Folder.Name" />
         <DateDataRow Title="@L["Row.Creation"]" Date="Folder.Creation" />

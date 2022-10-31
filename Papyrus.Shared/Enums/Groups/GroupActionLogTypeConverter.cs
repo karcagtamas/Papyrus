@@ -20,6 +20,7 @@ public static class GroupActionLogTypeConverter
             GroupActionLogType.TagRemove => "TagRemove",
             GroupActionLogType.DataEdit => "DataEdit",
             GroupActionLogType.NoteCreate => "NoteCreate",
+            GroupActionLogType.Remove => "Remove",
             _ => "",
         };
     }
