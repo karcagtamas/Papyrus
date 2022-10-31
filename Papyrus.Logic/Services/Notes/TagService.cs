@@ -25,7 +25,9 @@ public class TagService : MapperRepository<Tag, int, string>, ITagService
     public List<NoteTagDTO> GetList(int? groupId)
     {
         string userId = Utils.GetRequiredCurrentUserId();
-        return GetMappedList<NoteTagDTO>(x => (groupId != null && x.GroupId == groupId) || x.UserId == userId).ToList();
+        return ObjectHelper.IsNull(groupId)
+            ? GetMappedList<NoteTagDTO>(x => x.UserId == userId).ToList()
+            : GetMappedList<NoteTagDTO>(x => x.GroupId == groupId).ToList();
     }
 
     public TagPathDTO GetPath(int id)
