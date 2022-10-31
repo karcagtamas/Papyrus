@@ -94,15 +94,7 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("{id}/Rights")]
-    public async Task<ActionResult<NoteRightsDTO>> GetRights(string id)
-    {
-        if (!await rightService.HasNoteEditRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        return await noteService.GetRights(id);
-    }
+    public Task<NoteRightsDTO> GetRights(string id) => noteService.GetRights(id);
 
     [HttpGet("Search")]
     [AllowAnonymous]
