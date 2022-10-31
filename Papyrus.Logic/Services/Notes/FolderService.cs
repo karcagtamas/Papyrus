@@ -88,8 +88,12 @@ public class FolderService : MapperRepository<Folder, string, string>, IFolderSe
     {
         var userId = Utils.GetRequiredCurrentUserId();
         return ObjectHelper.IsNull(folderId)
-            ? GetList(x => x.ParentId == null && ((groupId != null && x.GroupId == groupId) || x.UserId == userId)).FirstOrDefault()
-            : GetList(x => x.Id == folderId && ((groupId != null && x.GroupId == groupId) || x.UserId == userId)).FirstOrDefault();
+            ? ObjectHelper.IsNotNull(groupId)
+                ? GetList(x => x.ParentId == null && x.GroupId == groupId).FirstOrDefault()
+                : GetList(x => x.ParentId == null && x.UserId == userId).FirstOrDefault()
+            : ObjectHelper.IsNotNull(groupId)
+                ? GetList(x => x.Id == folderId && x.GroupId == groupId).FirstOrDefault()
+                : GetList(x => x.Id == folderId && x.UserId == userId).FirstOrDefault();
     }
 
     private bool NamesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
