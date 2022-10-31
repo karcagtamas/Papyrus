@@ -187,6 +187,9 @@
     <value>Tag Rights</value>
   </data>
   <data name="Message.AlreadyExists" xml:space="preserve">
-    <value>Group Role is already exists with this name [{0}]</value>
+    <value>Group Role is already exists with this name [{0}].</value>
+  </data>
+  <data name="Message.ConnectedMembers" xml:space="preserve">
+    <value>Role has {0} connected member(s).</value>
   </data>
 </root>

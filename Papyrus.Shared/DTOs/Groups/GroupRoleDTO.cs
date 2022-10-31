@@ -21,4 +21,6 @@ public class GroupRoleDTO : GroupRoleLightDTO
 
     public bool ReadTagList { get; set; }
     public bool EditTagList { get; set; }
+
+    public int Members { get; set; }
 }

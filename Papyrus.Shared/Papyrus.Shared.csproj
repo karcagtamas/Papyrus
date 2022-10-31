@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="KarcagS.Shared" Version="2.8.8" />
+    <PackageReference Include="KarcagS.Shared" Version="2.8.9" />
     <PackageReference Include="Microsoft.Extensions.Localization.Abstractions" Version="6.0.10" />
   </ItemGroup>
 </Project>
