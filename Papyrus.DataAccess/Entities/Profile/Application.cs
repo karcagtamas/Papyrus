@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Attributes;
 using KarcagS.Common.Tools.Entities;
 
-namespace Papyrus.DataAccess.Entities;
+namespace Papyrus.DataAccess.Entities.Profile;
 
 public class Application : IEntity<string>, ICreationEntity, ILastUpdateEntity
 {

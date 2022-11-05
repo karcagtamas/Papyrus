@@ -1,4 +1,4 @@
-@page "/users"
+@page "/admin/users"
 @using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Table
 @using Papyrus.Client.Services.Interfaces
@@ -8,11 +8,10 @@
 @attribute [Authorize(Roles = "Administrator,Moderator")]
 @inject IStringLocalizer<Users> L
 @inject IUserTableService UserTableService
-@inject IHelperService HelperService
 @inject IRoleService RoleService
 @inject IHelperService Helper
 
-<ApplicationPageTitle PageName="@L["PageName"]"></ApplicationPageTitle>
+<ApplicationPageTitle PageName="@L["PageName"]" />
 
 <div class="page-div">
     <Table @ref="Table" TKey="string" Service="UserTableService" Localizer="L" Style="Style" OnRowClick="RowClickHandler" ReadOnly="!HasWriteRight">
@@ -84,7 +83,7 @@
 
         var parameters = new DialogParameters { { "UserId", item.ItemKey } };
 
-        await HelperService.OpenEditorDialog<UserSettingDialog>("User Settings", (res) => Table?.Refresh(), parameters);
+        await Helper.OpenEditorDialog<UserSettingDialog>("User Settings", (res) => Table?.Refresh(), parameters);
     }
 
     private void FilterHandler(string value, Action<string, object?> filter)

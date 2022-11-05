@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.Logic.Services.Interfaces;
+using Papyrus.Logic.Services.Profile.Interfaces;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
 
-namespace Papyrus.Controllers;
+namespace Papyrus.Controllers.Profile;
 
 [ApiController]
 [Route("api/[controller]")]

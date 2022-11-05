@@ -31,6 +31,8 @@ using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes;
 using Papyrus.Logic.Services.Notes.Interfaces;
+using Papyrus.Logic.Services.Profile;
+using Papyrus.Logic.Services.Profile.Interfaces;
 using Papyrus.Middlewares;
 using Papyrus.Mongo.DataAccess.Configurations;
 

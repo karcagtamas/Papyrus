@@ -1,10 +1,10 @@
 using KarcagS.Common.Tools.Table;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Papyrus.DataAccess.Entities;
-using Papyrus.Logic.Services.Interfaces;
+using Papyrus.DataAccess.Entities.Profile;
+using Papyrus.Logic.Services.Profile.Interfaces;
 
-namespace Papyrus.Controllers;
+namespace Papyrus.Controllers.Profile;
 
 [ApiController]
 [Route("api/[controller]")]

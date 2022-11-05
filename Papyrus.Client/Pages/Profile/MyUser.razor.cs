@@ -9,7 +9,7 @@ using Papyrus.Client.Shared.Dialogs;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
 
-namespace Papyrus.Client.Pages;
+namespace Papyrus.Client.Pages.Profile;
 
 public partial class MyUser : ComponentBase
 {

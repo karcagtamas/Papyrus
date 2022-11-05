@@ -4,6 +4,7 @@ using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Editor;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.DataAccess.Entities.Profile;
 
 namespace Papyrus.DataAccess;
 

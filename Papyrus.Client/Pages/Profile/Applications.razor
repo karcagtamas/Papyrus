@@ -1,0 +1,33 @@
+@page "/profile/apps"
+@using KarcagS.Shared.Table
+@using Papyrus.Client.Services.Profile.Interfaces
+@attribute [Authorize]
+@inject NavigationManager Navigation
+@inject IApplicationTableService ApplicationTableService
+@inject IStringLocalizer<Applications> L
+
+<ApplicationPageTitle PageName="@L["PageName"]" />
+
+<div class="page-div">
+    <ActionBar>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Create">@L["CreateAction"]</MudButton>
+    </ActionBar>
+    <Table @ref="Table" TKey="string" Service="ApplicationTableService" Localizer="L"  OnRowClick="RowClickHandler" />
+</div>
+
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authStateTask { get; set; } = default!;
+
+    private Table<string>? Table { get; set; }
+
+    private void RowClickHandler(ResultRowItem<string> item) => Navigation.NavigateTo($"/profile/apps/{item.ItemKey}");
+
+
+    private async Task Create()
+    {
+        // TODO: Open editor dialog
+    }
+
+}

@@ -4,10 +4,10 @@ using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
 using KarcagS.Shared.Enums;
 using KarcagS.Shared.Table.Enums;
-using Papyrus.DataAccess.Entities;
-using Papyrus.Logic.Services.Interfaces;
+using Papyrus.DataAccess.Entities.Profile;
+using Papyrus.Logic.Services.Profile.Interfaces;
 
-namespace Papyrus.Logic.Services;
+namespace Papyrus.Logic.Services.Profile;
 
 public class ApplicationTableService : TableService<Application, string>, IApplicationTableService
 {
