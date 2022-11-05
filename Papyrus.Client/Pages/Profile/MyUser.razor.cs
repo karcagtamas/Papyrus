@@ -5,7 +5,7 @@ using Microsoft.JSInterop;
 using MudBlazor;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Client.Services.Interfaces;
-using Papyrus.Client.Shared.Dialogs;
+using Papyrus.Client.Shared.Dialogs.Profile;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.Models;
 
@@ -89,5 +89,5 @@ public partial class MyUser : ComponentBase
         }
     }
 
-    private async Task ChangePassword() => await HelperService.OpenEditorDialog<ChangePasswordDialog>("Change Password", async (res) => await GetUser(), new DialogParameters { });
+    private Task ChangePassword() => HelperService.OpenEditorDialog<ChangePasswordDialog>("Change Password", async (res) => await GetUser(), new DialogParameters { });
 }

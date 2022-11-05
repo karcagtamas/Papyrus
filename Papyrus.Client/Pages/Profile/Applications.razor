@@ -1,9 +1,11 @@
 @page "/profile/apps"
 @using KarcagS.Shared.Table
+@using KarcagS.Blazor.Common.Services.Interfaces
 @using Papyrus.Client.Services.Profile.Interfaces
 @attribute [Authorize]
 @inject NavigationManager Navigation
 @inject IApplicationTableService ApplicationTableService
+@inject IHelperService Helper
 @inject IStringLocalizer<Applications> L
 
 <ApplicationPageTitle PageName="@L["PageName"]" />
@@ -25,9 +27,9 @@
     private void RowClickHandler(ResultRowItem<string> item) => Navigation.NavigateTo($"/profile/apps/{item.ItemKey}");
 
 
-    private async Task Create()
+    private Task Create()
     {
-        // TODO: Open editor dialog
+        return Helper.OpenEditorDialog<ApplicationEditDialog>("Create Application", (res) => Table?.Refresh(), new DialogParameters { { "ApplicationId", null } });
     }
 
 }

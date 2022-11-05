@@ -23,9 +23,9 @@
 
     protected override async void OnInitialized()
     {
-        await GetUser();
-
         await base.OnInitializedAsync();
+
+        await GetUser();
     }
 
     private async Task GetUser()
@@ -33,11 +33,11 @@
         if (!string.IsNullOrEmpty(UserId))
         {
             DTO = await UserService.Get<UserDTO>(UserId);
-            if (DTO is not null)
+            if (ObjectHelper.IsNotNull(DTO))
             {
                 Model = new UserModel(DTO);
+                await InvokeAsync(StateHasChanged);
             }
-            StateHasChanged();
         }
     }
 

@@ -1,0 +1,60 @@
+@using Papyrus.Shared.DTOs
+@using Papyrus.Shared.Models
+@using Services.Profile.Interfaces
+@inject IStringLocalizer<ApplicationEditDialog> L
+
+<EditorDialog Model="ApplicationModel" ModelObj="Model" EntityName="@L["Entity"]" Submit="Submit" IsEdit="IsEdit" Remove="Remove">
+    <TextInput Class="mb-5" Label="@L["Field.Name"]" Required For="@(() => Model.Name)" @bind-Value="Model.Name" FullWidth/>
+    <TextInput Class="mb-5" Label="@L["Field.Description"]" For="@(() => Model.Description)" @bind-Value="Model.Description" FullWidth Lines="5" />
+</EditorDialog>
+
+
+@code {
+    [Parameter]
+    public string? ApplicationId { get; set; } = default!;
+
+    [Inject]
+    private IApplicationService ApplicationService { get; set; } = default!;
+
+    private ApplicationDTO? DTO { get; set; }
+    private ApplicationModel Model { get; set; } = new();
+    private bool IsEdit { get; set; } = false;
+
+    protected override async void OnInitialized()
+    {
+        await base.OnInitializedAsync();
+
+        await GetApp();
+    }
+
+    private async Task GetApp()
+    {
+        if (!string.IsNullOrEmpty(ApplicationId))
+        {
+            DTO = await ApplicationService.Get<ApplicationDTO>(ApplicationId);
+            if (ObjectHelper.IsNotNull(DTO))
+            {
+                IsEdit = true;
+                Model = new ApplicationModel
+                {
+                    Name = DTO.Name,
+                    Description = DTO.Description,
+                };
+
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+    }
+
+    private Task<bool> Submit() => ObjectHelper.IsNotNull(ApplicationId) && IsEdit ? ApplicationService.Update(ApplicationId, Model) : ApplicationService.Create(Model);
+
+    private Task<bool> Remove()
+    {
+        if (ObjectHelper.IsNotNull(ApplicationId) && IsEdit)
+        {
+            ApplicationService.Delete(ApplicationId);
+        }
+
+        return Task.FromResult(false);
+    }
+}

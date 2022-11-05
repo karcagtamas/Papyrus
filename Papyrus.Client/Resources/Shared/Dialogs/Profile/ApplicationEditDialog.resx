@@ -120,16 +120,10 @@
   <data name="Entity" xml:space="preserve">
     <value>Application</value>
   </data>
-  <data name="Toaster.Add" xml:space="preserve">
-    <value>{0} adding</value>
+  <data name="Field.Description" xml:space="preserve">
+    <value>Description</value>
   </data>
-  <data name="Toaster.Delete" xml:space="preserve">
-    <value>{0} deleting</value>
-  </data>
-  <data name="Toaster.Refresh" xml:space="preserve">
-    <value>Secret key refreshing</value>
-  </data>
-  <data name="Toaster.Update" xml:space="preserve">
-    <value>{0} updating</value>
+  <data name="Field.Name" xml:space="preserve">
+    <value>Name</value>
   </data>
 </root>

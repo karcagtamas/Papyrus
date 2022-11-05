@@ -118,13 +118,16 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Entity" xml:space="preserve">
-    <value>Appliáció</value>
+    <value>Applikáció</value>
   </data>
   <data name="Toaster.Add" xml:space="preserve">
     <value>{0} hozzáadás</value>
   </data>
   <data name="Toaster.Delete" xml:space="preserve">
     <value>{0} törlés</value>
+  </data>
+  <data name="Toaster.Refresh" xml:space="preserve">
+    <value>Titkos kulcs frissítés</value>
   </data>
   <data name="Toaster.Update" xml:space="preserve">
     <value>{0} szerkesztés</value>

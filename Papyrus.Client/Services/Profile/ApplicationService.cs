@@ -7,7 +7,18 @@ namespace Papyrus.Client.Services.Profile;
 
 public class ApplicationService : HttpCall<string>, IApplicationService
 {
-    public ApplicationService(IHttpService http, IStringLocalizer<ApplicationService>? localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Application", "Application", localizer)
+    private readonly IStringLocalizer<ApplicationService> localizer;
+
+    public ApplicationService(IHttpService http, IStringLocalizer<ApplicationService> localizer) : base(http, $"{ApplicationSettings.BaseApiUrl}/Application", "Application", localizer)
     {
+        this.localizer = localizer;
+    }
+
+    public Task<bool> RefreshSecret(string id)
+    {
+        var settings = new HttpSettings(Http.BuildUrl(Url, id, "RefreshSecret"))
+            .AddToaster(localizer["Toaster.Refresh"]);
+
+        return Http.PutWithoutBody(settings).Execute();
     }
 }

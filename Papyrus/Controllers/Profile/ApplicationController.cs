@@ -22,8 +22,11 @@ public class ApplicationController
     public ApplicationDTO Get(string id) => applicationService.GetMapped<ApplicationDTO>(id);
 
     [HttpPost]
-    public void Create([FromBody] ApplicationModel model) => applicationService.CreateFromModel(model);
+    public void Create([FromBody] ApplicationModel model) => applicationService.CreateWithKeys(model);
 
     [HttpPut("{id}")]
     public void Update(string id, [FromBody] ApplicationModel model) => applicationService.UpdateByModel(id, model);
+
+    [HttpPut("{id}/RefreshSecret")]
+    public void RefreshSecret(string id) => applicationService.RefreshSecret(id);
 }
