@@ -15,13 +15,16 @@
     <ActionBar>
         <ChildContent>
             <div class="d-flex flex-row gap-2">
-                @if (NoteCreateEnabled)
+                @if (!IsFilteredList)
                 {
-                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="CreateNote">@L["CreateAction"]</MudButton>
-                }
-                @if (FolderCreateEnabled)
-                {
-                    <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => OpenFolderEditor(null))">@L["CreateFolderAction"]</MudButton>
+                    @if (NoteCreateEnabled)
+                    {
+                        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="CreateNote">@L["CreateAction"]</MudButton>
+                    }
+                    @if (FolderCreateEnabled)
+                    {
+                        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="@(() => OpenFolderEditor(null))">@L["CreateFolderAction"]</MudButton>
+                    }
                 }
             </div>
             <div class="ml-5 d-flex flex-row align-items-center">
