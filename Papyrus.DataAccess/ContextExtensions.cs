@@ -13,40 +13,41 @@ public static class ContextExtensions
     public static ModelBuilder RegisterCommonEntities(this ModelBuilder builder)
     {
         // User
-        builder.Entity<User>(b =>
+        builder.Entity<User>(user =>
         {
-            b.HasIndex(user => user.UserName)
+            user.HasIndex(user => user.UserName)
                 .IsUnique();
-            b.HasIndex(user => user.Email)
+            user.HasIndex(user => user.Email)
                 .IsUnique();
-            b.HasOne(x => x.Language)
+            user.HasOne(x => x.Language)
                 .WithMany(x => x.Users)
                 .OnDelete(DeleteBehavior.SetNull);
-            b.HasMany(e => e.Roles)
+            user.HasMany(e => e.Roles)
                 .WithOne()
                 .HasForeignKey(x => x.UserId)
                 .IsRequired();
         });
 
         // User Roles
-        builder.Entity<Role>(b =>
+        builder.Entity<Role>(role =>
         {
-            b.HasMany(e => e.Users)
+            role.HasMany(e => e.Users)
                 .WithOne()
                 .HasForeignKey(x => x.RoleId)
                 .IsRequired();
         });
 
         // Language
-        builder.Entity<Language>()
-            .HasIndex(x => x.ShortName)
-            .IsUnique();
-        builder.Entity<Language>()
-            .HasData(new List<Language>
+        builder.Entity<Language>(lang =>
+        {
+            lang.HasIndex(x => x.ShortName)
+                .IsUnique();
+            lang.HasData(new List<Language>
             {
                 new() { Id = 1, Name = "English", ShortName = "en-US" },
                 new() { Id = 2, Name = "Hungarian", ShortName = "hu-HU" }
             });
+        });
 
         // Translation
         builder.Entity<Translation>()
@@ -133,20 +134,24 @@ public static class ContextExtensions
             });
 
         // Refresh token
-        builder.Entity<RefreshToken>()
-            .HasIndex(t => t.Token)
-            .IsUnique();
-        builder.Entity<RefreshToken>()
-            .HasOne(x => x.User)
-            .WithMany(x => x.RefreshTokens)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<RefreshToken>(rt =>
+        {
+            rt.HasIndex(t => t.Token)
+                .IsUnique();
+            rt.HasOne(x => x.User)
+                .WithMany(x => x.RefreshTokens)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         // Action Logs
-        builder.Entity<ActionLog>()
-            .HasOne(x => x.Performer)
-            .WithMany(x => x.ActionLogs)
-            .OnDelete(DeleteBehavior.SetNull);
+        builder.Entity<ActionLog>(log =>
+        {
+            log.HasOne(x => x.Performer)
+                .WithMany(x => x.ActionLogs)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
+
 
         // Posts
         builder.Entity<Post>(post =>
@@ -165,6 +170,14 @@ public static class ContextExtensions
                 .WithMany(x => x.AppAccesses)
                 .OnDelete(DeleteBehavior.Cascade)
                 .IsRequired();
+        });
+
+        builder.Entity<Application>(app =>
+        {
+            app.HasOne(x => x.User)
+                .WithMany(x => x.Applications)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
         });
 
         return builder;

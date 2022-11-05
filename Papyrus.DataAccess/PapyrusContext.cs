@@ -25,6 +25,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<NoteAccess> NoteAccesses { get; set; }
 
     public DbSet<ActionLog> ActionLogs { get; set; }
+    public DbSet<Application> Applications { get; set; }
 
     public DbSet<EditorMember> EditorMembers { get; set; }
 
@@ -44,6 +45,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         NoteTags = default!;
         NoteAccesses = default!;
         ActionLogs = default!;
+        Applications = default!;
         EditorMembers = default!;
     }
 

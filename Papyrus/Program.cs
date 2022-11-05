@@ -81,6 +81,9 @@ builder.Services.AddScoped<INoteContentService, NoteContentService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IFolderService, FolderService>();
 
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IApplicationTableService, ApplicationTableService>();
+
 builder.Services.AddScoped<IEditorService, EditorService>();
 
 builder.Services.AddScoped<IFileService, FileService>();
@@ -102,6 +105,7 @@ var mapperConfig = new MapperConfiguration(conf =>
     conf.AddProfile<RoleMapper>();
     conf.AddProfile<PostMapper>();
     conf.AddProfile<FolderMapper>();
+    conf.AddProfile<ApplicationMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
