@@ -27,9 +27,6 @@
     private void RowClickHandler(ResultRowItem<string> item) => Navigation.NavigateTo($"/profile/apps/{item.ItemKey}");
 
 
-    private Task Create()
-    {
-        return Helper.OpenEditorDialog<ApplicationEditDialog>("Create Application", (res) => Table?.Refresh(), new DialogParameters { { "ApplicationId", null } });
-    }
+    private Task Create() => Helper.OpenEditorDialog<ApplicationEditDialog>("Create Application", (res) => Table?.Refresh(), new DialogParameters { { "ApplicationId", null } });
 
 }

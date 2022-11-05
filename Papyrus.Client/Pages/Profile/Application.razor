@@ -1,11 +1,87 @@
 @page "/profile/apps/{id}"
+@using KarcagS.Blazor.Common.Enums
+@using KarcagS.Blazor.Common.Models
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using Papyrus.Client.Services.Profile.Interfaces
+@using Papyrus.Shared.DTOs
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@inject IHelperService Helper
+@inject IToasterService Toaster
+@inject IApplicationService ApplicationService
+@inject IStringLocalizer<Application> L
+
+<ApplicationPageTitle PageName="@L["PageName", AppName]" />
 
 <div class="page-div">
-
+    <ActionBar>
+        <MudButton Color="Color.Secondary" Variant="Variant.Filled" OnClick="Edit">@L["EditAction"]</MudButton>
+        <MudSpacer />
+        <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="Back">@L["BackAction"]</MudButton>
+    </ActionBar>
+    <MudCard Elevation="2" Class="p-2">
+        @if (ObjectHelper.IsNotNull(App))
+        {
+            <DataRow Title="@L["Name"]" Value="@App.Name" />
+            <DataRow Title="@L["Description"]" Value="@App.Description" />
+            <DateDataRow Title="@L["Creation"]" Date="App.Creation" />
+            <DateDataRow Title="@L["LastUpdate"]" Date="App.LastUpdate" />
+            <DataRow Title="@L["PublicId"]" Value="@App.PublicId" />
+            <div style="width: 500px;" class="mt-5 flex-box flex-row gap-3 align-items-center justify-content-center" >
+                <TextInput Label="@L["SecretId"]" ReadOnly="true" @bind-Value="@App.SecretId" IsPassword="!IsSecretVisible" AdornmentIcon="@(IsSecretVisible ? Icons.Filled.Visibility : Icons.Filled.VisibilityOff)" OnAdornmentClick="SecretVisibilitySwitch" />
+                <div class="flex-box flex-row gap-3">
+                    <MudButton Color="Color.Primary" OnClick="CopySecret">@L["CopyAction"]</MudButton>
+                    <MudButton Color="Color.Warning" OnClick="RefreshSecret">@L["RefreshAction"]</MudButton>
+                </div>
+            </div>
+        }
+    </MudCard>
 </div>
 
 @code
 {
     [Parameter]
     public string Id { get; set; } = default!;
+
+    private string AppName { get; set; } = "App";
+    private ApplicationDTO? App { get; set; }
+    private bool IsSecretVisible { get; set; } = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await Refresh();
+    }
+
+    private void SecretVisibilitySwitch()
+    {
+        IsSecretVisible = !IsSecretVisible;
+        StateHasChanged();
+    }
+
+    private async Task Refresh()
+    {
+        App = await ApplicationService.Get<ApplicationDTO>(Id);
+        await InvokeAsync(StateHasChanged);
+    }
+
+    private async Task CopySecret()
+    {
+        await JSRuntime.InvokeVoidAsync("copyToClipboard", App?.SecretId ?? "");
+        Toaster.Open(new ToasterSettings { Caption = @L["Message.Copy"], Type = ToasterType.Success });
+    }
+
+    private async Task RefreshSecret()
+    {
+        if (await ApplicationService.RefreshSecret(Id))
+        {
+            await Refresh();
+        }
+    }
+
+    private Task Edit() => Helper.OpenEditorDialog<ApplicationEditDialog>("Edit Application", async (res) => await Refresh(), new DialogParameters { { "ApplicationId", Id } });
+
+    private void Back() => Navigation.NavigateTo("/profile/apps");
+
 }
