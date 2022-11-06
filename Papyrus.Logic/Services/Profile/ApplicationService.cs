@@ -4,7 +4,7 @@ using KarcagS.Common.Tools.Services;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities.Profile;
 using Papyrus.Logic.Services.Profile.Interfaces;
-using Papyrus.Shared.Models;
+using Papyrus.Shared.Models.Profile;
 
 namespace Papyrus.Logic.Services.Profile;
 

@@ -1,6 +1,6 @@
 using KarcagS.Common.Tools.Repository;
 using Papyrus.DataAccess.Entities.Profile;
-using Papyrus.Shared.Models;
+using Papyrus.Shared.Models.Profile;
 
 namespace Papyrus.Logic.Services.Profile.Interfaces;
 

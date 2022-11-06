@@ -17,6 +17,7 @@ using Microsoft.OpenApi.Models;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Authorization;
+using Papyrus.Logic.Exceptions.Profile;
 using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Mappers;
 using Papyrus.Logic.Services;
@@ -26,6 +27,8 @@ using Papyrus.Logic.Services.Common;
 using Papyrus.Logic.Services.Common.Interfaces;
 using Papyrus.Logic.Services.Editor;
 using Papyrus.Logic.Services.Editor.Interfaces;
+using Papyrus.Logic.Services.External;
+using Papyrus.Logic.Services.External.Interfaces;
 using Papyrus.Logic.Services.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
@@ -90,10 +93,13 @@ builder.Services.AddScoped<IEditorService, EditorService>();
 
 builder.Services.AddScoped<IFileService, FileService>();
 
+builder.Services.AddScoped<IExternalService, ExternalService>();
+
 // Mandatory for HTTP Interceptor
 builder.Services.AddErrorConverter((conf) =>
 {
     conf.AddAgent(new TableErrorConverterAgent());
+    conf.AddAgent(new ApplicationErrorConverterAgent());
 });
 
 // Add AutoMapper

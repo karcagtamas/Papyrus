@@ -1,7 +1,7 @@
 using AutoMapper;
 using Papyrus.DataAccess.Entities.Profile;
-using Papyrus.Shared.DTOs;
-using Papyrus.Shared.Models;
+using Papyrus.Shared.DTOs.Profile;
+using Papyrus.Shared.Models.Profile;
 
 namespace Papyrus.Logic.Mappers;
 

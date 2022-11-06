@@ -1,6 +1,6 @@
 using Papyrus.Shared.Attributes;
 
-namespace Papyrus.Shared.Models;
+namespace Papyrus.Shared.Models.Profile;
 
 public class ApplicationModel
 {

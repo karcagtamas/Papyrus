@@ -1,4 +1,4 @@
-namespace Papyrus.Shared.DTOs;
+namespace Papyrus.Shared.DTOs.Profile;
 
 public class ApplicationDTO
 {
