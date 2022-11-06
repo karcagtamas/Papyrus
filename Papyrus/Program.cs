@@ -149,6 +149,7 @@ builder.Services.AddTransient<IAuthorizationHandler, GroupHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, NoteHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, TagHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, FolderHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, ApplicationHandler>();
 
 // Auth
 builder.Services

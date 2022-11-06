@@ -24,4 +24,5 @@ public interface IRightService
     Task<bool> HasTagReadRight(int tagId);
     Task<bool> HasFolderReadRight(string folderId);
     Task<bool> HasFolderManageRight(string folderId);
+    Task<bool> HasApplicationAccessRight(string appId);
 }

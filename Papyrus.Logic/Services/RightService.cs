@@ -16,6 +16,8 @@ public class RightService : IRightService
         this.authorization = authorization;
     }
 
+    public Task<bool> HasApplicationAccessRight(string appId) => Check(appId, ApplicationPolicies.AccessApplication);
+
     public Task<bool> HasFolderManageRight(string folderId) => Check(folderId, FolderPolicies.ManagerFolder);
 
     public Task<bool> HasFolderReadRight(string folderId) => Check(folderId, FolderPolicies.ReadFolder);
