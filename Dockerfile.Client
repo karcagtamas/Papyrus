@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
 WORKDIR /app
 
-COPY *.sln . 
+COPY *.sln .
 COPY Papyrus/*.csproj ./Papyrus/
 COPY Papyrus.Logic/*.csproj ./Papyrus.Logic/
 COPY Papyrus.Mongo.DataAccess/*.csproj ./Papyrus.Mongo.DataAccess/

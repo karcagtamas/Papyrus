@@ -4,6 +4,7 @@ volumes:
   db:
   mdb:
   mconf:
+  logs:
 
 networks:
   app:
@@ -35,15 +36,23 @@ services:
   
   client:
     image: karcagtamas/papyrus_client
+    volumes:
+      - /etc/nginx/snippets:/etc/nginx/snippets
+      - /etc/letsencrypt:/etc/letsencrypt
+      - /etc/ssl:/etc/ssl
     networks:
       - app
     container_name: papyrus-client
     ports:
-      - "0.0.0.0:9840:80"
+      - "0.0.0.0:9840:443"
 
   backend:
     image: karcagtamas/papyrus
     container_name: papyrus
+    volumes:
+      - logs:/app/Logs
+      - /etc/ssl:/etc/ssl
+      - /etc/letsencrypt:/etc/letsencrypt
     depends_on:
       - database
       - mongodb

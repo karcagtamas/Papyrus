@@ -6,7 +6,7 @@ EXPOSE 7282
 FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
 WORKDIR /src
 
-COPY *.sln . 
+COPY *.sln .
 COPY Papyrus/*.csproj ./Papyrus/
 COPY Papyrus.Logic/*.csproj ./Papyrus.Logic/
 COPY Papyrus.Mongo.DataAccess/*.csproj ./Papyrus.Mongo.DataAccess/
@@ -32,4 +32,4 @@ RUN dotnet publish "Papyrus.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Papyrus.dll", "--urls", "http://0.0.0.0:5282"]
+ENTRYPOINT ["dotnet", "Papyrus.dll"]
