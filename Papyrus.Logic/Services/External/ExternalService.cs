@@ -3,12 +3,13 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
+using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.DataAccess.Entities.Profile;
 using Papyrus.Logic.Exceptions.Profile;
 using Papyrus.Logic.Services.External.Interfaces;
 using Papyrus.Logic.Services.Profile.Interfaces;
-using Papyrus.Shared.DTOs.Notes;
+using Papyrus.Shared.DTOs.External;
 using Papyrus.Shared.Models.Profile;
 
 namespace Papyrus.Logic.Services.External;
@@ -26,14 +27,44 @@ public class ExternalService : IExternalService
         this.applicationService = applicationService;
     }
 
-    public List<NoteLightDTO> GetNotes(ApplicationQueryModel query)
+    public List<GroupExtDTO> GetGroups(ApplicationQueryModel query)
     {
-        return WithApplication<List<NoteLightDTO>>(query, (app) =>
+        return WithApplication<List<GroupExtDTO>>(query, (app) =>
+            context.Set<Group>().AsQueryable() // TODO: Not just owned?
+                .Where(x => x.OwnerId == app.UserId)
+                .ToList()
+                .MapTo<GroupExtDTO, Group>(mapper)
+                .ToList());
+    }
+
+    public List<NoteExtDTO> GetNotes(ApplicationQueryModel query)
+    {
+        return WithApplication<List<NoteExtDTO>>(query, (app) =>
             context.Set<Note>().AsQueryable()
                 .Where(x => x.UserId == app.UserId)
                 .Include(x => x.Tags).ThenInclude(x => x.Tag)
                 .ToList()
-                .MapTo<NoteLightDTO, Note>(mapper)
+                .MapTo<NoteExtDTO, Note>(mapper)
+                .ToList());
+    }
+
+    public List<TagTreeExtDTO> GetTagsInTree(ApplicationQueryModel query)
+    {
+        return WithApplication<List<TagTreeExtDTO>>(query, (app) =>
+            context.Set<Tag>().AsQueryable()
+                .Where(x => x.UserId == app.UserId && x.ParentId == null)
+                .ToList()
+                .MapTo<TagTreeExtDTO, Tag>(mapper)
+                .ToList());
+    }
+
+    public List<TagExtDTO> GetTagsInList(ApplicationQueryModel query)
+    {
+        return WithApplication<List<TagExtDTO>>(query, (app) =>
+            context.Set<Tag>().AsQueryable()
+                .Where(x => x.UserId == app.UserId)
+                .ToList()
+                .MapTo<TagExtDTO, Tag>(mapper)
                 .ToList());
     }
 

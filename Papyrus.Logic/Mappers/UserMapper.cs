@@ -1,4 +1,3 @@
-using AutoMapper;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Auth;
@@ -6,7 +5,7 @@ using Papyrus.Shared.Models;
 
 namespace Papyrus.Logic.Mappers;
 
-public class UserMapper : Profile
+public class UserMapper : AutoMapper.Profile
 {
     public UserMapper()
     {

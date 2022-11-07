@@ -1,14 +1,13 @@
-﻿using AutoMapper;
-using KarcagS.Shared.Helpers;
+﻿using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
 
-namespace Papyrus.Logic.Mappers;
+namespace Papyrus.Logic.Mappers.Notes;
 
-public class NoteMapper : Profile
+public class NoteMapper : AutoMapper.Profile
 {
     public NoteMapper()
     {

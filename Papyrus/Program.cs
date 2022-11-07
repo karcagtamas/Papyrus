@@ -20,6 +20,10 @@ using Papyrus.Logic.Authorization;
 using Papyrus.Logic.Exceptions.Profile;
 using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Mappers;
+using Papyrus.Logic.Mappers.External;
+using Papyrus.Logic.Mappers.Groups;
+using Papyrus.Logic.Mappers.Notes;
+using Papyrus.Logic.Mappers.Profile;
 using Papyrus.Logic.Services;
 using Papyrus.Logic.Services.Auth;
 using Papyrus.Logic.Services.Auth.Interfaces;
@@ -114,6 +118,7 @@ var mapperConfig = new MapperConfiguration(conf =>
     conf.AddProfile<PostMapper>();
     conf.AddProfile<FolderMapper>();
     conf.AddProfile<ApplicationMapper>();
+    conf.AddProfile<ExternalMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 

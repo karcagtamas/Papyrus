@@ -1,4 +1,3 @@
-using AutoMapper;
 using KarcagS.Shared.Helpers;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Shared.DTOs;
@@ -6,7 +5,7 @@ using Papyrus.Shared.Models;
 
 namespace Papyrus.Logic.Mappers;
 
-public class PostMapper : Profile
+public class PostMapper : AutoMapper.Profile
 {
     public PostMapper()
     {

@@ -1,10 +1,9 @@
-﻿using AutoMapper;
-using Papyrus.DataAccess.Entities;
+﻿using Papyrus.DataAccess.Entities;
 using Papyrus.Shared.DTOs;
 
 namespace Papyrus.Logic.Mappers;
 
-public class RoleMapper : Profile
+public class RoleMapper : AutoMapper.Profile
 {
     public RoleMapper()
     {
