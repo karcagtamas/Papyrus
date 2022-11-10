@@ -12,8 +12,10 @@ using Papyrus.Logic.Services.External.Interfaces;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Logic.Services.Profile.Interfaces;
+using Papyrus.Logic.Utils;
 using Papyrus.Shared.DTOs.External;
 using Papyrus.Shared.Models.Profile;
+using System.Linq.Expressions;
 
 namespace Papyrus.Logic.Services.External;
 
@@ -36,41 +38,13 @@ public class ExternalService : IExternalService
         this.groupService = groupService;
     }
 
-    public List<GroupListExtDTO> GetGroups(ApplicationQueryModel query)
-    {
-        return WithApplication<List<GroupListExtDTO>>(query, (app) =>
-            context.Set<Group>().AsQueryable() // TODO: Not just owned?
-                .Where(x => x.OwnerId == app.UserId)
-                .ToList()
-                .MapTo<GroupListExtDTO, Group>(mapper)
-                .ToList());
-    }
+    public List<NoteExtDTO> GetNotes(ApplicationQueryModel query) => WithApplication<List<NoteExtDTO>>(query, (app) => FetchNotes(x => x.UserId == app.UserId, new BasicUrlBuilder()));
 
-    public GroupExtDTO GetGroup(ApplicationQueryModel query, int id)
-    {
-        return WithGroup<GroupExtDTO>(query, id, (app, group) =>
-        {
-            // Check URLs => read rights
-            return mapper.Map<GroupExtDTO>(group);
-        });
-    }
-
-    public List<NoteExtDTO> GetNotes(ApplicationQueryModel query)
-    {
-        return WithApplication<List<NoteExtDTO>>(query, (app) =>
-            context.Set<Note>().AsQueryable()
-                .Where(x => x.UserId == app.UserId)
-                .Include(x => x.Tags).ThenInclude(x => x.Tag)
-                .ToList()
-                .MapTo<NoteExtDTO, Note>(mapper)
-                .ToList());
-    }
-
-    public NoteContentExtDTO GetNote(ApplicationQueryModel query, string id)
+    public NoteContentExtDTO GetNote(ApplicationQueryModel query, string noteId)
     {
         return WithApplication<NoteContentExtDTO>(query, (app) =>
         {
-            var note = noteService.Get(id);
+            var note = noteService.Get(noteId);
 
             ExceptionHelper.Check(note.UserId == app.UserId, "Note is not available", "External.Messages.NoteNotAvailable");
 
@@ -81,24 +55,46 @@ public class ExternalService : IExternalService
         });
     }
 
-    public List<TagTreeExtDTO> GetTagsInTree(ApplicationQueryModel query)
+    public List<T> GetTags<T>(ApplicationQueryModel query, bool inTree = false) where T : TagExtDTO => WithApplication<List<T>>(query, (app) => FetchTags<T>(x => x.UserId == app.UserId, inTree));
+
+    public List<GroupListExtDTO> GetGroups(ApplicationQueryModel query)
     {
-        return WithApplication<List<TagTreeExtDTO>>(query, (app) =>
-            context.Set<Tag>().AsQueryable()
-                .Where(x => x.UserId == app.UserId && x.ParentId == null)
+        return WithApplication<List<GroupListExtDTO>>(query, (app) =>
+            context.Set<Group>().AsQueryable()
+                .Where(x => x.OwnerId == app.UserId || x.Members.Any(m => m.UserId == app.UserId))
+                .Include(x => x.Members)
                 .ToList()
-                .MapTo<TagTreeExtDTO, Tag>(mapper)
+                .MapTo<GroupListExtDTO, Group>(mapper)
                 .ToList());
     }
 
-    public List<TagExtDTO> GetTagsInList(ApplicationQueryModel query)
+    public GroupExtDTO GetGroup(ApplicationQueryModel query, int groupId)
     {
-        return WithApplication<List<TagExtDTO>>(query, (app) =>
-            context.Set<Tag>().AsQueryable()
-                .Where(x => x.UserId == app.UserId)
-                .ToList()
-                .MapTo<TagExtDTO, Tag>(mapper)
-                .ToList());
+        return WithGroup<GroupExtDTO>(query, groupId, (app, group) =>
+        {
+            // Check URLs => read rights
+            return mapper.Map<GroupExtDTO>(group);
+        });
+    }
+
+    public List<NoteExtDTO> GetGroupNotes(ApplicationQueryModel query, int groupId) => WithGroup<List<NoteExtDTO>>(query, groupId, (app, group) => FetchNotes(x => x.GroupId == group.Id, new GroupUrlBuilder(group.Id)));
+
+    public List<NoteExtDTO> GetGroupNote(ApplicationQueryModel query, int groupId, string noteId)
+    {
+        throw new NotImplementedException();
+    }
+
+    public List<T> GetGroupTags<T>(ApplicationQueryModel query, int groupId, bool inTree = false) where T : TagExtDTO
+    {
+        return WithGroup<List<T>>(query, groupId, (app, group) =>
+        {
+            return FetchTags<T>(x => x.GroupId == group.Id, inTree);
+        });
+    }
+
+    public List<object> GetGroupMembers(ApplicationQueryModel query, int groupId)
+    {
+        throw new NotImplementedException();
     }
 
     private T WithApplication<T>(ApplicationQueryModel query, Func<Application, T> func)
@@ -130,5 +126,31 @@ public class ExternalService : IExternalService
 
             return func(app, group);
         });
+    }
+
+    private List<NoteExtDTO> FetchNotes(Expression<Func<Note, bool>> expr, IExternalUrlBuilder urlBuilder)
+    {
+        return context.Set<Note>().AsQueryable()
+               .Where(expr)
+               .Include(x => x.Tags).ThenInclude(x => x.Tag)
+               .ToList()
+               .MapTo<NoteExtDTO, Note>(mapper)
+               .Select(x =>
+               {
+                   x.Url = urlBuilder.Build($"Notes/{x.Id}");
+
+                   return x;
+               })
+               .ToList();
+    }
+
+    private List<T> FetchTags<T>(Expression<Func<Tag, bool>> expr, bool inTree = false) where T : TagExtDTO
+    {
+        return context.Set<Tag>().AsQueryable()
+                .Where(expr)
+                .Where(x => !inTree || x.ParentId == null)
+                .ToList()
+                .MapTo<T, Tag>(mapper)
+                .ToList();
     }
 }

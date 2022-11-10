@@ -28,12 +28,9 @@ public class ExternalController : ControllerBase
     [HttpGet("Tags")]
     public IActionResult GetTags([FromQuery] ApplicationQueryModel query, [FromQuery] string? type)
     {
-        if (type == "tree")
-        {
-            return Ok(service.GetTagsInTree(query));
-        }
+        var inTree = type == "tree";
 
-        return Ok(service.GetTagsInList(query));
+        return Ok(inTree ? service.GetTags<TagTreeExtDTO>(query, inTree) : service.GetTags<TagExtDTO>(query, inTree));
     }
 
     [HttpGet("Groups")]
@@ -43,10 +40,18 @@ public class ExternalController : ControllerBase
     public GroupExtDTO GetGroup(int groupId, [FromQuery] ApplicationQueryModel query) => service.GetGroup(query, groupId);
 
     [HttpGet("Groups/{groupId}/Notes")]
-    public void GetGroupNotes(int groupId, [FromQuery] ApplicationQueryModel query) { }
+    public List<NoteExtDTO> GetGroupNotes(int groupId, [FromQuery] ApplicationQueryModel query) => service.GetGroupNotes(query, groupId);
+
+    [HttpGet("Groups/{groupId}/Note/{noteId}")]
+    public void GetGroupNote(int groupId, string noteId, [FromQuery] ApplicationQueryModel query) { }
 
     [HttpGet("Groups/{groupId}/Tags")]
-    public void GetGroupTags(int groupId, [FromQuery] ApplicationQueryModel query) { }
+    public IActionResult GetGroupTags(int groupId, [FromQuery] ApplicationQueryModel query, [FromQuery] string? type)
+    {
+        var inTree = type == "tree";
+
+        return Ok(inTree ? service.GetGroupTags<TagTreeExtDTO>(query, groupId, inTree) : service.GetGroupTags<TagExtDTO>(query, groupId, inTree));
+    }
 
     [HttpGet("Groups/{groupId}/Members")]
     public void GetGroupMembers(int groupId, [FromQuery] ApplicationQueryModel query) { }
