@@ -50,7 +50,7 @@ builder.Services.AddHttpService(config =>
     config.AccessTokenName = "access-token";
     config.IsTokenRefresher = true;
     config.RefreshTokenName = "refresh-token";
-    config.RefreshUri = builder.Configuration.GetSection("RefreshUri").Value;
+    config.RefreshUri = builder.Configuration.GetSection("RefreshUri").Value ?? "";
     config.RefreshTokenPlaceholder = ":refreshToken";
     config.ClientIdName = "client-id";
     config.ClientIdPlaceholder = ":clientId";
@@ -136,7 +136,7 @@ builder.Services.AddLocalization(opt =>
 
 builder.Services.AddLibraryLocalization();
 
-ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value;
+ApplicationSettings.BaseUrl = builder.Configuration.GetSection("SecureApi").Value ?? "";
 ApplicationSettings.BaseApiUrl = $"{ApplicationSettings.BaseUrl}/api";
 
 ApplicationContext.ApplicationName = "Papyrus";
