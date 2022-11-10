@@ -1,9 +1,9 @@
 using KarcagS.Common.Tools.HttpInterceptor.Agents;
 using KarcagS.Shared.Http;
 
-namespace Papyrus.Logic.Exceptions.Profile;
+namespace Papyrus.Logic.Exceptions.External;
 
-public class ApplicationErrorConverterAgent : IErrorConverterAgent
+public class ExternalErrorConverterAgent : IErrorConverterAgent
 {
     public HttpErrorResult? TryToConvert(Exception exception)
     {
@@ -12,6 +12,14 @@ public class ApplicationErrorConverterAgent : IErrorConverterAgent
             return new(anfe)
             {
                 Message = new ResourceMessage { Text = "Application Not Found", ResourceKey = "External.Messages.AppNotFound" },
+                SubMessages = Array.Empty<ResourceMessage>(),
+            };
+        }
+        else if (exception is GroupNotFoundException gnfe)
+        {
+            return new(gnfe)
+            {
+                Message = new ResourceMessage { Text = "Group Not Found", ResourceKey = "External.Messages.GroupNotFound" },
                 SubMessages = Array.Empty<ResourceMessage>(),
             };
         }

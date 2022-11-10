@@ -1,4 +1,4 @@
-namespace Papyrus.Logic.Exceptions.Profile;
+namespace Papyrus.Logic.Exceptions.External;
 
 public class ApplicationNotFoundException : Exception
 {

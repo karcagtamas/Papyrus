@@ -17,7 +17,7 @@ using Microsoft.OpenApi.Models;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Authorization;
-using Papyrus.Logic.Exceptions.Profile;
+using Papyrus.Logic.Exceptions.External;
 using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Mappers;
 using Papyrus.Logic.Mappers.External;
@@ -103,7 +103,7 @@ builder.Services.AddScoped<IExternalService, ExternalService>();
 builder.Services.AddErrorConverter((conf) =>
 {
     conf.AddAgent(new TableErrorConverterAgent());
-    conf.AddAgent(new ApplicationErrorConverterAgent());
+    conf.AddAgent(new ExternalErrorConverterAgent());
 });
 
 // Add AutoMapper
