@@ -163,8 +163,10 @@ public class UserService : MapperRepository<User, string, string>, IUserService
             return false;
         }
 
-        return await userManager.IsInRoleAsync(user, "Administrator");
+        return await IsUserAdministrator(user);
     }
+
+    public async Task<bool> IsUserAdministrator(User user) => await userManager.IsInRoleAsync(user, "Administrator");
 
     public List<AccessDTO> GetAppAccesses() => Mapper.Map<List<AccessDTO>>(Utils.GetCurrentUser<User>().AppAccesses.OrderByDescending(x => x.Timestamp).Take(5).ToList());
 }

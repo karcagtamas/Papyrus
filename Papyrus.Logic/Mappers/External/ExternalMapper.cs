@@ -24,9 +24,9 @@ public class ExternalMapper : AutoMapper.Profile
             .ForMember(dest => dest.Url, opt => opt.MapFrom(src => ExternalUrlHelper.ConstructGroupUrl(src.Id, null)));
         CreateMap<Group, GroupExtDTO>()
             .ForMember(dest => dest.Url, opt => opt.MapFrom(src => ExternalUrlHelper.ConstructGroupUrl(src.Id, null)))
-            .ForMember(dest => dest.NotesUrl, opt => opt.MapFrom(src => ExternalUrlHelper.ConstructGroupUrl(src.Id, "Notes")))
-            .ForMember(dest => dest.TagsUrl, opt => opt.MapFrom(src => ExternalUrlHelper.ConstructGroupUrl(src.Id, "Tags")))
-            .ForMember(dest => dest.MembersUrl, opt => opt.MapFrom(src => ExternalUrlHelper.ConstructGroupUrl(src.Id, "Members")));
+            .ForMember(dest => dest.NotesUrl, opt => opt.Ignore())
+            .ForMember(dest => dest.TagsUrl, opt => opt.Ignore())
+            .ForMember(dest => dest.MembersUrl, opt => opt.Ignore());
         CreateMap<GroupMember, GroupMemberExtDTO>()
             .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.UserName))
             .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.User.Email))

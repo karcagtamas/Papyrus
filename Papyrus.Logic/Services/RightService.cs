@@ -22,7 +22,9 @@ public class RightService : IRightService
 
     public Task<bool> HasFolderReadRight(string folderId) => Check(folderId, FolderPolicies.ReadFolder);
 
-    public Task<bool> HasGroupCloseOpenRight(int groupId) => Check(groupId, GroupPolicies.CloseOpenGroup);
+    public Task<bool> HasGroupCloseRight(int groupId) => Check(groupId, GroupPolicies.CloseGroup);
+
+    public Task<bool> HasGroupOpenRight(int groupId) => Check(groupId, GroupPolicies.OpenGroup);
 
     public Task<bool> HasGroupEditRight(int groupId) => Check(groupId, GroupPolicies.EditGroup);
 

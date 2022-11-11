@@ -128,7 +128,7 @@ public class GroupController : ControllerBase
     [HttpPut("{id}/Close")]
     public async Task<ActionResult> Close(int id)
     {
-        if (!await rightService.HasGroupCloseOpenRight(id))
+        if (!await rightService.HasGroupCloseRight(id))
         {
             return new EmptyResult();
         }
@@ -141,7 +141,7 @@ public class GroupController : ControllerBase
     [HttpPut("{id}/Open")]
     public async Task<ActionResult> Open(int id)
     {
-        if (!await rightService.HasGroupCloseOpenRight(id))
+        if (!await rightService.HasGroupOpenRight(id))
         {
             return new EmptyResult();
         }

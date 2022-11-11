@@ -40,6 +40,8 @@ using Papyrus.Logic.Services.Notes;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Logic.Services.Profile;
 using Papyrus.Logic.Services.Profile.Interfaces;
+using AuthImpl = Papyrus.Logic.Services.Security;
+using Auth = Papyrus.Logic.Services.Security.Interfaces;
 using Papyrus.Middlewares;
 using Papyrus.Mongo.DataAccess.Configurations;
 
@@ -66,6 +68,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRightService, RightService>();
 builder.Services.AddScoped<ICommonService, CommonService>();
+builder.Services.AddScoped<Auth.IAuthorizationService, AuthImpl.AuthorizationService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserTableService, UserTableService>();
@@ -94,9 +97,7 @@ builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IApplicationTableService, ApplicationTableService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
-
 builder.Services.AddScoped<IFileService, FileService>();
-
 builder.Services.AddScoped<IExternalService, ExternalService>();
 
 // Mandatory for HTTP Interceptor

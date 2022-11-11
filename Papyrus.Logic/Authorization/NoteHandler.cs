@@ -1,4 +1,4 @@
-﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities.Groups;
@@ -80,7 +80,7 @@ public class NoteHandler : AuthorizationHandler<NoteRequirement, string>
                     return;
                 }
 
-                var rights = groupService.GetUserRole((int)note.GroupId);
+                GroupRole? rights = null;//groupService.GetUserRole((int)note.GroupId);
 
                 if (ObjectHelper.IsNull(rights))
                 {

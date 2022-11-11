@@ -1,7 +1,6 @@
 using KarcagS.Common.Tools.Repository;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Shared.DTOs;
-using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -16,6 +15,7 @@ public interface IUserService : IMapperRepository<User, string>
     T GetCurrent<T>();
     UserSettingDTO GetSettings(string id);
     Task<bool> IsAdministrator();
+    Task<bool> IsUserAdministrator(User user);
     bool IsExist(string userName, string email, bool ignoreCurrent);
     void UpdateImage(ImageModel model);
     Task UpdatePassword(UserPasswordModel model);

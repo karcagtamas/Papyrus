@@ -1,4 +1,5 @@
-﻿using KarcagS.Common.Tools.Repository;
+using KarcagS.Common.Tools.Repository;
+using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.DTOs.Groups.Rights;
@@ -14,8 +15,8 @@ public interface IGroupService : IMapperRepository<Group, int>
     Task<GroupMemberRightsDTO> GetMemberRights(int id);
     Task<GroupRoleRightsDTO> GetRoleRights(int id);
     Task<GroupNoteRightsDTO> GetNoteRights(int id);
-    GroupRole? GetUserRole(int id);
     bool IsCurrentOwner(int id);
+    bool IsUserOwner(int id, User user);
     Task Close(int id);
     Task Open(int id);
     Task Remove(int id);

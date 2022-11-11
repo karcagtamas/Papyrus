@@ -1,10 +1,11 @@
-﻿using AutoMapper;
+using AutoMapper;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
+using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
@@ -233,24 +234,18 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         };
     }
 
-    public GroupRole? GetUserRole(int id)
-    {
-        var userId = Utils.GetRequiredCurrentUserId();
-        return Get(id).Members.FirstOrDefault(x => x.UserId == userId)?.Role;
-    }
+    public bool IsCurrentOwner(int id) => IsUserOwner(id, Utils.GetCurrentUser<User>());
 
-    public bool IsCurrentOwner(int id)
+    public bool IsUserOwner(int id, User user)
     {
         var group = Get(id);
 
-        var userId = Utils.GetCurrentUserId();
-
-        if (ObjectHelper.IsNull(userId))
+        if (ObjectHelper.IsNull(user))
         {
             return false;
         }
 
-        return group.OwnerId == userId;
+        return group.OwnerId == user.Id;
     }
 
     public async Task<GroupPageRightsDTO> GetPageRights(int id)

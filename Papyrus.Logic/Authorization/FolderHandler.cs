@@ -1,4 +1,4 @@
-﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities.Groups;
@@ -72,7 +72,7 @@ public class FolderHandler : AuthorizationHandler<FolderRequirement, string>
                     return;
                 }
 
-                var rights = groupService.GetUserRole((int)folder.GroupId);
+                GroupRole? rights = null;//groupService.GetUserRole((int)note.GroupId);
 
                 if (ObjectHelper.IsNull(rights))
                 {

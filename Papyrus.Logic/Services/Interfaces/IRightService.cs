@@ -4,7 +4,8 @@ public interface IRightService
 {
     Task<bool> HasGroupReadRight(int groupId);
     Task<bool> HasGroupRemoveRight(int groupId);
-    Task<bool> HasGroupCloseOpenRight(int groupId);
+    Task<bool> HasGroupCloseRight(int groupId);
+    Task<bool> HasGroupOpenRight(int groupId);
     Task<bool> HasGroupEditRight(int groupId);
     Task<bool> HasGroupLogListReadRight(int groupId);
     Task<bool> HasGroupMemberListReadRight(int groupId);

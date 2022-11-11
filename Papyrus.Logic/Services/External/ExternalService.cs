@@ -12,8 +12,10 @@ using Papyrus.Logic.Services.External.Interfaces;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Logic.Services.Profile.Interfaces;
+using Papyrus.Logic.Services.Security.Interfaces;
 using Papyrus.Logic.Utils;
 using Papyrus.Shared.DTOs.External;
+using Papyrus.Shared.Enums.Security;
 using Papyrus.Shared.Models.Profile;
 using System.Linq.Expressions;
 
@@ -24,15 +26,17 @@ public class ExternalService : IExternalService
     private readonly PapyrusContext context;
     private readonly IMapper mapper;
     private readonly IApplicationService applicationService;
+    private readonly IAuthorizationService authorizationService;
     private readonly INoteService noteService;
     private readonly INoteContentService noteContentService;
     private readonly IGroupService groupService;
 
-    public ExternalService(PapyrusContext context, IMapper mapper, IApplicationService applicationService, INoteService noteService, INoteContentService noteContentService, IGroupService groupService)
+    public ExternalService(PapyrusContext context, IMapper mapper, IApplicationService applicationService, IAuthorizationService authorizationService, INoteService noteService, INoteContentService noteContentService, IGroupService groupService)
     {
         this.context = context;
         this.mapper = mapper;
         this.applicationService = applicationService;
+        this.authorizationService = authorizationService;
         this.noteService = noteService;
         this.noteContentService = noteContentService;
         this.groupService = groupService;
@@ -72,8 +76,28 @@ public class ExternalService : IExternalService
     {
         return WithGroup<GroupExtDTO>(query, groupId, (app, group) =>
         {
-            // Check URLs => read rights
-            return mapper.Map<GroupExtDTO>(group);
+            var dto = mapper.Map<GroupExtDTO>(group);
+
+            var readNotes = authorizationService.UserHasGroupRight(app.UserId, group.Id, GroupRight.ReadNotes).Result;
+            var readTags = authorizationService.UserHasGroupRight(app.UserId, group.Id, GroupRight.ReadTags).Result;
+            var readMembers = authorizationService.UserHasGroupRight(app.UserId, group.Id, GroupRight.ReadMembers).Result;
+
+            if (readNotes)
+            {
+                dto.NotesUrl = ExternalUrlHelper.ConstructGroupUrl(group.Id, "Notes");
+            }
+
+            if (readTags)
+            {
+                dto.TagsUrl = ExternalUrlHelper.ConstructGroupUrl(group.Id, "Tags");
+            }
+
+            if (readMembers)
+            {
+                dto.MembersUrl = ExternalUrlHelper.ConstructGroupUrl(group.Id, "Members");
+            }
+
+            return dto;
         });
     }
 
@@ -158,7 +182,7 @@ public class ExternalService : IExternalService
                 throw new GroupNotFoundException();
             }
 
-            ExceptionHelper.Check(group.OwnerId == app.UserId, "Group is not available", "External.Messages.GroupNotAvailable");
+            ExceptionHelper.Check(authorizationService.UserHasGroupRight(app.UserId, group.Id, GroupRight.Read).Result, "Group is not available", "External.Messages.GroupNotAvailable");
 
             return func(app, group);
         });

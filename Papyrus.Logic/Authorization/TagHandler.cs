@@ -1,4 +1,4 @@
-﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Papyrus.DataAccess.Entities.Groups;
@@ -69,7 +69,7 @@ public class TagHandler : AuthorizationHandler<TagRequirement, int>
                     return;
                 }
 
-                var rights = groupService.GetUserRole((int)tag.GroupId);
+                GroupRole? rights = null;//groupService.GetUserRole((int)note.GroupId);
 
                 if (ObjectHelper.IsNull(rights))
                 {
