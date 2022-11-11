@@ -79,9 +79,19 @@ public class ExternalService : IExternalService
 
     public List<NoteExtDTO> GetGroupNotes(ApplicationQueryModel query, int groupId) => WithGroup<List<NoteExtDTO>>(query, groupId, (app, group) => FetchNotes(x => x.GroupId == group.Id, new GroupUrlBuilder(group.Id)));
 
-    public List<NoteExtDTO> GetGroupNote(ApplicationQueryModel query, int groupId, string noteId)
+    public NoteContentExtDTO GetGroupNote(ApplicationQueryModel query, int groupId, string noteId)
     {
-        throw new NotImplementedException();
+        return WithGroup<NoteContentExtDTO>(query, groupId, (app, group) =>
+        {
+            var note = noteService.Get(noteId);
+
+            ExceptionHelper.Check(note.GroupId == group.Id, "Note is not available", "External.Messages.NoteNotAvailable");
+
+            var dto = mapper.Map<NoteContentExtDTO>(note);
+            dto.Content = noteContentService.Get(note.ContentId)?.Content;
+
+            return dto;
+        });
     }
 
     public List<T> GetGroupTags<T>(ApplicationQueryModel query, int groupId, bool inTree = false) where T : TagExtDTO
@@ -92,11 +102,28 @@ public class ExternalService : IExternalService
         });
     }
 
-    public List<object> GetGroupMembers(ApplicationQueryModel query, int groupId)
+    public List<GroupMemberExtDTO> GetGroupMembers(ApplicationQueryModel query, int groupId)
     {
-        throw new NotImplementedException();
+        return WithGroup<List<GroupMemberExtDTO>>(query, groupId, (app, group) =>
+        {
+            return context.Set<GroupMember>().AsQueryable()
+                .Where(x => x.GroupId == group.Id)
+                .Include(x => x.Role)
+                .Include(x => x.User)
+                .ToList()
+                .MapTo<GroupMemberExtDTO, GroupMember>(mapper)
+                .ToList();
+        });
     }
 
+    /// <summary>
+    /// Try to find an application by the given query data.
+    /// </summary>
+    /// <typeparam name="T">Return type</typeparam>
+    /// <param name="query">Application Query</param>
+    /// <param name="func">Executor function with application input</param>
+    /// <returns>Result of the executor function</returns>
+    /// <exception cref="ApplicationNotFoundException">When the application cannot be found</exception>
     private T WithApplication<T>(ApplicationQueryModel query, Func<Application, T> func)
     {
         var app = applicationService.GetListAsQuery(x => x.PublicId == query.PublicId && x.SecretId == query.SecretId)
@@ -111,6 +138,15 @@ public class ExternalService : IExternalService
         return func(app);
     }
 
+    /// <summary>
+    /// Try to find a group with application
+    /// </summary>
+    /// <typeparam name="T">Return type</typeparam>
+    /// <param name="query">Application Query</param>
+    /// <param name="groupId">Group identifier</param>
+    /// <param name="func">Executor function with application and group input</param>
+    /// <returns>Result of the executor function</returns>
+    /// <exception cref="GroupNotFoundException">When the group cannot be found</exception>
     private T WithGroup<T>(ApplicationQueryModel query, int groupId, Func<Application, Group, T> func)
     {
         return WithApplication<T>(query, (app) =>

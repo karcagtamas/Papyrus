@@ -11,8 +11,8 @@ public interface IExternalService
     List<GroupListExtDTO> GetGroups(ApplicationQueryModel query);
     GroupExtDTO GetGroup(ApplicationQueryModel query, int groupId);
     List<NoteExtDTO> GetGroupNotes(ApplicationQueryModel query, int groupId);
-    List<NoteExtDTO> GetGroupNote(ApplicationQueryModel query, int groupId, string noteId);
+    NoteContentExtDTO GetGroupNote(ApplicationQueryModel query, int groupId, string noteId);
     List<T> GetGroupTags<T>(ApplicationQueryModel query, int groupId, bool inTree = false) where T : TagExtDTO;
-    List<object> GetGroupMembers(ApplicationQueryModel query, int groupId);
+    List<GroupMemberExtDTO> GetGroupMembers(ApplicationQueryModel query, int groupId);
 
 }

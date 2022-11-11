@@ -42,8 +42,8 @@ public class ExternalController : ControllerBase
     [HttpGet("Groups/{groupId}/Notes")]
     public List<NoteExtDTO> GetGroupNotes(int groupId, [FromQuery] ApplicationQueryModel query) => service.GetGroupNotes(query, groupId);
 
-    [HttpGet("Groups/{groupId}/Note/{noteId}")]
-    public void GetGroupNote(int groupId, string noteId, [FromQuery] ApplicationQueryModel query) { }
+    [HttpGet("Groups/{groupId}/Notes/{noteId}")]
+    public NoteContentExtDTO GetGroupNote(int groupId, string noteId, [FromQuery] ApplicationQueryModel query) => service.GetGroupNote(query, groupId, noteId);
 
     [HttpGet("Groups/{groupId}/Tags")]
     public IActionResult GetGroupTags(int groupId, [FromQuery] ApplicationQueryModel query, [FromQuery] string? type)
@@ -54,5 +54,5 @@ public class ExternalController : ControllerBase
     }
 
     [HttpGet("Groups/{groupId}/Members")]
-    public void GetGroupMembers(int groupId, [FromQuery] ApplicationQueryModel query) { }
+    public List<GroupMemberExtDTO> GetGroupMembers(int groupId, [FromQuery] ApplicationQueryModel query) => service.GetGroupMembers(query, groupId);
 }
