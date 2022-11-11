@@ -4,6 +4,7 @@ using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
+using Papyrus.Utils;
 
 namespace Papyrus.Controllers.Notes;
 
@@ -22,75 +23,53 @@ public class NoteController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<NoteDTO>> Get(string id)
+    public Task<ActionResult<NoteDTO>> Get(string id)
     {
-        if (!await rightService.HasNoteReadRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        return noteService.GetMapped<NoteDTO>(id);
+        return ControllerAuthorizationHelper.Authorize(
+            () => rightService.HasNoteReadRight(id),
+            () => noteService.GetMapped<NoteDTO>(id));
     }
 
     [HttpGet("Light/{id}")]
-    public async Task<ActionResult<NoteLightDTO>> GetLight(string id)
+    public Task<ActionResult<NoteLightDTO>> GetLight(string id)
     {
-        if (!await rightService.HasNoteReadRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        return noteService.GetMapped<NoteLightDTO>(id);
+        return ControllerAuthorizationHelper.Authorize(
+            () => rightService.HasNoteReadRight(id),
+            () => noteService.GetMapped<NoteLightDTO>(id));
     }
 
     [HttpGet("Filtered")]
-    public async Task<ActionResult<List<NoteLightDTO>>> GetFiltered([FromQuery] NoteFilterQueryModel query, [FromQuery] int? group)
+    public Task<ActionResult<List<NoteLightDTO>>> GetFiltered([FromQuery] NoteFilterQueryModel query, [FromQuery] int? group)
     {
-        if (ObjectHelper.IsNotNull(group) && !await rightService.HasGroupNoteListReadRight((int)group))
-        {
-            return new EmptyResult();
-        }
-
-        return noteService.GetFiltered(query, group);
+        return ControllerAuthorizationHelper.Authorize(
+            async () => ObjectHelper.IsNull(group) || await rightService.HasGroupNoteListReadRight((int)group),
+            () => noteService.GetFiltered(query, group));
     }
 
     [HttpPost]
-    public async Task<ActionResult<NoteCreationDTO>> CreateEmpty([FromBody] NoteCreateModel model)
+    public Task<ActionResult<NoteCreationDTO>> CreateEmpty([FromBody] NoteCreateModel model)
     {
         var groupId = model.GroupId;
 
-        if (ObjectHelper.IsNotNull(groupId) && !await rightService.HasGroupNoteCreateRight((int)groupId))
-        {
-            return new EmptyResult();
-        }
-
-        return noteService.CreateEmpty(model);
+        return ControllerAuthorizationHelper.Authorize(
+            async () => ObjectHelper.IsNull(groupId) || await rightService.HasGroupNoteCreateRight((int)groupId),
+            () => noteService.CreateEmpty(model));
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(string id, [FromBody] NoteModel model)
+    public Task<ActionResult> Update(string id, [FromBody] NoteModel model)
     {
-        if (!await rightService.HasNoteEditRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        noteService.UpdateWithTags(id, model);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+            () => rightService.HasNoteEditRight(id),
+            () => noteService.UpdateWithTags(id, model));
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(string id)
+    public Task<ActionResult> Delete(string id)
     {
-        if (!await rightService.HasNoteDeleteRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        noteService.DeleteById(id);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+            () => rightService.HasNoteDeleteRight(id),
+            () => noteService.DeleteById(id));
     }
 
     [HttpGet("{id}/Rights")]

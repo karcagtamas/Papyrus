@@ -4,6 +4,7 @@ using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
+using Papyrus.Utils;
 
 namespace Papyrus.Controllers.Notes;
 
@@ -22,85 +23,58 @@ public class TagController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<NoteTagDTO>>> GetList([FromQuery] int? groupId)
+    public Task<ActionResult<List<NoteTagDTO>>> GetList([FromQuery] int? groupId)
     {
-        if (ObjectHelper.IsNotNull(groupId) && !await rightService.HasGroupTagListReadRight((int)groupId))
-        {
-            return new EmptyResult();
-        }
-
-        return tagService.GetList(groupId);
+        return ControllerAuthorizationHelper.Authorize(
+            async () => ObjectHelper.IsNull(groupId) || await rightService.HasGroupTagListReadRight((int)groupId),
+            () => tagService.GetList(groupId));
     }
 
     [HttpGet("Tree")]
-    public async Task<ActionResult<List<TagTreeItemDTO>>> GetTree([FromQuery] int? groupId, [FromQuery] int? filteredTag)
+    public Task<ActionResult<List<TagTreeItemDTO>>> GetTree([FromQuery] int? groupId, [FromQuery] int? filteredTag)
     {
-        if (ObjectHelper.IsNotNull(groupId) && !await rightService.HasGroupTagListReadRight((int)groupId))
-        {
-            return new EmptyResult();
-        }
-
-        return tagService.GetTree(groupId, filteredTag);
+        return ControllerAuthorizationHelper.Authorize(
+            async () => ObjectHelper.IsNull(groupId) || await rightService.HasGroupTagListReadRight((int)groupId),
+            () => tagService.GetTree(groupId, filteredTag));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<TagDTO>> Get(int id)
+    public Task<ActionResult<TagDTO>> Get(int id)
     {
-        if (!await rightService.HasTagReadRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        return tagService.GetMapped<TagDTO>(id);
+        return ControllerAuthorizationHelper.Authorize(
+            () => rightService.HasTagReadRight(id),
+            () => tagService.GetMapped<TagDTO>(id));
     }
 
     [HttpGet("{id}/Path")]
-    public async Task<ActionResult<TagPathDTO>> GetPath(int id)
+    public Task<ActionResult<TagPathDTO>> GetPath(int id)
     {
-        if (!await rightService.HasTagReadRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        return tagService.GetPath(id);
+        return ControllerAuthorizationHelper.Authorize(
+            () => rightService.HasTagReadRight(id),
+            () => tagService.GetPath(id));
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] TagModel model)
+    public Task<ActionResult> Create([FromBody] TagModel model)
     {
-        if (ObjectHelper.IsNotNull(model.GroupId) && !await rightService.HasGroupTagCreateRight((int)model.GroupId))
-        {
-            return new EmptyResult();
-        }
-
-        tagService.CreateFromModel(model);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+            async () => ObjectHelper.IsNull(model.GroupId) || await rightService.HasGroupTagCreateRight((int)model.GroupId),
+            () => tagService.CreateFromModel(model));
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(int id, [FromBody] TagModel model)
+    public Task<ActionResult> Update(int id, [FromBody] TagModel model)
     {
-        if (!await rightService.HasTagEditRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        tagService.UpdateByModel(id, model);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+           () => rightService.HasTagEditRight(id),
+           () => tagService.UpdateByModel(id, model));
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Remove(int id)
+    public Task<ActionResult> Remove(int id)
     {
-        if (!await rightService.HasTagEditRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        tagService.DeleteById(id);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+           () => rightService.HasTagEditRight(id),
+           () => tagService.DeleteById(id));
     }
 }

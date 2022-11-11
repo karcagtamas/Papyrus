@@ -4,6 +4,7 @@ using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
+using Papyrus.Utils;
 
 namespace Papyrus.Controllers.Notes;
 
@@ -24,69 +25,44 @@ public class FolderController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<FolderContentDTO>> GetFolderContent([FromQuery] string? folder, [FromQuery] int? group)
+    public Task<ActionResult<FolderContentDTO>> GetFolderContent([FromQuery] string? folder, [FromQuery] int? group)
     {
-        if (ObjectHelper.IsNotNull(group) && !await rightService.HasGroupNoteListReadRight((int)group))
-        {
-            return new EmptyResult();
-        }
-
-        if (ObjectHelper.IsNotNull(folder) && !await rightService.HasFolderReadRight(folder))
-        {
-            return new EmptyResult();
-        }
-
-        return folderService.GetContent(folder, group);
+        return ControllerAuthorizationHelper.Authorize(
+            async () => (ObjectHelper.IsNull(group) || await rightService.HasGroupNoteListReadRight((int)group))
+                && (ObjectHelper.IsNull(folder) || await rightService.HasFolderReadRight(folder)),
+            () => folderService.GetContent(folder, group));
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<FolderDTO>> Get(string id)
+    public Task<ActionResult<FolderDTO>> Get(string id)
     {
-        if (!await rightService.HasFolderReadRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        return folderService.GetMapped<FolderDTO>(id);
+        return ControllerAuthorizationHelper.Authorize(
+            () => rightService.HasFolderReadRight(id),
+            () => folderService.GetMapped<FolderDTO>(id));
     }
 
     [HttpPost]
-    public async Task<ActionResult> Create([FromBody] FolderModel model)
+    public Task<ActionResult> Create([FromBody] FolderModel model)
     {
-        if (ObjectHelper.IsNotNull(model.GroupId) && !await rightService.HasGroupFolderCreateRight((int)model.GroupId))
-        {
-            return new EmptyResult();
-        }
-
-        folderService.CreateFolder(model);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+            async () => ObjectHelper.IsNull(model.GroupId) || await rightService.HasGroupFolderCreateRight((int)model.GroupId),
+            () => folderService.CreateFolder(model));
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(string id, [FromBody] FolderModel model)
+    public Task<ActionResult> Update(string id, [FromBody] FolderModel model)
     {
-        if (!await rightService.HasFolderManageRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        folderService.EditFolder(id, model);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+            () => rightService.HasFolderManageRight(id),
+            () => folderService.EditFolder(id, model));
     }
 
     [HttpDelete("{id}")]
-    public async Task<ActionResult> Delete(string id)
+    public Task<ActionResult> Delete(string id)
     {
-        if (!await rightService.HasFolderManageRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        noteService.DeleteFolder(id);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+            () => rightService.HasFolderManageRight(id),
+            () => noteService.DeleteFolder(id));
     }
 
     [HttpGet("Exists")]

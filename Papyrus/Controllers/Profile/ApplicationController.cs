@@ -4,6 +4,7 @@ using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Profile.Interfaces;
 using Papyrus.Shared.DTOs.Profile;
 using Papyrus.Shared.Models.Profile;
+using Papyrus.Utils;
 
 namespace Papyrus.Controllers.Profile;
 
@@ -22,42 +23,29 @@ public class ApplicationController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<ApplicationDTO>> Get(string id)
+    public Task<ActionResult<ApplicationDTO>> Get(string id)
     {
-        if (!await rightService.HasApplicationAccessRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        return applicationService.GetMapped<ApplicationDTO>(id);
+        return ControllerAuthorizationHelper.Authorize(
+           () => rightService.HasApplicationAccessRight(id),
+           () => applicationService.GetMapped<ApplicationDTO>(id));
     }
 
     [HttpPost]
     public void Create([FromBody] ApplicationModel model) => applicationService.CreateWithKeys(model);
 
     [HttpPut("{id}")]
-    public async Task<ActionResult> Update(string id, [FromBody] ApplicationModel model)
+    public Task<ActionResult> Update(string id, [FromBody] ApplicationModel model)
     {
-        if (!await rightService.HasApplicationAccessRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        applicationService.UpdateByModel(id, model);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+           () => rightService.HasApplicationAccessRight(id),
+           () => applicationService.UpdateByModel(id, model));
     }
 
     [HttpPut("{id}/RefreshSecret")]
-    public async Task<IActionResult> RefreshSecret(string id)
+    public Task<ActionResult> RefreshSecret(string id)
     {
-        if (!await rightService.HasApplicationAccessRight(id))
-        {
-            return new EmptyResult();
-        }
-
-        applicationService.RefreshSecret(id);
-
-        return Ok();
+        return ControllerAuthorizationHelper.AuthorizeVoid(
+           () => rightService.HasApplicationAccessRight(id),
+           () => applicationService.RefreshSecret(id));
     }
 }
