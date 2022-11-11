@@ -29,7 +29,6 @@ public class GroupHandler : AuthorizationHandler<GroupRequirement, int>
             }
 
             context.Fail();
-            return;
         }
         catch (Exception e)
         {

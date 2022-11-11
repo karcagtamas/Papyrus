@@ -29,7 +29,6 @@ public class ApplicationHandler : AuthorizationHandler<ApplicationRequirement, s
             }
 
             context.Fail();
-            return;
         }
         catch (Exception e)
         {

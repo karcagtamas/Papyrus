@@ -48,9 +48,9 @@ public class ExternalService : IExternalService
     {
         return WithApplication<NoteContentExtDTO>(query, (app) =>
         {
-            var note = noteService.Get(noteId);
+            ExceptionHelper.Check(authorizationService.UserHasNoteRight(app.UserId, noteId, NoteRight.Read).Result, "Note is not available", "External.Messages.NoteNotAvailable");
 
-            ExceptionHelper.Check(note.UserId == app.UserId, "Note is not available", "External.Messages.NoteNotAvailable");
+            var note = noteService.Get(noteId);
 
             var dto = mapper.Map<NoteContentExtDTO>(note);
             dto.Content = noteContentService.Get(note.ContentId)?.Content;
@@ -101,15 +101,28 @@ public class ExternalService : IExternalService
         });
     }
 
-    public List<NoteExtDTO> GetGroupNotes(ApplicationQueryModel query, int groupId) => WithGroup<List<NoteExtDTO>>(query, groupId, (app, group) => FetchNotes(x => x.GroupId == group.Id, new GroupUrlBuilder(group.Id)));
+    public List<NoteExtDTO> GetGroupNotes(ApplicationQueryModel query, int groupId)
+    {
+        return WithGroup<List<NoteExtDTO>>(query, groupId, (app, group) =>
+        {
+            var readNotes = authorizationService.UserHasGroupRight(app.UserId, group.Id, GroupRight.ReadNotes).Result;
+
+            if (!readNotes)
+            {
+                return new();
+            }
+
+            return FetchNotes(x => x.GroupId == group.Id, new GroupUrlBuilder(group.Id));
+        });
+    }
 
     public NoteContentExtDTO GetGroupNote(ApplicationQueryModel query, int groupId, string noteId)
     {
         return WithGroup<NoteContentExtDTO>(query, groupId, (app, group) =>
         {
-            var note = noteService.Get(noteId);
+            ExceptionHelper.Check(authorizationService.UserHasNoteRight(app.UserId, noteId, NoteRight.Read).Result, "Note is not available", "External.Messages.NoteNotAvailable");
 
-            ExceptionHelper.Check(note.GroupId == group.Id, "Note is not available", "External.Messages.NoteNotAvailable");
+            var note = noteService.Get(noteId);
 
             var dto = mapper.Map<NoteContentExtDTO>(note);
             dto.Content = noteContentService.Get(note.ContentId)?.Content;
@@ -122,6 +135,13 @@ public class ExternalService : IExternalService
     {
         return WithGroup<List<T>>(query, groupId, (app, group) =>
         {
+            var readTags = authorizationService.UserHasGroupRight(app.UserId, group.Id, GroupRight.ReadTags).Result;
+
+            if (!readTags)
+            {
+                return new();
+            }
+
             return FetchTags<T>(x => x.GroupId == group.Id, inTree);
         });
     }
@@ -130,6 +150,13 @@ public class ExternalService : IExternalService
     {
         return WithGroup<List<GroupMemberExtDTO>>(query, groupId, (app, group) =>
         {
+            var readMembers = authorizationService.UserHasGroupRight(app.UserId, group.Id, GroupRight.ReadMembers).Result;
+
+            if (!readMembers)
+            {
+                return new();
+            }
+
             return context.Set<GroupMember>().AsQueryable()
                 .Where(x => x.GroupId == group.Id)
                 .Include(x => x.Role)

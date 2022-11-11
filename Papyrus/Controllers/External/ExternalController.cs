@@ -22,7 +22,7 @@ public class ExternalController : ControllerBase
     [HttpGet("Notes")]
     public List<NoteExtDTO> GetNotes([FromQuery] ApplicationQueryModel query) => service.GetNotes(query);
 
-    [HttpGet("Notes/{id}")]
+    [HttpGet("Notes/{noteId}")]
     public NoteContentExtDTO GetNote(string noteId, [FromQuery] ApplicationQueryModel query) => service.GetNote(query, noteId);
 
     [HttpGet("Tags")]
