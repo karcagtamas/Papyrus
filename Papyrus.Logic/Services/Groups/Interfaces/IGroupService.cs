@@ -20,7 +20,7 @@ public interface IGroupService : IMapperRepository<Group, int>
     Task Close(int id);
     Task Open(int id);
     Task Remove(int id);
-    GroupRole? GetGroupRole(Group group, string userId);
+    GroupRole? GetGroupRole(int groupId, string userId);
     Task<bool> HasFullAccess(Group group, string userId);
     List<GroupNoteListDTO> GetRecentEdits(int id);
 }

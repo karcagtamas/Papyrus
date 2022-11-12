@@ -22,10 +22,10 @@ public static class GroupOperations
     public static readonly GroupRequirement ReadGroupMembersRequirement = new() { Name = "ReadGroupMembers", Right = GroupRight.ReadMembers };
     public static readonly GroupRequirement EditGroupMembersRequirement = new() { Name = "EditGroupMembers", Right = GroupRight.EditMembers };
     public static readonly GroupRequirement ReadNotesRequirement = new() { Name = "ReadNotes", Right = GroupRight.ReadNotes };
-    public static readonly GroupRequirement CreateNoteRequirement = new() { Name = "CreateNote", Right = GroupRight.CreateNote };
+    public static readonly GroupRequirement ManageNoteRequirement = new() { Name = "ManageNote", Right = GroupRight.ManageNote };
     public static readonly GroupRequirement CreateFolderRequirement = new() { Name = "CreateFolder", Right = GroupRight.CreateFolder };
     public static readonly GroupRequirement ReadTagsRequirement = new() { Name = "ReadTag", Right = GroupRight.ReadTags };
-    public static readonly GroupRequirement CreateTagRequirement = new() { Name = "CreateTag", Right = GroupRight.CreateTag };
+    public static readonly GroupRequirement ManageTagRequirement = new() { Name = "ManageTag", Right = GroupRight.ManageTag };
 }
 
 public static class GroupPolicies
@@ -63,8 +63,8 @@ public static class GroupPolicies
     public static readonly AuthorizationPolicy ReadNotes = new AuthorizationPolicyBuilder()
             .AddRequirements(GroupOperations.ReadNotesRequirement)
             .Build();
-    public static readonly AuthorizationPolicy CreateNote = new AuthorizationPolicyBuilder()
-            .AddRequirements(GroupOperations.CreateNoteRequirement)
+    public static readonly AuthorizationPolicy ManageNote = new AuthorizationPolicyBuilder()
+            .AddRequirements(GroupOperations.ManageNoteRequirement)
             .Build();
     public static readonly AuthorizationPolicy CreateFolder = new AuthorizationPolicyBuilder()
             .AddRequirements(GroupOperations.CreateFolderRequirement)
@@ -72,7 +72,7 @@ public static class GroupPolicies
     public static readonly AuthorizationPolicy ReadTags = new AuthorizationPolicyBuilder()
             .AddRequirements(GroupOperations.ReadTagsRequirement)
             .Build();
-    public static readonly AuthorizationPolicy CreateTag = new AuthorizationPolicyBuilder()
-            .AddRequirements(GroupOperations.CreateTagRequirement)
+    public static readonly AuthorizationPolicy ManageTag = new AuthorizationPolicyBuilder()
+            .AddRequirements(GroupOperations.ManageTagRequirement)
             .Build();
 }

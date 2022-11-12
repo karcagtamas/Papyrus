@@ -13,8 +13,9 @@ public enum GroupRight
     ReadMembers,
     EditMembers,
     ReadNotes,
-    CreateNote,
+    ReadNote,
+    ManageNote,
     CreateFolder,
     ReadTags,
-    CreateTag,
+    ManageTag,
 }

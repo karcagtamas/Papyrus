@@ -36,7 +36,7 @@ public class RightService : IRightService
 
     public Task<bool> HasGroupMemberListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadGroupMembers);
 
-    public Task<bool> HasGroupNoteCreateRight(int groupId) => Check(groupId, GroupPolicies.CreateNote);
+    public Task<bool> HasGroupNoteCreateRight(int groupId) => Check(groupId, GroupPolicies.ManageNote);
 
     public Task<bool> HasGroupNoteListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadNotes);
 
@@ -48,7 +48,7 @@ public class RightService : IRightService
 
     public Task<bool> HasGroupRoleListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadGroupRoles);
 
-    public Task<bool> HasGroupTagCreateRight(int groupId) => Check(groupId, GroupPolicies.CreateTag);
+    public Task<bool> HasGroupTagCreateRight(int groupId) => Check(groupId, GroupPolicies.ManageTag);
 
     public Task<bool> HasGroupTagListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadTags);
 

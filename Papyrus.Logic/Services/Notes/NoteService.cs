@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+using System.Linq.Expressions;
 using AutoMapper;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
@@ -13,10 +13,12 @@ using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
+using Papyrus.Logic.Services.Security;
 using Papyrus.Mongo.DataAccess.Entities;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Enums.Groups;
 using Papyrus.Shared.Enums.Notes;
+using Papyrus.Shared.Enums.Security;
 using Papyrus.Shared.HubEvents;
 using Papyrus.Shared.Models.Notes;
 
@@ -237,27 +239,25 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         if (ObjectHelper.IsNotNull(note.GroupId))
         {
             var group = groupService.Get((int)note.GroupId);
+            var hasFullAccess = await groupService.HasFullAccess(group, userId);
 
-            if (await groupService.HasFullAccess(group, userId))
+            var role = groupService.GetGroupRole(group.Id, userId);
+
+            if (ObjectHelper.IsNull(role))
             {
-                return new NoteRightsDTO(true);
+                return new NoteRightsDTO(false);
             }
 
-            var role = groupService.GetGroupRole(group, userId);
-
-            if (ObjectHelper.IsNotNull(role))
+            return new NoteRightsDTO
             {
-                return new NoteRightsDTO
-                {
-                    CanView = role.ReadNote || role.EditNote || role.DeleteNote,
-                    CanEdit = role.EditNote || role.DeleteNote,
-                    CanDelete = role.DeleteNote,
-                    CanViewLogs = role.ReadNoteActionLog
-                };
-            }
+                CanView = AuthorizationService.CheckUserGroupNoteRight(NoteRight.Read, note, group, role, hasFullAccess),
+                CanEdit = AuthorizationService.CheckUserGroupNoteRight(NoteRight.Edit, note, group, role, hasFullAccess),
+                CanDelete = AuthorizationService.CheckUserGroupNoteRight(NoteRight.Delete, note, group, role, hasFullAccess),
+                CanViewLogs = AuthorizationService.CheckUserGroupNoteRight(NoteRight.ReadLogs, note, group, role, hasFullAccess)
+            };
         }
 
-        return new NoteRightsDTO();
+        return new NoteRightsDTO(false);
     }
 
     public List<SearchResultDTO> Search(SearchQueryModel query)

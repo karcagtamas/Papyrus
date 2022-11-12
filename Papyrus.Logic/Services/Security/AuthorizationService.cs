@@ -81,11 +81,12 @@ public class AuthorizationService : IAuthorizationService
             GroupRight.EditRoles => (fullAccess || role.EditRoleList) && !group.IsClosed,
             GroupRight.ReadMembers => fullAccess || role.ReadMemberList || role.EditMemberList,
             GroupRight.EditMembers => (fullAccess || role.EditMemberList) && !group.IsClosed,
+            GroupRight.ReadNote => fullAccess || role.ReadNote || role.EditNote || role.DeleteNote,
             GroupRight.ReadNotes => fullAccess || role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
-            GroupRight.CreateNote => (fullAccess || role.EditNote || role.DeleteNote) && !group.IsClosed,
+            GroupRight.ManageNote => (fullAccess || role.EditNote || role.DeleteNote) && !group.IsClosed,
             GroupRight.CreateFolder => (fullAccess || role.EditNote || role.DeleteNote) && !group.IsClosed,
             GroupRight.ReadTags => fullAccess || role.ReadTagList || role.EditTagList,
-            GroupRight.CreateTag => (fullAccess || role.EditTagList) && !group.IsClosed,
+            GroupRight.ManageTag => (fullAccess || role.EditTagList) && !group.IsClosed,
             _ => false,
         };
     }
@@ -105,14 +106,14 @@ public class AuthorizationService : IAuthorizationService
         });
     }
 
-    public static bool CheckUserGroupNoteRight(NoteRight right, Note note, Group group, GroupRole role)
+    public static bool CheckUserGroupNoteRight(NoteRight right, Note note, Group group, GroupRole role, bool fullAccess = false)
     {
         return right switch
         {
-            NoteRight.Read => note.Public || role.ReadNote || role.EditNote || role.DeleteNote,
-            NoteRight.Edit => (role.EditNote || role.DeleteNote) && !group.IsClosed,
-            NoteRight.Delete => role.DeleteNote && !group.IsClosed,
-            NoteRight.ReadLogs => role.ReadNoteActionLog,
+            NoteRight.Read => fullAccess || note.Public || role.ReadNote || role.EditNote || role.DeleteNote,
+            NoteRight.Edit => (fullAccess || role.EditNote || role.DeleteNote) && !group.IsClosed,
+            NoteRight.Delete => (fullAccess || role.DeleteNote) && !group.IsClosed,
+            NoteRight.ReadLogs => fullAccess || role.ReadNoteActionLog,
             _ => false,
         };
     }
