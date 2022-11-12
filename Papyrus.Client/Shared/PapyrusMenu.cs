@@ -26,9 +26,12 @@ public static class PapyrusMenu
                 .AddResourceKey("Search")
                 .AddIcon(Icons.Filled.Search)
                 .IsAuthenticated(false),
-            MenuItem.CreateItem("Profile", "my")
+            MenuItem.CreateGroupItem("Profile")
                 .AddResourceKey("Profile")
-                .AddIcon(Icons.Filled.Person),
+                .AddIcon(Icons.Filled.Person)
+                .AddIconColor(Color.Success)
+                .AddItem(MenuItem.CreateItem("Data", "profile/my").AddResourceKey("Data").AddIcon(Icons.Filled.DataArray))
+                .AddItem(MenuItem.CreateItem("Applications", "profile/apps").AddResourceKey("Applications").AddIcon(Icons.Filled.SettingsApplications)),
             MenuItem.CreateItem("My Groups", "my-groups")
                 .AddResourceKey("MyGroups")
                 .AddIcon(Icons.Filled.Groups),
@@ -46,7 +49,7 @@ public static class PapyrusMenu
                     .AddResourceKey("Administration")
                     .AddIcon(Icons.Filled.AdminPanelSettings)
                     .AddIconColor(Color.Warning)
-                    .AddItem(MenuItem.CreateItem("Users", "users").AddResourceKey("Users").AddIcon(Icons.Filled.ManageAccounts))
+                    .AddItem(MenuItem.CreateItem("Users", "admin/users").AddResourceKey("Users").AddIcon(Icons.Filled.ManageAccounts))
             );
         }
 

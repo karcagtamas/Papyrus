@@ -27,6 +27,8 @@ using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Client.Services.Notes;
 using Papyrus.Client.Services.Notes.Interfaces;
+using Papyrus.Client.Services.Profile;
+using Papyrus.Client.Services.Profile.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 using Papyrus.Shared.Enums;
 using Papyrus.Shared.Localization;
@@ -97,6 +99,9 @@ builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<INoteService, NoteService>();
 builder.Services.AddScoped<INoteActionLogTableService, NoteActionLogTableService>();
 builder.Services.AddScoped<IFolderService, FolderService>();
+
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IApplicationTableService, ApplicationTableService>();
 
 builder.Services.AddScoped<IEditorService, EditorService>();
 

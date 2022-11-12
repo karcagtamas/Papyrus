@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Papyrus.DataAccess.Entities.Groups;
+﻿using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.Models.Groups;
 
-namespace Papyrus.Logic.Mappers;
+namespace Papyrus.Logic.Mappers.Groups;
 
-public class GroupMapper : Profile
+public class GroupMapper : AutoMapper.Profile
 {
     public GroupMapper()
     {

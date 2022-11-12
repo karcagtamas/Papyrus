@@ -179,6 +179,44 @@ namespace Papyrus.Migrations
                     b.ToTable("AppAccesses");
                 });
 
+            modelBuilder.Entity("Papyrus.DataAccess.Entities.Application", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<DateTime>("Creation")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("LastUpdate")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(40)
+                        .HasColumnType("varchar(40)");
+
+                    b.Property<string>("PublicId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SecretId")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Applications");
+                });
+
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Editor.EditorMember", b =>
                 {
                     b.Property<string>("Id")
@@ -1295,6 +1333,17 @@ namespace Papyrus.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Papyrus.DataAccess.Entities.Application", b =>
+                {
+                    b.HasOne("Papyrus.DataAccess.Entities.User", "User")
+                        .WithMany("Applications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Papyrus.DataAccess.Entities.Editor.EditorMember", b =>
                 {
                     b.HasOne("Papyrus.DataAccess.Entities.Notes.Note", "Note")
@@ -1598,6 +1647,8 @@ namespace Papyrus.Migrations
                     b.Navigation("AddedGroupMembers");
 
                     b.Navigation("AppAccesses");
+
+                    b.Navigation("Applications");
 
                     b.Navigation("CreatedFolders");
 

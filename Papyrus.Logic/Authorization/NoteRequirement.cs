@@ -1,18 +1,20 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Authorization.Infrastructure;
+using Papyrus.Shared.Enums.Security;
 
 namespace Papyrus.Logic.Authorization;
 
 public class NoteRequirement : OperationAuthorizationRequirement
 {
+    public NoteRight Right { get; set; }
 }
 
 public static class NoteOperations
 {
-    public static readonly NoteRequirement ReadNoteRequirement = new() { Name = "ReadNote" };
-    public static readonly NoteRequirement EditNoteRequirement = new() { Name = "EditNote" };
-    public static readonly NoteRequirement DeleteNoteRequirement = new() { Name = "DeleteNote" };
-    public static readonly NoteRequirement ReadNoteLogsRequirement = new() { Name = "ReadNoteLogs" };
+    public static readonly NoteRequirement ReadNoteRequirement = new() { Name = "ReadNote", Right = NoteRight.Read };
+    public static readonly NoteRequirement EditNoteRequirement = new() { Name = "EditNote", Right = NoteRight.Edit };
+    public static readonly NoteRequirement DeleteNoteRequirement = new() { Name = "DeleteNote", Right = NoteRight.Delete };
+    public static readonly NoteRequirement ReadNoteLogsRequirement = new() { Name = "ReadNoteLogs", Right = NoteRight.ReadLogs };
 }
 
 public static class NotePolicies

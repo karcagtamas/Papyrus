@@ -4,6 +4,7 @@ using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Editor;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.DataAccess.Entities.Profile;
 
 namespace Papyrus.DataAccess;
 
@@ -25,6 +26,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
     public DbSet<NoteAccess> NoteAccesses { get; set; }
 
     public DbSet<ActionLog> ActionLogs { get; set; }
+    public DbSet<Application> Applications { get; set; }
 
     public DbSet<EditorMember> EditorMembers { get; set; }
 
@@ -44,6 +46,7 @@ public class PapyrusContext : IdentityDbContext<User, Role, string>
         NoteTags = default!;
         NoteAccesses = default!;
         ActionLogs = default!;
+        Applications = default!;
         EditorMembers = default!;
     }
 

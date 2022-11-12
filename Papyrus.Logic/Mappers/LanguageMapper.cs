@@ -1,10 +1,9 @@
-using AutoMapper;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Shared.DTOs;
 
 namespace Papyrus.Logic.Mappers;
 
-public class LanguageMapper : Profile
+public class LanguageMapper : AutoMapper.Profile
 {
     public LanguageMapper()
     {

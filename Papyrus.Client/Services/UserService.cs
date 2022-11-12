@@ -3,7 +3,6 @@ using KarcagS.Blazor.Common.Models;
 using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Interfaces;
 using Papyrus.Shared.DTOs;
-using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 

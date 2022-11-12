@@ -16,11 +16,15 @@ public class RightService : IRightService
         this.authorization = authorization;
     }
 
+    public Task<bool> HasApplicationAccessRight(string appId) => Check(appId, ApplicationPolicies.AccessApplication);
+
     public Task<bool> HasFolderManageRight(string folderId) => Check(folderId, FolderPolicies.ManagerFolder);
 
     public Task<bool> HasFolderReadRight(string folderId) => Check(folderId, FolderPolicies.ReadFolder);
 
-    public Task<bool> HasGroupCloseOpenRight(int groupId) => Check(groupId, GroupPolicies.CloseOpenGroup);
+    public Task<bool> HasGroupCloseRight(int groupId) => Check(groupId, GroupPolicies.CloseGroup);
+
+    public Task<bool> HasGroupOpenRight(int groupId) => Check(groupId, GroupPolicies.OpenGroup);
 
     public Task<bool> HasGroupEditRight(int groupId) => Check(groupId, GroupPolicies.EditGroup);
 
@@ -32,7 +36,7 @@ public class RightService : IRightService
 
     public Task<bool> HasGroupMemberListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadGroupMembers);
 
-    public Task<bool> HasGroupNoteCreateRight(int groupId) => Check(groupId, GroupPolicies.CreateNote);
+    public Task<bool> HasGroupNoteCreateRight(int groupId) => Check(groupId, GroupPolicies.ManageNote);
 
     public Task<bool> HasGroupNoteListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadNotes);
 
@@ -44,7 +48,7 @@ public class RightService : IRightService
 
     public Task<bool> HasGroupRoleListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadGroupRoles);
 
-    public Task<bool> HasGroupTagCreateRight(int groupId) => Check(groupId, GroupPolicies.CreateTag);
+    public Task<bool> HasGroupTagCreateRight(int groupId) => Check(groupId, GroupPolicies.ManageTag);
 
     public Task<bool> HasGroupTagListReadRight(int groupId) => Check(groupId, GroupPolicies.ReadTags);
 

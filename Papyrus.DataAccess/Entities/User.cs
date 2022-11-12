@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess.Entities.Editor;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.DataAccess.Entities.Notes;
+using Papyrus.DataAccess.Entities.Profile;
 
 namespace Papyrus.DataAccess.Entities;
 
@@ -56,4 +57,5 @@ public class User : IdentityUser<string>, IEntity<string>
     public virtual ICollection<Post> UpdatedPosts { get; set; } = default!;
     public virtual ICollection<AppAccess> AppAccesses { get; set; } = default!;
     public virtual ICollection<NoteAccess> NoteAccesses { get; set; } = default!;
+    public virtual ICollection<Application> Applications { get; set; } = default!;
 }

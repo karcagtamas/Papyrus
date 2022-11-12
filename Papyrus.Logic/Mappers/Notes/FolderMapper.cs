@@ -1,11 +1,10 @@
-using AutoMapper;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models.Notes;
 
-namespace Papyrus.Logic.Mappers;
+namespace Papyrus.Logic.Mappers.Notes;
 
-public class FolderMapper : Profile
+public class FolderMapper : AutoMapper.Profile
 {
     public FolderMapper()
     {

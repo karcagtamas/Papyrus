@@ -123,8 +123,14 @@
   <data name="Administration" xml:space="preserve">
     <value>Adminisztráció</value>
   </data>
+  <data name="Applications" xml:space="preserve">
+    <value>Alkalmazások</value>
+  </data>
   <data name="Dashboard" xml:space="preserve">
     <value>Irányítópult</value>
+  </data>
+  <data name="Data" xml:space="preserve">
+    <value>Adatok</value>
   </data>
   <data name="GroupData" xml:space="preserve">
     <value>Adatok</value>

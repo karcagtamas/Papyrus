@@ -1,17 +1,20 @@
-﻿using AutoMapper;
+using AutoMapper;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess;
+using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes.Interfaces;
+using Papyrus.Logic.Services.Security;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.DTOs.Groups.Rights;
 using Papyrus.Shared.Enums.Groups;
+using Papyrus.Shared.Enums.Security;
 
 namespace Papyrus.Logic.Services.Groups;
 
@@ -23,7 +26,17 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     private readonly IUserService userService;
     private readonly IFolderService folderService;
 
-    public GroupService(PapyrusContext context, ILoggerService loggerService, IUtilsService<string> utilsService, IMapper mapper, IGroupRoleService groupRoleService, IGroupMemberService groupMemberService, IGroupActionLogService groupActionLogService, IUserService userService, IFolderService folderService) : base(context, loggerService, utilsService, mapper, "Group")
+    public GroupService(
+        PapyrusContext context,
+        ILoggerService loggerService,
+        IUtilsService<string> utilsService,
+        IMapper mapper,
+        IGroupRoleService groupRoleService,
+        IGroupMemberService groupMemberService,
+        IGroupActionLogService groupActionLogService,
+        IUserService userService,
+        IFolderService folderService
+        ) : base(context, loggerService, utilsService, mapper, "Group")
     {
         this.folderService = folderService;
         this.groupRoleService = groupRoleService;
@@ -105,15 +118,20 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
         var group = Get(id);
         var hasFullAccess = await HasFullAccess(group, userId);
 
-        var role = GetGroupRole(group, userId);
+        var role = GetGroupRole(id, userId);
+
+        if (ObjectHelper.IsNull(role))
+        {
+            return new GroupRightsDTO(false);
+        }
 
         return new GroupRightsDTO
         {
-            CanClose = hasFullAccess && !group.IsClosed,
-            CanOpen = hasFullAccess && group.IsClosed,
-            CanRemove = hasFullAccess,
-            CanEdit = !group.IsClosed && (hasFullAccess || (role?.GroupEdit ?? false)),
-            CanOpenNote = hasFullAccess || (role?.ReadNote ?? false) || (role?.EditNote ?? false) || (role?.DeleteNote ?? false)
+            CanClose = AuthorizationService.CheckUserGroupRight(GroupRight.Close, group, role, hasFullAccess),
+            CanOpen = AuthorizationService.CheckUserGroupRight(GroupRight.Open, group, role, hasFullAccess),
+            CanRemove = AuthorizationService.CheckUserGroupRight(GroupRight.Remove, group, role, hasFullAccess),
+            CanEdit = AuthorizationService.CheckUserGroupRight(GroupRight.Edit, group, role, hasFullAccess),
+            CanOpenNote = AuthorizationService.CheckUserGroupRight(GroupRight.ReadNote, group, role, hasFullAccess)
         };
     }
 
@@ -145,31 +163,23 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     {
         var userId = Utils.GetRequiredCurrentUserId();
         var group = Get(id);
+        var hasFullAccess = await HasFullAccess(group, userId);
 
-        if (await HasFullAccess(group, userId))
-        {
-            return new GroupTagRightsDTO
-            {
-                CanCreate = !group.IsClosed,
-                CanEdit = !group.IsClosed,
-                CanRemove = !group.IsClosed,
-                CanView = true
-            };
-        }
-
-        var role = GetGroupRole(group, userId);
+        var role = GetGroupRole(id, userId);
 
         if (ObjectHelper.IsNull(role))
         {
-            return new GroupTagRightsDTO();
+            return new GroupTagRightsDTO(false);
         }
+
+        var manageRight = AuthorizationService.CheckUserGroupRight(GroupRight.ManageTag, group, role, hasFullAccess);
 
         return new GroupTagRightsDTO
         {
-            CanCreate = !group.IsClosed && role.EditTagList,
-            CanEdit = !group.IsClosed && role.EditTagList,
-            CanRemove = !group.IsClosed && role.EditTagList,
-            CanView = role.ReadTagList || role.EditTagList
+            CanCreate = manageRight,
+            CanEdit = manageRight,
+            CanRemove = manageRight,
+            CanView = AuthorizationService.CheckUserGroupRight(GroupRight.ReadTags, group, role, hasFullAccess)
         };
     }
 
@@ -177,29 +187,22 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     {
         var userId = Utils.GetRequiredCurrentUserId();
         var group = Get(id);
+        var hasFullAccess = await HasFullAccess(group, userId);
 
-        if (await HasFullAccess(group, userId))
-        {
-            return new GroupMemberRightsDTO
-            {
-                CanAdd = !group.IsClosed,
-                CanEdit = !group.IsClosed,
-                CanView = true
-            };
-        }
-
-        var role = GetGroupRole(group, userId);
+        var role = GetGroupRole(id, userId);
 
         if (ObjectHelper.IsNull(role))
         {
-            return new GroupMemberRightsDTO();
+            return new GroupMemberRightsDTO(false);
         }
+
+        var editRight = AuthorizationService.CheckUserGroupRight(GroupRight.EditMembers, group, role, hasFullAccess);
 
         return new GroupMemberRightsDTO
         {
-            CanAdd = !group.IsClosed && role.EditMemberList,
-            CanEdit = !group.IsClosed && role.EditMemberList,
-            CanView = role.ReadMemberList || role.EditMemberList
+            CanAdd = editRight,
+            CanEdit = editRight,
+            CanView = AuthorizationService.CheckUserGroupRight(GroupRight.ReadMembers, group, role, hasFullAccess)
         };
     }
 
@@ -207,6 +210,7 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     {
         var userId = Utils.GetRequiredCurrentUserId();
         var group = Get(id);
+        var hasFullAccess = await HasFullAccess(group, userId);
 
         if (await HasFullAccess(group, userId))
         {
@@ -218,79 +222,68 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
             };
         }
 
-        var role = GetGroupRole(group, userId);
+        var role = GetGroupRole(id, userId);
 
         if (ObjectHelper.IsNull(role))
         {
             return new GroupRoleRightsDTO();
         }
 
+        var editRight = AuthorizationService.CheckUserGroupRight(GroupRight.EditRoles, group, role, hasFullAccess);
+
         return new GroupRoleRightsDTO
         {
-            CanCreate = !group.IsClosed && role.EditRoleList,
-            CanEdit = !group.IsClosed && role.EditRoleList,
-            CanView = role.ReadRoleList || role.EditRoleList
+            CanCreate = editRight,
+            CanEdit = editRight,
+            CanView = AuthorizationService.CheckUserGroupRight(GroupRight.ReadRoles, group, role, hasFullAccess)
         };
     }
 
-    public GroupRole? GetUserRole(int id)
-    {
-        var userId = Utils.GetRequiredCurrentUserId();
-        return Get(id).Members.FirstOrDefault(x => x.UserId == userId)?.Role;
-    }
+    public bool IsCurrentOwner(int id) => IsUserOwner(id, Utils.GetCurrentUser<User>());
 
-    public bool IsCurrentOwner(int id)
+    public bool IsUserOwner(int id, User user)
     {
         var group = Get(id);
 
-        var userId = Utils.GetCurrentUserId();
-
-        if (ObjectHelper.IsNull(userId))
+        if (ObjectHelper.IsNull(user))
         {
             return false;
         }
 
-        return group.OwnerId == userId;
+        return group.OwnerId == user.Id;
     }
 
     public async Task<GroupPageRightsDTO> GetPageRights(int id)
     {
         var userId = Utils.GetRequiredCurrentUserId();
         var group = Get(id);
+        var hasFullAccess = await HasFullAccess(group, userId);
 
-        if (await HasFullAccess(group, userId))
-        {
-            return new GroupPageRightsDTO(true);
-        }
-
-        var role = GetGroupRole(group, userId);
+        var role = GetGroupRole(id, userId);
 
         if (ObjectHelper.IsNull(role))
         {
-            return new GroupPageRightsDTO();
+            return new GroupPageRightsDTO(false);
         }
 
         return new GroupPageRightsDTO
         {
             DataPageEnabled = true,
-            LogPageEnabled = role.ReadGroupActionLog,
-            MemberPageEnabled = role.ReadMemberList || role.EditMemberList,
-            RolePageEnabled = role.ReadRoleList || role.EditRoleList,
-            NotePageEnabled = role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
-            TagPageEnabled = role.ReadTagList || role.EditTagList
+            LogPageEnabled = AuthorizationService.CheckUserGroupRight(GroupRight.ReadLogs, group, role, hasFullAccess),
+            MemberPageEnabled = AuthorizationService.CheckUserGroupRight(GroupRight.ReadMembers, group, role, hasFullAccess),
+            RolePageEnabled = AuthorizationService.CheckUserGroupRight(GroupRight.ReadRoles, group, role, hasFullAccess),
+            NotePageEnabled = AuthorizationService.CheckUserGroupRight(GroupRight.ReadNotes, group, role, hasFullAccess),
+            TagPageEnabled = AuthorizationService.CheckUserGroupRight(GroupRight.ReadTags, group, role, hasFullAccess)
         };
     }
 
-    public GroupRole? GetGroupRole(Group group, string userId)
+    public GroupRole? GetGroupRole(int groupId, string userId)
     {
-        var roleId = group.Members.FirstOrDefault(x => x.UserId == userId)?.RoleId;
-
-        if (ObjectHelper.IsNull(roleId))
-        {
-            return null;
-        }
-
-        return groupRoleService.Get((int)roleId);
+        return Context.Set<GroupMember>().AsQueryable()
+            .Where(x => x.GroupId == groupId && x.UserId == userId)
+            .Include(x => x.Role)
+            .FirstOrDefault()?
+            .Role;
     }
 
     public async Task<bool> HasFullAccess(Group group, string userId)
@@ -304,39 +297,26 @@ public class GroupService : MapperRepository<Group, int, string>, IGroupService
     {
         var userId = Utils.GetRequiredCurrentUserId();
         var group = Get(id);
+        var hasFullAccess = await HasFullAccess(group, userId);
 
-        if (await HasFullAccess(group, userId))
-        {
-            return new GroupNoteRightsDTO
-            {
-                CanCreateNote = !group.IsClosed,
-                CanViewNote = true,
-                CanOpenNote = true,
-                CanCreateFolder = !group.IsClosed,
-                CanManageFolder = !group.IsClosed,
-                CanEditNote = !group.IsClosed,
-                CanDeleteNote = !group.IsClosed,
-            };
-        }
-
-        var role = GetGroupRole(group, userId);
+        var role = GetGroupRole(id, userId);
 
         if (ObjectHelper.IsNull(role))
         {
-            return new GroupNoteRightsDTO();
+            return new GroupNoteRightsDTO(false);
         }
 
-        var basicAccess = !group.IsClosed && (role.EditNote || role.DeleteNote);
+        var manageAccess = AuthorizationService.CheckUserGroupRight(GroupRight.ManageNote, group, role, hasFullAccess);
 
         return new GroupNoteRightsDTO
         {
-            CanCreateNote = basicAccess,
-            CanViewNote = role.ReadNoteList || role.ReadNote || role.EditNote || role.DeleteNote,
-            CanOpenNote = role.ReadNote || role.EditNote || role.DeleteNote,
-            CanCreateFolder = basicAccess,
-            CanManageFolder = basicAccess,
-            CanEditNote = basicAccess,
-            CanDeleteNote = basicAccess,
+            CanCreateNote = manageAccess,
+            CanViewNote = AuthorizationService.CheckUserGroupRight(GroupRight.ReadNotes, group, role, hasFullAccess),
+            CanOpenNote = AuthorizationService.CheckUserGroupRight(GroupRight.ReadNote, group, role, hasFullAccess),
+            CanCreateFolder = manageAccess,
+            CanManageFolder = manageAccess,
+            CanEditNote = manageAccess,
+            CanDeleteNote = manageAccess,
         };
     }
 

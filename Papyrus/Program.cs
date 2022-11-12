@@ -17,8 +17,13 @@ using Microsoft.OpenApi.Models;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
 using Papyrus.Logic.Authorization;
+using Papyrus.Logic.Exceptions.External;
 using Papyrus.Logic.Hubs;
 using Papyrus.Logic.Mappers;
+using Papyrus.Logic.Mappers.External;
+using Papyrus.Logic.Mappers.Groups;
+using Papyrus.Logic.Mappers.Notes;
+using Papyrus.Logic.Mappers.Profile;
 using Papyrus.Logic.Services;
 using Papyrus.Logic.Services.Auth;
 using Papyrus.Logic.Services.Auth.Interfaces;
@@ -26,11 +31,17 @@ using Papyrus.Logic.Services.Common;
 using Papyrus.Logic.Services.Common.Interfaces;
 using Papyrus.Logic.Services.Editor;
 using Papyrus.Logic.Services.Editor.Interfaces;
+using Papyrus.Logic.Services.External;
+using Papyrus.Logic.Services.External.Interfaces;
 using Papyrus.Logic.Services.Groups;
 using Papyrus.Logic.Services.Groups.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Logic.Services.Notes;
 using Papyrus.Logic.Services.Notes.Interfaces;
+using Papyrus.Logic.Services.Profile;
+using Papyrus.Logic.Services.Profile.Interfaces;
+using AuthImpl = Papyrus.Logic.Services.Security;
+using Auth = Papyrus.Logic.Services.Security.Interfaces;
 using Papyrus.Middlewares;
 using Papyrus.Mongo.DataAccess.Configurations;
 
@@ -57,6 +68,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IRightService, RightService>();
 builder.Services.AddScoped<ICommonService, CommonService>();
+builder.Services.AddScoped<Auth.IAuthorizationService, AuthImpl.AuthorizationService>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserTableService, UserTableService>();
@@ -81,14 +93,18 @@ builder.Services.AddScoped<INoteContentService, NoteContentService>();
 builder.Services.AddScoped<ITagService, TagService>();
 builder.Services.AddScoped<IFolderService, FolderService>();
 
-builder.Services.AddScoped<IEditorService, EditorService>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
+builder.Services.AddScoped<IApplicationTableService, ApplicationTableService>();
 
+builder.Services.AddScoped<IEditorService, EditorService>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IExternalService, ExternalService>();
 
 // Mandatory for HTTP Interceptor
 builder.Services.AddErrorConverter((conf) =>
 {
     conf.AddAgent(new TableErrorConverterAgent());
+    conf.AddAgent(new ExternalErrorConverterAgent());
 });
 
 // Add AutoMapper
@@ -102,6 +118,8 @@ var mapperConfig = new MapperConfiguration(conf =>
     conf.AddProfile<RoleMapper>();
     conf.AddProfile<PostMapper>();
     conf.AddProfile<FolderMapper>();
+    conf.AddProfile<ApplicationMapper>();
+    conf.AddProfile<ExternalMapper>();
 });
 builder.Services.AddSingleton(mapperConfig.CreateMapper());
 
@@ -143,6 +161,7 @@ builder.Services.AddTransient<IAuthorizationHandler, GroupHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, NoteHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, TagHandler>();
 builder.Services.AddTransient<IAuthorizationHandler, FolderHandler>();
+builder.Services.AddTransient<IAuthorizationHandler, ApplicationHandler>();
 
 // Auth
 builder.Services
