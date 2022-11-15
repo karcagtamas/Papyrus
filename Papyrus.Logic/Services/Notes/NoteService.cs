@@ -199,7 +199,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
         // Send Socket request
         var dto = GetMapped<NoteLightDTO>(entity.Id);
-        Task.WaitAll(hubContext.Clients.Group(entity.Id).SendAsync(NoteHubEvents.NoteUpdated, dto));
+        hubContext.Clients.Group(entity.Id).SendAsync(NoteHubEvents.NoteUpdated, dto).Wait();
     }
 
     public override void Delete(Note entity, bool doPersist = true)
@@ -222,7 +222,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         base.Delete(entity, doPersist);
 
         // Send Socket request
-        Task.WaitAll(hubContext.Clients.Group(oldId).SendAsync(NoteHubEvents.NoteDeleted));
+        hubContext.Clients.Group(oldId).SendAsync(NoteHubEvents.NoteDeleted).Wait();
     }
 
     public async Task<NoteRightsDTO> GetRights(string id)
@@ -454,7 +454,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         };
     }
 
-    private IQueryable<Note> SearchQuery(IQueryable<Note> queryable, SearchQueryModel query, string? userId = null)
+    private static IQueryable<Note> SearchQuery(IQueryable<Note> queryable, SearchQueryModel query, string? userId = null)
     {
         Expression<Func<Note, bool>> titlePredicate = x => x.Title.Contains(query.Text);
         Expression<Func<Note, bool>> tagNamePredicate = x => x.Tags.Any(x => x.Tag.Caption.Contains(query.Text));
@@ -504,7 +504,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         folderService.Delete(folder);
     }
 
-    private bool TitlesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
+    private static bool TitlesAreEqual(string n1, string n2) => n1.ToLower() == n2.ToLower();
 
     private bool Exists(List<Note> notes, string title, string id)
     {
