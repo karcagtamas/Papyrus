@@ -11,6 +11,8 @@ public class SearchQueryModel
     public bool IncludeContents { get; set; }
     public bool OnlyPublics { get; set; }
 
+    public bool Archived { get; set; }
+
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
 }

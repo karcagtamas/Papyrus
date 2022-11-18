@@ -11,7 +11,7 @@
             <b>
                 <MudHighlighter Text="@SearchResult.DisplayTitle" HighlightedText="@SearchTerm" CaseSensitive="false" Style="padding: unset;" />
             </b>
-            [@GetSourceText()]
+            @GetSourceText()
         </MudText>
 
     </div>
@@ -60,9 +60,9 @@
         switch (SearchResult.Data.Type)
         {
             case SearchResultCategory.Group:
-                return L["Source.Group"];
+                return $"[{L["Source.Group"]}]";
             case SearchResultCategory.User:
-                return L["Source.User"];
+                return $"[{L["Source.User"]}]";
             default:
                 return "";
         }

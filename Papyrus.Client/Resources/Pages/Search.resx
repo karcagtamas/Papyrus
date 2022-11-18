@@ -120,6 +120,9 @@
   <data name="ClearState" xml:space="preserve">
     <value>Clear State</value>
   </data>
+  <data name="Filter.Archived" xml:space="preserve">
+    <value>Archived</value>
+  </data>
   <data name="Filter.Content" xml:space="preserve">
     <value>Include Contents</value>
   </data>

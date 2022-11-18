@@ -138,9 +138,9 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     public void UpdateWithTags(string id, NoteModel model)
     {
-        UpdateByModel(id, model);
-
         Note note = Get(id);
+
+        Mapper.Map(model, note);
 
         var tags = note.Tags;
         tags = tags.Where(x => model.Tags.Any(t => t == x.TagId)).ToList();
@@ -199,6 +199,17 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
         // Send Socket request
         var dto = GetMapped<NoteLightDTO>(entity.Id);
+
+        // Handle newly created tags fetching - EF does not update proxies automatically
+        List<NoteTagDTO> tags = entity.Tags
+            .Where(x => x.Tag == null)
+            .Select(x => Persistence.Get<int, Tag>(x.TagId))
+            .ToList()
+            .Select(x => new NoteTagDTO { Id = x.Id, Caption = x.Caption, Color = x.Color })
+            .ToList();
+        dto.Tags.AddRange(tags);
+        dto.Tags.RemoveAll(x => x == null);
+
         hubContext.Clients.Group(entity.Id).SendAsync(NoteHubEvents.NoteUpdated, dto).Wait();
     }
 
@@ -409,7 +420,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         // Determine category
         // Other by default => Public status
         var cat = SearchResultCategory.Other;
-        bool openable = true;
+        bool openable = note.Public;
 
         // User is logged in
         if (ObjectHelper.IsNotNull(userId))
@@ -418,6 +429,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             if (note.UserId == userId)
             {
                 cat = SearchResultCategory.User;
+                openable = true;
             }
 
             // Note is connected to a group and the user is a member
@@ -475,6 +487,8 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         {
             queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(m => m.UserId == userId && (m.Role.ReadNoteList || m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote))));
         }
+
+        queryable = queryable.Where(x => x.Archived == query.Archived);
 
         // Date interval checks
         if (query.StartDate != null && query.EndDate != null)

@@ -1,4 +1,4 @@
-﻿@page "/search"
+@page "/search"
 @using Papyrus.Client.Services.Notes.Interfaces
 @using Papyrus.Client.Services.Auth.Interfaces
 @inject IStringLocalizer<Search> L
@@ -21,6 +21,7 @@
             {
                 <Checkbox Label="@L["Filter.Public"]" Checked="QueryModel.OnlyPublics" CheckedChanged="@((val) => HandleChange(() => QueryModel.OnlyPublics = val))" />
             }
+            <Checkbox Label="@L["Filter.Archived"]" Checked="QueryModel.Archived" CheckedChanged="@((val) => HandleChange(() => QueryModel.Archived = val))" />
             <MudSpacer />
             <div>
                 <IntervalInput Style="width: 300px;" Label="@L["Filter.Interval"]" Clearable="true" DateRange="Range" DateRangeChanged="@((val) => HandleChange(() => Range = val))" />
