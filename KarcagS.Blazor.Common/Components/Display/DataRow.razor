@@ -1,0 +1,25 @@
+﻿@using KarcagS.Shared.Helpers
+
+<div class="lib-data-row mb-2">
+    <MudText Typo="Typo.body1" Color="Color.Primary" Inline="OneRow">
+        <b>@Title: </b>
+    </MudText>
+    <MudText Typo="Typo.body1" Color="ValueColor" Inline="OneRow">
+        @WriteHelper.WriteEmptyableField(Value)
+    </MudText>
+
+</div>
+
+@code {
+    [Parameter, EditorRequired]
+    public string Title { get; set; } = default!;
+
+    [Parameter]
+    public string? Value { get; set; } = default!;
+
+    [Parameter]
+    public bool OneRow { get; set; } = false;
+
+    [Parameter]
+    public Color ValueColor { get; set; } = Color.Default;
+}

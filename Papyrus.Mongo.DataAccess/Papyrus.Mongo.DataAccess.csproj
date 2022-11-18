@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
@@ -7,7 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="KarcagS.Common" Version="2.8.9" />
+    <!--<PackageReference Include="KarcagS.Common" Version="2.8.9" />-->
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\KarcagS.Common\KarcagS.Common.csproj" />
+  </ItemGroup>
 </Project>

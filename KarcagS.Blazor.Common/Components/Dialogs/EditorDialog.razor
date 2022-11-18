@@ -1,0 +1,145 @@
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using KarcagS.Shared.Helpers
+@using KarcagS.Shared.Localization
+@typeparam Model
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">@TitleText</MudText>
+    </TitleContent>
+    <DialogContent>
+        <div style="min-width: @(MinWidth)px;">
+            <MudForm @ref="Form">
+                @ChildContent
+            </MudForm>
+        </div>
+    </DialogContent>
+    <DialogActions>
+        @if (ObjectHelper.IsNotNull(Remove) && IsEdit && !RemoveDisabled)
+        {
+            <MudButton Color="Color.Error" OnClick="Delete">@LocalizationService.GetValue(LibraryLocalizer.EditorRemoveKey, "Remove")</MudButton>
+        }
+        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.EditorCancelKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Save">@LocalizationService.GetValue(LibraryLocalizer.EditorSaveKey, "Save")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter]
+    private MudDialogInstance Dialog { get; set; } = null!;
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Func<Task<bool>> Submit { get; set; } = default!;
+
+    [Parameter]
+    public Func<Task<bool>>? Remove { get; set; } = default!;
+
+    [Parameter]
+    public string RemoveConfirmMessage { get; set; } = default!;
+
+    [Parameter]
+    public string RemoveConfirmTitle { get; set; } = default!;
+
+    [Parameter]
+    public string? Title { get; set; }
+
+    [Parameter, EditorRequired]
+    public string EntityName { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public bool IsEdit { get; set; }
+
+    [Parameter]
+    public int MinWidth { get; set; } = 300;
+
+    [Parameter]
+    public Func<Model, ISnackbar, Task<bool>>? FormValidator { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public Model ModelObj { get; set; } = default!;
+
+    [Parameter]
+    public bool RemoveDisabled { get; set; } = false;
+
+    [Inject]
+    private ISnackbar Snackbar { get; set; } = null!;
+
+    [Inject]
+    private IDialogService DialogService { get; set; } = default!;
+
+    [Inject]
+    private IConfirmService ConfirmService { get; set; } = default!;
+
+    [Inject]
+    private ILocalizationService LocalizationService { get; set; } = default!;
+
+    private MudForm? Form { get; set; } = null!;
+    private string TitleText { get; set; } = "";
+
+    protected override void OnInitialized()
+    {
+        if (ObjectHelper.IsNotNull(Title))
+        {
+            TitleText = Title;
+        }
+        else
+        {
+            TitleText = IsEdit
+                ? LocalizationService.GetValue(LibraryLocalizer.EditorEditEntityKey, "Edit {0}", EntityName)
+                : LocalizationService.GetValue(LibraryLocalizer.EditorCreateEntityKey, "Create {0}", EntityName);
+        }
+        base.OnInitialized();
+    }
+
+    private async Task Save()
+    {
+        if (ObjectHelper.IsNull(Form))
+        {
+            return;
+        }
+
+        await Form.Validate();
+        if (!Form.IsValid) return;
+
+        if (ObjectHelper.IsNotNull(FormValidator))
+        {
+            var result = await FormValidator(ModelObj, Snackbar);
+
+            if (!result)
+            {
+                return;
+            }
+        }
+
+        if (await Submit())
+        {
+            Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Edit)));
+        }
+    }
+
+    private async Task Delete()
+    {
+        if (ObjectHelper.IsNull(Remove) || !IsEdit)
+        {
+            return;
+        }
+
+        await ConfirmService.Open(new ConfirmDialogInput
+            {
+                Message = !string.IsNullOrEmpty(RemoveConfirmMessage) 
+                    ? RemoveConfirmMessage 
+                    : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteMessageKey, $"Are you sure you want to delete {EntityName}?", EntityName),
+                ActionFunction = async () => await Remove()
+            },
+        !string.IsNullOrEmpty(RemoveConfirmTitle) 
+            ? RemoveConfirmTitle 
+            : LocalizationService.GetValue(LibraryLocalizer.EditorConfirmDeleteTitleKey, "Confirm Delete"),
+        () => Dialog.Close(DialogResult.Ok(EditorDialogResult.PerformedResult(EditorCloseEvent.Remove))));
+    }
+
+    private void Cancel() => Dialog.Cancel();
+}

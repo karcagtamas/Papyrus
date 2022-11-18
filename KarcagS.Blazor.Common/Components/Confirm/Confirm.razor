@@ -1,0 +1,39 @@
+﻿@using KarcagS.Blazor.Common.Services
+@using KarcagS.Blazor.Common.Services.Interfaces
+@using KarcagS.Shared.Localization
+@inject ILocalizationService LocalizationService
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h5" Color="Color.Primary">@Dialog.Title</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Style="@($"min-width: {Input.MinContentWidth}px;")">
+            @LocalizationService.GetValue(Input.Message)
+        </MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">@LocalizationService.GetValue(LibraryLocalizer.ConfirmCancelKey, "Cancel")</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">@LocalizationService.GetValue(LibraryLocalizer.ConfirmConfirmKey, "Confirm")</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] private MudDialogInstance Dialog { get; set; } = default!;
+
+    /// <summary>
+    /// Dialog Input
+    /// </summary>
+    [Parameter]
+    public ConfirmDialogInput Input { get; set; } = default!;
+
+    private async Task Submit()
+    {
+        if (ObjectHelper.IsNull(Input.ActionFunction) || await Input.ActionFunction())
+        {
+            Dialog.Close(DialogResult.Ok(true));
+        }
+    }
+
+    private void Cancel() => Dialog.Cancel();
+}
