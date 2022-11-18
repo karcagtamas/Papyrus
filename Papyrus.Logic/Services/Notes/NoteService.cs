@@ -138,9 +138,9 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
     public void UpdateWithTags(string id, NoteModel model)
     {
-        UpdateByModel(id, model);
-
         Note note = Get(id);
+
+        Mapper.Map(model, note);
 
         var tags = note.Tags;
         tags = tags.Where(x => model.Tags.Any(t => t == x.TagId)).ToList();
@@ -199,6 +199,17 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
 
         // Send Socket request
         var dto = GetMapped<NoteLightDTO>(entity.Id);
+
+        // Handle newly created tags fetching - EF does not update proxies automatically
+        List<NoteTagDTO> tags = entity.Tags
+            .Where(x => x.Tag == null)
+            .Select(x => Persistence.Get<int, Tag>(x.TagId))
+            .ToList()
+            .Select(x => new NoteTagDTO { Id = x.Id, Caption = x.Caption, Color = x.Color })
+            .ToList();
+        dto.Tags.AddRange(tags);
+        dto.Tags.RemoveAll(x => x == null);
+
         hubContext.Clients.Group(entity.Id).SendAsync(NoteHubEvents.NoteUpdated, dto).Wait();
     }
 
