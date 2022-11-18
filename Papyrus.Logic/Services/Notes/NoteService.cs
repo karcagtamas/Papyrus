@@ -420,7 +420,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         // Determine category
         // Other by default => Public status
         var cat = SearchResultCategory.Other;
-        bool openable = true;
+        bool openable = note.Public;
 
         // User is logged in
         if (ObjectHelper.IsNotNull(userId))
@@ -429,6 +429,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             if (note.UserId == userId)
             {
                 cat = SearchResultCategory.User;
+                openable = true;
             }
 
             // Note is connected to a group and the user is a member
