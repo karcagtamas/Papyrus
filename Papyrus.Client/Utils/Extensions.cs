@@ -1,4 +1,4 @@
-﻿using System.Reactive.Concurrency;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using KarcagS.Blazor.Common.Http;
@@ -26,7 +26,8 @@ public static class Extensions
             .Add("includeContents", query.IncludeContents)
             .Add("includeTags", query.IncludeTags)
             .Add("startDate", query.StartDate)
-            .Add("endDate", query.EndDate);
+            .Add("endDate", query.EndDate)
+            .Add("archived", query.Archived);
     }
 
     public static IObservable<T> ThrottleMax<T>(this IObservable<T> source, TimeSpan dueTime, TimeSpan maxTime) => source.ThrottleMax(dueTime, maxTime, Scheduler.Default);

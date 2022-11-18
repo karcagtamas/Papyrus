@@ -487,6 +487,8 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             queryable = queryable.Where(x => x.Public || (x.User != null && x.UserId == userId) || (x.Group != null && x.Group.Members.Any(m => m.UserId == userId && (m.Role.ReadNoteList || m.Role.ReadNote || m.Role.EditNote || m.Role.DeleteNote))));
         }
 
+        queryable = queryable.Where(x => x.Archived == query.Archived);
+
         // Date interval checks
         if (query.StartDate != null && query.EndDate != null)
         {
