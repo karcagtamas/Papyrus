@@ -1,6 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Papyrus.Shared.Attributes;
+﻿using Papyrus.Shared.Attributes;
 using Papyrus.Shared.DTOs.Groups;
+using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.Shared.Models.Groups;
 

@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
 using Papyrus.Shared.Attributes;
 using Papyrus.Shared.DTOs.Notes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.Shared.Models.Notes;
 
