@@ -1,8 +1,8 @@
+using KarcagS.Blazor.Common.Http;
+using Papyrus.Shared.Models.Notes;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using KarcagS.Blazor.Common.Http;
-using Papyrus.Shared.Models.Notes;
 
 namespace Papyrus.Client.Utils;
 

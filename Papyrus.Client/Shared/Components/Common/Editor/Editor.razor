@@ -7,29 +7,29 @@
     <div id="rt-editor-actions">
         <MudButtonGroup Color="Color.Primary" Variant="Variant.Outlined">
             <MudTooltip Text="@L["BoldAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))" Disabled="Disabled" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.FormatBold" OnClick="@(() => ExecuteAction(EditorAction.Bold))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
             <MudTooltip Text="@L["ItalicAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))" Disabled="Disabled" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.FormatItalic" OnClick="@(() => ExecuteAction(EditorAction.Italic))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
             <MudTooltip Text="@L["UnderlinedAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))" Disabled="Disabled" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.FormatUnderlined" OnClick="@(() => ExecuteAction(EditorAction.Underline))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
             <MudTooltip Text="@L["StrikeThroughAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))" Disabled="Disabled" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.FormatStrikethrough" OnClick="@(() => ExecuteAction(EditorAction.Strikethrough))" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
         </MudButtonGroup>
         <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
             <MudTooltip Text="@L["FontColorAction.Tooltip"]">
-                <MudIconButton Disabled="Disabled" Icon="@Icons.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))" Size="Size.Small" />
+                <MudIconButton Disabled="Disabled" Icon="@Icons.Material.Filled.FormatColorText" Color="Color.Success" OnClick="@(() => ChooseColor(EditorAction.TextColor))" Size="Size.Small" />
             </MudTooltip>
             <MudTooltip Text="@L["BackgroundColorAction.Tooltip"]">
-                <MudIconButton Disabled="Disabled" Icon="@Icons.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))" Size="Size.Small" />
+                <MudIconButton Disabled="Disabled" Icon="@Icons.Material.Filled.FormatColorFill" Color="Color.Warning" OnClick="@(() => ChooseColor(EditorAction.BackColor))" Size="Size.Small" />
             </MudTooltip>
         </MudButtonGroup>
         <MudButtonGroup Class="ml-1" Color="Color.Primary" Variant="Variant.Outlined">
             <MudTooltip Text="@L["FontSizeAction.Tooltip"]">
-                <MudIconButton Icon="@Icons.Filled.FormatSize" OnClick="ChooseFontSize" Disabled="Disabled" Size="Size.Small" />
+                <MudIconButton Icon="@Icons.Material.Filled.FormatSize" OnClick="ChooseFontSize" Disabled="Disabled" Size="Size.Small" />
             </MudTooltip>
         </MudButtonGroup>
         <MudSpacer />

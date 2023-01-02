@@ -1,4 +1,4 @@
-﻿@using KarcagS.Shared.Helpers
+@using KarcagS.Shared.Helpers
 @using Papyrus.Client.Services.Interfaces
 @using Papyrus.Shared.DTOs
 @inject IStringLocalizer<UserSearchDialog> L
@@ -34,7 +34,7 @@
         else
         {
             <MudText Color="@(IsError ? Color.Error : Color.Warning)" Class="w-100 mt-5 text-center flex-box justify-content-center align-items-center flex-row gap-1">
-                <MudIcon Icon="@Icons.Filled.Info" />
+                <MudIcon Icon="@Icons.Material.Filled.Info" />
                 @Message
             </MudText>
         }

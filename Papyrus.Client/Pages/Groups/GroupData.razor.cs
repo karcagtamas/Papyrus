@@ -1,8 +1,6 @@
 ﻿using KarcagS.Blazor.Common.Components.Confirm;
-using KarcagS.Blazor.Common.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Groups;
 using Papyrus.Shared.DTOs.Groups;
 using Papyrus.Shared.DTOs.Groups.Rights;

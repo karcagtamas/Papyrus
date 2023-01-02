@@ -1,6 +1,5 @@
 using Blazored.LocalStorage;
 using KarcagS.Blazor.Common.Store;
-using KarcagS.Shared.Helpers;
 using Papyrus.Client.Services.Auth.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 

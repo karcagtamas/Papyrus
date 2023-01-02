@@ -1,9 +1,7 @@
-﻿using KarcagS.Blazor.Common.Components.Table;
-using KarcagS.Blazor.Common.Services.Interfaces;
+using KarcagS.Blazor.Common.Components.Table;
 using KarcagS.Shared.Table;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Common;
 using Papyrus.Client.Shared.Dialogs.Groups;
 using Papyrus.Shared;
@@ -80,7 +78,7 @@ public partial class GroupMembers : ComponentBase
 
         var dialog = DialogService.Show<UserSearchDialog>(L["SearchUserTitle"], parameters, new DialogOptions { MaxWidth = MaxWidth.Small, FullWidth = true });
         var result = await dialog.Result;
-        if (!result.Cancelled && result.Data is string userId)
+        if (!result.Canceled && result.Data is string userId)
         {
             if (await GroupMemberService.Create(new GroupMemberCreateModel { UserId = userId, GroupId = GroupId }))
             {

@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components;
 using MudBlazor;
 using Papyrus.Client.Services.Groups.Interfaces;
 using Papyrus.Client.Shared.Dialogs.Groups;
@@ -33,7 +33,7 @@ public partial class MyGroups : ComponentBase
         var parameters = new DialogParameters { { "GroupId", groupId } };
         var dialog = DialogService.Show<GroupEditDialog>(groupId is null ? "Create Group" : "Edit Group", parameters);
         var result = await dialog.Result;
-        if (!result.Cancelled)
+        if (!result.Canceled)
         {
             await Refresh();
         }

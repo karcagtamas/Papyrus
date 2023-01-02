@@ -28,7 +28,7 @@
             <DateDataRow Title="@L["LastUpdate"]" Date="App.LastUpdate" />
             <DataRow Title="@L["PublicId"]" Value="@App.PublicId" />
             <div style="width: 500px;" class="mt-5 flex-box flex-row gap-3 align-items-center justify-content-center" >
-                <TextInput Label="@L["SecretId"]" ReadOnly="true" @bind-Value="@App.SecretId" IsPassword="!IsSecretVisible" AdornmentIcon="@(IsSecretVisible ? Icons.Filled.Visibility : Icons.Filled.VisibilityOff)" OnAdornmentClick="SecretVisibilitySwitch" />
+                <TextInput Label="@L["SecretId"]" ReadOnly="true" @bind-Value="@App.SecretId" IsPassword="!IsSecretVisible" AdornmentIcon="@(IsSecretVisible ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" OnAdornmentClick="SecretVisibilitySwitch" />
                 <div class="flex-box flex-row gap-3">
                     <MudButton Color="Color.Primary" OnClick="CopySecret">@L["CopyAction"]</MudButton>
                     <MudButton Color="Color.Warning" OnClick="RefreshSecret">@L["RefreshAction"]</MudButton>

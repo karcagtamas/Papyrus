@@ -1,4 +1,4 @@
-﻿@using Papyrus.Shared.DTOs.Notes
+@using Papyrus.Shared.DTOs.Notes
 @inject IStringLocalizer<TagTree> L
 
 <MudCard Elevation="2">
@@ -15,20 +15,20 @@
                         @if (CreateEnabled)
                         {
                             <MudTooltip Text="@L["AddAction", context.Data.Caption]">
-                                <MudIconButton Icon="@Icons.Filled.Add" Variant="Variant.Text" Size="Size.Small" OnClick="() => Create(context.Data.Id)" />
+                                <MudIconButton Icon="@Icons.Material.Filled.Add" Variant="Variant.Text" Size="Size.Small" OnClick="() => Create(context.Data.Id)" />
                             </MudTooltip>
                         }
                         <MudSpacer />
                         @if (!context.HasChild && RemoveEnabled)
                         {
                             <MudTooltip Text="@L["RemoveAction", context.Data.Caption]">
-                                <MudIconButton Color="Color.Error" Icon="@Icons.Filled.Remove" Variant="Variant.Text" Size="Size.Small" OnClick="() => Remove(context.Data.Id)" />
+                                <MudIconButton Color="Color.Error" Icon="@Icons.Material.Filled.Remove" Variant="Variant.Text" Size="Size.Small" OnClick="() => Remove(context.Data.Id)" />
                             </MudTooltip>
                         }
                         @if (EditEnabled)
                         {
                             <MudTooltip Text="@L["EditAction", context.Data.Caption]">
-                                <MudIconButton Color="Color.Warning" Icon="@Icons.Filled.Edit" Variant="Variant.Text" Size="Size.Small" OnClick="() => Edit(context.Data.Id)" />
+                                <MudIconButton Color="Color.Warning" Icon="@Icons.Material.Filled.Edit" Variant="Variant.Text" Size="Size.Small" OnClick="() => Edit(context.Data.Id)" />
                             </MudTooltip>
                         }
                     </div>

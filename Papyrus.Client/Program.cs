@@ -1,6 +1,3 @@
-using System.Globalization;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
 using KarcagS.Blazor.Common;
 using KarcagS.Blazor.Common.Http;
@@ -32,6 +29,9 @@ using Papyrus.Client.Services.Profile.Interfaces;
 using Papyrus.Shared.DTOs.Auth;
 using Papyrus.Shared.Enums;
 using Papyrus.Shared.Localization;
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
