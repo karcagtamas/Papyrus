@@ -32,9 +32,9 @@ public class RoleService : MapperRepository<Role, string, string>, IRoleService
         {
             var dto = Mapper.Map<RoleDTO>(role);
 
-            var t = translations.Where(x => x.Key == role.Name).FirstOrDefault()?.Value ?? role.Name;
+            var t = translations.Where(x => x.Key == role.Name).FirstOrDefault()?.Value ?? role.Name ?? string.Empty;
             dto.Name = t;
-            dto.NameEN = role.Name;
+            dto.NameEN = role.Name ?? string.Empty;
 
             return dto;
         }).ToList();

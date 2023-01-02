@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using AutoMapper;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
@@ -21,6 +20,7 @@ using Papyrus.Shared.Enums.Notes;
 using Papyrus.Shared.Enums.Security;
 using Papyrus.Shared.HubEvents;
 using Papyrus.Shared.Models.Notes;
+using System.Linq.Expressions;
 
 namespace Papyrus.Logic.Services.Notes;
 

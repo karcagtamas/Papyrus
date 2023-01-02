@@ -4,16 +4,13 @@ using KarcagS.Common.Tools.Repository;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using MimeMapping;
 using Papyrus.DataAccess;
 using Papyrus.DataAccess.Entities;
-using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.Logic.Services.Common.Interfaces;
 using Papyrus.Logic.Services.Interfaces;
 using Papyrus.Mongo.DataAccess.Enums;
 using Papyrus.Shared.DTOs;
-using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.Models;
 using Papyrus.Shared.Models.Admin;
 
@@ -113,7 +110,7 @@ public class UserService : MapperRepository<User, string, string>, IUserService
     {
         var userId = Utils.GetCurrentUserId();
         var term = searchTerm.ToLower();
-        return GetMappedList<UserLightDTO>(x => !x.Disabled && (!ignoreCurrent || x.Id != userId) && !ignored.Contains(x.Id) && (x.UserName.ToLower().Contains(searchTerm) || x.Email.ToLower().Contains(searchTerm) || (x.FullName != null && x.FullName.ToLower().Contains(searchTerm))), 5).ToList();
+        return GetMappedList<UserLightDTO>(x => !x.Disabled && (!ignoreCurrent || x.Id != userId) && !ignored.Contains(x.Id) && ((x.UserName ?? string.Empty).ToLower().Contains(searchTerm) || (x.Email ?? string.Empty).ToLower().Contains(searchTerm) || (x.FullName != null && (x.FullName ?? string.Empty).ToLower().Contains(searchTerm))), 5).ToList();
     }
 
     public UserSettingDTO GetSettings(string id)

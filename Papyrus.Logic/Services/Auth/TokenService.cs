@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Authentication.JWT;
 using KarcagS.Common.Tools.HttpInterceptor;

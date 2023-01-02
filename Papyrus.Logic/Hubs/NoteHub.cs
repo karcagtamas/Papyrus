@@ -35,6 +35,6 @@ public class NoteHub : Hub
             throw new ArgumentNullException("Note key is required field in request query");
         }
 
-        return editor ?? string.Empty;
+        return editor.ToString() ?? string.Empty;
     }
 }
