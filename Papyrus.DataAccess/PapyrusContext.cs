@@ -10,44 +10,28 @@ namespace Papyrus.DataAccess;
 
 public class PapyrusContext : IdentityDbContext<User, Role, string>
 {
-    public DbSet<Language> Languages { get; set; }
-    public DbSet<Translation> Translations { get; set; }
-    public DbSet<RefreshToken> RefreshTokens { get; set; }
-    public DbSet<Post> Posts { get; set; }
-    public DbSet<AppAccess> AppAccesses { get; set; }
+    public DbSet<Language> Languages => Set<Language>();
+    public DbSet<Translation> Translations => Set<Translation>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+    public DbSet<Post> Posts => Set<Post>();
+    public DbSet<AppAccess> AppAccesses => Set<AppAccess>();
 
-    public DbSet<Group> Groups { get; set; }
-    public DbSet<GroupMember> GroupMembers { get; set; }
-    public DbSet<GroupRole> GroupRoles { get; set; }
-    public DbSet<Folder> Folders { get; set; }
-    public DbSet<Note> Notes { get; set; }
-    public DbSet<Tag> Tags { get; set; }
-    public DbSet<NoteTag> NoteTags { get; set; }
-    public DbSet<NoteAccess> NoteAccesses { get; set; }
+    public DbSet<Group> Groups => Set<Group>();
+    public DbSet<GroupMember> GroupMembers => Set<GroupMember>();
+    public DbSet<GroupRole> GroupRoles => Set<GroupRole>();
+    public DbSet<Folder> Folders => Set<Folder>();
+    public DbSet<Note> Notes => Set<Note>();
+    public DbSet<Tag> Tags => Set<Tag>();
+    public DbSet<NoteTag> NoteTags => Set<NoteTag>();
+    public DbSet<NoteAccess> NoteAccesses => Set<NoteAccess>();
 
-    public DbSet<ActionLog> ActionLogs { get; set; }
-    public DbSet<Application> Applications { get; set; }
+    public DbSet<ActionLog> ActionLogs => Set<ActionLog>();
+    public DbSet<Application> Applications => Set<Application>();
 
-    public DbSet<EditorMember> EditorMembers { get; set; }
+    public DbSet<EditorMember> EditorMembers => Set<EditorMember>();
 
     public PapyrusContext(DbContextOptions<PapyrusContext> options) : base(options)
     {
-        Languages = default!;
-        Translations = default!;
-        RefreshTokens = default!;
-        Posts = default!;
-        AppAccesses = default!;
-        Groups = default!;
-        GroupMembers = default!;
-        GroupRoles = default!;
-        Folders = default!;
-        Notes = default!;
-        Tags = default!;
-        NoteTags = default!;
-        NoteAccesses = default!;
-        ActionLogs = default!;
-        Applications = default!;
-        EditorMembers = default!;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)

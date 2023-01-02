@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Papyrus.DataAccess.Entities;
 using Papyrus.DataAccess.Entities.Editor;
 using Papyrus.DataAccess.Entities.Groups;
@@ -187,39 +187,39 @@ public static class ContextExtensions
     public static ModelBuilder RegisterGroupEntities(this ModelBuilder builder)
     {
         // Group
-        builder.Entity<Group>()
-            .HasOne(x => x.Owner)
-            .WithMany(x => x.CreatedGroups)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<Group>(grp =>
+        {
+            grp.HasOne(x => x.Owner)
+                .WithMany(x => x.CreatedGroups)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         // Group Member
-        builder.Entity<GroupMember>()
-            .HasAlternateKey(x => new { x.GroupId, x.UserId });
-        builder.Entity<GroupMember>()
-            .HasOne(x => x.Group)
-            .WithMany(x => x.Members)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<GroupMember>()
-            .HasOne(x => x.User)
-            .WithMany(x => x.Groups)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<GroupMember>()
-            .HasOne(x => x.Role)
-            .WithMany(x => x.Members)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Restrict);
-        builder.Entity<GroupMember>()
-            .HasOne(x => x.AddedBy)
-            .WithMany(x => x.AddedGroupMembers)
-            .OnDelete(DeleteBehavior.SetNull);
+        builder.Entity<GroupMember>(grpMember =>
+        {
+            grpMember.HasAlternateKey(x => new { x.GroupId, x.UserId });
+            grpMember.HasOne(x => x.Group)
+                .WithMany(x => x.Members)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            grpMember.HasOne(x => x.User)
+                .WithMany(x => x.Groups)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            grpMember.HasOne(x => x.Role)
+                .WithMany(x => x.Members)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+            grpMember.HasOne(x => x.AddedBy)
+                .WithMany(x => x.AddedGroupMembers)
+                .OnDelete(DeleteBehavior.SetNull);
+        });
 
         // Group Role
-        builder.Entity<GroupRole>(groupRole =>
+        builder.Entity<GroupRole>(grpRole =>
         {
-            groupRole.HasOne(x => x.Group)
+            grpRole.HasOne(x => x.Group)
                 .WithMany(x => x.Roles)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
@@ -246,7 +246,10 @@ public static class ContextExtensions
                 .WithMany(x => x.Folders)
                 .IsRequired(false)
                 .OnDelete(DeleteBehavior.Cascade);
-            folder.HasCheckConstraint("CK_Folder_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+            folder.ToTable(t =>
+            {
+                t.HasCheckConstraint("CK_Folder_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+            });
         });
 
         builder.Entity<Note>(note =>
@@ -269,7 +272,10 @@ public static class ContextExtensions
                 .WithMany(x => x.Notes)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Cascade);
-            note.HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+            note.ToTable(t =>
+            {
+                t.HasCheckConstraint("CK_Note_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+            });
         });
 
         builder.Entity<Tag>(tag =>
@@ -283,7 +289,10 @@ public static class ContextExtensions
             tag.HasOne(x => x.Parent)
                 .WithMany(x => x.Children)
                 .OnDelete(DeleteBehavior.Cascade);
-            tag.HasCheckConstraint("CK_Tag_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+            tag.ToTable(t =>
+            {
+                t.HasCheckConstraint("CK_Tag_Owner", "(GroupId IS NOT NULL OR UserId IS NOT NULL) AND NOT (GroupId IS NOT NULL AND UserId IS NOT NULL)");
+            });
         });
 
         builder.Entity<NoteTag>(noteTag =>
@@ -318,18 +327,18 @@ public static class ContextExtensions
     public static ModelBuilder RegisterTempEntities(this ModelBuilder builder)
     {
         // Editor Member
-        builder.Entity<EditorMember>()
-            .HasAlternateKey(x => new { x.UserId, x.NoteId, x.ConnectionId });
-        builder.Entity<EditorMember>()
-            .HasOne(x => x.User)
-            .WithMany(x => x.EditorMemberships)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
-        builder.Entity<EditorMember>()
-            .HasOne(x => x.Note)
-            .WithMany(x => x.EditorMemberships)
-            .IsRequired()
-            .OnDelete(DeleteBehavior.Cascade);
+        builder.Entity<EditorMember>(em =>
+        {
+            em.HasAlternateKey(x => new { x.UserId, x.NoteId, x.ConnectionId });
+            em.HasOne(x => x.User)
+                .WithMany(x => x.EditorMemberships)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
+            em.HasOne(x => x.Note)
+                 .WithMany(x => x.EditorMemberships)
+                 .IsRequired()
+                 .OnDelete(DeleteBehavior.Cascade);
+        });
 
         return builder;
     }

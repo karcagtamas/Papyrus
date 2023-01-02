@@ -1,10 +1,10 @@
-using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Tools.Entities;
 using Microsoft.AspNetCore.Identity;
 using Papyrus.DataAccess.Entities.Editor;
 using Papyrus.DataAccess.Entities.Groups;
 using Papyrus.DataAccess.Entities.Notes;
 using Papyrus.DataAccess.Entities.Profile;
+using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.DataAccess.Entities;
 

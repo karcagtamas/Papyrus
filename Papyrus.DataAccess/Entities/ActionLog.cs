@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.DataAccess.Entities;
 
-public class ActionLog : IEntity<long> 
+public class ActionLog : IEntity<long>
 {
     [Required]
     public long Id { get; set; }
