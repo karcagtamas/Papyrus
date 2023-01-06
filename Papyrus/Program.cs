@@ -1,4 +1,3 @@
-using System.Text;
 using AutoMapper;
 using KarcagS.Common.Middlewares;
 using KarcagS.Common.Tools;
@@ -44,6 +43,7 @@ using AuthImpl = Papyrus.Logic.Services.Security;
 using Auth = Papyrus.Logic.Services.Security.Interfaces;
 using Papyrus.Middlewares;
 using Papyrus.Mongo.DataAccess.Configurations;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -131,7 +131,7 @@ builder.Services.AddCors(opt =>
         cb.AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials()
-            .WithOrigins(builder.Configuration["Client:Secure"], builder.Configuration["Client:Basic"]);
+            .WithOrigins(builder.Configuration["Client:Secure"] ?? "https://localhost", builder.Configuration["Client:Basic"] ?? "http://localhost");
     });
 });
 
@@ -182,7 +182,7 @@ builder.Services
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty))
         };
         options.Events = new JwtBearerEvents
         {

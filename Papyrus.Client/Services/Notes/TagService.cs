@@ -1,6 +1,5 @@
 ﻿using KarcagS.Blazor.Common.Http;
 using KarcagS.Blazor.Common.Models;
-using KarcagS.Shared.Helpers;
 using Microsoft.Extensions.Localization;
 using Papyrus.Client.Services.Notes.Interfaces;
 using Papyrus.Shared.DTOs.Notes;

@@ -1,7 +1,7 @@
-﻿@inject IStringLocalizer<NotePublicStatusIcon> L
+@inject IStringLocalizer<NotePublicStatusIcon> L
 
 <MudTooltip RootClass="d-flex flex-row align-items-center" Text="@(Public ? L["Status.Published"] : L["Status.NotPublished"])">
-    <MudIcon Class="@Class" Size="Size" Icon="@(Public ? Icons.Filled.Visibility : Icons.Filled.VisibilityOff)" Color="Color.Info" />
+    <MudIcon Class="@Class" Size="Size" Icon="@(Public ? Icons.Material.Filled.Visibility : Icons.Material.Filled.VisibilityOff)" Color="Color.Info" />
 </MudTooltip>
 
 @code {

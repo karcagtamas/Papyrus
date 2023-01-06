@@ -1,4 +1,3 @@
-﻿using System.Text;
 using KarcagS.Common.Tools.Services;
 using KarcagS.Shared.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +9,7 @@ using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Shared.DiffMatchPatch;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.HubEvents;
+using System.Text;
 
 namespace Papyrus.Logic.Hubs;
 
@@ -107,6 +107,6 @@ public class EditorHub : Hub
             throw new ArgumentNullException("Editor key is required field in request query");
         }
 
-        return editor ?? string.Empty;
+        return editor.ToString() ?? string.Empty;
     }
 }

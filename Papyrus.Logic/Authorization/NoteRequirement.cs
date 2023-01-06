@@ -19,7 +19,7 @@ public static class NoteOperations
 
 public static class NotePolicies
 {
-    
+
     public static readonly AuthorizationPolicy ReadNote = new AuthorizationPolicyBuilder()
            .AddRequirements(NoteOperations.ReadNoteRequirement)
            .Build();

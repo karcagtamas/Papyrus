@@ -31,14 +31,14 @@
             </MudTextField>
             <div class="text-center mt-3 mb-3">
                 <MudButton Color="Color.Primary" Class="mt-3" Variant="Variant.Filled" OnClick="Submit"
-                           StartIcon="@Icons.Filled.PersonAdd">
+                           StartIcon="@Icons.Material.Filled.PersonAdd">
                     @L["Button"]
                 </MudButton>
             </div>
             <MudDivider />
             <div class="text-center mt-3">
                 <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="ToLogin"
-                           StartIcon="@Icons.Filled.Login">@L["Redirect"]</MudButton>
+                           StartIcon="@Icons.Material.Filled.Login">@L["Redirect"]</MudButton>
             </div>
         </MudForm>
     </MudPaper>
@@ -50,7 +50,7 @@
     private RegistrationModel Model { get; set; } = new();
 
     private bool isShow;
-    private string passwordInputIcon = Icons.Filled.VisibilityOff;
+    private string passwordInputIcon = Icons.Material.Filled.VisibilityOff;
     private InputType passwordInput = InputType.Password;
 
     private async void Submit()
@@ -78,13 +78,13 @@
         if (isShow)
         {
             isShow = false;
-            passwordInputIcon = Icons.Filled.VisibilityOff;
+            passwordInputIcon = Icons.Material.Filled.VisibilityOff;
             passwordInput = InputType.Password;
         }
         else
         {
             isShow = true;
-            passwordInputIcon = Icons.Filled.Visibility;
+            passwordInputIcon = Icons.Material.Filled.Visibility;
             passwordInput = InputType.Text;
         }
     }

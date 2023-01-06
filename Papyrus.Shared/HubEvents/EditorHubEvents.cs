@@ -1,6 +1,4 @@
-﻿using Papyrus.Shared.DTOs.Notes;
-
-namespace Papyrus.Shared.HubEvents;
+﻿namespace Papyrus.Shared.HubEvents;
 
 public static class EditorHubEvents
 {

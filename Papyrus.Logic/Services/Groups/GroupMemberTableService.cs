@@ -1,4 +1,4 @@
-﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Services;
 using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
@@ -36,7 +36,7 @@ public class GroupMemberTableService : TableService<GroupMember, int>, IGroupMem
             .SetTitle("Group Members", "Table.Title")
             .AddColumn(Column<GroupMember, int>.Build("user")
                 .SetTitle("User", "TableColumn.User")
-                .AddValueGetter(obj => obj.User.UserName)
+                .AddValueGetter(obj => obj.User.UserName ?? "N/A")
                 .SetWidth(480))
             .AddColumn(Column<GroupMember, int>.Build("role")
                 .SetTitle("Role", "TableColumn.Role")

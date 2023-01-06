@@ -1,4 +1,4 @@
-﻿@using KarcagS.Shared.Helpers
+@using KarcagS.Shared.Helpers
 @using Papyrus.Shared.DTOs.Groups
 @inject IStringLocalizer<GroupListTile> L
 
@@ -11,7 +11,7 @@
         <div class="desc-row">
             <MudText Typo="Typo.body2">@L["Creation"]: @DateHelper.DateToString(Group.Creation)</MudText>
             <MudTooltip Text="@L["OpenGroupInfo"]">
-                <MudIconButton Size="Size.Small" Icon="@Icons.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
+                    <MudIconButton Size="Size.Small" Icon="@Icons.Material.Filled.OpenInBrowser" Color="Color.Primary" OnClick="Open" />
             </MudTooltip>
         </div>
     </div>

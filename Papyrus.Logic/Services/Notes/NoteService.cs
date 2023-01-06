@@ -1,4 +1,3 @@
-using System.Linq.Expressions;
 using AutoMapper;
 using KarcagS.Common.Helpers;
 using KarcagS.Common.Tools.Repository;
@@ -21,6 +20,7 @@ using Papyrus.Shared.Enums.Notes;
 using Papyrus.Shared.Enums.Security;
 using Papyrus.Shared.HubEvents;
 using Papyrus.Shared.Models.Notes;
+using System.Linq.Expressions;
 
 namespace Papyrus.Logic.Services.Notes;
 
@@ -405,7 +405,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
             queryable
                 .Where(x => query.PublicStatus == null || query.PublicStatus == x.Public)
                 .Where(x => query.ArchivedStatus == null || query.ArchivedStatus == x.Archived)
-                .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName.Contains(query.TextFilter)))
+                .Where(x => query.TextFilter == null || x.Title.Contains(query.TextFilter) || (x.Creator != null && x.Creator.UserName != null && x.Creator.UserName.Contains(query.TextFilter)))
                 .Where(x => query.DateFilter == null || x.Creation > query.DateFilter)
                 .Where(x => query.Tags.Count == 0 || x.Tags.Any(t => query.Tags.Contains(t.TagId)))
                 .OrderBy(x => x.Title)
@@ -450,7 +450,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
         string owner = string.Empty;
         bool isGroup = false;
 
-        ObjectHelper.WhenNotNull(note.User, u => owner = u.UserName);
+        ObjectHelper.WhenNotNull(note.User, u => owner = u.UserName ?? "");
         ObjectHelper.WhenNotNull(note.Group, g =>
         {
             owner = g.Name;
@@ -470,7 +470,7 @@ public class NoteService : MapperRepository<Note, string, string>, INoteService
     {
         Expression<Func<Note, bool>> titlePredicate = x => x.Title.Contains(query.Text);
         Expression<Func<Note, bool>> tagNamePredicate = x => x.Tags.Any(x => x.Tag.Caption.Contains(query.Text));
-        Expression<Func<Note, bool>> ownerPredicate = x => (x.User != null && x.User.UserName.Contains(query.Text)) || (x.Group != null && x.Group.Name.Contains(query.Text));
+        Expression<Func<Note, bool>> ownerPredicate = x => (x.User != null && x.User.UserName != null && x.User.UserName.Contains(query.Text)) || (x.Group != null && x.Group.Name.Contains(query.Text));
 
         queryable = queryable.AsExpandable().Where(x => titlePredicate.Invoke(x) || ownerPredicate.Invoke(x) || (query.IncludeTags && tagNamePredicate.Invoke(x)))
             .Include(x => x.User)

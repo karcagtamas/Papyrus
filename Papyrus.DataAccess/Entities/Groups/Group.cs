@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
 using KarcagS.Common.Attributes;
 using KarcagS.Common.Tools.Entities;
 using Papyrus.DataAccess.Entities.Notes;
+using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.DataAccess.Entities.Groups;
 

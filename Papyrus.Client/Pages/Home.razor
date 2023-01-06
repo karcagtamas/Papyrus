@@ -1,4 +1,4 @@
-﻿@page "/home"
+@page "/home"
 @using KarcagS.Blazor.Common.Services.Interfaces
 @using Papyrus.Client.Services.Auth.Interfaces
 @using Papyrus.Client.Services.Interfaces
@@ -21,13 +21,13 @@
         </div>
         <div id="posts">
             <div class="d-flex flex-row align-items-center gap-1">
-                <MudIcon Icon="@Icons.Filled.Article" Size="Size.Small" Color="Color.Primary" />
+                <MudIcon Icon="@Icons.Material.Filled.Article" Size="Size.Small" Color="Color.Primary" />
                 <MudText Typo="Typo.h5" Color="Color.Primary">@L["PostsTitle"]:</MudText>
                 <MudSpacer />
                 @if (HasEditRight)
                 {
                     <MudTooltip Text="@L["PostCreateInfo"]">
-                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Filled.Add" Size="Size.Small" OnClick="@(() => OpenPostDialog(null))" />
+                        <MudIconButton Color="Color.Secondary" Icon="@Icons.Material.Filled.Add" Size="Size.Small" OnClick="@(() => OpenPostDialog(null))" />
                     </MudTooltip>
                 }
             </div>

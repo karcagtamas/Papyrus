@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Papyrus.Shared.Localization;
+﻿using Papyrus.Shared.Localization;
+using System.ComponentModel.DataAnnotations;
 
 namespace Papyrus.Shared.Attributes;
 

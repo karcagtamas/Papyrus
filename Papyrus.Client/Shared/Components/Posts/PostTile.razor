@@ -11,10 +11,10 @@
         @if (Editable)
         {
             <MudTooltip Text="@L["EditInfo"]">
-                <MudIconButton Icon="@Icons.Filled.Edit" Size="Size.Small" Color="Color.Warning" OnClick="@(() => OnEditClick.InvokeAsync(Post.Id))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Edit" Size="Size.Small" Color="Color.Warning" OnClick="@(() => OnEditClick.InvokeAsync(Post.Id))" />
             </MudTooltip>
             <MudTooltip Text="@L["DeleteInfo"]">
-                <MudIconButton Icon="@Icons.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => OnDeleteClick.InvokeAsync(Post.Id))" />
+                <MudIconButton Icon="@Icons.Material.Filled.Delete" Size="Size.Small" Color="Color.Error" OnClick="@(() => OnDeleteClick.InvokeAsync(Post.Id))" />
             </MudTooltip>
         }
     </div>

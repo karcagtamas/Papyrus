@@ -1,4 +1,4 @@
-﻿@page "/notes/editor/{Id}"
+@page "/notes/editor/{Id}"
 @using KarcagS.Blazor.Common.Services.Interfaces
 @using KarcagS.Shared.Helpers
 @using Microsoft.AspNetCore.SignalR.Client
@@ -33,25 +33,25 @@
                     @if (NoteRights.CanEdit)
                     {
                         <MudTooltip Text="@L["EditAction.Tooltip"]">
-                            <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" />
+                            <MudIconButton Size="Size.Small" Color="Color.Secondary" Icon="@Icons.Material.Filled.Edit" Class="mr-3 ml-3" OnClick="OpenEdit" />
                         </MudTooltip>
                     }
                     @if (NoteRights.CanViewLogs)
                     {
                         <MudTooltip Text="@L["OpenLogsAction.Tooltip"]">
-                            <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Filled.History" Class="mr-3 ml-3" OnClick="OpenLogs" />
+                            <MudIconButton Size="Size.Small" Color="Color.Warning" Icon="@Icons.Material.Filled.History" Class="mr-3 ml-3" OnClick="OpenLogs" />
                         </MudTooltip>
                     }
 
                     @if (ObjectHelper.IsNotNull(Note.GroupId))
                     {
                         <MudTooltip Text="@L["BackAction.Tooltip"]">
-                            <MudIconButton Size="Size.Small" Color="Color.Primary" Icon="@Icons.Filled.Group" Class="mr-3 ml-3" OnClick="@(() => Navigation.NavigateTo($"/groups/{Note.GroupId}") )" />
+                            <MudIconButton Size="Size.Small" Color="Color.Primary" Icon="@Icons.Material.Filled.Group" Class="mr-3 ml-3" OnClick="@(() => Navigation.NavigateTo($"/groups/{Note.GroupId}") )" />
                         </MudTooltip>
                     }
 
                     <MudTooltip Text="@(DataCollapsed ? L["ExpandAction.Tooltip"] : L["CollapseAction.Tooltip"])">
-                        <MudIconButton Size="Size.Small" Icon="@(DataCollapsed ? Icons.Filled.ExpandMore : Icons.Filled.ExpandLess)" Class="mr-3 ml-3" OnClick="@(() => DataCollapsed = !DataCollapsed)" />
+                        <MudIconButton Size="Size.Small" Icon="@(DataCollapsed ? Icons.Material.Filled.ExpandMore : Icons.Material.Filled.ExpandLess)" Class="mr-3 ml-3" OnClick="@(() => DataCollapsed = !DataCollapsed)" />
                     </MudTooltip>
                 </div>
             </div>
@@ -94,11 +94,11 @@
                     else
                     {
                         <MudTooltip Text="@L["SaveContent.Tooltip"]">
-                                <MudIconButton Icon="@Icons.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="@(!NoteRights.CanEdit || (!Editor?.IsDirty ?? true))" Class="p-1 mr-1" />
+                            <MudIconButton Icon="@Icons.Material.Filled.Save" Color="Color.Primary" OnClick="SaveDirtyState" Disabled="@(!NoteRights.CanEdit || (!Editor?.IsDirty ?? true))" Class="p-1 mr-1" />
                         </MudTooltip>
                     }
                     <MudTooltip Text="@(ObjectHelper.OrElse(editorHub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? L["Connection.Active.Tooltip"] : L["Connection.Inactive.Tooltip"])">
-                        <MudIcon Icon="@(ObjectHelper.OrElse(editorHub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? Icons.Filled.Cloud : Icons.Filled.CloudOff)" Color="Color.Primary" />
+                        <MudIcon Icon="@(ObjectHelper.OrElse(editorHub?.State, HubConnectionState.Disconnected) == HubConnectionState.Connected ? Icons.Material.Filled.Cloud : Icons.Material.Filled.CloudOff)" Color="Color.Primary" />
                     </MudTooltip>
                 </div>
             </RightToolbar>

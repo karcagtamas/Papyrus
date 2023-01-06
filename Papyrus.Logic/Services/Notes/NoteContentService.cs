@@ -1,10 +1,10 @@
-﻿using System.Text.RegularExpressions;
-using AutoMapper;
+﻿using AutoMapper;
 using KarcagS.Common.Tools.Mongo;
 using MongoDB.Driver;
 using Papyrus.Logic.Services.Notes.Interfaces;
 using Papyrus.Mongo.DataAccess.Configurations;
 using Papyrus.Mongo.DataAccess.Entities;
+using System.Text.RegularExpressions;
 
 namespace Papyrus.Logic.Services.Notes;
 

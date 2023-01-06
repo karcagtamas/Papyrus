@@ -1,5 +1,4 @@
-﻿using System.Text;
-using KarcagS.Blazor.Common.Enums;
+﻿using KarcagS.Blazor.Common.Enums;
 using KarcagS.Blazor.Common.Models;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
@@ -9,6 +8,7 @@ using Papyrus.Client.Shared.Dialogs.Notes;
 using Papyrus.Shared.DTOs;
 using Papyrus.Shared.DTOs.Notes;
 using Papyrus.Shared.HubEvents;
+using System.Text;
 
 namespace Papyrus.Client.Pages.Notes;
 

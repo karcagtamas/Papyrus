@@ -1,4 +1,4 @@
-﻿using KarcagS.Common.Tools.Services;
+using KarcagS.Common.Tools.Services;
 using KarcagS.Common.Tools.Table;
 using KarcagS.Common.Tools.Table.Configuration;
 using KarcagS.Common.Tools.Table.ListTable;
@@ -34,10 +34,10 @@ public class UserTableService : TableService<User, string>, IUserTableService
             .SetTitle("Users", "Table.Title")
             .AddColumn(Column<User, string>.Build("user-name")
                 .SetTitle("User Name", "TableColumn.UserName")
-                .AddValueGetter(obj => obj.UserName))
+                .AddValueGetter(obj => obj.UserName ?? "N/A"))
             .AddColumn(Column<User, string>.Build("email")
                 .SetTitle("E-mail", "TableColumn.Email")
-                .AddValueGetter(obj => obj.Email)
+                .AddValueGetter(obj => obj.Email ?? "N/A")
                 .SetWidth(280))
             .AddColumn(Column<User, string>.Build("full-name")
                 .SetTitle("Full Name", "TableColumn.FullName")
@@ -107,9 +107,9 @@ public class UserTableService : TableService<User, string>, IUserTableService
     {
         return ListTableDataSource<User, string>.Build((query) =>
         {
-            if (query.ExtraParams.ContainsKey("role"))
+            if (query.ExtraParams.TryGetValue("role", out object? value))
             {
-                return userService.GetListAsQuery(x => x.Roles.Any(r => r.RoleId == query.ExtraParams["role"].ToString())).Include(x => x.Roles);
+                return userService.GetListAsQuery(x => x.Roles.Any(r => r.RoleId == (value.ToString() ?? string.Empty))).Include(x => x.Roles);
             }
 
             return userService.GetAllAsQuery().Include(x => x.Roles);

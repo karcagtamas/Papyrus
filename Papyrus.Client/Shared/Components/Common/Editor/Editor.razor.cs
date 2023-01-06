@@ -1,10 +1,10 @@
-﻿using System.Reactive.Linq;
-using System.Reactive.Subjects;
-using Microsoft.AspNetCore.Components;
+﻿using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using MudBlazor.Utilities;
 using Papyrus.Client.Utils;
 using Papyrus.Shared.DiffMatchPatch;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 
 namespace Papyrus.Client.Shared.Components.Common.Editor;
 

@@ -24,13 +24,13 @@
             <MudTextField T="string" Label="@L["Field.Password"]" Variant="Variant.Text" InputType="@passwordInput" Adornment="Adornment.End" AdornmentIcon="@passwordInputIcon" OnAdornmentClick="SwitchPasswordVisibility" Required="true" For="@(() => Model.Password)" @bind-Value="Model.Password" FullWidth="true">
             </MudTextField>
             <div class="text-center mt-3 mb-3">
-                <MudButton Color="Color.Primary" Class="mt-3" Variant="Variant.Filled" OnClick="Submit" StartIcon="@Icons.Filled.Login">
+                <MudButton Color="Color.Primary" Class="mt-3" Variant="Variant.Filled" OnClick="Submit" StartIcon="@Icons.Material.Filled.Login">
                     @L["Button"]
                 </MudButton>
             </div>
             <MudDivider />
             <div class="text-center mt-3">
-                <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="ToRegister" StartIcon="@Icons.Filled.PersonAdd">@L["Redirect"]</MudButton>
+                <MudButton Color="Color.Secondary" Variant="Variant.Text" OnClick="ToRegister" StartIcon="@Icons.Material.Filled.PersonAdd">@L["Redirect"]</MudButton>
             </div>
         </MudForm>
     </MudPaper>
@@ -47,7 +47,7 @@
     private LoginModel Model { get; set; } = new();
 
     private bool isShow;
-    private string passwordInputIcon = Icons.Filled.VisibilityOff;
+    private string passwordInputIcon = Icons.Material.Filled.VisibilityOff;
     private InputType passwordInput = InputType.Password;
 
     private void ToRegister()
@@ -77,13 +77,13 @@
         if (isShow)
         {
             isShow = false;
-            passwordInputIcon = Icons.Filled.VisibilityOff;
+            passwordInputIcon = Icons.Material.Filled.VisibilityOff;
             passwordInput = InputType.Password;
         }
         else
         {
             isShow = true;
-            passwordInputIcon = Icons.Filled.Visibility;
+            passwordInputIcon = Icons.Material.Filled.Visibility;
             passwordInput = InputType.Text;
         }
     }

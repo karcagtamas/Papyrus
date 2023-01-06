@@ -10,13 +10,13 @@ namespace Papyrus.Controllers;
 [Authorize]
 public class EditorController : ControllerBase
 {
-	private readonly IEditorService editorService;
+    private readonly IEditorService editorService;
 
-	public EditorController(IEditorService editorService)
-	{
-		this.editorService = editorService;
-	}
+    public EditorController(IEditorService editorService)
+    {
+        this.editorService = editorService;
+    }
 
-	[HttpGet("{id}/Members")]
-	public List<UserLightDTO> GetMembers(string id) => editorService.GetMembers(id);
+    [HttpGet("{id}/Members")]
+    public List<UserLightDTO> GetMembers(string id) => editorService.GetMembers(id);
 }
