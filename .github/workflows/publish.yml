@@ -1,0 +1,49 @@
+﻿name: Publish
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+env:
+  PROJECT: '**/Papyrus.csproj'
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Use .NET 7 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '7.0.101'
+          
+      - name: Extract version from tag
+        run: |
+          echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          dotnet build ${{ env.PROJECT }} --configuration ${{ env.BUILD_CONFIGURATION }}
+          
+      - name: Publish
+        run: |
+          dotnet publish ${{ env.PROJECT }} \
+            --configuration ${{ env.BUILD_CONFIGURATION }} \
+            --output ${{ github.workspace }}/artifacts \
+            -p:Version=${{ env.VERSION }}
+          
+      - name: Copy EF Scripts to Staging
+        run: |
+          mkdir -p artifacts/Scripts
+          find . -name "*_dump.sql" -exec cp {} artifacts/Scripts \;
+
+      - name: Publish Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: drop
+          path: artifacts
